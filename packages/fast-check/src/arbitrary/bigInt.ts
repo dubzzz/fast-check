@@ -24,15 +24,14 @@ export interface BigIntConstraints {
  * @internal
  */
 function buildCompleteBigIntConstraints(constraints: BigIntConstraints): Required<BigIntConstraints> {
-  const DefaultPow = 256;
-  const DefaultMin = BigInt(-1) << BigInt(DefaultPow - 1);
-  const DefaultMax = (BigInt(1) << BigInt(DefaultPow - 1)) - BigInt(1);
+  const DefaultMin = -1n << 255n;
+  const DefaultMax = (1n << 255n) - 1n;
 
   const min = constraints.min;
   const max = constraints.max;
   return {
-    min: min !== undefined ? min : DefaultMin - (max !== undefined && max < BigInt(0) ? max * max : BigInt(0)),
-    max: max !== undefined ? max : DefaultMax + (min !== undefined && min > BigInt(0) ? min * min : BigInt(0)),
+    min: min !== undefined ? min : DefaultMin - (max !== undefined && max < 0n ? max * max : 0n),
+    max: max !== undefined ? max : DefaultMax + (min !== undefined && min > 0n ? min * min : 0n),
   };
 }
 

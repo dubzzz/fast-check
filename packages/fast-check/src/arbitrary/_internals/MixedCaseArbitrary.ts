@@ -49,7 +49,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
     const chars = [...rawStringValue.value]; // split into valid unicode (keeps surrogate pairs)
     const togglePositions = computeTogglePositions(chars, this.toggleCase);
 
-    const flagsArb = bigInt(BigInt(0), (BigInt(1) << BigInt(togglePositions.length)) - BigInt(1));
+    const flagsArb = bigInt(0n, (1n << BigInt(togglePositions.length)) - 1n);
     const flagsValue = flagsArb.generate(mrng, undefined); // true => toggle the char, false => keep it as-is
 
     applyFlagsOnChars(chars, flagsValue.value, togglePositions, this.toggleCase);
@@ -88,7 +88,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
         contextSafe = {
           rawString: value,
           rawStringContext: undefined,
-          flags: BigInt(0),
+          flags: 0n,
           flagsContext: undefined,
         };
       }
@@ -112,7 +112,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
         makeLazy(() => {
           const chars = [...rawString];
           const togglePositions = computeTogglePositions(chars, this.toggleCase);
-          return bigInt(BigInt(0), (BigInt(1) << BigInt(togglePositions.length)) - BigInt(1))
+          return bigInt(0n, (1n << BigInt(togglePositions.length)) - 1n)
             .shrink(flags, contextSafe.flagsContext)
             .map((nFlagsValue) => {
               const nChars = chars.slice(); // cloning chars

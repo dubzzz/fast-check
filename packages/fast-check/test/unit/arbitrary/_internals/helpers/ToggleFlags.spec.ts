@@ -10,7 +10,7 @@ import {
 
 describe('countToggledBits', () => {
   it('should properly count when zero bits are toggled', () => {
-    expect(countToggledBits(BigInt(0))).toBe(0);
+    expect(countToggledBits(0n)).toBe(0);
   });
 
   it('should properly count when all bits are toggled', () => {
@@ -18,41 +18,41 @@ describe('countToggledBits', () => {
   });
 
   it('should properly count when part of the bits are toggled', () => {
-    expect(countToggledBits(BigInt(7456))).toBe(5);
+    expect(countToggledBits(7456n)).toBe(5);
   });
 });
 
 describe('computeNextFlags', () => {
   it('should keep the same flags if size has not changed', () => {
-    const flags = BigInt(243); // 11110011 -> 11110011
+    const flags = 243n; // 11110011 -> 11110011
     expect(computeNextFlags(flags, 8)).toBe(flags);
   });
 
   it('should keep the same flags if number of starting zeros is enough', () => {
-    const flags = BigInt(121); // 01111001 -> 1111001
+    const flags = 121n; // 01111001 -> 1111001
     expect(computeNextFlags(flags, 7)).toBe(flags);
   });
 
   it('should keep the same flags if size is longer', () => {
-    const flags = BigInt(242); // 11110010 -> 011110010
+    const flags = 242n; // 11110010 -> 011110010
     expect(computeNextFlags(flags, 9)).toBe(flags);
   });
 
   it('should keep the same number of toggled flags for flags not existing anymore', () => {
-    const flags = BigInt(147); // 10010011
-    const expectedFlags = BigInt(23); // 0010111 - start by filling by the right
+    const flags = 147n; // 10010011
+    const expectedFlags = 23n; // 0010111 - start by filling by the right
     expect(computeNextFlags(flags, 7)).toBe(expectedFlags);
   });
 
   it('should properly deal with cases where flags have to be removed', () => {
-    const flags = BigInt(243); // 11110011
-    const expectedFlags = BigInt(3); // 11
+    const flags = 243n; // 11110011
+    const expectedFlags = 3n; // 11
     expect(computeNextFlags(flags, 2)).toBe(expectedFlags);
   });
 
   it('should preserve the same number of flags', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, offset) => {
+      fc.asyncProperty(fc.bigInt({ min: 0n }), fc.nat(100), (flags, offset) => {
         const sourceToggled = countToggledBits(flags);
         const nextSize = sourceToggled + offset; // anything >= sourceToggled
         const nextFlags = computeNextFlags(flags, nextSize);
@@ -63,9 +63,9 @@ describe('computeNextFlags', () => {
 
   it('should preserve the position of existing flags', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.bigInt({ min: BigInt(0) }), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
+      fc.asyncProperty(fc.bigInt({ min: 0n }), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
-        for (let idx = 0, mask = BigInt(1); idx !== nextSize; ++idx, mask <<= BigInt(1)) {
+        for (let idx = 0, mask = 1n; idx !== nextSize; ++idx, mask <<= 1n) {
           if (flags & mask) expect(!!(nextFlags & mask)).toBe(true);
         }
       }),
@@ -74,9 +74,9 @@ describe('computeNextFlags', () => {
 
   it('should not return flags larger than the asked size', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, nextSize) => {
+      fc.asyncProperty(fc.bigInt({ min: 0n }), fc.nat(100), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
-        expect(nextFlags < BigInt(1) << BigInt(nextSize)).toBe(true);
+        expect(nextFlags < 1n << BigInt(nextSize)).toBe(true);
       }),
     );
   });
@@ -128,11 +128,11 @@ describe('computeFlagsFromChars', () => {
       fc.asyncProperty(
         fc.array(fc.string({ minLength: 1, maxLength: 1 })),
         fc.func(fc.string({ minLength: 1, maxLength: 1 })),
-        fc.bigInt({ min: BigInt(0) }),
+        fc.bigInt({ min: 0n }),
         (chars, toggleCase, flagsUnmasked) => {
           // Arrange
           const positions = computeTogglePositions(chars, toggleCase);
-          const mask = (BigInt(1) << BigInt(positions.length)) - BigInt(1);
+          const mask = (1n << BigInt(positions.length)) - 1n;
           const flags = flagsUnmasked & mask;
           const finalChars = [...chars];
           applyFlagsOnChars(finalChars, flags, positions, toggleCase);

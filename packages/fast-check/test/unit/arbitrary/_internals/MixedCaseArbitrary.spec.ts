@@ -23,7 +23,7 @@ describe('MixedCaseArbitrary', () => {
     it('should not toggle any character if flags equal zero', () => {
       // Arrange
       const { instance: mrng } = fakeRandom();
-      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(0), 'azerty');
+      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(0n, 'azerty');
       const toggleCase = vi.fn().mockImplementation((c) => c.toUpperCase());
       const untoggleAll = vi.fn().mockImplementation((s) => s.toLowerCase());
 
@@ -33,7 +33,7 @@ describe('MixedCaseArbitrary', () => {
 
       // Assert
       expect(g.value).toBe('azerty');
-      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 6 - 1)); // num toggleable chars in string = 6, so range [0, 2**6 -1]
+      expect(bigInt).toHaveBeenCalledWith(0n, BigInt(2 ** 6 - 1)); // num toggleable chars in string = 6, so range [0, 2**6 -1]
       expect(toggleCase).toHaveBeenCalledTimes(6); // length string = 6, to be toggled = 0
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -41,7 +41,7 @@ describe('MixedCaseArbitrary', () => {
     it('should toggle characters according to flags', () => {
       // Arrange
       const { instance: mrng } = fakeRandom();
-      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(9) /* 001001 */, 'azerty');
+      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(9n /* 001001 */, 'azerty');
       const toggleCase = vi.fn().mockImplementation((c) => c.toUpperCase());
       const untoggleAll = vi.fn().mockImplementation((s) => s.toLowerCase());
 
@@ -51,7 +51,7 @@ describe('MixedCaseArbitrary', () => {
 
       // Assert
       expect(g.value).toBe('azErtY');
-      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 6 - 1)); // num toggleable chars in string = 6, so range [0, 2**6 -1]
+      expect(bigInt).toHaveBeenCalledWith(0n, BigInt(2 ** 6 - 1)); // num toggleable chars in string = 6, so range [0, 2**6 -1]
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -59,7 +59,7 @@ describe('MixedCaseArbitrary', () => {
     it('should not try to toggle characters that do not have toggled versions', () => {
       // Arrange
       const { instance: mrng } = fakeRandom();
-      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(10) /* 1010 */, 'az01ty');
+      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(10n /* 1010 */, 'az01ty');
       const toggleCase = vi.fn().mockImplementation((c) => c.toUpperCase());
       const untoggleAll = vi.fn().mockImplementation((s) => s.toLowerCase());
 
@@ -69,7 +69,7 @@ describe('MixedCaseArbitrary', () => {
 
       // Assert
       expect(g.value).toBe('Az01Ty');
-      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 4 - 1)); // // num toggleable chars in string = 4 as 01 upper version is the same -> only 4 can be toggled not 6
+      expect(bigInt).toHaveBeenCalledWith(0n, BigInt(2 ** 4 - 1)); // // num toggleable chars in string = 4 as 01 upper version is the same -> only 4 can be toggled not 6
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -77,7 +77,7 @@ describe('MixedCaseArbitrary', () => {
     it('should properly deal with toggle mapping to multiple characters', () => {
       // Arrange
       const { instance: mrng } = fakeRandom();
-      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(63) /* 111111 */, 'azerty');
+      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(63n /* 111111 */, 'azerty');
       const toggleCase = vi.fn().mockImplementation((c: string) => {
         if (c === 'a' || c === 't') return '<Hello>';
         else return c;
@@ -90,7 +90,7 @@ describe('MixedCaseArbitrary', () => {
 
       // Assert
       expect(g.value).toBe('<Hello>zer<Hello>y');
-      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 2 - 1)); // num toggleable chars in string = 2, only a and t
+      expect(bigInt).toHaveBeenCalledWith(0n, BigInt(2 ** 2 - 1)); // num toggleable chars in string = 2, only a and t
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });

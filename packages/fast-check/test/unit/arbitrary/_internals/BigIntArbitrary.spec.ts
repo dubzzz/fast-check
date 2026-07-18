@@ -169,8 +169,8 @@ describe('BigIntArbitrary', () => {
       ${{}}
     `('should always reject non bigint values like $requested', ({ requested }) => {
       // Arrange
-      const min = BigInt(0);
-      const max = BigInt(100);
+      const min = 0n;
+      const max = 100n;
 
       // Act
       const arb = new BigIntArbitrary(min, max);
@@ -214,8 +214,8 @@ describe('BigIntArbitrary (integration)', () => {
     typeof value === 'bigint' && extra.min <= value && value <= extra.max;
 
   const isStrictlySmaller = (v1: bigint, v2: bigint) => {
-    const absV1 = v1 < BigInt(0) ? -v1 : v1;
-    const absV2 = v2 < BigInt(0) ? -v2 : v2;
+    const absV1 = v1 < 0n ? -v1 : v1;
+    const absV2 = v2 < 0n ? -v2 : v2;
     return absV1 < absV2;
   };
 
@@ -246,8 +246,8 @@ describe('BigIntArbitrary (integration)', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.bigInt(),
-          fc.bigInt({ min: BigInt(0), max: BigInt(20) }), // larger trees might be too wide
-          fc.bigInt({ min: BigInt(0), max: BigInt(20) }),
+          fc.bigInt({ min: 0n, max: 20n }), // larger trees might be too wide
+          fc.bigInt({ min: 0n, max: 20n }),
           (start, o1, o2) => {
             // Arrange
             const min = start;
@@ -276,10 +276,10 @@ describe('BigIntArbitrary (integration)', () => {
     it('should build an offset version of the shrinking tree if we offset all the values (keep every value >=0)', async () =>
       await fc.assert(
         fc.asyncProperty(
-          fc.bigInt({ min: BigInt(0) }),
-          fc.bigInt({ min: BigInt(0), max: BigInt(20) }), // larger trees might be too wide
-          fc.bigInt({ min: BigInt(0), max: BigInt(20) }),
-          fc.bigInt({ min: BigInt(0) }),
+          fc.bigInt({ min: 0n }),
+          fc.bigInt({ min: 0n, max: 20n }), // larger trees might be too wide
+          fc.bigInt({ min: 0n, max: 20n }),
+          fc.bigInt({ min: 0n }),
           (start, o1, o2, offset) => {
             // Arrange
             fc.pre(start + o1 + offset <= Number.MAX_SAFE_INTEGER);
@@ -309,8 +309,8 @@ describe('BigIntArbitrary (integration)', () => {
 
     it('should shrink strictly positive value for positive range including zero', () => {
       // Arrange
-      const arb = new BigIntArbitrary(BigInt(0), BigInt(10));
-      const source = new Value(BigInt(8), undefined);
+      const arb = new BigIntArbitrary(0n, 10n);
+      const source = new Value(8n, undefined);
 
       // Act
       const tree = buildShrinkTree(arb, source);
@@ -373,8 +373,8 @@ describe('BigIntArbitrary (integration)', () => {
 
     it('should shrink strictly positive value for range not including zero', () => {
       // Arrange
-      const arb = new BigIntArbitrary(BigInt(10), BigInt(20));
-      const source = new Value(BigInt(18), undefined);
+      const arb = new BigIntArbitrary(10n, 20n);
+      const source = new Value(18n, undefined);
 
       // Act
       const tree = buildShrinkTree(arb, source);
@@ -428,8 +428,8 @@ describe('BigIntArbitrary (integration)', () => {
 
     it('should shrink strictly negative value for negative range including zero', () => {
       // Arrange
-      const arb = new BigIntArbitrary(BigInt(-10), BigInt(0));
-      const source = new Value(BigInt(-8), undefined);
+      const arb = new BigIntArbitrary(-10n, 0n);
+      const source = new Value(-8n, undefined);
 
       // Act
       const tree = buildShrinkTree(arb, source);
