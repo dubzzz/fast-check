@@ -1,5 +1,4 @@
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
 import { integer } from '../integer.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
@@ -9,6 +8,7 @@ import type { CustomSetBuilder } from './interfaces/CustomSet.js';
 import type { DepthContext, DepthIdentifier } from './helpers/DepthContext.js';
 import { getDepthContextFor } from './helpers/DepthContext.js';
 import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator.js';
+import { joinAll, nil } from '../../utils/iterator.js';
 
 /** @internal */
 type ArrayArbitraryContext = {
@@ -235,11 +235,11 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     safeContext: ArrayArbitraryContext,
     endIndex: number,
   ): IterableIterator<[Value<T>[], unknown, number]> {
-    const shrinks: IterableIterator<[Value<T>[], unknown, number]>[] = [];
+    const shrinks: IteratorObject<[Value<T>[], unknown, number]>[] = [];
     for (let index = safeContext.startIndex; index < endIndex; ++index) {
       shrinks.push(
         makeLazy(() =>
-          this.arb.shrink(value[index], safeContext.itemsContexts[index]).map((v): [Value<T>[], unknown, number] => {
+          this.arb.shrink(value[index], safeContext.itemsContexts[index]).map((v): [Value<T>[], undefined, number] => {
             const beforeCurrent = value
               .slice(0, index)
               .map((v, i) => new Value(cloneIfNeeded(v), safeContext.itemsContexts[i]));
@@ -255,12 +255,12 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         ),
       );
     }
-    return Stream.nil<[Value<T>[], unknown, number]>().join(...shrinks);
+    return joinAll(shrinks);
   }
 
-  private shrinkImpl(value: T[], context?: unknown): Stream<[Value<T>[], unknown, number]> {
+  private shrinkImpl(value: T[], context?: unknown): IteratorObject<[Value<T>[], unknown, number]> {
     if (value.length === 0) {
-      return Stream.nil();
+      return nil;
     }
 
     const safeContext: ArrayArbitraryContext =
@@ -268,7 +268,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         ? (context as ArrayArbitraryContext)
         : { shrunkOnce: false, lengthContext: undefined, itemsContexts: [], startIndex: 0 };
 
-    return (
+    return joinAll([
       this.lengthArb
         .shrink(
           value.length,
@@ -292,40 +292,36 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
             lengthValue.context, // integer context for value lengthValue.value (the length)
             0,
           ];
-        })
-        // Length context value will be set to undefined for remaining shrinking values
-        // as they are outside of our shrinking process focused on items.length.
-        // None of our computed contexts will apply for them.
-        .join(
-          makeLazy(() =>
-            value.length > this.minLength
-              ? this.shrinkItemByItem(value, safeContext, 1)
-              : this.shrinkItemByItem(value, safeContext, value.length),
-          ),
-        )
-        .join(
-          value.length > this.minLength
-            ? makeLazy(() => {
-                // We pass itemsLengthContext=undefined to next shrinker to start shrinking
-                // without any assumptions on the current state (we never explored that one)
-                const subContext: ArrayArbitraryContext = {
-                  shrunkOnce: false,
-                  lengthContext: undefined,
-                  itemsContexts: safeContext.itemsContexts.slice(1),
-                  startIndex: 0,
-                };
-                return this.shrinkImpl(value.slice(1), subContext)
-                  .filter((v) => this.minLength <= v[0].length + 1)
-                  .map((v): [Value<T>[], unknown, number] => {
-                    return [[new Value(cloneIfNeeded(value[0]), safeContext.itemsContexts[0]), ...v[0]], undefined, 0];
-                  });
-              })
-            : Stream.nil(),
-        )
-    );
+        }),
+      // Length context value will be set to undefined for remaining shrinking values
+      // as they are outside of our shrinking process focused on items.length.
+      // None of our computed contexts will apply for them.
+      makeLazy(() =>
+        value.length > this.minLength
+          ? this.shrinkItemByItem(value, safeContext, 1)
+          : this.shrinkItemByItem(value, safeContext, value.length),
+      ),
+      value.length > this.minLength
+        ? makeLazy(() => {
+            // We pass itemsLengthContext=undefined to next shrinker to start shrinking
+            // without any assumptions on the current state (we never explored that one)
+            const subContext: ArrayArbitraryContext = {
+              shrunkOnce: false,
+              lengthContext: undefined,
+              itemsContexts: safeContext.itemsContexts.slice(1),
+              startIndex: 0,
+            };
+            return this.shrinkImpl(value.slice(1), subContext)
+              .filter((v) => this.minLength <= v[0].length + 1)
+              .map((v): [Value<T>[], unknown, number] => {
+                return [[new Value(cloneIfNeeded(value[0]), safeContext.itemsContexts[0]), ...v[0]], undefined, 0];
+              });
+          })
+        : nil,
+    ]);
   }
 
-  shrink(value: T[], context?: unknown): Stream<Value<T[]>> {
+  shrink(value: T[], context?: unknown): IteratorObject<Value<T[]>> {
     return this.shrinkImpl(value, context).map((contextualValue) =>
       this.wrapper(contextualValue[0], true, contextualValue[1], contextualValue[2]),
     );

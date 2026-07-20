@@ -1,5 +1,4 @@
 import type { Random } from '../../../random/generator/Random.js';
-import { Stream } from '../../../stream/Stream.js';
 import { cloneMethod, hasCloneMethod } from '../../symbols.js';
 import { Value } from './Value.js';
 
@@ -53,7 +52,7 @@ export abstract class Arbitrary<T> {
    *
    * @remarks Since 3.0.0
    */
-  abstract shrink(value: T, context: unknown | undefined): Stream<Value<T>>;
+  abstract shrink(value: T, context: unknown | undefined): IteratorObject<Value<T>>;
 
   /**
    * Create another arbitrary by filtering values against `predicate`

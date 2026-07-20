@@ -1,4 +1,3 @@
-import type { Stream } from '../stream/Stream.js';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { StreamArbitrary } from './_internals/StreamArbitrary.js';
 
@@ -32,7 +31,7 @@ interface InfiniteStreamConstraints {
  * @remarks Since 1.8.0
  * @public
  */
-function infiniteStream<T>(arb: Arbitrary<T>, constraints?: InfiniteStreamConstraints): Arbitrary<Stream<T>> {
+function infiniteStream<T>(arb: Arbitrary<T>, constraints?: InfiniteStreamConstraints): Arbitrary<IteratorObject<T>> {
   const history =
     constraints !== undefined && typeof constraints === 'object' && 'noHistory' in constraints
       ? !constraints.noHistory

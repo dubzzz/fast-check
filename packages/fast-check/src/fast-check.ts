@@ -152,7 +152,6 @@ export { ExecutionStatus } from './check/runner/reporter/ExecutionStatus.js';
 export type { ExecutionTree } from './check/runner/reporter/ExecutionTree.js';
 export type { WithCloneMethod } from './check/symbols.js';
 export { cloneMethod, cloneIfNeeded, hasCloneMethod } from './check/symbols.js';
-export { Stream, stream } from './stream/Stream.js';
 export { hash } from './utils/hash.js';
 export type { WithToStringMethod, WithAsyncToStringMethod } from './utils/stringify.js';
 export {
