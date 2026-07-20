@@ -108,29 +108,6 @@ describe('Stream', () => {
       expect([...s]).toEqual([3, 4, 5, 6]);
     });
   });
-  describe('dropWhile', () => {
-    it('Should drop while predicate stays valid', () => {
-      function* g() {
-        yield* [-4, -2, -3, 1, -8, 7];
-      }
-      const s = stream(g()).dropWhile((v) => v < 0);
-      expect([...s]).toEqual([1, -8, 7]);
-    });
-    it('Should drop everything', () => {
-      function* g() {
-        yield* [-4, -2, -3, 1, -8, 7];
-      }
-      const s = stream(g()).dropWhile((_) => true);
-      expect([...s]).toEqual([]);
-    });
-    it('Should drop nothing', () => {
-      function* g() {
-        yield* [-4, -2, -3, 1, -8, 7];
-      }
-      const s = stream(g()).dropWhile((_) => false);
-      expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
-    });
-  });
   describe('take', () => {
     it('Should take the right number of elements', () => {
       function* g() {
@@ -157,29 +134,6 @@ describe('Stream', () => {
       const s = stream(g()).take(4);
       expect([...s]).toEqual([0, 0, 0, 0]);
       expect(numValues).toBe(4);
-    });
-  });
-  describe('takeWhile', () => {
-    it('Should take while predicate stays valid', () => {
-      function* g() {
-        yield* [-4, -2, -3, 1, -8, 7];
-      }
-      const s = stream(g()).takeWhile((v) => v < 0);
-      expect([...s]).toEqual([-4, -2, -3]);
-    });
-    it('Should take everything', () => {
-      function* g() {
-        yield* [-4, -2, -3, 1, -8, 7];
-      }
-      const s = stream(g()).takeWhile((_) => true);
-      expect([...s]).toEqual([-4, -2, -3, 1, -8, 7]);
-    });
-    it('Should take nothing', () => {
-      function* g() {
-        yield* [-4, -2, -3, 1, -8, 7];
-      }
-      const s = stream(g()).takeWhile((_) => false);
-      expect([...s]).toEqual([]);
     });
   });
   describe('filter', () => {

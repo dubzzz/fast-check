@@ -217,7 +217,7 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should create independent Stream even in terms of toString', async () =>
+    it('should create independent Stream', async () =>
       await fc.assert(
         fc.asyncProperty(fc.boolean(), (history) => {
           // Arrange
@@ -239,21 +239,27 @@ describe('StreamArbitrary', () => {
           const stream2 = out.value;
           const values1 = [...stream1.take(2)];
           const values2 = [...stream2.take(3)];
-          const values1Bis = [...stream1.take(2)];
 
           // Assert
-          expect(values1).toEqual([0, 1]);
+          const expectedFromStream1 = [0, 1];
+          expect(values1).toEqual(expectedFromStream1);
+          const expectedFromStream2 = [2, 3, 4];
           expect(values2).toEqual([2, 3, 4]);
-          expect(values1Bis).toEqual([5, 6]);
           const stream1String = String(stream1);
           const stream2String = String(stream2);
-          [0, 1, 5, 6].forEach((v) => {
-            expect(stream2String).not.toMatch(`\\<${v}\\>`);
-          });
-          [2, 3, 4].forEach((v) => {
-            expect(stream1String).not.toMatch(`\\<${v}\\>`);
-          });
-          expect(generate).toHaveBeenCalledTimes(7);
+          for (const v of expectedFromStream1) {
+            expect(stream2String).not.toMatch(`<${v}>`);
+            if (history) {
+              expect(stream1String).toMatch(`<${v}>`);
+            }
+          }
+          for (const v of expectedFromStream2) {
+            expect(stream1String).not.toMatch(`<${v}>`);
+            if (history) {
+              expect(stream2String).toMatch(`<${v}>`);
+            }
+          }
+          expect(generate).toHaveBeenCalledTimes(expectedFromStream1.length + expectedFromStream2.length);
         }),
       ));
   });
