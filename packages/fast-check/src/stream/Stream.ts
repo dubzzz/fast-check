@@ -30,7 +30,7 @@ export class Stream<T> implements IterableIterator<T> {
    * Create a Stream based on `g`
    * @param g - Underlying data of the Stream
    */
-  constructor(/** @internal */ private readonly g: IterableIterator<T>) {}
+  constructor(/** @internal */ private readonly g: IteratorObject<T>) {}
 
   next(): IteratorResult<T> {
     return this.g.next();
@@ -140,8 +140,8 @@ export class Stream<T> implements IterableIterator<T> {
    * @param others - Streams to join to the current Stream
    * @remarks Since 0.0.1
    */
-  join(...others: IterableIterator<T>[]): Stream<T> {
-    return new Stream(joinHelper(this.g, others));
+  join(...others: IteratorObject<T>[]): Stream<T> {
+    return new Stream(Iterator.from(joinHelper(this.g, others)));
   }
 
   /**
@@ -171,6 +171,6 @@ export class Stream<T> implements IterableIterator<T> {
  * @remarks Since 0.0.7
  * @public
  */
-export function stream<T>(g: IterableIterator<T>): Stream<T> {
+export function stream<T>(g: IteratorObject<T>): Stream<T> {
   return new Stream<T>(g);
 }

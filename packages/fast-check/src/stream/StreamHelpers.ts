@@ -14,7 +14,7 @@ class Nil<T> implements IterableIterator<T> {
 }
 
 /** @internal */
-export const nil: IterableIterator<any> = new Nil<any>();
+export const nil: IteratorObject<any> = Iterator.from(new Nil<any>());
 
 /** @internal */
 export function* joinHelper<T>(g: IterableIterator<T>, others: IterableIterator<T>[]): IterableIterator<T> {
