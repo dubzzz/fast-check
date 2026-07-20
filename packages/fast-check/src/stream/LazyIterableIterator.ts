@@ -24,6 +24,6 @@ class LazyIterableIterator<T> implements IterableIterator<T> {
  *
  * @internal
  */
-export function makeLazy<T>(producer: () => IterableIterator<T>): IterableIterator<T> {
-  return new LazyIterableIterator(producer);
+export function makeLazy<T>(producer: () => IterableIterator<T>): IteratorObject<T> {
+  return Iterator.from(new LazyIterableIterator(producer));
 }
