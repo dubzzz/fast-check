@@ -20,12 +20,16 @@ export function getNthOrLast<T>(it: IterableIterator<T>, nth: number): T | null 
   return last;
 }
 
-export function* joinAll<T, U, V>(its: IteratorObject<T, U, V>[]): IteratorObject<T, U, V> {
+export function* joinAll<T, U, V>(
+  its: [IteratorObject<T, U, V>, ...IteratorObject<T, U, V>[]],
+): IteratorObject<T, U, V> {
+  let last!: U;
   for (const s of its) {
-    for (let cur = s.next(); !cur.done; cur = s.next()) {
+    let cur = s.next();
+    for (; !cur.done; cur = s.next()) {
       yield cur.value;
     }
+    last = cur.value;
   }
-  // oxlint-disable-next-line typescript/no-non-null-assertion
-  return undefined! as U;
+  return last;
 }
