@@ -70,13 +70,13 @@ describe('Tosser', () => {
     it('Should offset toss with the provided examples', async () =>
       await fc.assert(
         fc.asyncProperty(fc.integer(), fc.nat(20), fc.array(fc.integer()), (seed, num, examples) => {
-          const noExamplesProvided = [
-            ...toss(wrap(stubArb.forward()), seed, rngProducer, []).take(num - examples.length),
-          ].map((f) => f.value);
-          const examplesProvided = [...toss(wrap(stubArb.forward()), seed, rngProducer, examples).take(num)].map(
+          const noExamplesProvided = [...toss(wrap(stubArb.forward()), seed, rngProducer, []).take(num)].map(
             (f) => f.value,
           );
-          expect([...examples, ...noExamplesProvided].slice(0, num)).toStrictEqual(examplesProvided);
+          const examplesProvided = [
+            ...toss(wrap(stubArb.forward()), seed, rngProducer, examples).take(num + examples.length),
+          ].map((f) => f.value);
+          expect([...examples, ...noExamplesProvided]).toStrictEqual(examplesProvided);
         }),
       ));
   });
