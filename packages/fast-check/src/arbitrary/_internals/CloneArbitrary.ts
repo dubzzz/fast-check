@@ -55,7 +55,7 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     const its = value.map((v, idx) => this.arb.shrink(v, contexts[idx])[Symbol.iterator]());
     let cur = its.map((it) => it.next());
     while (!cur[0].done) {
-      yield cur.map((c) => c.value);
+      yield cur.map((c: IteratorResult<Value<T>>) => c.value);
       cur = its.map((it) => it.next());
     }
     return undefined;
