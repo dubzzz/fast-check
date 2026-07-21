@@ -1,5 +1,5 @@
 ---
-"@fast-check/worker": minor
+"@fast-check/worker": patch
 "fast-check": major
 ---
 
