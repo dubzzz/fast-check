@@ -4,7 +4,8 @@
     "overrideTsconfig": {
       "extends": "./tsconfig.publish.types.json",
       "compilerOptions": {
-        "target": "esnext"
+        "target": "esnext",
+        "lib": ["esnext"]
       }
     }
   },
