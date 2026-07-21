@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import { getNthOrLast } from '../../../../src/utils/iterator.js';
 import { GeneratorArbitrary } from '../../../../src/arbitrary/_internals/GeneratorArbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import type { Random } from '../../../../src/random/generator/Random.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import type { MockWithArgs } from '../../__test-helpers__/Mocked.js';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
@@ -183,7 +183,7 @@ describe('GeneratorArbitrary', () => {
       // >  d, a, 1
       // >  a, b, 1
       // >  a, c, 1
-      const genValueB = g.shrink(genA, genValueA.context).getNthOrLast(4); // a, c, 1
+      const genValueB = getNthOrLast(g.shrink(genA, genValueA.context), 4); // a, c, 1
       const genB = genValueB!.value;
       seenValues.push([genB(() => first.instance), genB(() => first.instance), genB(() => third.instance)]);
       expect(third.offsetOnLastCall()).toBe(2);
@@ -192,7 +192,7 @@ describe('GeneratorArbitrary', () => {
       // >  b, c, A
       // >  c, c, A
       // >  d, c, A
-      const genValueC = g.shrink(genB, genValueB!.context).getNthOrLast(2); // d, c, A
+      const genValueC = getNthOrLast(g.shrink(genB, genValueB!.context), 2); // d, c, A
       const genC = genValueC!.value;
       seenValues.push([genC(() => first.instance), genC(() => first.instance), genC(() => third.instance)]);
       // Shrink third level
@@ -201,14 +201,14 @@ describe('GeneratorArbitrary', () => {
       // >  h, c, A
       // >  d, e, A
       // >  d, f, A
-      const genValueD = g.shrink(genC, genValueC!.context).getNthOrLast(3); // d, f, A
+      const genValueD = getNthOrLast(g.shrink(genC, genValueC!.context), 3); // d, f, A
       const genD = genValueD!.value;
       seenValues.push([genD(() => first.instance), genD(() => first.instance)]);
       // Shrink fourth level
       // d, f
       // >  g, f
       // >  h, f
-      const genValueE = g.shrink(genD, genValueD!.context).getNthOrLast(1); // h, f
+      const genValueE = getNthOrLast(g.shrink(genD, genValueD!.context), 1); // h, f
       const genE = genValueE!.value;
       seenValues.push([
         genE(() => first.instance),
@@ -266,7 +266,7 @@ function buildArbitraryForGen(value: string, shrinks: Map<string, string[]>) {
   });
   shrink.mockImplementation((value) => {
     const subValues = shrinks.get(value) ?? [];
-    return new Stream(subValues.map((v) => new Value(v, `c${v}`))[Symbol.iterator]());
+    return Iterator.from(subValues.map((v) => new Value(v, `c${v}`)));
   });
 
   return { instance, generate, shrink, offsetOnLastCall: () => offset };

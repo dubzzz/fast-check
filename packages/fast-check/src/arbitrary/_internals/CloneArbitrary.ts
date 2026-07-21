@@ -2,7 +2,7 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod } from '../../check/symbols.js';
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import { nil } from '../../utils/iterator.js';
 
 /** @internal */
 export class CloneArbitrary<T> extends Arbitrary<T[]> {
@@ -44,22 +44,21 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     return this.arb.canShrinkWithoutContext(value[0]);
   }
 
-  shrink(value: T[], context?: unknown): Stream<Value<T[]>> {
+  shrink(value: T[], context?: unknown): IteratorObject<Value<T[]>> {
     if (value.length === 0) {
-      return Stream.nil();
+      return nil;
     }
-    return new Stream(this.shrinkImpl(value, context !== undefined ? (context as unknown[]) : [])).map((v) =>
-      this.wrapper(v),
-    );
+    return this.shrinkImpl(value, context !== undefined ? (context as unknown[]) : []).map((v) => this.wrapper(v));
   }
 
-  private *shrinkImpl(value: T[], contexts: unknown[]): IterableIterator<Value<T>[]> {
+  private *shrinkImpl(value: T[], contexts: unknown[]): IteratorObject<Value<T>[]> {
     const its = value.map((v, idx) => this.arb.shrink(v, contexts[idx])[Symbol.iterator]());
     let cur = its.map((it) => it.next());
     while (!cur[0].done) {
       yield cur.map((c) => c.value);
       cur = its.map((it) => it.next());
     }
+    return undefined;
   }
 
   private static makeItCloneable<T>(vs: T[], shrinkables: Value<T>[]) {

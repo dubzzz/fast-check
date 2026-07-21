@@ -1,5 +1,6 @@
 import type { Random } from '../../../random/generator/Random.js';
 import { cloneMethod, hasCloneMethod } from '../../symbols.js';
+import { joinAll, nil } from '../../../utils/iterator.js';
 import { Value } from './Value.js';
 
 /**
@@ -170,15 +171,14 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
     // TODO Need unchainer
     return false;
   }
-  shrink(value: U, context?: unknown): Stream<Value<U>> {
+  shrink(value: U, context?: unknown): IteratorObject<Value<U>> {
     if (this.isSafeContext(context)) {
-      return (
+      return joinAll([
         !context.stoppedForOriginal
           ? this.arb
               .shrink(context.originalValue, context.originalContext)
               .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng, context.originalBias))
-          : Stream.nil<Value<U>>()
-      ).join(
+          : nil,
         context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
           const newContext: ChainArbitraryContext<T, U> = {
             ...context,
@@ -187,10 +187,10 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
           };
           return new Value(dst.value_, newContext);
         }),
-      );
+      ]);
     }
     // TODO Need unchainer
-    return Stream.nil();
+    return nil;
   }
   private valueChainer(
     v: Value<T>,
@@ -289,7 +289,7 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
     }
     return false;
   }
-  shrink(value: U, context?: unknown): Stream<Value<U>> {
+  shrink(value: U, context?: unknown): IteratorObject<Value<U>> {
     if (this.isSafeContext(context)) {
       return this.arb.shrink(context.originalValue, context.originalContext).map(this.bindValueMapper);
     }
@@ -300,7 +300,7 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
       // we can safely consider `this.arb.canShrinkWithoutContext(unmapped)` to be true at that point.
       return this.arb.shrink(unmapped, undefined).map(this.bindValueMapper);
     }
-    return Stream.nil();
+    return nil;
   }
   private isSafeContext(context: unknown): context is MapArbitraryContext<T> {
     return (
@@ -334,7 +334,7 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
   canShrinkWithoutContext(value: unknown): value is U {
     return this.arb.canShrinkWithoutContext(value) && this.refinement(value);
   }
-  shrink(value: U, context?: unknown): Stream<Value<U>> {
+  shrink(value: U, context?: unknown): IteratorObject<Value<U>> {
     return this.arb.shrink(value, context).filter(this.bindRefinementOnValue);
   }
   private refinementOnValue(v: Value<T>): v is Value<U> {

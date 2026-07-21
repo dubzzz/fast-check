@@ -6,7 +6,7 @@ import { CommandWrapper } from '../../check/model/commands/CommandWrapper.js';
 import { ReplayPath } from '../../check/model/ReplayPath.js';
 import type { Random } from '../../random/generator/Random.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
-import { Stream } from '../../stream/Stream.js';
+import { joinAll, nil } from '../../utils/iterator.js';
 import { oneof } from '../oneof.js';
 import { restrictedIntegerArbitraryBuilder } from './builders/RestrictedIntegerArbitraryBuilder.js';
 
@@ -104,9 +104,9 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
   shrink(
     _value: CommandsIterable<Model, Real, RunResult, CheckAsync>,
     context: unknown,
-  ): Stream<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>> {
+  ): IteratorObject<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>> {
     if (context === undefined) {
-      return Stream.nil<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>>();
+      return nil;
     }
     const safeContext = context as CommandsArbitraryContext<Model, Real, RunResult, CheckAsync>;
 
@@ -115,14 +115,14 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
 
     const items = this.filterForShrinkImpl(itemsRaw); // filter out commands that have not been executed
     if (items.length === 0) {
-      return Stream.nil<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>>();
+      return nil;
     }
 
     // The shrinker of commands have to keep the last item
     // because it is the one causing the failure
-    const rootShrink: Stream<Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]> = shrunkOnce
-      ? Stream.nil()
-      : new Stream([[]][Symbol.iterator]());
+    const rootShrink: IteratorObject<Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]> = shrunkOnce
+      ? nil
+      : Iterator.from([[]]);
 
     // If the resulting shrinkable was simply built by joining the streams one by one,
     //  > stream[n] = stream[n-1].join(nextFor[n]) -- with nextFor[-1] = rootShrink
@@ -130,7 +130,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
     // Indeed calling stream[n].next() would require to call stream[n-1].next() and so on...
     // Instead of that we define stream[n] = rootShrink.join(nextFor[0], ..., nextFor[n])
     // So that calling next on stream[n] will not have to run too many recursions
-    const nextShrinks: IterableIterator<Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]>[] = [];
+    const nextShrinks: IteratorObject<Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[]>[] = [];
 
     // keep fixed number commands at the beginning
     // remove items in remaining part except the last one
@@ -156,7 +156,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
       );
     }
 
-    return rootShrink.join(...nextShrinks).map((shrinkables) => {
+    return joinAll([rootShrink, ...nextShrinks]).map((shrinkables) => {
       return this.buildValueFor(
         shrinkables.map((c) => new Value(c.value_.clone(), c.context)),
         true,

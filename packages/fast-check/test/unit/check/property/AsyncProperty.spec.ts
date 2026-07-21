@@ -8,7 +8,6 @@ import * as stubArb from '../../stubs/arbitraries.js';
 import * as stubRng from '../../stubs/generators.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import type { PropertyFailure } from '../../../../src/check/property/types/PropertyFailure.js';
 import * as fc from 'fast-check';
 
@@ -374,7 +373,7 @@ describe('AsyncProperty', () => {
     canShrinkWithoutContext.mockReturnValue(true);
     const s1 = Symbol();
     const s2 = Symbol();
-    shrink.mockReturnValue(Stream.of(new Value<symbol>(s1, undefined), new Value(s2, undefined)));
+    shrink.mockReturnValue(Iterator.from([new Value<symbol>(s1, undefined), new Value(s2, undefined)]));
     const value = Symbol();
 
     // Act

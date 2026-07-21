@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import { nil } from '../../utils/iterator.js';
 import type { Scheduler } from './interfaces/Scheduler.js';
 import type { ScheduledTask, TaskSelector } from './implementations/SchedulerImplem.js';
 import { SchedulerImplem } from './implementations/SchedulerImplem.js';
@@ -36,8 +36,8 @@ export class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData
     return false;
   }
 
-  shrink(_value: Scheduler<TMetaData>, _context?: unknown): Stream<Value<Scheduler<TMetaData>>> {
+  shrink(_value: Scheduler<TMetaData>, _context?: unknown): IteratorObject<Value<Scheduler<TMetaData>>> {
     // Not supported yet
-    return Stream.nil();
+    return nil;
   }
 }

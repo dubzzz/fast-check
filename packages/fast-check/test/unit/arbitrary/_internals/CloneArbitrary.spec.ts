@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
+import { nil } from '../../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { CloneArbitrary } from '../../../../src/arbitrary/_internals/CloneArbitrary.js';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols.js';
 import type { Random } from '../../../../src/random/generator/Random.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
@@ -129,9 +129,9 @@ describe('CloneArbitrary', () => {
       const numValues = 3;
       const { instance: sourceArb, shrink } = fakeArbitrary<symbol>();
       shrink
-        .mockReturnValueOnce(Stream.of<Value<symbol>>(new Value(s1, undefined), new Value(s2, undefined)))
-        .mockReturnValueOnce(Stream.of<Value<symbol>>(new Value(s1, undefined), new Value(s2, undefined)))
-        .mockReturnValueOnce(Stream.of<Value<symbol>>(new Value(s1, undefined), new Value(s2, undefined)));
+        .mockReturnValueOnce(Iterator.from<Value<symbol>>([new Value(s1, undefined), new Value(s2, undefined)]))
+        .mockReturnValueOnce(Iterator.from<Value<symbol>>([new Value(s1, undefined), new Value(s2, undefined)]))
+        .mockReturnValueOnce(Iterator.from<Value<symbol>>([new Value(s1, undefined), new Value(s2, undefined)]));
 
       // Act
       const arb = new CloneArbitrary(sourceArb, numValues);
@@ -235,19 +235,19 @@ class FirstArbitrary extends Arbitrary<number> {
   canShrinkWithoutContext(_value: unknown): _value is number {
     throw new Error('No call expected in that scenario');
   }
-  shrink(value: number, context?: unknown): Stream<Value<number>> {
+  shrink(value: number, context?: unknown): IteratorObject<Value<number>> {
     if (typeof context !== 'object' || context === null || !('step' in context)) {
       throw new Error('Invalid context for FirstArbitrary');
     }
     if (value <= 0) {
-      return Stream.nil();
+      return nil;
     }
     const currentStep = (context as { step: number }).step;
     const nextStep = currentStep + 1;
-    return Stream.of(
+    return Iterator.from([
       ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
       ...(value - currentStep + 1 >= 0 ? [new Value(value - currentStep + 1, { step: nextStep })] : []),
-    );
+    ]);
   }
 }
 
@@ -261,14 +261,14 @@ class CloneableArbitrary extends Arbitrary<number[]> {
   canShrinkWithoutContext(_value: unknown): _value is number[] {
     throw new Error('No call expected in that scenario');
   }
-  shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
+  shrink(value: number[], context?: unknown): IteratorObject<Value<number[]>> {
     if (typeof context !== 'object' || context === null || !('shrunkOnce' in context)) {
       throw new Error('Invalid context for CloneableArbitrary');
     }
     const safeContext = context as { shrunkOnce: boolean };
     if (safeContext.shrunkOnce) {
-      return Stream.nil();
+      return nil;
     }
-    return Stream.of(new Value(this.instance(), { shrunkOnce: true }));
+    return Iterator.from([new Value(this.instance(), { shrunkOnce: true })]);
   }
 }

@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
 import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
@@ -82,7 +81,9 @@ describe('LimitedShrinkArbitrary', () => {
             const { instance: mrng } = fakeRandom();
             const { instance: arbitrary, generate, shrink } = fakeArbitrary();
             generate.mockReturnValueOnce(value);
-            shrink.mockReturnValueOnce(Stream.of(...shrunkValues.map(([value, context]) => new Value(value, context))));
+            shrink.mockReturnValueOnce(
+              Iterator.from([...shrunkValues.map(([value, context]) => new Value(value, context))]),
+            );
 
             // Act
             const arb = new LimitedShrinkArbitrary(arbitrary, maxShrinks);
@@ -139,12 +140,12 @@ describe('LimitedShrinkArbitrary', () => {
             const { instance: mrng } = fakeRandom();
             const { instance: arbitrary, generate, shrink } = fakeArbitrary();
             generate.mockReturnValueOnce(value);
-            shrink.mockImplementation((): Stream<Value<any>> => {
+            shrink.mockImplementation((): IteratorObject<Value<any>> => {
               const itShrinks = shrunkValuesLevels.next();
               if (itShrinks.done) {
                 throw new Error('Not possible, only added for typings');
               }
-              return new Stream(itShrinks.value.map(([value, context]) => new Value(value, context)));
+              return itShrinks.value.map(([value, context]) => new Value(value, context));
             });
 
             // Act / Assert

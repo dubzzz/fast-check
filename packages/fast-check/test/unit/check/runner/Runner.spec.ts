@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { nil } from '../../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
@@ -6,7 +7,6 @@ import { check, assert as rAssert } from '../../../../src/check/runner/Runner.js
 import type { Random } from '../../../../src/random/generator/Random.js';
 import type { RunDetails } from '../../../../src/check/runner/reporter/RunDetails.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import { VerbosityLevel } from '../../../../src/check/runner/configuration/VerbosityLevel.js';
 import type { Property } from '../../../../src/check/property/types/Property.js';
 
@@ -16,7 +16,7 @@ describe('Runner', () => {
     it('Should throw if both reporter and asyncReporter are defined', () => {
       const p: Property<[number]> = {
         generate: () => new Value([0], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: () => {},
         run: () => null,
         runAfterEach: () => {},
@@ -26,7 +26,7 @@ describe('Runner', () => {
     it('Should not throw if reporter is specified on asynchronous properties', () => {
       const p: Property<[number]> = {
         generate: () => new Value([0], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: () => {},
         run: () => null,
         runAfterEach: () => {},
@@ -36,7 +36,7 @@ describe('Runner', () => {
     it('Should not throw if asyncReporter is specified on asynchronous properties', () => {
       const p: Property<[number]> = {
         generate: () => new Value([0], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: () => {},
         run: () => null,
         runAfterEach: () => {},
@@ -52,7 +52,7 @@ describe('Runner', () => {
           ++numCallsGenerate;
           return new Value([numCallsGenerate] as [number], undefined);
         },
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: () => {},
         run: (value: [number]) => {
           expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
@@ -75,7 +75,7 @@ describe('Runner', () => {
           ++numCallsGenerate;
           return new Value([numCallsGenerate] as [number], undefined);
         },
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: () => {},
         run: (value: [number]) => {
           expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
@@ -106,7 +106,7 @@ describe('Runner', () => {
               yield new Value<[number]>([0], undefined);
             }
           }
-          return new Stream(g());
+          return g();
         },
         runBeforeEach: () => {},
         run: () => {
@@ -134,7 +134,7 @@ describe('Runner', () => {
           let numCallsRun = 0;
           const p: Property<[number]> = {
             generate: () => new Value([numCallsGenerate++] as [number], undefined),
-            shrink: () => Stream.nil(),
+            shrink: () => nil,
             runBeforeEach: () => {},
             run: (value: [number]) => {
               ++numCallsRun;
@@ -174,7 +174,7 @@ describe('Runner', () => {
             let numPreconditionFailures = 0;
             const p: Property<[number]> = {
               generate: () => new Value([numCallsGenerate++] as [number], undefined),
-              shrink: () => Stream.nil(),
+              shrink: () => nil,
               runBeforeEach: () => {},
               run: (value: [number]) => {
                 if (value[0] === settings.onlySuccessId) return null;
@@ -227,7 +227,7 @@ describe('Runner', () => {
               ++numCallsGenerate;
               return new Value([0], undefined);
             },
-            shrink: () => Stream.nil(),
+            shrink: () => nil,
             runBeforeEach: () => {},
             run: (_value: [number]) => {
               return ++numCallsRun < num ? null : { error: new Error('error') };
@@ -253,7 +253,7 @@ describe('Runner', () => {
               ++numCallsGenerate;
               return new Value([0], undefined);
             },
-            shrink: () => Stream.nil(),
+            shrink: () => nil,
             runBeforeEach: () => {},
             run: (_value: [number]) => {
               ++numCallsRun;
@@ -276,7 +276,7 @@ describe('Runner', () => {
               generate: (rng: Random) => {
                 return new Value([rng.nextInt()], undefined);
               },
-              shrink: () => Stream.nil(),
+              shrink: () => nil,
               runBeforeEach: () => {},
               run: (value: [number]) => {
                 runOn.push(value[0]);
@@ -321,7 +321,7 @@ describe('Runner', () => {
           if (value.value[0] !== 0) {
             throw 'Not implemented';
           }
-          return Stream.of(new Value([42], undefined));
+          return Iterator.from([new Value([42], undefined)]);
         },
         runBeforeEach: () => {},
         run: (value: [number]) => {
@@ -336,7 +336,7 @@ describe('Runner', () => {
     it('Should not provide list of failures by default (no verbose)', async () => {
       const p: Property<[number]> = {
         generate: () => new Value([42], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: () => {},
         run: () => ({ error: new Error('failure') }),
         runAfterEach: () => {},
@@ -348,9 +348,7 @@ describe('Runner', () => {
       const p: Property<[number]> = {
         generate: () => new Value([42], undefined),
         shrink: (value) => {
-          return value.value[0] === 42
-            ? Stream.of(new Value([48], undefined), new Value([12], undefined))
-            : Stream.nil();
+          return value.value[0] === 42 ? Iterator.from([new Value([48], undefined), new Value([12], undefined)]) : nil;
         },
         runBeforeEach: () => {},
         run: () => ({ error: new Error('failure') }),
@@ -378,12 +376,12 @@ describe('Runner', () => {
               shrink: (value) => {
                 const depth = value.context as number;
                 if (depth <= 0) {
-                  return Stream.nil();
+                  return nil;
                 }
-                function* g(): IterableIterator<Value<[number]>> {
+                function* g(): IteratorObject<Value<[number]>> {
                   while (true) yield new Value([0], depth - 1);
                 }
-                return new Stream(g());
+                return g();
               },
               runBeforeEach: () => {},
               run: (_value: [number]) => {
@@ -418,7 +416,7 @@ describe('Runner', () => {
               return new Value([1], undefined);
             },
             shrink: (value) => {
-              return value.value[0] === 1 ? Stream.of(new Value([42], undefined)) : Stream.nil();
+              return value.value[0] === 1 ? Iterator.from([new Value([42], undefined)]) : nil;
             },
             runBeforeEach: async () => {},
             run: async (_value: [number]) => {
@@ -456,7 +454,7 @@ describe('Runner', () => {
     it('Should not timeout if no timeout defined', async () => {
       const p: Property<[number]> = {
         generate: () => new Value([1], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: async () => {},
         run: async (_value: [number]) => null,
         runAfterEach: async () => {},
@@ -468,7 +466,7 @@ describe('Runner', () => {
       const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
       const p: Property<[number]> = {
         generate: () => new Value([1], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: async () => {},
         run: async (_value: [number]) => await wait(0),
         runAfterEach: async () => {},
@@ -480,7 +478,7 @@ describe('Runner', () => {
       const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
       const p: Property<[number]> = {
         generate: () => new Value([1], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: async () => {},
         run: async (_value: [number]) => await wait(100),
         runAfterEach: async () => {},
@@ -492,7 +490,7 @@ describe('Runner', () => {
       const neverEnds = () => new Promise<null>(() => {});
       const p: Property<[number]> = {
         generate: () => new Value([1], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: async () => {},
         run: async (_value: [number]) => await neverEnds(),
         runAfterEach: async () => {},
@@ -506,21 +504,21 @@ describe('Runner', () => {
     const v2 = { a: 'Hello', b: 21 };
     const failingProperty: Property<[any, any]> = {
       generate: () => new Value([v1, v2], undefined),
-      shrink: () => Stream.nil(),
+      shrink: () => nil,
       runBeforeEach: () => {},
       run: (_v: [any, any]) => ({ error: new Error('error in failingProperty') }),
       runAfterEach: () => {},
     };
     const failingComplexProperty: Property<[any, any, any]> = {
       generate: () => new Value([[v1, v2], v2, v1], undefined),
-      shrink: () => Stream.nil(),
+      shrink: () => nil,
       runBeforeEach: () => {},
       run: (_v: [any, any, any]) => ({ error: new Error('error in failingComplexProperty') }),
       runAfterEach: () => {},
     };
     const successProperty: Property<[any, any]> = {
       generate: () => new Value([v1, v2], undefined),
-      shrink: () => Stream.nil(),
+      shrink: () => nil,
       runBeforeEach: () => {},
       run: (_v: [any, any]) => null,
       runAfterEach: () => {},
@@ -571,9 +569,7 @@ describe('Runner', () => {
           return new Value([42], undefined);
         },
         shrink: (value) => {
-          return value.value[0] === 42
-            ? Stream.of(new Value([48], undefined), new Value([12], undefined))
-            : Stream.nil();
+          return value.value[0] === 42 ? Iterator.from([new Value([48], undefined), new Value([12], undefined)]) : nil;
         },
         runBeforeEach: () => {},
         run: () => ({ error: new Error('failure') }),
@@ -615,7 +611,7 @@ describe('Runner', () => {
       const baseErrorMessage = 'Failed to run property, too many pre-condition failures encountered';
       const p: Property<[number]> = {
         generate: () => new Value([42], undefined),
-        shrink: () => Stream.nil(),
+        shrink: () => nil,
         runBeforeEach: () => {},
         run: () => new PreconditionFailure(),
         runAfterEach: () => {},

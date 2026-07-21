@@ -54,7 +54,7 @@ const TodoListCommands = fc.commands([
 
 type ApiTodoItem = { id: string; label: string; checked: boolean };
 
-const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.Stream<boolean>) => {
+const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: IteratorObject<boolean>) => {
   let lastIdx = 0;
   let allTodos = [...initialTodos];
 

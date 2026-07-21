@@ -1,7 +1,6 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import type { Stream } from '../../stream/Stream.js';
 
 /** @internal */
 function isSafeContext(context: unknown): context is { generatorContext: unknown } | { shrinkerContext: unknown } {
@@ -41,7 +40,7 @@ export class WithShrinkFromOtherArbitrary<T> extends Arbitrary<T> {
     return this.shrinkerArbitrary.canShrinkWithoutContext(value);
   }
 
-  shrink(value: T, context: unknown): Stream<Value<T>> {
+  shrink(value: T, context: unknown): IteratorObject<Value<T>> {
     if (!isSafeContext(context)) {
       return this.shrinkerArbitrary.shrink(value, undefined).map(toShrinkerValue);
     }

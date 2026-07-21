@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { nil } from '../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { func } from '../../../src/arbitrary/func.js';
 
@@ -6,7 +7,6 @@ import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js'
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols.js';
 import type { Random } from '../../../src/random/generator/Random.js';
-import { Stream } from '../../../src/stream/Stream.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
@@ -108,12 +108,12 @@ describe('func (integration)', () => {
       canShrinkWithoutContext(_value: unknown): _value is number[] {
         throw new Error('No call expected in that scenario');
       }
-      shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
+      shrink(value: number[], context?: unknown): IteratorObject<Value<number[]>> {
         const safeContext = context as { shrunkOnce: boolean };
         if (safeContext.shrunkOnce) {
-          return Stream.nil();
+          return nil;
         }
-        return Stream.of(new Value(this.instance(0, value[1] === 1), { shrunkOnce: true }));
+        return Iterator.from([new Value(this.instance(0, value[1] === 1), { shrunkOnce: true })]);
       }
     }
     await assertProduceCorrectValues(

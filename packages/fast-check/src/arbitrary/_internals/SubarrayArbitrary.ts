@@ -2,7 +2,7 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
-import { Stream } from '../../stream/Stream.js';
+import { joinAll, nil } from '../../utils/iterator.js';
 import { isSubarrayOf } from './helpers/IsSubarrayOf.js';
 import { IntegerArbitrary } from './IntegerArbitrary.js';
 
@@ -68,28 +68,26 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     return isSubarrayOf(this.originalArray, value);
   }
 
-  shrink(value: T[], context: unknown): Stream<Value<T[]>> {
+  shrink(value: T[], context: unknown): IteratorObject<Value<T[]>> {
     // shrinking one by one is not the most comprehensive
     // but allows a reasonable number of entries in the shrink
     if (value.length === 0) {
-      return Stream.nil<Value<T[]>>();
+      return nil;
     }
-    return this.lengthArb
-      .shrink(value.length, context)
-      .map((newSize) => {
+    return joinAll([
+      this.lengthArb.shrink(value.length, context).map((newSize) => {
         return new Value(
           value.slice(value.length - newSize.value), // array of length newSize.value
           newSize.context, // integer context for value newSize.value (the length)
         );
-      })
-      .join(
-        value.length > this.minLength
-          ? makeLazy(() =>
-              this.shrink(value.slice(1), undefined)
-                .filter((newValue) => this.minLength <= newValue.value.length + 1)
-                .map((newValue) => new Value([value[0], ...newValue.value], undefined)),
-            )
-          : Stream.nil<Value<T[]>>(),
-      );
+      }),
+      value.length > this.minLength
+        ? makeLazy(() =>
+            this.shrink(value.slice(1), undefined)
+              .filter((newValue) => this.minLength <= newValue.value.length + 1)
+              .map((newValue) => new Value([value[0], ...newValue.value], undefined)),
+          )
+        : nil,
+    ]);
   }
 }

@@ -31,7 +31,10 @@ interface InfiniteStreamConstraints {
  * @remarks Since 1.8.0
  * @public
  */
-function infiniteStream<T>(arb: Arbitrary<T>, constraints?: InfiniteStreamConstraints): Arbitrary<IteratorObject<T>> {
+function infiniteStream<T>(
+  arb: Arbitrary<T>,
+  constraints?: InfiniteStreamConstraints,
+): Arbitrary<IteratorObject<T, never>> {
   const history =
     constraints !== undefined && typeof constraints === 'object' && 'noHistory' in constraints
       ? !constraints.noHistory
