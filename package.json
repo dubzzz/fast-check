@@ -55,7 +55,7 @@
     "oxlint": "^1.73.0",
     "oxlint-tsgolint": "^0.24.0",
     "pkg-pr-new": "^0.0.75",
-    "prettier": "3.9.4",
+    "prettier": "3.9.6",
     "publint": "^0.3.21",
     "rolldown": "^1.1.5",
     "rolldown-plugin-dts": "^0.27.1",
