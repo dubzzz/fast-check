@@ -5,8 +5,7 @@ import { CommandsIterable } from '../../check/model/commands/CommandsIterable.js
 import { CommandWrapper } from '../../check/model/commands/CommandWrapper.js';
 import { ReplayPath } from '../../check/model/ReplayPath.js';
 import type { Random } from '../../random/generator/Random.js';
-import { makeLazy } from '../../stream/LazyIterableIterator.js';
-import { joinAll, nil } from '../../utils/iterator.js';
+import { makeLazy, joinAll, nil } from '../../utils/iterator.js';
 import { oneof } from '../oneof.js';
 import { restrictedIntegerArbitraryBuilder } from './builders/RestrictedIntegerArbitraryBuilder.js';
 

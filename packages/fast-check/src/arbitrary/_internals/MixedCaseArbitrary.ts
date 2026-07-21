@@ -2,8 +2,7 @@ import type { Random } from '../../random/generator/Random.js';
 import { bigInt } from '../bigInt.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { makeLazy } from '../../stream/LazyIterableIterator.js';
-import { joinAll } from '../../utils/iterator.js';
+import { makeLazy, joinAll } from '../../utils/iterator.js';
 import {
   applyFlagsOnChars,
   computeFlagsFromChars,

@@ -3,8 +3,7 @@ import type { WithCloneMethod } from '../../check/symbols.js';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { makeLazy } from '../../stream/LazyIterableIterator.js';
-import { joinAll } from '../../utils/iterator.js';
+import { makeLazy, joinAll } from '../../utils/iterator.js';
 
 /** @internal */
 type TupleContext = unknown[];

@@ -1,8 +1,7 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import { makeLazy } from '../../stream/LazyIterableIterator.js';
-import { joinAll, nil } from '../../utils/iterator.js';
+import { makeLazy, joinAll, nil } from '../../utils/iterator.js';
 import { isSubarrayOf } from './helpers/IsSubarrayOf.js';
 import { IntegerArbitrary } from './IntegerArbitrary.js';
 

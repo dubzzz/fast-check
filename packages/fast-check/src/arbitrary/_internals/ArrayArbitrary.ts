@@ -1,7 +1,7 @@
 import type { Random } from '../../random/generator/Random.js';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
 import { integer } from '../integer.js';
-import { makeLazy } from '../../stream/LazyIterableIterator.js';
+import { makeLazy } from '../../utils/iterator.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { CustomSetBuilder } from './interfaces/CustomSet.js';
@@ -234,7 +234,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     value: T[],
     safeContext: ArrayArbitraryContext,
     endIndex: number,
-  ): IterableIterator<[Value<T>[], unknown, number]> {
+  ): IteratorObject<[Value<T>[], unknown, number]> {
     const shrinks: IteratorObject<[Value<T>[], unknown, number]>[] = [];
     for (let index = safeContext.startIndex; index < endIndex; ++index) {
       shrinks.push(
