@@ -481,7 +481,9 @@ describe('FrequencyArbitrary', () => {
 
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockReturnValue(0);
-            warbs[0].arbitraryMeta.shrink.mockReturnValue(Iterator.from([new Value(1, undefined), new Value(42, undefined)]));
+            warbs[0].arbitraryMeta.shrink.mockReturnValue(
+              Iterator.from([new Value(1, undefined), new Value(42, undefined)]),
+            );
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, { ...constraints, withCrossShrink: true }, 'test');

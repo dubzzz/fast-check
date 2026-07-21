@@ -215,7 +215,9 @@ describe('AdapterArbitrary', () => {
             const valueABC = new Value(vABC, cABC);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeArbitrary();
             generate.mockReturnValueOnce(valueA);
-            shrink.mockReturnValueOnce(Iterator.from([valueAA, valueAB, valueAC])).mockReturnValueOnce(Iterator.from([valueABC]));
+            shrink
+              .mockReturnValueOnce(Iterator.from([valueAA, valueAB, valueAC]))
+              .mockReturnValueOnce(Iterator.from([valueABC]));
             if (adaptedA.adapted) canShrinkWithoutContext.mockReturnValueOnce(true);
             canShrinkWithoutContext.mockReturnValueOnce(canShrinkIfAdapted);
             const { instance: mrng } = fakeRandom();

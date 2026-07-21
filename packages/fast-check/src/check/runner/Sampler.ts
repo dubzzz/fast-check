@@ -32,11 +32,7 @@ function streamSample<Ts>(
   const tossedValues =
     qParams.path.length === 0
       ? toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(
-          qParams.path,
-          lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples),
-          shrink,
-        );
+      : pathWalk(qParams.path, lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples), shrink);
   return tossedValues.take(qParams.numRuns).map((s) => s.value_);
 }
 

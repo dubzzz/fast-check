@@ -173,7 +173,9 @@ describe('TupleArbitrary', () => {
       const shrinkC1 = Symbol();
       const shrinkC2 = Symbol();
       const shrinkC3 = Symbol();
-      shrinkA.mockReturnValueOnce(Iterator.from([new Value(shrinkA1 as symbol, undefined), new Value(shrinkA2, undefined)]));
+      shrinkA.mockReturnValueOnce(
+        Iterator.from([new Value(shrinkA1 as symbol, undefined), new Value(shrinkA2, undefined)]),
+      );
       shrinkB.mockReturnValueOnce(Iterator.from([new Value(shrinkB1 as symbol, undefined)]));
       shrinkC.mockReturnValueOnce(
         Iterator.from([
@@ -226,13 +228,19 @@ describe('TupleArbitrary', () => {
           .fn()
           .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));
         generateA.mockReturnValue(new Value([], undefined));
-        shrinkA.mockReturnValue(Iterator.from([...Array.from({ length: numShrinksA }).map(() => new Value([], undefined))]));
+        shrinkA.mockReturnValue(
+          Iterator.from([...Array.from({ length: numShrinksA }).map(() => new Value([], undefined))]),
+        );
         generateB.mockReturnValue(
           new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
         );
-        shrinkB.mockReturnValue(Iterator.from([...Array.from({ length: numShrinksB }).map(() => new Value([], undefined))]));
+        shrinkB.mockReturnValue(
+          Iterator.from([...Array.from({ length: numShrinksB }).map(() => new Value([], undefined))]),
+        );
         generateC.mockReturnValue(new Value([], undefined));
-        shrinkC.mockReturnValue(Iterator.from([...Array.from({ length: numShrinksC }).map(() => new Value([], undefined))]));
+        shrinkC.mockReturnValue(
+          Iterator.from([...Array.from({ length: numShrinksC }).map(() => new Value([], undefined))]),
+        );
         const { instance: mrng } = fakeRandom();
 
         // Act

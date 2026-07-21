@@ -71,11 +71,7 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
   const initialValues =
     qParams.path.length === 0
       ? toss(decoratedProperty, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(
-          qParams.path,
-          lazyToss(decoratedProperty, qParams.seed, qParams.randomType, qParams.examples),
-          shrink,
-        );
+      : pathWalk(qParams.path, lazyToss(decoratedProperty, qParams.seed, qParams.randomType, qParams.examples), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : () => nil;
   return runIt(decoratedProperty, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then(
