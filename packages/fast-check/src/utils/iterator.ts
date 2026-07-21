@@ -20,9 +20,7 @@ export function getNthOrLast<T>(it: IterableIterator<T>, nth: number): T | null 
   return last;
 }
 
-export function* joinAll<T, U, V>(
-  its: [IteratorObject<T, U, V>, ...IteratorObject<T, U, V>[]],
-): IteratorObject<T, U, V> {
+export function* joinAll<T, U, V>(its: IteratorObject<T, U, V>[]): IteratorObject<T, U, V> {
   let last!: U;
   for (const s of its) {
     let cur = s.next();
