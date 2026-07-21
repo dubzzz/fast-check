@@ -1,19 +1,15 @@
 /** @internal */
-class LazyIterableIterator<T> implements IterableIterator<T> {
-  private it?: IterableIterator<T>;
-  constructor(private readonly producer: () => IterableIterator<T>) {}
-
-  [Symbol.iterator]() {
-    if (this.it === undefined) {
-      this.it = this.producer();
-    }
-    return this.it;
+class LazyIterator<T> extends Iterator<T> {
+  private it?: IteratorObject<T>;
+  constructor(private readonly producer: () => IteratorObject<T>) {
+    super();
   }
-  next() {
+
+  next(...[value]: [] | [any]): IteratorResult<T, any> {
     if (this.it === undefined) {
       this.it = this.producer();
     }
-    return this.it.next();
+    return this.it.next(value);
   }
 }
 
@@ -24,6 +20,6 @@ class LazyIterableIterator<T> implements IterableIterator<T> {
  *
  * @internal
  */
-export function makeLazy<T>(producer: () => IterableIterator<T>): IteratorObject<T> {
-  return Iterator.from(new LazyIterableIterator(producer));
+export function makeLazy<T>(producer: () => IteratorObject<T>): IteratorObject<T> {
+  return new LazyIterator(producer);
 }
