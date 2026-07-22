@@ -616,9 +616,7 @@ async function writeToFile(
 
   // Prepare babel config (if needed)
   const babelConfigPath = path.join(specDirectory, 'babel.config.cjs');
-  const babelConfig = useWorkers
-    ? `module.exports = { presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]], };`
-    : undefined;
+  const babelConfig = `module.exports = { presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]], };`;
 
   // Write the files
   await Promise.all([
