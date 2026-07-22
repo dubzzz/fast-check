@@ -607,7 +607,6 @@ async function writeToFile(
     ...(useWorkers ? { transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'] } : {}),
     testTimeout: options.testTimeoutConfig,
     testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
-    ...(useWorkers ? { transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'] } : {}),
   };
 
   // Prepare babel config
