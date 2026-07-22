@@ -81,9 +81,7 @@ describe('LimitedShrinkArbitrary', () => {
             const { instance: mrng } = fakeRandom();
             const { instance: arbitrary, generate, shrink } = fakeArbitrary();
             generate.mockReturnValueOnce(value);
-            shrink.mockReturnValueOnce(
-              Iterator.from([...shrunkValues.map(([value, context]) => new Value(value, context))]),
-            );
+            shrink.mockReturnValueOnce(shrunkValues.map(([value, context]) => new Value(value, context)));
 
             // Act
             const arb = new LimitedShrinkArbitrary(arbitrary, maxShrinks);
