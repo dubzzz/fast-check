@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@atproto/api": "^0.20.30",
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^2.31.1",
     "@fast-check/packaged": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.13.3",
