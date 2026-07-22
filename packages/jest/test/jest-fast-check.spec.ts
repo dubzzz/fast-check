@@ -603,9 +603,8 @@ async function writeToFile(
   const jestConfigPath = path.join(specDirectory, jestConfigName);
   const jestConfig = {
     testMatch: [`<rootDir>/${specFileName}`],
-    // fast-check only ships an ES Modules bundle: it has to be transformed into CommonJS
-    // by babel-jest for Jest to be able to require it from CommonJS specs.
     transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
+    ...(useWorkers ? { transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'] } : {}),
     testTimeout: options.testTimeoutConfig,
     testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
     ...(useWorkers ? { transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'] } : {}),
