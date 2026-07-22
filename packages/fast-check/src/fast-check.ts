@@ -137,11 +137,7 @@ export { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelR
 
 export { Random } from './random/generator/Random.js';
 
-export type {
-  GlobalParameters,
-  GlobalAsyncPropertyHookFunction,
-  GlobalPropertyHookFunction,
-} from './check/runner/configuration/GlobalParameters.js';
+export type { GlobalParameters, GlobalPropertyHookFunction } from './check/runner/configuration/GlobalParameters.js';
 export {
   configureGlobal,
   readConfigureGlobal,

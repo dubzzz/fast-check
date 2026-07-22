@@ -192,10 +192,10 @@ describe('AsyncProperty', () => {
     await p.runAfterEach();
   });
   it('Should execute both global and local beforeEach hooks before the test', async () => {
-    const globalAsyncBeforeEach = vi.fn();
+    const globalBeforeEach = vi.fn();
     const prob = { beforeEachCalled: false };
     configureGlobal({
-      asyncBeforeEach: globalAsyncBeforeEach,
+      beforeEach: globalBeforeEach,
     });
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       const beforeEachCalled = prob.beforeEachCalled;
@@ -213,21 +213,7 @@ describe('AsyncProperty', () => {
     await p.runBeforeEach();
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
     await p.runAfterEach();
-    expect(globalAsyncBeforeEach).toBeCalledTimes(1);
-  });
-  it('Should use global asyncBeforeEach as default if specified', async () => {
-    const prob = { beforeEachCalled: false };
-    configureGlobal({
-      asyncBeforeEach: () => (prob.beforeEachCalled = true),
-    });
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
-      const beforeEachCalled = prob.beforeEachCalled;
-      prob.beforeEachCalled = false;
-      return beforeEachCalled;
-    });
-    await p.runBeforeEach();
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-    await p.runAfterEach();
+    expect(globalBeforeEach).toBeCalledTimes(1);
   });
   it('Should use global beforeEach as default if specified', async () => {
     const prob = { beforeEachCalled: false };
@@ -242,15 +228,6 @@ describe('AsyncProperty', () => {
     await p.runBeforeEach();
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
     await p.runAfterEach();
-  });
-  it('Should fail if both global asyncBeforeEach and beforeEach are specified', () => {
-    configureGlobal({
-      asyncBeforeEach: () => {},
-      beforeEach: () => {},
-    });
-    expect(() => asyncProperty(stubArb.single(8), async () => {})).toThrowError(
-      'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties',
-    );
   });
   it('Should execute afterEach after the test on success', async () => {
     const callOrder: string[] = [];
@@ -291,20 +268,6 @@ describe('AsyncProperty', () => {
     await p.runAfterEach();
     expect(callOrder).toEqual(['test', 'afterEach']);
   });
-  it('Should use global asyncAfterEach as default if specified', async () => {
-    const callOrder: string[] = [];
-    configureGlobal({
-      asyncAfterEach: async () => callOrder.push('globalAsyncAfterEach'),
-    });
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
-      callOrder.push('test');
-      return false;
-    });
-    await p.runBeforeEach();
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
-    await p.runAfterEach();
-    expect(callOrder).toEqual(['test', 'globalAsyncAfterEach']);
-  });
   it('Should use global afterEach as default if specified', async () => {
     const callOrder: string[] = [];
     configureGlobal({
@@ -322,7 +285,7 @@ describe('AsyncProperty', () => {
   it('Should execute both global and local afterEach hooks', async () => {
     const callOrder: string[] = [];
     configureGlobal({
-      asyncAfterEach: async () => callOrder.push('globalAsyncAfterEach'),
+      afterEach: async () => callOrder.push('globalAfterEach'),
     });
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       callOrder.push('test');
@@ -339,16 +302,7 @@ describe('AsyncProperty', () => {
     await p.runBeforeEach();
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
     await p.runAfterEach();
-    expect(callOrder).toEqual(['test', 'afterEach', 'globalAsyncAfterEach', 'after afterEach']);
-  });
-  it('Should fail if both global asyncAfterEach and afterEach are specified', () => {
-    configureGlobal({
-      asyncAfterEach: () => {},
-      afterEach: () => {},
-    });
-    expect(() => asyncProperty(stubArb.single(8), async () => {})).toThrowError(
-      'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties',
-    );
+    expect(callOrder).toEqual(['test', 'afterEach', 'globalAfterEach', 'after afterEach']);
   });
   it('should not call shrink on the arbitrary if no context and not unhandled value', () => {
     // Arrange

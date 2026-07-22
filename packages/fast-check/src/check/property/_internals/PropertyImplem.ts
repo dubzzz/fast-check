@@ -2,7 +2,7 @@ import type { Random } from '../../../random/generator/Random.js';
 import type { Arbitrary } from '../../arbitrary/definition/Arbitrary.js';
 import { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
 import { runIdToFrequency } from './ToFrequency.js';
-import type { GlobalAsyncPropertyHookFunction } from '../../runner/configuration/GlobalParameters.js';
+import type { GlobalPropertyHookFunction } from '../../runner/configuration/GlobalParameters.js';
 import { readConfigureGlobal } from '../../runner/configuration/GlobalParameters.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 import { Stream } from '../../../stream/Stream.js';
@@ -15,7 +15,7 @@ import type { PropertyWithHooks, PropertyHookFunction } from '../types/PropertyW
 
 // Default hook is a no-op
 // oxlint-disable-next-line no-empty-function
-const dummyHook: GlobalAsyncPropertyHookFunction = () => {};
+const dummyHook: GlobalPropertyHookFunction = () => {};
 
 /** @internal */
 function outputToPropertyAnswer(output: boolean | void) {
@@ -38,28 +38,16 @@ function errorToPropertyAnswer(err: unknown) {
  * @internal
  */
 export class PropertyImplem<Ts> implements PropertyWithHooks<Ts> {
-  private beforeEachHook: GlobalAsyncPropertyHookFunction;
-  private afterEachHook: GlobalAsyncPropertyHookFunction;
+  private beforeEachHook: GlobalPropertyHookFunction;
+  private afterEachHook: GlobalPropertyHookFunction;
   constructor(
     readonly arb: Arbitrary<Ts>,
     readonly predicate: (t: Ts) => Promise<boolean | void> | boolean | void,
   ) {
-    const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
+    const { beforeEach, afterEach } = readConfigureGlobal() || {};
 
-    if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
-      throw Error(
-        'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties',
-      );
-    }
-
-    if (asyncAfterEach !== undefined && afterEach !== undefined) {
-      throw Error(
-        'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties',
-      );
-    }
-
-    this.beforeEachHook = asyncBeforeEach || beforeEach || dummyHook;
-    this.afterEachHook = asyncAfterEach || afterEach || dummyHook;
+    this.beforeEachHook = beforeEach || dummyHook;
+    this.afterEachHook = afterEach || dummyHook;
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
