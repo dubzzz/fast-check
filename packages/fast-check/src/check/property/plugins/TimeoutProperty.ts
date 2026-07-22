@@ -1,5 +1,4 @@
 import type { Random } from '../../../random/generator/Random.js';
-import type { Stream } from '../../../stream/Stream.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 import type { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
 import type { PropertyFailure } from '../types/PropertyFailure.js';
@@ -34,7 +33,7 @@ export class TimeoutProperty<Ts> implements Property<Ts> {
     return this.property.generate(mrng, runId);
   }
 
-  shrink(value: Value<Ts>): Stream<Value<Ts>> {
+  shrink(value: Value<Ts>): IteratorObject<Value<Ts>> {
     return this.property.shrink(value);
   }
 

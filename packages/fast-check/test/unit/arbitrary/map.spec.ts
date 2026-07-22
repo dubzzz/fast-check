@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { nil } from '../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import type { MapConstraints } from '../../../src/arbitrary/map.js';
 import { map } from '../../../src/arbitrary/map.js';
@@ -6,7 +7,6 @@ import { map } from '../../../src/arbitrary/map.js';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import type { Random } from '../../../src/random/generator/Random.js';
-import { Stream } from '../../../src/stream/Stream.js';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
@@ -90,8 +90,8 @@ class FromKeysArbitrary<K> extends Arbitrary<K> {
   canShrinkWithoutContext(value: unknown): value is K {
     return this.sourceAsSet.has(value as K);
   }
-  shrink(_value: K, _context?: unknown): Stream<Value<K>> {
-    return Stream.nil();
+  shrink(_value: K, _context?: unknown): IteratorObject<Value<K>> {
+    return nil;
   }
 }
 
@@ -106,7 +106,7 @@ class FromValuesArbitrary<V> extends Arbitrary<V> {
   canShrinkWithoutContext(value: unknown): value is V {
     return this.source.some((v) => Object.is(v, value));
   }
-  shrink(_value: V, _context?: unknown): Stream<Value<V>> {
-    return Stream.nil();
+  shrink(_value: V, _context?: unknown): IteratorObject<Value<V>> {
+    return nil;
   }
 }

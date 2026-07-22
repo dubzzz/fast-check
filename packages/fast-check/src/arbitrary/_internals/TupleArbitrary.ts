@@ -1,10 +1,9 @@
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
 import type { WithCloneMethod } from '../../check/symbols.js';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { makeLazy } from '../../stream/LazyIterableIterator.js';
+import { makeLazy, joinAll } from '../../utils/iterator.js';
 
 /** @internal */
 type TupleContext = unknown[];
@@ -38,10 +37,10 @@ export function tupleShrink<Ts extends unknown[]>(
   arbs: ArbsArray<Ts>,
   value: Ts,
   context?: TupleContext,
-): Stream<TupleExtendedValue<Ts>> {
+): IteratorObject<TupleExtendedValue<Ts>> {
   // shrinking one by one is the not the most comprehensive
   // but allows a reasonable number of entries in the shrink
-  const shrinks: IterableIterator<TupleExtendedValue<Ts>>[] = [];
+  const shrinks: IteratorObject<TupleExtendedValue<Ts>>[] = [];
   const safeContext: TupleContext = Array.isArray(context) ? context : [];
   for (let idx = 0; idx !== arbs.length; ++idx) {
     shrinks.push(
@@ -68,7 +67,7 @@ export function tupleShrink<Ts extends unknown[]>(
       ),
     );
   }
-  return Stream.nil<TupleExtendedValue<Ts>>().join(...shrinks);
+  return joinAll(shrinks);
 }
 
 /** @internal */
@@ -111,7 +110,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     }
     return true;
   }
-  shrink(value: Ts, context?: unknown): Stream<Value<Ts>> {
+  shrink(value: Ts, context?: unknown): IteratorObject<Value<Ts>> {
     return tupleShrink(this.arbs, value, context as TupleContext | undefined);
   }
 }

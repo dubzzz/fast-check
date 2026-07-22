@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
-import { Stream } from '../../../src/stream/Stream.js';
 import { chainUntil } from '../../../src/arbitrary/chainUntil.js';
+import { nil } from '../../../src/utils/iterator.js';
 import * as stubRng from '../stubs/generators.js';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 import type { Random } from '../../../src/random/generator/Random.js';
@@ -33,7 +33,7 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
-        shrink = vi.fn().mockReturnValue(Stream.nil());
+        shrink = vi.fn().mockReturnValue(nil);
       }
 
       // Act
@@ -57,8 +57,8 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
-        shrink(): Stream<Value<number>> {
-          return Stream.nil();
+        shrink(): IteratorObject<Value<number>> {
+          return nil;
         }
       }
       const startArb = new NumArb(1);
@@ -91,8 +91,8 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
-        shrink(): Stream<Value<number>> {
-          return Stream.nil();
+        shrink(): IteratorObject<Value<number>> {
+          return nil;
         }
       }
       const chainer = (prev: number): Arbitrary<number> | undefined => {
@@ -119,8 +119,8 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
-        shrink(): Stream<Value<number>> {
-          return Stream.of(new Value(42, undefined));
+        shrink(): IteratorObject<Value<number>> {
+          return Iterator.from([new Value(42, undefined)]);
         }
       }
 
@@ -141,10 +141,10 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
-        shrink(value: number, context?: unknown): Stream<Value<number>> {
+        shrink(value: number, context?: unknown): IteratorObject<Value<number>> {
           const ctx = context as { step: number };
-          if (value - ctx.step < 0) return Stream.nil();
-          return Stream.of(new Value(value - ctx.step, { step: ctx.step + 1 }));
+          if (value - ctx.step < 0) return nil;
+          return Iterator.from([new Value(value - ctx.step, { step: ctx.step + 1 })]);
         }
       }
 
@@ -176,10 +176,10 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
-        shrink(_value: number, context?: unknown): Stream<Value<number>> {
-          if (context !== 'ctx') return Stream.nil();
-          if (this.shrinkVal === undefined) return Stream.nil();
-          return Stream.of(new Value(this.shrinkVal, 'ctx-shrunk'));
+        shrink(_value: number, context?: unknown): IteratorObject<Value<number>> {
+          if (context !== 'ctx') return nil;
+          if (this.shrinkVal === undefined) return nil;
+          return Iterator.from([new Value(this.shrinkVal, 'ctx-shrunk')]);
         }
       }
       const chainer = vi.fn((prev: number): Arbitrary<number> | undefined => {
@@ -219,13 +219,13 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is string {
           return false;
         }
-        shrink(value: string, context?: unknown): Stream<Value<string>> {
-          if (context === undefined) return Stream.nil();
+        shrink(value: string, context?: unknown): IteratorObject<Value<string>> {
+          if (context === undefined) return nil;
           const parts = value.split('-');
           const last = parts[parts.length - 1];
-          if (last === last.toLowerCase()) return Stream.nil();
+          if (last === last.toLowerCase()) return nil;
           parts[parts.length - 1] = last.toLowerCase();
-          return Stream.of(new Value(parts.join('-'), 'ctx'));
+          return Iterator.from([new Value(parts.join('-'), 'ctx')]);
         }
       }
 
@@ -275,8 +275,8 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
-        shrink(): Stream<Value<number>> {
-          return Stream.nil();
+        shrink(): IteratorObject<Value<number>> {
+          return nil;
         }
       }
 
@@ -318,11 +318,11 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
-        shrink(value: number, context?: unknown): Stream<Value<number>> {
-          if (context !== 'has-context') return Stream.nil();
-          if (value <= 0) return Stream.nil();
+        shrink(value: number, context?: unknown): IteratorObject<Value<number>> {
+          if (context !== 'has-context') return nil;
+          if (value <= 0) return nil;
           // Shrink to value - 1
-          return Stream.of(new Value(value - 1, 'has-context'));
+          return Iterator.from([new Value(value - 1, 'has-context')]);
         }
       }
 
@@ -367,13 +367,13 @@ describe('chainUntil', () => {
         canShrinkWithoutContext(_value: unknown): _value is string {
           return false;
         }
-        shrink(value: string, context?: unknown): Stream<Value<string>> {
-          if (context !== 'ctx') return Stream.nil();
+        shrink(value: string, context?: unknown): IteratorObject<Value<string>> {
+          if (context !== 'ctx') return nil;
           const parts = value.split('-');
           const last = parts[parts.length - 1];
-          if (last === last.toLowerCase()) return Stream.nil();
+          if (last === last.toLowerCase()) return nil;
           parts[parts.length - 1] = last.toLowerCase();
-          return Stream.of(new Value(parts.join('-'), 'ctx'));
+          return Iterator.from([new Value(parts.join('-'), 'ctx')]);
         }
       }
 

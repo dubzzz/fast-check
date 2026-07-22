@@ -32,6 +32,7 @@ export function* zipIterableIterators<ITs extends IterableIterator<unknown>[]>(
     yield vs.map((v) => v.value) as unknown as ZippedIterableIteratorValues<ITs>;
     nextZippedValues(its, vs);
   }
+  return undefined;
 }
 
 /** @internal */
@@ -40,6 +41,6 @@ type ZippedIterableIteratorValues<ITs extends IterableIterator<unknown>[]> = {
 };
 
 /** @internal */
-type ZippedIterableIterator<ITs extends IterableIterator<unknown>[]> = IterableIterator<
+type ZippedIterableIterator<ITs extends IterableIterator<unknown>[]> = IteratorObject<
   ZippedIterableIteratorValues<ITs>
 >;

@@ -3,7 +3,6 @@ import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
 import { noShrink } from '../../../src/arbitrary/noShrink.js';
 import * as stubRng from '../stubs/generators.js';
-import type { Stream } from '../../../src/stream/Stream.js';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
@@ -63,7 +62,7 @@ describe('noShrink', () => {
       canShrinkWithoutContext(_value: unknown): _value is any {
         throw new Error('Not implemented.');
       }
-      shrink(): Stream<Value<any>> {
+      shrink(): IteratorObject<Value<any>> {
         throw new Error('Not implemented.');
       }
     }
@@ -88,7 +87,7 @@ describe('noShrink', () => {
         canShrinkWithoutContext(_value: unknown): _value is any {
           throw new Error('Not implemented.');
         }
-        shrink(): Stream<Value<any>> {
+        shrink(): IteratorObject<Value<any>> {
           throw new Error('Not implemented.');
         }
       }

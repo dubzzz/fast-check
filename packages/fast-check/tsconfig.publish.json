@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig.publish.json",
   "compilerOptions": {
-    "outDir": "lib/"
+    "outDir": "lib/",
+    "target": "es2025",
+    "lib": ["es2025"]
   },
   "include": ["src/"]
 }

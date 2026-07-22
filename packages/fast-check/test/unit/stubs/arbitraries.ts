@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { nil } from '../../../src/utils/iterator.js';
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import type { Random } from '../../../src/random/generator/Random.js';
-import { Stream } from '../../../src/stream/Stream.js';
 
 /**
  * CounterArbitrary
@@ -22,8 +22,8 @@ class CounterArbitrary extends Arbitrary<number> {
   canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
   }
-  shrink(_value: number, _context: unknown): Stream<Value<number>> {
-    return Stream.nil();
+  shrink(_value: number, _context: unknown): IteratorObject<Value<number>> {
+    return nil;
   }
 }
 
@@ -42,8 +42,8 @@ class ForwardArbitrary extends Arbitrary<number> {
   canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
   }
-  shrink(_value: number, _context: unknown): Stream<Value<number>> {
-    return Stream.nil();
+  shrink(_value: number, _context: unknown): IteratorObject<Value<number>> {
+    return nil;
   }
 }
 
@@ -66,8 +66,8 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
   canShrinkWithoutContext(_value: unknown): _value is number[] {
     return false;
   }
-  shrink(_value: number[], _context: unknown): Stream<Value<number[]>> {
-    return Stream.nil();
+  shrink(_value: number[], _context: unknown): IteratorObject<Value<number[]>> {
+    return nil;
   }
 }
 
@@ -95,8 +95,8 @@ class SingleUseArbitrary<T> extends Arbitrary<T> {
   canShrinkWithoutContext(_value: unknown): _value is T {
     return false;
   }
-  shrink(_value: T, _context: unknown): Stream<Value<T>> {
-    return Stream.nil();
+  shrink(_value: T, _context: unknown): IteratorObject<Value<T>> {
+    return nil;
   }
 }
 

@@ -2,8 +2,8 @@
   "extends": "../../tsconfig.publish.types.json",
   "compilerOptions": {
     "outDir": "lib/types/",
-    "target": "es2025",
-    "lib": ["es2025"]
+    "target": "esnext",
+    "lib": ["esnext"]
   },
   "include": ["src/"]
 }

@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import { nil } from '../../utils/iterator.js';
 
 /** @internal */
 export type AdapterOutput<T> = { adapted: boolean; value: T };
@@ -39,10 +39,10 @@ class AdapterArbitrary<T> extends Arbitrary<T> {
   canShrinkWithoutContext(value: unknown): value is T {
     return this.sourceArb.canShrinkWithoutContext(value) && !this.adapter(value).adapted;
   }
-  shrink(value: T, context: unknown): Stream<Value<T>> {
+  shrink(value: T, context: unknown): IteratorObject<Value<T>> {
     if (context === AdaptedValue) {
       if (!this.sourceArb.canShrinkWithoutContext(value)) {
-        return Stream.nil();
+        return nil;
       }
       return this.sourceArb.shrink(value, undefined).map(this.adaptValue);
     }

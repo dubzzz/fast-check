@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
+import { nil } from '../../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { cloneIfNeeded, cloneMethod, hasCloneMethod } from '../../../../src/check/symbols.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
@@ -31,7 +31,7 @@ describe('StreamArbitrary', () => {
           const out = arb.generate(mrng, biasFactor);
 
           // Assert
-          expect(out.value).toBeInstanceOf(Stream);
+          expect(out.value).toBeInstanceOf(Iterator);
           expect(out.hasToBeCloned).toBe(true);
           expect(hasCloneMethod(out.value)).toBe(true);
         }),
@@ -217,7 +217,7 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should create independent Stream even in terms of toString', async () =>
+    it('should create independent Stream', async () =>
       await fc.assert(
         fc.asyncProperty(fc.boolean(), (history) => {
           // Arrange
@@ -239,34 +239,41 @@ describe('StreamArbitrary', () => {
           const stream2 = out.value;
           const values1 = [...stream1.take(2)];
           const values2 = [...stream2.take(3)];
-          const values1Bis = [...stream1.take(2)];
 
           // Assert
-          expect(values1).toEqual([0, 1]);
+          const expectedFromStream1 = [0, 1];
+          expect(values1).toEqual(expectedFromStream1);
+          const expectedFromStream2 = [2, 3, 4];
           expect(values2).toEqual([2, 3, 4]);
-          expect(values1Bis).toEqual([5, 6]);
           const stream1String = String(stream1);
           const stream2String = String(stream2);
-          [0, 1, 5, 6].forEach((v) => {
-            expect(stream2String).not.toMatch(`\\<${v}\\>`);
-          });
-          [2, 3, 4].forEach((v) => {
-            expect(stream1String).not.toMatch(`\\<${v}\\>`);
-          });
-          expect(generate).toHaveBeenCalledTimes(7);
+          for (const v of expectedFromStream1) {
+            expect(stream2String).not.toMatch(`<${v}>`);
+            if (history) {
+              expect(stream1String).toMatch(`<${v}>`);
+            }
+          }
+          for (const v of expectedFromStream2) {
+            expect(stream1String).not.toMatch(`<${v}>`);
+            if (history) {
+              expect(stream2String).toMatch(`<${v}>`);
+            }
+          }
+          expect(generate).toHaveBeenCalledTimes(expectedFromStream1.length + expectedFromStream2.length);
         }),
       ));
   });
 
   describe('canShrinkWithoutContext', () => {
-    function* infiniteG() {
+    function* infiniteG(): IteratorObject<number> {
       yield 1;
+      return undefined;
     }
     it.each`
-      data                         | description
-      ${Stream.nil()}              | ${'empty stream'}
-      ${Stream.of(1, 5, 6, 74, 4)} | ${'finite stream'}
-      ${new Stream(infiniteG())}   | ${'infinite stream'}
+      data                               | description
+      ${nil}                             | ${'empty stream'}
+      ${Iterator.from([1, 5, 6, 74, 4])} | ${'finite stream'}
+      ${infiniteG()}                     | ${'infinite stream'}
     `('should return false for any Stream whatever the size ($description)', ({ data }) => {
       // Arrange
       const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
@@ -326,12 +333,12 @@ describe('StreamArbitrary', () => {
 describe('StreamArbitrary (integration)', () => {
   const sourceArb = new FakeIntegerArbitrary();
 
-  const isEqual = (s1: Stream<number>, s2: Stream<number>) => {
+  const isEqual = (s1: IteratorObject<number>, s2: IteratorObject<number>) => {
     expect([...cloneIfNeeded(s1).take(10)]).toEqual([...cloneIfNeeded(s2).take(10)]);
   };
 
-  const isCorrect = (value: Stream<number>) =>
-    value instanceof Stream && [...value.take(10)].every((v) => sourceArb.canShrinkWithoutContext(v));
+  const isCorrect = (value: IteratorObject<number>) =>
+    value instanceof Iterator && [...value.take(10)].every((v) => sourceArb.canShrinkWithoutContext(v));
 
   const streamBuilder = () => new StreamArbitrary(sourceArb, true);
 
