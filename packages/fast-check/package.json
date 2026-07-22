@@ -3,30 +3,17 @@
   "version": "4.9.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "module",
-  "main": "lib/fast-check.js",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "require": {
-        "types": "./lib/cjs/fast-check.d.ts",
-        "default": "./lib/cjs/fast-check.js"
-      },
-      "import": {
-        "types": "./lib/fast-check.d.ts",
-        "default": "./lib/fast-check.js"
-      }
-    }
+    ".": "./lib/fast-check.js"
   },
-  "module": "lib/fast-check.js",
-  "types": "lib/fast-check.d.ts",
   "files": [
     "lib"
   ],
   "sideEffects": false,
   "scripts": {
-    "build:post-build": "cp lib/*.d.ts lib/cjs/ && cp package.cjs-template.json lib/cjs/package.json",
-    "build": "rolldown -c && pnpm run build:post-build",
-    "build-ci": "rolldown -c && pnpm run build:post-build",
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
     "typecheck": "tsc --noEmit",
     "test-bundle": "for f in test-bundle/*.mjs test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && node \"$f\" || exit 1; done",
     "test-legacy-bundle": "nvs add 22.11.0 && for f in test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && $(nvs which 22.11.0) \"$f\" || exit 1; done",

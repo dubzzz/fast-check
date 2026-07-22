@@ -444,9 +444,8 @@ jobs:
           # Latest version of TypeScript
           - 'latest'
           # Various intermediate versions of Typescript (if any required)
-          - '5.8' # First version supporting require(esm)
           # Minimal requirement for TypeScript
-          - '5.7'
+          - '5.8'
           # Other release channels for TypeScript
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
