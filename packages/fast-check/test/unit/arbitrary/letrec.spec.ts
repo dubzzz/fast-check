@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { letrec } from '../../../src/arbitrary/letrec.js';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary.js';
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
-import { Stream } from '../../../src/stream/Stream.js';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
 import {
@@ -282,7 +281,7 @@ describe('letrec', () => {
       // Arrange
       const expectedValue = Symbol();
       const expectedContext = Symbol();
-      const expectedStream = Stream.of(new Value(Symbol(), undefined));
+      const expectedStream = Iterator.from([new Value(Symbol(), undefined)]);
       const { instance: simpleArb, shrink } = fakeArbitrary();
       shrink.mockReturnValueOnce(expectedStream);
       const { arb1 } = letrec((tie) => {

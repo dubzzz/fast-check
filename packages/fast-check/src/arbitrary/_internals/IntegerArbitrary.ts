@@ -1,7 +1,6 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
 import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange.js';
 import { shrinkInteger } from './helpers/ShrinkInteger.js';
 
@@ -41,7 +40,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
     );
   }
 
-  shrink(current: number, context?: unknown): Stream<Value<number>> {
+  shrink(current: number, context?: unknown): IteratorObject<Value<number>> {
     if (!IntegerArbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it
@@ -56,7 +55,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
       // Last chance try...
       // context is set to undefined, so that shrink will restart
       // without any assumptions in case our try find yet another bug
-      return Stream.of(new Value(context, undefined));
+      return Iterator.from([new Value(context, undefined)]);
     }
     // Normal shrink process
     return shrinkInteger(current, context, false);

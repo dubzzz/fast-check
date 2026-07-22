@@ -1,7 +1,7 @@
 import type { Random } from '../random/generator/Random.js';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
-import { Stream } from '../stream/Stream.js';
+import { nil } from '../utils/iterator.js';
 
 /** @internal */
 type ChainUntilEntry<T> = {
@@ -68,14 +68,14 @@ class ChainUntilArbitrary<T> extends Arbitrary<T> {
     return false;
   }
 
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
+  shrink(value: T, context?: unknown): IteratorObject<Value<T>> {
     if (!this.isSafeContext(context)) {
-      return Stream.nil();
+      return nil;
     }
-    return new Stream(this.shrinkIterator(context));
+    return this.shrinkIterator(context);
   }
 
-  private *shrinkIterator(context: ChainUntilArbitraryContext<T>): IterableIterator<Value<T>> {
+  private *shrinkIterator(context: ChainUntilArbitraryContext<T>): IteratorObject<Value<T>> {
     const { entries, currentShrinkLevel, biasFactor } = context;
 
     for (let level = currentShrinkLevel; level < entries.length; ++level) {
@@ -122,6 +122,7 @@ class ChainUntilArbitrary<T> extends Arbitrary<T> {
         yield new Value(lastEntry.value, newContext);
       }
     }
+    return undefined;
   }
 
   private isSafeContext(context: unknown): context is ChainUntilArbitraryContext<T> {

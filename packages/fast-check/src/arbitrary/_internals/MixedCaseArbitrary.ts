@@ -1,9 +1,8 @@
 import type { Random } from '../../random/generator/Random.js';
-import type { Stream } from '../../stream/Stream.js';
 import { bigInt } from '../bigInt.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { makeLazy } from '../../stream/LazyIterableIterator.js';
+import { makeLazy, joinAll } from '../../utils/iterator.js';
 import {
   applyFlagsOnChars,
   computeFlagsFromChars,
@@ -66,7 +65,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
         this.stringArb.canShrinkWithoutContext(value);
   }
 
-  shrink(value: string, context?: unknown): Stream<Value<string>> {
+  shrink(value: string, context?: unknown): IteratorObject<Value<string>> {
     let contextSafe: MixedCaseArbitraryContext;
     if (context !== undefined) {
       contextSafe = context as MixedCaseArbitraryContext;
@@ -95,9 +94,8 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
     }
     const rawString = contextSafe.rawString;
     const flags = contextSafe.flags;
-    return this.stringArb
-      .shrink(rawString, contextSafe.rawStringContext)
-      .map((nRawStringValue) => {
+    return joinAll([
+      this.stringArb.shrink(rawString, contextSafe.rawStringContext).map((nRawStringValue) => {
         const nChars = [...nRawStringValue.value];
         const nTogglePositions = computeTogglePositions(nChars, this.toggleCase);
         const nFlags = computeNextFlags(flags, nTogglePositions.length);
@@ -107,22 +105,21 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
         // Remark: Value nFlags can be attached to a context equal to undefined
         // as `canShrinkWithoutContext(nFlags) === true` for the bigint arbitrary
         return new Value(nChars.join(''), this.buildContextFor(nRawStringValue, new Value(nFlags, undefined)));
-      })
-      .join(
-        makeLazy(() => {
-          const chars = [...rawString];
-          const togglePositions = computeTogglePositions(chars, this.toggleCase);
-          return bigInt(0n, (1n << BigInt(togglePositions.length)) - 1n)
-            .shrink(flags, contextSafe.flagsContext)
-            .map((nFlagsValue) => {
-              const nChars = chars.slice(); // cloning chars
-              applyFlagsOnChars(nChars, nFlagsValue.value, togglePositions, this.toggleCase);
-              return new Value(
-                nChars.join(''),
-                this.buildContextFor(new Value(rawString, contextSafe.rawStringContext), nFlagsValue),
-              );
-            });
-        }),
-      );
+      }),
+      makeLazy(() => {
+        const chars = [...rawString];
+        const togglePositions = computeTogglePositions(chars, this.toggleCase);
+        return bigInt(0n, (1n << BigInt(togglePositions.length)) - 1n)
+          .shrink(flags, contextSafe.flagsContext)
+          .map((nFlagsValue) => {
+            const nChars = chars.slice(); // cloning chars
+            applyFlagsOnChars(nChars, nFlagsValue.value, togglePositions, this.toggleCase);
+            return new Value(
+              nChars.join(''),
+              this.buildContextFor(new Value(rawString, contextSafe.rawStringContext), nFlagsValue),
+            );
+          });
+      }),
+    ]);
   }
 }

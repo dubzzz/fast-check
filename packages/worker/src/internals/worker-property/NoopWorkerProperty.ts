@@ -1,4 +1,4 @@
-import type { PropertyWithHooks, Value, Stream, PreconditionFailure, PropertyFailure } from 'fast-check';
+import type { PropertyWithHooks, Value, PreconditionFailure, PropertyFailure } from 'fast-check';
 import type { WorkerProperty } from '../SharedTypes.js';
 
 /**
@@ -16,7 +16,7 @@ export class NoopWorkerProperty<Ts> implements WorkerProperty<Ts> {
   generate(): Value<Ts> {
     throw new Error('Method not implemented.');
   }
-  shrink(): Stream<Value<Ts>> {
+  shrink(): IteratorObject<Value<Ts>> {
     throw new Error('Method not implemented.');
   }
   run(): Promise<PreconditionFailure | PropertyFailure | null> {

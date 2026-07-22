@@ -5,7 +5,7 @@ import { runIdToFrequency } from './ToFrequency.js';
 import type { GlobalAsyncPropertyHookFunction } from '../../runner/configuration/GlobalParameters.js';
 import { readConfigureGlobal } from '../../runner/configuration/GlobalParameters.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
-import { Stream } from '../../../stream/Stream.js';
+import { nil } from '../../../utils/iterator.js';
 import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
@@ -67,11 +67,11 @@ export class PropertyImplem<Ts> implements PropertyWithHooks<Ts> {
     return noUndefinedAsContext(value);
   }
 
-  shrink(value: Value<Ts>): Stream<Value<Ts>> {
+  shrink(value: Value<Ts>): IteratorObject<Value<Ts>> {
     if (value.context === undefined && !this.arb.canShrinkWithoutContext(value.value_)) {
       // `undefined` can only be coming from values derived from examples provided by the user
       // context set to `undefined` are automatically replaced by `UndefinedContextPlaceholder` in generate
-      return Stream.nil();
+      return nil;
     }
     const safeContext = value.context !== UndefinedContextPlaceholder ? value.context : undefined;
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);

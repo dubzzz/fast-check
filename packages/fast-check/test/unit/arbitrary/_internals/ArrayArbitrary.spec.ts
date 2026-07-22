@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import { nil } from '../../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { mersenne } from 'pure-rand/generator/mersenne';
 
@@ -6,7 +7,6 @@ import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitr
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { MaxLengthUpperBound } from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
 import type { CustomSet } from '../../../../src/arbitrary/_internals/interfaces/CustomSet.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols.js';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Random } from '../../../../src/random/generator/Random.js';
@@ -633,14 +633,14 @@ class CloneableArbitrary extends Arbitrary<number[]> {
   canShrinkWithoutContext(_value: unknown): _value is number[] {
     throw new Error('No call expected in that scenario');
   }
-  shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
+  shrink(value: number[], context?: unknown): IteratorObject<Value<number[]>> {
     if (typeof context !== 'object' || context === null || !('shrunkOnce' in context)) {
       throw new Error('Invalid context for CloneableArbitrary');
     }
     const safeContext = context as { shrunkOnce: boolean };
     if (safeContext.shrunkOnce) {
-      return Stream.nil();
+      return nil;
     }
-    return Stream.of(new Value(this.instance(), { shrunkOnce: true }));
+    return Iterator.from([new Value(this.instance(), { shrunkOnce: true })]);
   }
 }

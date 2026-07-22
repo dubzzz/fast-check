@@ -1,7 +1,7 @@
 import type { Value } from '../check/arbitrary/definition/Value.js';
 import type { Random } from '../random/generator/Random.js';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { Stream } from '../stream/Stream.js';
+import { nil } from '../utils/iterator.js';
 
 const stableObjectGetPrototypeOf = Object.getPrototypeOf;
 
@@ -16,8 +16,8 @@ class NoShrinkArbitrary<T> extends Arbitrary<T> {
   canShrinkWithoutContext(value: unknown): value is T {
     return this.arb.canShrinkWithoutContext(value);
   }
-  shrink(_value: T, _context?: unknown): Stream<Value<T>> {
-    return Stream.nil();
+  shrink(_value: T, _context?: unknown): IteratorObject<Value<T>> {
+    return nil;
   }
 }
 

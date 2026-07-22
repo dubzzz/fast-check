@@ -1,5 +1,3 @@
-import type { Stream } from '../../../stream/Stream.js';
-import { stream } from '../../../stream/Stream.js';
 import { Value } from '../../../check/arbitrary/definition/Value.js';
 
 /**
@@ -14,9 +12,9 @@ function halveBigInt(n: bigint): bigint {
  * Compute shrunk values to move from current to target
  * @internal
  */
-export function shrinkBigInt(current: bigint, target: bigint, tryTargetAsap: boolean): Stream<Value<bigint>> {
+export function shrinkBigInt(current: bigint, target: bigint, tryTargetAsap: boolean): IteratorObject<Value<bigint>> {
   const realGap = current - target;
-  function* shrinkDecr(): IterableIterator<Value<bigint>> {
+  function* shrinkDecr(): IteratorObject<Value<bigint>> {
     let previous: bigint | undefined = tryTargetAsap ? undefined : target;
     const gap = tryTargetAsap ? realGap : halveBigInt(realGap);
     for (let toremove = gap; toremove > 0; toremove = halveBigInt(toremove)) {
@@ -24,8 +22,9 @@ export function shrinkBigInt(current: bigint, target: bigint, tryTargetAsap: boo
       yield new Value(next, previous); // previous indicates the last passing value
       previous = next;
     }
+    return undefined;
   }
-  function* shrinkIncr(): IterableIterator<Value<bigint>> {
+  function* shrinkIncr(): IteratorObject<Value<bigint>> {
     let previous: bigint | undefined = tryTargetAsap ? undefined : target;
     const gap = tryTargetAsap ? realGap : halveBigInt(realGap);
     for (let toremove = gap; toremove < 0; toremove = halveBigInt(toremove)) {
@@ -33,6 +32,7 @@ export function shrinkBigInt(current: bigint, target: bigint, tryTargetAsap: boo
       yield new Value(next, previous); // previous indicates the last passing value
       previous = next;
     }
+    return undefined;
   }
-  return realGap > 0 ? stream(shrinkDecr()) : stream(shrinkIncr());
+  return realGap > 0 ? shrinkDecr() : shrinkIncr();
 }

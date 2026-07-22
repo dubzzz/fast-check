@@ -1,5 +1,5 @@
 import type { Value } from '../../arbitrary/definition/Value.js';
-import type { Stream } from '../../../stream/Stream.js';
+import { getNthOrLast } from '../../../utils/iterator.js';
 
 /** @internal */
 function produce<Ts>(producer: () => Value<Ts>): Value<Ts> {
@@ -9,10 +9,10 @@ function produce<Ts>(producer: () => Value<Ts>): Value<Ts> {
 /** @internal */
 export function pathWalk<Ts>(
   path: string,
-  initialProducers: Stream<() => Value<Ts>>,
-  shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
-): Stream<Value<Ts>> {
-  const producers: Stream<() => Value<Ts>> = initialProducers;
+  initialProducers: IteratorObject<() => Value<Ts>>,
+  shrink: (value: Value<Ts>) => IteratorObject<Value<Ts>>,
+): IteratorObject<Value<Ts>> {
+  const producers: IteratorObject<() => Value<Ts>> = initialProducers;
   const segments: number[] = path.split(':').map((text: string) => +text);
   if (segments.length === 0) {
     return producers.map(produce);
@@ -20,9 +20,9 @@ export function pathWalk<Ts>(
   if (!segments.every((v) => !Number.isNaN(v))) {
     throw new Error(`Unable to replay, got invalid path=${path}`);
   }
-  let values: Stream<Value<Ts>> = producers.drop(segments[0]).map(produce);
+  let values: IteratorObject<Value<Ts>> = producers.drop(segments[0]).map(produce);
   for (const s of segments.slice(1)) {
-    const valueToShrink = values.getNthOrLast(0);
+    const valueToShrink = getNthOrLast(values, 0);
     if (valueToShrink === null) {
       throw new Error(`Unable to replay, got wrong path=${path}`);
     }
