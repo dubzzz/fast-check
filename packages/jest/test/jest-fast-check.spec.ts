@@ -603,18 +603,13 @@ async function writeToFile(
   const jestConfigPath = path.join(specDirectory, jestConfigName);
   const jestConfig = {
     testMatch: [`<rootDir>/${specFileName}`],
-    transform: {},
+    transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
+    ...(useWorkers ? { transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'] } : {}),
     testTimeout: options.testTimeoutConfig,
     testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
-    ...(useWorkers
-      ? {
-          transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
-          transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'],
-        }
-      : {}),
   };
 
-  // Prepare babel config (if needed)
+  // Prepare babel config
   const babelConfigPath = path.join(specDirectory, 'babel.config.cjs');
   const babelConfig = `module.exports = { presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]], };`;
 
