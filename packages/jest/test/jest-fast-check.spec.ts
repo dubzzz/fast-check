@@ -603,18 +603,15 @@ async function writeToFile(
   const jestConfigPath = path.join(specDirectory, jestConfigName);
   const jestConfig = {
     testMatch: [`<rootDir>/${specFileName}`],
-    transform: {},
+    // fast-check only ships an ES Modules bundle: it has to be transformed into CommonJS
+    // by babel-jest for Jest to be able to require it from CommonJS specs.
+    transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
     testTimeout: options.testTimeoutConfig,
     testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
-    ...(useWorkers
-      ? {
-          transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
-          transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'],
-        }
-      : {}),
+    ...(useWorkers ? { transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'] } : {}),
   };
 
-  // Prepare babel config (if needed)
+  // Prepare babel config
   const babelConfigPath = path.join(specDirectory, 'babel.config.cjs');
   const babelConfig = `module.exports = { presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]], };`;
 
