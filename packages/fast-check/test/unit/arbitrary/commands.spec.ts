@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { getNthOrLast, nil } from '../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { commands } from '../../../src/arbitrary/commands.js';
 
@@ -7,7 +8,6 @@ import type { Command } from '../../../src/check/model/command/Command.js';
 import { Random } from '../../../src/random/generator/Random.js';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
-import { Stream } from '../../../src/stream/Stream.js';
 import { tuple } from '../../../src/arbitrary/tuple.js';
 import { nat } from '../../../src/arbitrary/nat.js';
 import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers.js';
@@ -180,16 +180,16 @@ describe('commands (integration)', () => {
 
           // Traverse the shrink tree in order to detect already seen ids
           while (currentValue !== null) {
-            currentValue = manyArbsIncludingCommandsOne
-              .shrink(currentValue.value_, currentValue.context)
-              .map((nextValue) => {
+            currentValue = getNthOrLast(
+              manyArbsIncludingCommandsOne.shrink(currentValue.value_, currentValue.context).map((nextValue) => {
                 // Check nothing starting for the next one
                 assertCommandsNotStarted(nextValue);
                 // Start everything: not supposed to impact any other shrinkable
                 startCommands(nextValue);
                 return nextValue;
-              })
-              .getNthOrLast(it.next().value);
+              }),
+              it.next().value,
+            );
           }
         },
       ),
@@ -216,9 +216,8 @@ describe('commands (integration)', () => {
           const extractIdRegex = /^custom\((\d+)\)$/;
           while (currentValue !== null) {
             const currentItems = [...currentValue.value_].map((c) => +extractIdRegex.exec(c.toString())![1]);
-            currentValue = commandsArb
-              .shrink(currentValue.value_, currentValue.context)
-              .map((nextValue) => {
+            currentValue = getNthOrLast(
+              commandsArb.shrink(currentValue.value_, currentValue.context).map((nextValue) => {
                 // Run all commands of nextShrinkable
                 simulateCommands(nextValue.value_);
                 // Check nextShrinkable is strictly smaller than current one
@@ -226,8 +225,9 @@ describe('commands (integration)', () => {
                 expect(isStrictlySmallerArray(nextItems, currentItems)).toBe(true);
                 // Next is eligible for shrinking
                 return nextValue;
-              })
-              .getNthOrLast(it.next().value);
+              }),
+              it.next().value,
+            );
           }
         },
       ),
@@ -305,8 +305,8 @@ class FakeConstant extends Arbitrary<Cmd> {
   canShrinkWithoutContext(_value: unknown): _value is Cmd {
     return false;
   }
-  shrink(): Stream<Value<Cmd>> {
-    return Stream.nil();
+  shrink(): IteratorObject<Value<Cmd>> {
+    return nil;
   }
 }
 

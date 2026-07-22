@@ -18,8 +18,8 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         canShrinkWithoutContext(_value: unknown): _value is any {
           return false;
         }
-        shrink(): fc.Stream<fc.Value<any>> {
-          return fc.Stream.nil();
+        shrink(): IteratorObject<fc.Value<any>> {
+          return Iterator.from([]);
         }
       })();
     it('normal property', async () => {

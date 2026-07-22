@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import { nil } from '../../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { BigIntArbitrary } from '../../../../src/arbitrary/_internals/BigIntArbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
@@ -11,7 +12,6 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from '../__test-helpers__/ArbitraryAssertions.js';
 import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 
 import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange.js';
 import * as ShrinkBigIntMock from '../../../../src/arbitrary/_internals/helpers/ShrinkBigInt.js';
@@ -187,7 +187,7 @@ describe('BigIntArbitrary', () => {
         fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.bigInt(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => Number(v1 - v2));
-          const expectedShrinks = Stream.nil<Value<bigint>>();
+          const expectedShrinks = nil;
           const shrinkBigInt = vi.spyOn(ShrinkBigIntMock, 'shrinkBigInt');
           shrinkBigInt.mockReturnValueOnce(expectedShrinks);
 

@@ -3,12 +3,12 @@ import * as fc from 'fast-check';
 
 import { SourceValuesIterator } from '../../../../src/check/runner/SourceValuesIterator.js';
 
-function iota() {
+function iota(): IteratorObject<number> {
   function* g() {
     let idx = 0;
     while (true) yield idx++;
   }
-  return new fc.Stream(g());
+  return g();
 }
 function iotaN(n: number) {
   return iota().take(n);

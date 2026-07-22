@@ -50,11 +50,11 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
       canShrinkWithoutContext(_value: unknown): _value is number {
         return false;
       }
-      shrink(value: number): fc.Stream<fc.Value<number>> {
+      shrink(value: number): IteratorObject<fc.Value<number>> {
         if (value <= -maxDepthForArrays) {
-          return fc.Stream.nil();
+          return Iterator.from([]);
         }
-        return fc.Stream.of(new fc.Value(value - 1, undefined));
+        return Iterator.from([new fc.Value(value - 1, undefined)]);
       }
     }
 

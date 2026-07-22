@@ -1,4 +1,5 @@
 import { expect } from 'vitest';
+import { getNthOrLast } from '../../../../src/utils/iterator.js';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
@@ -65,8 +66,8 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
           while (g1 !== null && g2 !== null) {
             assertEquality(isEqual, g1.value, g2.value, extraParameters);
             const pos = shrinkPath.next().value;
-            g1 = arb.shrink(g1.value_, g1.context).getNthOrLast(pos);
-            g2 = arb.shrink(g2.value_, g2.context).getNthOrLast(pos);
+            g1 = getNthOrLast(arb.shrink(g1.value_, g1.context), pos);
+            g2 = getNthOrLast(arb.shrink(g2.value_, g2.context), pos);
           }
           expect(g1).toBe(null);
           expect(g2).toBe(null);
@@ -107,7 +108,7 @@ export function assertProduceCorrectValues<T, U = never>(
           while (g !== null) {
             assertCorrectness(isCorrect, g.value, extraParameters, arb);
             const pos = shrinkPath.next().value;
-            g = arb.shrink(g.value, g.context).getNthOrLast(pos);
+            g = getNthOrLast(arb.shrink(g.value, g.context), pos);
           }
           expect(g).toBe(null);
         },

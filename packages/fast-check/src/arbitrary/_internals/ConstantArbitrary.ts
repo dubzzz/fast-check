@@ -1,5 +1,5 @@
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import { nil } from '../../utils/iterator.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod, hasCloneMethod } from '../../check/symbols.js';
@@ -61,10 +61,10 @@ export class ConstantArbitrary<T> extends Arbitrary<T> {
     }
     return this.fastValues.has(value);
   }
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
+  shrink(value: T, context?: unknown): IteratorObject<Value<T>> {
     if (context === 0 || Object.is(value, this.values[0])) {
-      return Stream.nil();
+      return nil;
     }
-    return Stream.of(new Value(this.values[0], 0));
+    return Iterator.from([new Value(this.values[0], 0)]);
   }
 }

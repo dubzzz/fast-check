@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { getNthOrLast } from '../../../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { shrinkInteger } from '../../../../../src/arbitrary/_internals/helpers/ShrinkInteger.js';
 
@@ -89,7 +90,7 @@ describe('shrinkInteger', () => {
         const expectedFirstContext = tryAsap ? undefined : target;
 
         // Act
-        const first = shrinkInteger(current, target, tryAsap).getNthOrLast(0);
+        const first = getNthOrLast(shrinkInteger(current, target, tryAsap), 0);
 
         // Assert
         if (first !== null) {

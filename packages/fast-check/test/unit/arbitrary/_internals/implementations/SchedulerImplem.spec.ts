@@ -2381,7 +2381,7 @@ describe('SchedulerImplem', () => {
 
 // Helpers
 
-function buildSeededNextTaskIndex(seeds: fc.Stream<number>, nextTaskIndexLengths: number[] = []) {
+function buildSeededNextTaskIndex(seeds: IteratorObject<number>, nextTaskIndexLengths: number[] = []) {
   const nextTaskIndex = vi.fn().mockImplementation((scheduledTasks: ScheduledTask<unknown>[]) => {
     const seed = seeds.next();
     if (seed.done) {

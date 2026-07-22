@@ -3,7 +3,6 @@ import type { Random } from '../../../random/generator/Random.js';
 import { stringify } from '../../../utils/stringify.js';
 import { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
-import type { Stream } from '../../../stream/Stream.js';
 
 /** @internal */
 function fromSyncCached<Ts>(
@@ -34,7 +33,7 @@ export class IgnoreEqualValuesProperty<Ts> implements Property<Ts> {
     return this.property.generate(mrng, runId);
   }
 
-  shrink(value: Value<Ts>): Stream<Value<Ts>> {
+  shrink(value: Value<Ts>): IteratorObject<Value<Ts>> {
     return this.property.shrink(value);
   }
 

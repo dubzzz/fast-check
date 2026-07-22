@@ -1,5 +1,5 @@
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import { joinAll, nil } from '../../utils/iterator.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { DepthContext, DepthIdentifier } from './helpers/DepthContext.js';
@@ -71,7 +71,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     return this.canShrinkWithoutContextIndex(value) !== -1;
   }
 
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
+  shrink(value: T, context?: unknown): IteratorObject<Value<T>> {
     if (context !== undefined) {
       const safeContext = context as _FrequencyArbitraryContext<T>;
       const selectedIndex = safeContext.selectedIndex;
@@ -89,35 +89,36 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
           );
         }
         const valueFromFirst = safeContext.cachedGeneratedForFirst;
-        return Stream.of(valueFromFirst).join(originalShrinks);
+        return joinAll([Iterator.from([valueFromFirst]), originalShrinks]);
       }
       return originalShrinks;
     }
     const potentialSelectedIndex = this.canShrinkWithoutContextIndex(value);
     if (potentialSelectedIndex === -1) {
-      return Stream.nil(); // No arbitrary found to accept this value
+      return nil; // No arbitrary found to accept this value
     }
-    return this.defaultShrinkForFirst(potentialSelectedIndex).join(
+    return joinAll([
+      this.defaultShrinkForFirst(potentialSelectedIndex),
       this.warbs[potentialSelectedIndex].arbitrary
         .shrink(value, undefined) // re-checked by canShrinkWithoutContextIndex
         .map((v) => this.mapIntoValue(potentialSelectedIndex, v, null, undefined)),
-    );
+    ]);
   }
 
   /** Generate shrink values for first arbitrary when no context and no value was provided */
-  private defaultShrinkForFirst(selectedIndex: number): Stream<Value<T>> {
+  private defaultShrinkForFirst(selectedIndex: number): IteratorObject<Value<T>> {
     ++this.context.depth; // increase depth
     try {
       if (!this.mustFallbackToFirstInShrink(selectedIndex) || this.warbs[0].fallbackValue === undefined) {
         // Not applicable: no fallback to first arbitrary on shrink OR no hint to shrink without an initial value and context
-        return Stream.nil();
+        return nil;
       }
     } finally {
       --this.context.depth; // decrease depth (reset depth)
     }
     // The arbitrary at [0] accepts to shrink fallbackValue.default without any context (context=undefined)
     const rawShrinkValue = new Value(this.warbs[0].fallbackValue.default, undefined);
-    return Stream.of(this.mapIntoValue(0, rawShrinkValue, null, undefined));
+    return Iterator.from([this.mapIntoValue(0, rawShrinkValue, null, undefined)]);
   }
 
   /** Extract the index of the generator that would have been able to gennrate the value */

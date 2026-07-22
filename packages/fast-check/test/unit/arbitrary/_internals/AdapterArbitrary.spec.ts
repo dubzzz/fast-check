@@ -4,7 +4,6 @@ import { adapter } from '../../../../src/arbitrary/_internals/AdapterArbitrary.j
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import * as fc from 'fast-check';
 
 describe('AdapterArbitrary', () => {
@@ -125,7 +124,7 @@ describe('AdapterArbitrary', () => {
             const valueAB = new Value(vAB, cAB);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeArbitrary();
             generate.mockReturnValueOnce(valueA);
-            shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB));
+            shrink.mockReturnValueOnce(Iterator.from([valueAA, valueAB]));
             canShrinkWithoutContext.mockReturnValue(canShrinkIfAdapted);
             const { instance: mrng } = fakeRandom();
             const adapterFunction = vi
@@ -216,7 +215,9 @@ describe('AdapterArbitrary', () => {
             const valueABC = new Value(vABC, cABC);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeArbitrary();
             generate.mockReturnValueOnce(valueA);
-            shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB, valueAC)).mockReturnValueOnce(Stream.of(valueABC));
+            shrink
+              .mockReturnValueOnce(Iterator.from([valueAA, valueAB, valueAC]))
+              .mockReturnValueOnce(Iterator.from([valueABC]));
             if (adaptedA.adapted) canShrinkWithoutContext.mockReturnValueOnce(true);
             canShrinkWithoutContext.mockReturnValueOnce(canShrinkIfAdapted);
             const { instance: mrng } = fakeRandom();
@@ -285,7 +286,7 @@ describe('AdapterArbitrary', () => {
             const valueAA = new Value(vAA, cAA);
             const valueAB = new Value(vAB, cAB);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeArbitrary();
-            shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB));
+            shrink.mockReturnValueOnce(Iterator.from([valueAA, valueAB]));
             const adapterFunction = vi
               .fn<(arg0: any) => AdapterOutput<any>>()
               .mockImplementation((v) => (Object.is(v, vAA) ? adaptedAA : adaptedAB));
