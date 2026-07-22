@@ -622,7 +622,7 @@ async function writeToFile(
   await Promise.all([
     fs.writeFile(specFilePath, specContent),
     fs.writeFile(jestConfigPath, `module.exports = ${JSON.stringify(jestConfig)};`),
-    ...(babelConfig !== undefined ? [fs.writeFile(babelConfigPath, babelConfig)] : []),
+    fs.writeFile(babelConfigPath, babelConfig),
   ]);
 
   return specDirectory;
