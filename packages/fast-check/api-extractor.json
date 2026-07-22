@@ -1,13 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "compiler": {
-    "overrideTsconfig": {
-      "extends": "./tsconfig.publish.types.json",
-      "compilerOptions": {
-        "target": "esnext",
-        "lib": ["esnext"]
-      }
-    }
+    "tsconfigFilePath": "<projectFolder>/tsconfig.publish.types.api-extractor.json"
   },
   "tsdocMetadata": {
     "enabled": false

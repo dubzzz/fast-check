@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.publish.types.json",
+  "compilerOptions": {
+    "outDir": "lib/types/",
+    "target": "esnext",
+    "lib": ["esnext"]
+  },
+  "include": ["src/"]
+}
