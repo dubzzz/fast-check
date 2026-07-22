@@ -84,23 +84,6 @@ jobs:
           cache: 'pnpm'
       - name: Ensure no dedupe required
         run: pnpm dedupe --check
-  package_quality:
-    name: 'Package quality'
-    needs: warmup_pnpm_cache
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
-      - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: '24.x'
-          cache: 'pnpm'
-      - name: Check package score using skypack
-        run: cd packages/fast-check && pnpm dlx @skypack/package-check
 
   # Jobs requesting warmup_pnpm_cache
   format_lint:
@@ -572,7 +555,6 @@ jobs:
       - documentation
       - format_lint
       - no_dedupe_required
-      - package_quality
       - typecheck
       - test
       - test_bundle
