@@ -1,4 +1,4 @@
-import type { GlobalAsyncPropertyHookFunction } from '../../runner/configuration/GlobalParameters.js';
+import type { GlobalPropertyHookFunction } from '../../runner/configuration/GlobalParameters.js';
 import type { Property } from './Property.js';
 
 /**
@@ -9,8 +9,8 @@ import type { Property } from './Property.js';
  * @public
  */
 export type PropertyHookFunction =
-  | ((previousHookFunction: GlobalAsyncPropertyHookFunction) => Promise<unknown>)
-  | ((previousHookFunction: GlobalAsyncPropertyHookFunction) => void);
+  | ((previousHookFunction: GlobalPropertyHookFunction) => Promise<unknown>)
+  | ((previousHookFunction: GlobalPropertyHookFunction) => void);
 
 /**
  * Interface for property defining hooks, see {@link Property}
