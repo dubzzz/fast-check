@@ -55,7 +55,7 @@ We decided to tell Claude how performance troubleshooting works, what it can usu
    > Build a set of common optimization tricks that are worth considering when optimizing code.
    > To construct that set:
    >
-   > - Scan all the PR related to performance (⚡️) that we merged over time in both `dubzzz/fast-check` and `dubzzz/pure-rand`
+   > - Scan all the PRs related to performance (⚡️) that we merged over time in both `dubzzz/fast-check` and `dubzzz/pure-rand`
    > - Read through [Marvin Hagemeister's blog posts](https://marvinh.dev/blog/speeding-up-javascript-ecosystem/)
    > - Enrich with your personal knowledge and extra resources that you could find online on that matter
 
