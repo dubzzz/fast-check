@@ -17,7 +17,7 @@ Our initial implementation of `entityGraph` was pretty ad-hoc. It was mostly a m
 The reason for that choice is twofold:
 
 - The arbitrary was complex and it took us time to get a comprehensive enough picture of how we would implement it. As such going manual helped us sketch how we could generate such values. This first sketch got translated in this release into core building blocks.
-- We were missing a key building block: [`chainUntil`](/core-blocks/arbitraries/combiners/any/#chainuntil) (landed in [4.8.0](/blog/2026/06/25/whats-new-in-fast-check-4-8-0/)).
+- We were missing a key building block: [`chainUntil`](/docs/core-blocks/arbitraries/combiners/any/#chainuntil) (landed in [4.8.0](/blog/2026/06/25/whats-new-in-fast-check-4-8-0/)).
 
 In this minor release, we switched from a manual and tailored implementation of the `Arbitrary` class to an arbitrary composing several building blocks from fast-check. This switch unlocked several nice things:
 
