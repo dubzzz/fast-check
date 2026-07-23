@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [release]
 ---
 
-Supporting shrink is crucial for the built-in arbitraries in fast-check. For this release, we deeply reworked `entityGraph` to give it built-in shrinking support. But this release is above all about performance. We spent the last few weeks tracking any optimization that we can put into fast-check on its critical and hot code paths.
+Supporting shrink is crucial for the built-in arbitraries in fast-check. For this release, we deeply reworked `entityGraph` to give it built-in shrinking support. But this release is above all about performance. We spent the last few weeks tracking any optimization that we could put into fast-check on its critical and hot code paths.
 
 Continue reading to explore the detailed updates it brings.
 
@@ -40,7 +40,7 @@ Put differently, making the generate code path faster at the cost of a slower sh
 
 ### Process
 
-Earlier this year we had the privilege to be accepted as part of the [Claude for Open Source](https://www.anthropic.com/claude-for-oss-terms) licensing. We wanted to see and try if we could make it capable of helping us track down slow code paths and propose optimizations for them.
+Earlier this year we had the privilege to be accepted as part of the [Claude for Open Source](https://www.anthropic.com/claude-for-oss-terms) licensing. We wanted to see and try to make it capable of helping us to track down slow code paths and propose optimizations for them.
 
 We decided to tell Claude how performance troubleshooting works, what it can usually look for in terms of optimizations... To achieve that we drafted a `CLAUDE.md` summarizing our mission. The file was split into several sections. The following list gives you a quick highlight of the key principles we used for each of them.
 
@@ -48,7 +48,7 @@ We decided to tell Claude how performance troubleshooting works, what it can usu
 
    > Write down benchmarks, run them and use profiling tools to extract the worst offenders.
    > It's better to optimize code snippets accountable for huge parts of the runtime cost.
-   > Node comes with extra toolset to find out deoptimizations, use [dexnode](https://npmx.dev/package/dexnode) to record them.
+   > Node comes with an extra toolset to find out deoptimizations, use [dexnode](https://npmx.dev/package/dexnode) to record them.
 
 2. What are the most common optimization tricks in JavaScript and also generally?
 
