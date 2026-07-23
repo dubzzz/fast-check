@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 4.9.0?
 authors: [dubzzz]
-tags: [release]
+tags: [release, entityGraph, shrinking, performance]
 ---
 
 Supporting shrink is crucial for the built-in arbitraries in fast-check. For this release, we deeply reworked `entityGraph` to give it built-in shrinking support. But this release is above all about performance. We spent the last few weeks tracking any optimization that we could put into fast-check on its critical and hot code paths.
@@ -94,7 +94,7 @@ But we not only improved the basic runtime of an empty property. We also improve
 | [stringMatching(/^abc$/)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L101)                |       1,974 |        34,751 |       +1661% |
 | [memo(tree)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L70)                              |         309 |           939 |        +204% |
 | [letrec(tree)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L69)                            |         314 |           785 |        +150% |
-| [record({ a: integer() })](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L53)                |       1,031 |         2,406 |        +133% |
+| [record(\{ a: integer() \})](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L53)              |       1,031 |         2,406 |        +133% |
 | [tuple(integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L52)                        |       3,831 |         5,448 |         +42% |
 | [integer()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L34)                               |       9,104 |        12,498 |         +37% |
 | [integer().map(value+1)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L106)                 |       7,098 |         9,478 |         +34% |
@@ -102,7 +102,7 @@ But we not only improved the basic runtime of an empty property. We also improve
 | [maxSafeInteger()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L35)                        |       6,668 |         8,835 |         +33% |
 | [integer().filter(true)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L108)                 |       8,339 |        11,024 |         +32% |
 | [oneof(integer(), integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L60)             |       5,196 |         6,469 |         +25% |
-| [oneof({ weight, arbitrary }, …)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L62)         |       5,262 |         6,482 |         +23% |
+| [oneof(\{ weight, arbitrary \}, …)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L62)       |       5,262 |         6,482 |         +23% |
 | [ipV4()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L98)                                  |       1,123 |         1,377 |         +23% |
 | [array(integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L48)                        |       1,463 |         1,780 |         +22% |
 | [float()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L37)                                 |       4,075 |         4,948 |         +21% |
@@ -124,7 +124,7 @@ But we not only improved the basic runtime of an empty property. We also improve
 | [string()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L42)                                |         935 |         1,002 |          +7% |
 | [uuid()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L100)                                 |         552 |           587 |          +6% |
 | [mixedCase(string())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L103)                    |         463 |           489 |  +6% _noise_ |
-| [string({ unit: 'grapheme' })](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L44)            |         647 |           682 |  +5% _noise_ |
+| [string(\{ unit: 'grapheme' \})](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L44)          |         647 |           682 |  +5% _noise_ |
 | [constantFrom(1, 2)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L59)                      |      23,298 |        23,934 |  +3% _noise_ |
 | [constant(1)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L58)                             |      34,475 |        35,099 |  +2% _noise_ |
 | [string(max 100)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L43)                         |         153 |           154 |  +1% _noise_ |
