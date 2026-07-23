@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 4.9.0?
 authors: [dubzzz]
-tags: [release, entityGraph, shrinking, performance]
+tags: [release, entityGraph, performance]
 ---
 
 Supporting shrink is crucial for the built-in arbitraries in fast-check. For this release, we deeply reworked `entityGraph` to give it built-in shrinking support. But this release is above all about performance. We spent the last few weeks tracking any optimization that we could put into fast-check on its critical and hot code paths.
