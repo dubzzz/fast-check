@@ -33,16 +33,16 @@ Aiming for performance has always been in our DNA. We want the cost of running t
 We sat down and thought about what should and what should not be optimized. If you think of one of your property based snippet you'll probably quickly reach this conclusion:
 
 - Instantiating an instance of `Arbitrary` is done one per test
-- Pulling and generating valuesout of an `Arbitrary` is achieved a hundred times per test (by default)
+- Pulling and generating values out of an `Arbitrary` is achieved a hundred times per test (by default)
 - Reducing to smaller values is barely never done as it means bugs
 
 Said differently making generate code path faster while making shrink slower is a no problem. Same but with more attention when making generate faster and initialization slower.
 
 ### Process
 
-Earlier this year we had the priviledge to be accepted as part of the [Claude for Open Source](https://www.anthropic.com/claude-for-oss-terms) licensing. We wanted to see and try if we could make it capable of helping us tracking down slow code path and proposing optimizations for them.
+Earlier this year we had the privilege to be accepted as part of the [Claude for Open Source](https://www.anthropic.com/claude-for-oss-terms) licensing. We wanted to see and try if we could make it capable of helping us tracking down slow code path and proposing optimizations for them.
 
-We decided to tell Claude how performance troubleshooting works, what it can usually look for in terms of optimizations... To achive that we drafted a `CLAUDE.md` summuraizing our mission. The files was cut in sveral sections. Following list gives you a quick highlight of the key pronciples we used for each of them.
+We decided to tell Claude how performance troubleshooting works, what it can usually look for in terms of optimizations... To achieve that we drafted a `CLAUDE.md` summarizing our mission. The file was cut in several sections. Following list gives you a quick highlight of the key principles we used for each of them.
 
 1. How to find slow code path?
 
@@ -61,7 +61,7 @@ We decided to tell Claude how performance troubleshooting works, what it can usu
 
 3. How to confirm an optimization works?
 
-   > Run the code, benchmark it, profile it. Make sure that the place you optimized really shrunk in profiling. Beware of micro-benchmarks. When writing benchmarks always consider several possible entry sets and don't just focus on one of them in you run.
+   > Run the code, benchmark it, profile it. Make sure that the place you optimized really shrunk in profiling. Beware of micro-benchmarks. When writing benchmarks always consider several possible entry sets and don't just focus on one of them in your run.
 
 4. What is important to optimize in fast-check?
 
@@ -75,7 +75,7 @@ We decided to tell Claude how performance troubleshooting works, what it can usu
 
 Claude found out interesting places. Claude proposed some useful tricks.
 
-But everything had to be carefully re-assessed. Some optimizations were incorrect or not saving time on useful parts of the code. Some were making the code hard to read or the bundle 10x larger. Regarding optimization places that it suggested, I think this is were it shined, the proposed places were always interesting to consider. Some were useless but at least they opened me the eyes on parts where we could eventually move faster.
+But everything had to be carefully re-assessed. Some optimizations were incorrect or not saving time on useful parts of the code. Some were making the code hard to read or the bundle 10x larger. Regarding optimization places that it suggested, I think this is where it shined, the proposed places were always interesting to consider. Some were useless but at least they opened me the eyes on parts where we could eventually move faster.
 
 The combination of LLM guided performance review plus human worked proved efficient for the library as a whole.
 
@@ -87,7 +87,7 @@ fc.assert(fc.property(fc.constant(1), (_c) => {}));
 
 Will be +50% faster with 4.9.0.
 
-But we not only improved the basic runtime of an empty property not doing anything. We also improved most of our arbitraries. The following table summuraizes the measurments that we made when we compared 4.8.0 against 4.9.0:
+But we not only improved the basic runtime of an empty property not doing anything. We also improved most of our arbitraries. The following table summarizes the measurements that we made when we compared 4.8.0 against 4.9.0:
 
 | Benchmark                                                                                                                                           | 4.8.0 ops/s | 4.9.0\* ops/s |       Change |
 | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------: | ------------: | -----------: |
