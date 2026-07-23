@@ -16,38 +16,38 @@ Our initial implementation of `entityGraph` was pretty ad-hoc. It was mostly a m
 
 The reason for that choice is twofold:
 
-- The arbitrary was complex, it took us time to get a comprehensive enough picture of how we would implement it. As such going manual helped us sketch how we could generate such values. This first sketch got translated in this release into core building blocks.
+- The arbitrary was complex and it took us time to get a comprehensive enough picture of how we would implement it. As such going manual helped us sketch how we could generate such values. This first sketch got translated in this release into core building blocks.
 - We were missing a key building block: [`chainUntil`](/core-blocks/arbitraries/combiners/any/#chainuntil) (landed in [4.8.0](/blog/2026/06/25/whats-new-in-fast-check-4-8-0/)).
 
-In this minor release, we switched from a manual and tailored implementation of the `Arbitrary` class to an arbitrary composing several building blocks from fast-check. Such switch allowed multiple cool things:
+In this minor release, we switched from a manual and tailored implementation of the `Arbitrary` class to an arbitrary composing several building blocks from fast-check. This switch unlocked several nice things:
 
 - The arbitrary now benefits from shrinking capabilities. We don't have to do special tricks for it to work.
 - The arbitrary also benefits from all performance optimizations made to core building blocks. As such optimizing them benefits other arbitraries even more.
 
 ## Performance at heart
 
-Aiming for performance has always been in our DNA. We want the cost of running tests with fast-check to be as little as possible. As such this release focused on finding things we could make faster to benefit as much as possible hot code paths.
+Aiming for performance has always been in our DNA. We want the cost of running tests with fast-check to be as little as possible. As such this release focused on finding things we could make faster to benefit hot code paths as much as possible.
 
 ### Strategy
 
-We sat down and thought about what should and what should not be optimized. If you think of one of your property based snippet you'll probably quickly reach this conclusion:
+We sat down and thought about what should and what should not be optimized. If you think of one of your property-based snippets, you'll probably quickly reach this conclusion:
 
-- Instantiating an instance of `Arbitrary` is done one per test
+- Instantiating an instance of `Arbitrary` is done once per test
 - Pulling and generating values out of an `Arbitrary` is achieved a hundred times per test (by default)
-- Reducing to smaller values is barely never done as it means bugs
+- Reducing to smaller values is almost never done, as it only happens when there are bugs
 
-Said differently making generate code path faster while making shrink slower is a no problem. Same but with more attention when making generate faster and initialization slower.
+Put differently, making the generate code path faster at the cost of a slower shrink is no problem. The same holds when trading faster generation for slower initialization.
 
 ### Process
 
-Earlier this year we had the privilege to be accepted as part of the [Claude for Open Source](https://www.anthropic.com/claude-for-oss-terms) licensing. We wanted to see and try if we could make it capable of helping us tracking down slow code path and proposing optimizations for them.
+Earlier this year we had the privilege to be accepted as part of the [Claude for Open Source](https://www.anthropic.com/claude-for-oss-terms) licensing. We wanted to see and try if we could make it capable of helping us track down slow code paths and propose optimizations for them.
 
-We decided to tell Claude how performance troubleshooting works, what it can usually look for in terms of optimizations... To achieve that we drafted a `CLAUDE.md` summarizing our mission. The file was cut in several sections. Following list gives you a quick highlight of the key principles we used for each of them.
+We decided to tell Claude how performance troubleshooting works, what it can usually look for in terms of optimizations... To achieve that we drafted a `CLAUDE.md` summarizing our mission. The file was cut in several sections. The following list gives you a quick highlight of the key principles we used for each of them.
 
-1. How to find slow code path?
+1. How to find slow code paths?
 
    > Write down benchmarks, run them and use profiling tools to extract the worst offenders.
-   > Better optimizing code snippets accountable for huge parts of the runtime cost.
+   > It's better to optimize code snippets accountable for huge parts of the runtime cost.
    > Node comes with extra toolset to find out deoptimizations, use [dexnode](https://npmx.dev/package/dexnode) to record them.
 
 2. What are the most common optimization tricks in JavaScript and also generally?
@@ -75,9 +75,9 @@ We decided to tell Claude how performance troubleshooting works, what it can usu
 
 Claude found out interesting places. Claude proposed some useful tricks.
 
-But everything had to be carefully re-assessed. Some optimizations were incorrect or not saving time on useful parts of the code. Some were making the code hard to read or the bundle 10x larger. Regarding optimization places that it suggested, I think this is where it shined, the proposed places were always interesting to consider. Some were useless but at least they opened me the eyes on parts where we could eventually move faster.
+But everything had to be carefully re-assessed. Some optimizations were incorrect or not saving time on useful parts of the code. Some were making the code hard to read or the bundle 10x larger. Regarding the places it suggested to optimize, I think this is where it shone: the proposed places were always interesting to consider. Some were useless but at least they opened my eyes to parts where we could eventually move faster.
 
-The combination of LLM guided performance review plus human worked proved efficient for the library as a whole.
+The combination of LLM-guided performance review and human work proved efficient for the library as a whole.
 
 Running a dummy property such as:
 
