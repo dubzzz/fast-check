@@ -24,6 +24,117 @@ In this minor release, we switched from a manual and tailored implementation of 
 - The arbitrary now benefits from shrinking capabilities. We don't have to do special tricks for it to work.
 - The arbitrary also benefits from all performance optimizations made to core building blocks. As such optimizing them benefits other arbitraries even more.
 
+## Performance at heart
+
+Aiming for performance has always been in our DNA. We want the cost of running tests with fast-check to be as little as possible. As such this release focused on finding things we could make faster to benefit as much as possible hot code paths.
+
+### Strategy
+
+We sat down and thought about what should and what should not be optimized. If you think of one of your property based snippet you'll probably quickly reach this conclusion:
+
+- Instantiating an instance of `Arbitrary` is done one per test
+- Pulling and generating valuesout of an `Arbitrary` is achieved a hundred times per test (by default)
+- Reducing to smaller values is barely never done as it means bugs
+
+Said differently making generate code path faster while making shrink slower is a no problem. Same but with more attention when making generate faster and initialization slower.
+
+### Process
+
+Earlier this year we had the priviledge to be accepted as part of the [Claude for Open Source](https://www.anthropic.com/claude-for-oss-terms) licensing. We wanted to see and try if we could make it capable of helping us tracking down slow code path and proposing optimizations for them.
+
+We decided to tell Claude how performance troubleshooting works, what it can usually look for in terms of optimizations... To achive that we drafted a `CLAUDE.md` summuraizing our mission. The files was cut in sveral sections. Following list gives you a quick highlight of the key pronciples we used for each of them.
+
+1. How to find slow code path?
+
+   > Write down benchmarks, run them and use profiling tools to extract the worst offenders.
+   > Better optimizing code snippets accountable for huge parts of the runtime cost.
+   > Node comes with extra toolset to find out deoptimizations, use [dexnode](https://npmx.dev/package/dexnode) to record them.
+
+2. What are the most common optimization tricks in JavaScript and also generally?
+
+   > Build a set of common optimization tricks that are worth considering when optimizing code.
+   > To construct that set:
+   >
+   > - Scan all the PR related to performance (⚡️) that we merged over time in both `dubzzz/fast-check` and `dubzzz/pure-rand`
+   > - Read through [Marvin Hagemeister's blog posts](https://marvinh.dev/blog/speeding-up-javascript-ecosystem/)
+   > - Enrich with your personal knowledge and extra resources that you could find online on that matter
+
+3. How to confirm an optimization works?
+
+   > Run the code, benchmark it, profile it. Make sure that the place you optimized really shrunk in profiling. Beware of micro-benchmarks. When writing benchmarks always consider several possible entry sets and don't just focus on one of them in you run.
+
+4. What is important to optimize in fast-check?
+
+   > Well, this is just more or less about the Strategy section above.
+
+5. How to proceed?
+
+   > Use worktrees. Run one dedicated sub-agent per optimization. Only consider opening a PR if the optimization is really impressive or useful. Share benchmark snippets and benchmark results as part of the PR description. Always re-confirm the benchmark results.
+
+### The results
+
+Claude found out interesting places. Claude proposed some useful tricks.
+
+But everything had to be carefully re-assessed. Some optimizations were incorrect or not saving time on useful parts of the code. Some were making the code hard to read or the bundle 10x larger. Regarding optimization places that it suggested, I think this is were it shined, the proposed places were always interesting to consider. Some were useless but at least they opened me the eyes on parts where we could eventually move faster.
+
+The combination of LLM guided performance review plus human worked proved efficient for the library as a whole.
+
+Running a dummy property such as:
+
+```ts
+fc.assert(fc.property(fc.constant(1), (_c) => {}));
+```
+
+Will be +50% faster with 4.9.0.
+
+But we not only improved the basic runtime of an empty property not doing anything. We also improved most of our arbitraries. The following table summuraizes the measurments that we made when we compared 4.8.0 against 4.9.0:
+
+| Benchmark                                                                                                                                           | 4.8.0 ops/s | 4.9.0\* ops/s |       Change |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------: | ------------: | -----------: |
+| [stringMatching(/^abc$/)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L101)                |       1,974 |        34,751 |       +1661% |
+| [memo(tree)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L70)                              |         309 |           939 |        +204% |
+| [letrec(tree)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L69)                            |         314 |           785 |        +150% |
+| [record({ a: integer() })](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L53)                |       1,031 |         2,406 |        +133% |
+| [tuple(integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L52)                        |       3,831 |         5,448 |         +42% |
+| [integer()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L34)                               |       9,104 |        12,498 |         +37% |
+| [integer().map(value+1)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L106)                 |       7,098 |         9,478 |         +34% |
+| [stringMatching(/^[a-zA-Z0-9]+$/)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L102)       |         464 |           619 |         +33% |
+| [maxSafeInteger()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L35)                        |       6,668 |         8,835 |         +33% |
+| [integer().filter(true)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L108)                 |       8,339 |        11,024 |         +32% |
+| [oneof(integer(), integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L60)             |       5,196 |         6,469 |         +25% |
+| [oneof({ weight, arbitrary }, …)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L62)         |       5,262 |         6,482 |         +23% |
+| [ipV4()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L98)                                  |       1,123 |         1,377 |         +23% |
+| [array(integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L48)                        |       1,463 |         1,780 |         +22% |
+| [float()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L37)                                 |       4,075 |         4,948 |         +21% |
+| [option(integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L65)                       |       5,187 |         6,235 |         +20% |
+| [date()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L39)                                  |       3,082 |         3,660 |         +19% |
+| [array(integer(), max 100)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L49)               |         252 |           294 |         +17% |
+| [webUrl()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L97)                                |         133 |           155 |         +17% |
+| [ipV6()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L99)                                  |         189 |           220 |         +16% |
+| [emailAddress()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L96)                          |          71 |            81 |         +15% |
+| [uniqueArray(integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L50)                  |       1,043 |         1,191 |         +14% |
+| [anything()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L73)                              |          53 |            60 |         +14% |
+| [boolean()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L33)                               |      11,787 |        13,383 |         +14% |
+| [map(string(), integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L55)                |         125 |           139 | +11% _noise_ |
+| [integer().chain(integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L107)             |       3,601 |         3,988 |         +11% |
+| [json()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L74)                                  |          50 |            54 |          +9% |
+| [set(integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L51)                          |         801 |           873 |          +9% |
+| [base64String()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L45)                          |         890 |           968 |  +9% _noise_ |
+| [dictionary(string(), integer())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L54)         |          71 |            77 |          +8% |
+| [string()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L42)                                |         935 |         1,002 |          +7% |
+| [uuid()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L100)                                 |         552 |           587 |          +6% |
+| [mixedCase(string())](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L103)                    |         463 |           489 |  +6% _noise_ |
+| [string({ unit: 'grapheme' })](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L44)            |         647 |           682 |  +5% _noise_ |
+| [constantFrom(1, 2)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L59)                      |      23,298 |        23,934 |  +3% _noise_ |
+| [constant(1)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L58)                             |      34,475 |        35,099 |  +2% _noise_ |
+| [string(max 100)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L43)                         |         153 |           154 |  +1% _noise_ |
+| [bigInt()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L36)                                |         969 |           974 |  +1% _noise_ |
+| [subarray([1, 2, 3, 4, 5])](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L66)               |       1,881 |         1,888 |  +0% _noise_ |
+| [double()](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L38)                                |       1,601 |         1,600 |  −0% _noise_ |
+| [entityGraph(employee → manager? + team)](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts#L76) |        11.3 |          10.8 |          −4% |
+
+_Measured on Node v22.22.2 running fast-check's own [`arbitraries.bench.ts`](https://github.com/dubzzz/fast-check/blob/v4.9.0/packages/fast-check/test/bench/arbitraries.bench.ts): **fast-check@4.8.0 with pure-rand@8.4.0** vs **fast-check@4.9.0 with pure-rand@8.4.2**._
+
 ## Changelog since 4.8.0
 
 The version 4.9.0 is based on version 4.8.0.
