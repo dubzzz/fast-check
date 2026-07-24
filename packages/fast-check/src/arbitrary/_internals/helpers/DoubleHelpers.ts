@@ -20,6 +20,42 @@ function bitCastDoubleToUInt64(f: number): [number, number] {
   f64[0] = f;
   return [u32[1], u32[0]];
 }
+/** @internal */
+function bitCastUInt64ToDouble(hi: number, lo: number): number {
+  u32[1] = hi;
+  u32[0] = lo;
+  return f64[0];
+}
+
+/**
+ * 64-bit floating point NaN bit patterns that fast-check is able to produce, expressed as [hi, lo] pairs of
+ * 32-bit unsigned integers (hi holding the sign, exponent and top mantissa bits, lo the low mantissa bits).
+ *
+ * All the values below are indistinguishable from each other -and from any other NaN- as soon as they hit the
+ * language level: `Number.isNaN`, `===`, `Object.is`... never let any difference show up. The only way to
+ * observe the difference is to look at their raw bits, for instance by copying the value into a `Float64Array`
+ * and reading it back as a `Uint32Array` (see #6532).
+ *
+ * NAN_64_BIT_PATTERNS[0] is the canonical one: it is the pattern used whenever JavaScript itself has to
+ * produce a NaN (for instance as the result of `0/0`, or as `Number.NaN`).
+ *
+ * @internal
+ */
+export const NAN_64_BIT_PATTERNS: readonly [number, number][] = [
+  [0x7ff80000, 0x00000000], // Canonical quiet NaN (positive)
+  [0x7ff00000, 0x00000001], // Signaling NaN (positive, smallest payload)
+  [0x7fffffff, 0xffffffff], // Quiet NaN with all mantissa bits set
+  [0xfff80000, 0x00000000], // Quiet NaN (negative)
+  [0xfff00000, 0x00000001], // Signaling NaN (negative, smallest payload)
+];
+
+/**
+ * 64-bit floating point NaN values that fast-check is able to produce, derived from {@link NAN_64_BIT_PATTERNS}.
+ * NAN_64_VALUES[0] is the canonical one.
+ *
+ * @internal
+ */
+export const NAN_64_VALUES: readonly number[] = NAN_64_BIT_PATTERNS.map(([hi, lo]) => bitCastUInt64ToDouble(hi, lo));
 
 /**
  * Decompose a 64-bit floating point number into its interpreted parts:
