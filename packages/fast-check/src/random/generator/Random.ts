@@ -53,8 +53,8 @@ export class Random {
    * Generate a random floating point number between 0.0 (included) and 1.0 (excluded)
    */
   nextDouble(): number {
-    const a = uniformInt(this.internalRng, 0, (1 << 26) - 1);
-    const b = uniformInt(this.internalRng, 0, (1 << 27) - 1);
+    const a = uniformInt(this.internalRng, 0, 0x3ffffff);
+    const b = uniformInt(this.internalRng, 0, 0x7ffffff);
     return (a * DBL_FACTOR + b) * DBL_DIVISOR;
   }
 
