@@ -51,9 +51,7 @@ await fc.assert(
 )
 ```
 
-In case your reporter is relying on asynchronous code, you can specify it by setting `asyncReporter` instead of `reporter`.
-
-:::info Before `reporter` and `asyncReporter`
+:::info Before `reporter`
 In the past, writing your own reporter would have been done as follow:
 
 ```js

@@ -36,8 +36,7 @@ export class QualifiedParameters<T> {
   markInterruptAsFailure: boolean;
   skipEqualValues: boolean;
   ignoreEqualValues: boolean;
-  reporter: ((runDetails: RunDetails<T>) => void) | undefined;
-  asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | undefined;
+  reporter: ((runDetails: RunDetails<T>) => Promise<void> | void) | undefined;
   includeErrorInReport: boolean;
 
   constructor(op?: Parameters<T>) {
@@ -65,7 +64,6 @@ export class QualifiedParameters<T> {
     this.examples = p.examples !== undefined ? p.examples : [];
     this.endOnFailure = p.endOnFailure === true;
     this.reporter = p.reporter;
-    this.asyncReporter = p.asyncReporter;
     this.includeErrorInReport = p.includeErrorInReport === true;
   }
 
@@ -88,7 +86,6 @@ export class QualifiedParameters<T> {
       examples: this.examples,
       endOnFailure: this.endOnFailure,
       reporter: this.reporter,
-      asyncReporter: this.asyncReporter,
       includeErrorInReport: this.includeErrorInReport,
     };
     return parameters;
