@@ -13,16 +13,6 @@ import type { Property } from '../../../../src/check/property/types/Property.js'
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
-    it('Should throw if both reporter and asyncReporter are defined', () => {
-      const p: Property<[number]> = {
-        generate: () => new Value([0], undefined),
-        shrink: () => nil,
-        runBeforeEach: () => {},
-        run: () => null,
-        runAfterEach: () => {},
-      };
-      expect(() => check(p, { reporter: () => {}, asyncReporter: async () => {} })).toThrowError(); // sync throw
-    });
     it('Should not throw if reporter is specified on asynchronous properties', () => {
       const p: Property<[number]> = {
         generate: () => new Value([0], undefined),
@@ -32,16 +22,6 @@ describe('Runner', () => {
         runAfterEach: () => {},
       };
       expect(() => check(p, { reporter: () => {} })).not.toThrowError(); // no sync throw
-    });
-    it('Should not throw if asyncReporter is specified on asynchronous properties', () => {
-      const p: Property<[number]> = {
-        generate: () => new Value([0], undefined),
-        shrink: () => nil,
-        runBeforeEach: () => {},
-        run: () => null,
-        runAfterEach: () => {},
-      };
-      expect(() => check(p, { asyncReporter: async () => {} })).not.toThrowError(); // no sync throw
     });
     it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;

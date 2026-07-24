@@ -177,7 +177,6 @@ export interface Parameters<T = void> {
    * But you may want to change this behaviour in yours.
    *
    * Only used when calling {@link assert}
-   * Cannot be defined in conjonction with `asyncReporter`
    *
    * @example
    * ```typescript
@@ -195,34 +194,7 @@ export interface Parameters<T = void> {
    * @remarks Since 1.25.0
    * @deprecated Prefer a plugin relying on the `onAllRunsComplete` hook: `fc.assert(property, { plugins: [reporterPlugin] })`
    */
-  reporter?: (runDetails: RunDetails<T>) => void;
-  /**
-   * Replace the default reporter handling errors by a custom one
-   *
-   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
-   * But you may want to change this behaviour in yours.
-   *
-   * Only used when calling {@link assert}
-   * Cannot be defined in conjonction with `reporter`
-   * Not compatible with synchronous properties: runner will throw
-   *
-   * @example
-   * ```typescript
-   * // Prefer a plugin relying on the `onAllRunsComplete` hook.
-   * const reporterPlugin: fc.Plugin<unknown> = () => ({
-   *   onAllRunsComplete: async (runDetails) => {
-   *     if (runDetails.failed) {
-   *       throw new Error(fc.asyncDefaultReportMessage(runDetails));
-   *     }
-   *   },
-   * });
-   * await fc.assert(asyncProperty, { plugins: [reporterPlugin] });
-   * ```
-   *
-   * @remarks Since 1.25.0
-   * @deprecated Prefer a plugin relying on an asynchronous `onAllRunsComplete` hook: `fc.assert(asyncProperty, { plugins: [reporterPlugin] })`
-   */
-  asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
+  reporter?: (runDetails: RunDetails<T>) => Promise<void> | void;
   /**
    * By default the Error causing the failure of the predicate will not be directly exposed within the message
    * of the Error thown by fast-check. It will be exposed by a cause field attached to the Error.
