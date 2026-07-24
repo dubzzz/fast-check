@@ -25,12 +25,15 @@ function adaptParametersForRecord<Ts>(
   originalParamaters: FcParameters<Ts>,
 ): FcParameters<Ts> {
   const parametersV3OrV4: FcParameters<[Ts]> & { errorWithCause?: boolean } = parameters;
-  const enrichedParameters: FcParameters<Ts> & { errorWithCause?: boolean } = {
+  const enrichedParameters: FcParameters<Ts> & {
+    errorWithCause: boolean;
+    asyncReporter: ((runDetails: RunDetails<Ts>) => Promise<void>) | undefined;
+  } = {
     ...(parameters as Required<FcParameters<[Ts]>>),
     errorWithCause: parametersV3OrV4.errorWithCause !== undefined ? parametersV3OrV4.errorWithCause : true,
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
     reporter: originalParamaters.reporter,
-    asyncReporter: originalParamaters.asyncReporter,
+    asyncReporter: (originalParamaters as any).asyncReporter,
   };
   return enrichedParameters;
 }
@@ -80,7 +83,9 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     }
     return (testName: string, prop: Prop<Ts>, timeout?: number) => {
       const recordArb = record<Ts>(arbitraries);
-      const recordParams: FcParameters<[TsParameters]> | undefined =
+      const recordParams:
+        | (FcParameters<[TsParameters]> & { asyncReporter?: (runDetails: RunDetails<[TsParameters]>) => Promise<void> })
+        | undefined =
         params !== undefined
           ? {
               // Spreading a "Required" makes us sure that we don't miss any parameters
@@ -94,9 +99,9 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
                     (runDetails) => params.reporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
               asyncReporter:
-                params.asyncReporter !== undefined
+                (params as any).asyncReporter !== undefined
                   ? // oxlint-disable-next-line typescript/no-non-null-assertion
-                    (runDetails) => params.asyncReporter!(adaptRunDetailsForRecord(runDetails, params))
+                    (runDetails) => (params as any).asyncReporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
             }
           : undefined;

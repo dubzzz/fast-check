@@ -170,24 +170,10 @@ export interface Parameters<T = void> {
    * But you may want to change this behaviour in yours.
    *
    * Only used when calling {@link assert}
-   * Cannot be defined in conjonction with `asyncReporter`
    *
    * @remarks Since 1.25.0
    */
-  reporter?: (runDetails: RunDetails<T>) => void;
-  /**
-   * Replace the default reporter handling errors by a custom one
-   *
-   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
-   * But you may want to change this behaviour in yours.
-   *
-   * Only used when calling {@link assert}
-   * Cannot be defined in conjonction with `reporter`
-   * Not compatible with synchronous properties: runner will throw
-   *
-   * @remarks Since 1.25.0
-   */
-  asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
+  reporter?: (runDetails: RunDetails<T>) => Promise<void> | void;
   /**
    * By default the Error causing the failure of the predicate will not be directly exposed within the message
    * of the Error thown by fast-check. It will be exposed by a cause field attached to the Error.

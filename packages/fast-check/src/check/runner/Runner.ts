@@ -61,10 +61,7 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  if (qParams.reporter !== undefined && qParams.asyncReporter !== undefined)
-    throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
   const decoratedProperty = decorateProperty(property, qParams);
-
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof decoratedProperty.shrink = (...args) => decoratedProperty.shrink(...args);
