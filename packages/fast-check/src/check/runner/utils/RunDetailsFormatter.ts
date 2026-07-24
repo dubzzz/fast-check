@@ -285,39 +285,21 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & 
 }
 
 /** @internal */
-function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
-  if (!out.failed) return;
-  throw buildError<Ts>(defaultReportMessage(out), out);
+function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+  if (!out.failed) {
+    return;
+  }
+  return asyncDefaultReportMessage(out).then((message) => {
+    throw buildError<Ts>(message, out);
+  });
 }
 
 /** @internal */
-async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
-  if (!out.failed) return;
-  throw buildError<Ts>(await asyncDefaultReportMessage(out), out);
-}
-
-/**
- * In case this code has to be executed synchronously the caller
- * has to make sure that no asyncReporter has been defined
- * otherwise it might trigger an unchecked promise
- * @internal
- */
-export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
-  if (out.runConfiguration.asyncReporter) return out.runConfiguration.asyncReporter(out);
-  else if (out.runConfiguration.reporter) return out.runConfiguration.reporter(out);
-  else return throwIfFailed(out);
-}
-
-/**
- * In case this code has to be executed synchronously the caller
- * has to make sure that no asyncReporter has been defined
- * otherwise it might trigger an unchecked promise
- * @internal
- */
-export async function asyncReportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> {
-  if (out.runConfiguration.asyncReporter) return out.runConfiguration.asyncReporter(out);
-  else if (out.runConfiguration.reporter) return out.runConfiguration.reporter(out);
-  else return asyncThrowIfFailed(out);
+export function asyncReportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+  if (out.runConfiguration.reporter !== undefined) {
+    return out.runConfiguration.reporter(out);
+  }
+  return asyncThrowIfFailed(out);
 }
 
 export { defaultReportMessage, asyncDefaultReportMessage };
