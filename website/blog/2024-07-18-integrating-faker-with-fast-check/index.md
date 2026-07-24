@@ -5,6 +5,9 @@ tags: [tips, integration]
 image: /img/blog/2024-07-18-integrating-faker-with-fast-check--social.png
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 [Faker](https://fakerjs.dev) is a well-known and powerful library for generating fake data. It provides a wide range of random but realistic-looking data generators. However, testing with purely random data can be risky, which is why property-based testing is valuable. While using fake but realistic data in tests can be beneficial, it is essential to integrate it properly. fast-check offers a robust solution for this integration.
 
 {/* truncate */}
@@ -113,6 +116,42 @@ Our constraint of reusing the generator passed by fast-check prevents us from re
 
 Here is the implmentation we came up with:
 
+<Tabs>
+  <TabItem value="v5" label="Since v5" default>
+
+```ts
+import { Faker, Randomizer, base } from '@faker-js/faker';
+import * as fc from 'fast-check';
+
+class FakerBuilder<TValue> extends fc.Arbitrary<TValue> {
+  constructor(private readonly generator: (faker: Faker) => TValue) {
+    super();
+  }
+  generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<TValue> {
+    const randomizer: Randomizer = {
+      // Build a double in [0, 1) out of two integer draws: 26 bits then 27 bits, for 53 bits of randomness
+      next: (): number => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
+      seed: () => {}, // no-op, no support for updates of the seed, could even throw
+    };
+    const customFaker = new Faker({ locale: base, randomizer });
+    return new fc.Value(this.generator(customFaker), undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is TValue {
+    return false;
+  }
+  shrink(value: TValue, context: unknown): fc.Stream<fc.Value<TValue>> {
+    return fc.Stream.nil();
+  }
+}
+
+function fakerToArb<TValue>(generator: (faker: Faker) => TValue): fc.Arbitrary<TValue> {
+  return new FakerBuilder(generator);
+}
+```
+
+  </TabItem>
+  <TabItem value="v4" label="Until v4">
+
 ```ts
 import { Faker, Randomizer, base } from '@faker-js/faker';
 import * as fc from 'fast-check';
@@ -142,6 +181,9 @@ function fakerToArb<TValue>(generator: (faker: Faker) => TValue): fc.Arbitrary<T
 }
 ```
 
+  </TabItem>
+</Tabs>
+
 This refined implementation addresses most of the issues with the naive approach and provides a more powerful and cleaner integration with Faker.
 
 ## Advanced integration
@@ -151,6 +193,31 @@ The previous implementation does not provide any shrinking capabilities. While b
 ### Simplified version
 
 To incorporate shrinking capabilities, let's simplify the previous snippet to focus on generating first names only:
+
+<Tabs>
+  <TabItem value="v5" label="Since v5" default>
+
+```ts
+class FakerFirstNameBuilder extends fc.Arbitrary<string> {
+  generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<string> {
+    const randomizer = {
+      next: () => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
+      seed: () => {},
+    };
+    const customFaker = new Faker({ locale: base, randomizer });
+    return new fc.Value(customFaker.person.firstName(), undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is string {
+    return false;
+  }
+  shrink(value: TValue, context: unknown): fc.Stream<fc.Value<string>> {
+    return fc.Stream.nil();
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="v4" label="Until v4">
 
 ```ts
 class FakerFirstNameBuilder extends fc.Arbitrary<string> {
@@ -167,6 +234,9 @@ class FakerFirstNameBuilder extends fc.Arbitrary<string> {
   }
 }
 ```
+
+  </TabItem>
+</Tabs>
 
 ### Adding shrinking
 
@@ -214,6 +284,37 @@ class FakerFirstNameBuilder extends fc.Arbitrary<string> {
 
 But, our implementation still makes a subtle assumption. It supposes that an undefined context value is always linked to a value coming from our own `generate` and cannot be something produced by the shrinker of `strArb`. We can make it safer by being able to differentiate our own values from the ones of `strArb`.
 
+<Tabs>
+  <TabItem value="v5" label="Since v5" default>
+
+```ts
+const ctxProbe = Symbol();
+const strArb = fc.string({ minLength: 1 });
+
+class FakerFirstNameBuilder extends fc.Arbitrary<string> {
+  generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<string> {
+    const randomizer = {
+      next: () => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
+      seed: () => {},
+    };
+    const customFaker = new Faker({ locale: base, randomizer });
+    return new fc.Value(customFaker.person.firstName(), ctxProbe);
+  }
+  canShrinkWithoutContext(value: unknown): value is string {
+    return false;
+  }
+  shrink(value: TValue, context: unknown): fc.Stream<fc.Value<string>> {
+    if (context !== ctxProbe || strArb.canShrinkWithoutContext(value)) {
+      return strArb.shrink(value, context);
+    }
+    return fc.Stream.nil();
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="v4" label="Until v4">
+
 ```ts
 const ctxProbe = Symbol();
 const strArb = fc.string({ minLength: 1 });
@@ -235,6 +336,9 @@ class FakerFirstNameBuilder extends fc.Arbitrary<string> {
   }
 }
 ```
+
+  </TabItem>
+</Tabs>
 
 :::tip `fc.string()` might not be ideal
 
