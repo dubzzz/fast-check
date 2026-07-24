@@ -274,7 +274,7 @@ describe('Runner', () => {
           const buildPropertyFor = function (runOn: number[]) {
             const p: Property<[number]> = {
               generate: (rng: Random) => {
-                return new Value([rng.nextInt()], undefined);
+                return new Value([rng.nextInt(-0x80000000, 0x7fffffff)], undefined);
               },
               shrink: () => nil,
               runBeforeEach: () => {},

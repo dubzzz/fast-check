@@ -37,7 +37,7 @@ class ForwardArbitrary extends Arbitrary<number> {
     super();
   }
   generate(rng: Random): Value<number> {
-    return new Value(rng.nextInt(), undefined);
+    return new Value(rng.nextInt(-0x80000000, 0x7fffffff), undefined);
   }
   canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
@@ -59,7 +59,7 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
   generate(mrng: Random): Value<number[]> {
     const out = [];
     for (let idx = 0; idx !== this.num; ++idx) {
-      out.push(mrng.nextInt());
+      out.push(mrng.nextInt(-0x80000000, 0x7fffffff));
     }
     return new Value(out, undefined);
   }
