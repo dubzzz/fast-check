@@ -6,19 +6,6 @@ import { Random } from '../../../../src/random/generator/Random.js';
 
 const MAX_SIZE = 2048;
 describe('Random', () => {
-  describe('next', () => {
-    it('Should produce values within 0 and 2 ** n - 1', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(31), fc.nat(MAX_SIZE), (seed, n, num) => {
-          const mrng = new Random(xorshift128plus(seed));
-          for (let idx = 0; idx !== num; ++idx) {
-            const v = mrng.next(n);
-            if (v < 0 || v > (((1 << n) - 1) | 0)) return false;
-          }
-          return true;
-        }),
-      ));
-  });
   describe('nextInt', () => {
     it('Should produce values within the range', async () =>
       await fc.assert(
@@ -38,7 +25,8 @@ describe('Random', () => {
         fc.asyncProperty(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
           const mrng1 = new Random(xorshift128plus(seed));
           const mrng2 = new Random(xorshift128plus(seed));
-          for (let idx = 0; idx !== num; ++idx) if (mrng1.nextInt() !== mrng2.nextInt()) return false;
+          for (let idx = 0; idx !== num; ++idx)
+            if (mrng1.nextInt(-0x80000000, 0x7fffffff) !== mrng2.nextInt(-0x80000000, 0x7fffffff)) return false;
           return true;
         }),
       ));
@@ -62,7 +50,8 @@ describe('Random', () => {
         fc.asyncProperty(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
           const mrng1 = new Random(xorshift128plus(seed));
           const mrng2 = mrng1.clone();
-          for (let idx = 0; idx !== num; ++idx) if (mrng1.nextInt() !== mrng2.nextInt()) return false;
+          for (let idx = 0; idx !== num; ++idx)
+            if (mrng1.nextInt(-0x80000000, 0x7fffffff) !== mrng2.nextInt(-0x80000000, 0x7fffffff)) return false;
           return true;
         }),
       ));

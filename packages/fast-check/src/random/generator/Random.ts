@@ -3,8 +3,6 @@ import { uniformInt } from 'pure-rand/distribution/uniformInt';
 import { adaptRandomGenerator } from './RandomGenerator.js';
 import type { RandomGenerator, RandomGeneratorInternal } from './RandomGenerator.js';
 
-const MIN_INT: number = 0x80000000 | 0;
-const MAX_INT: number = 0x7fffffff | 0;
 const DBL_FACTOR: number = Math.pow(2, 27);
 const DBL_DIVISOR: number = Math.pow(2, -53);
 
@@ -34,36 +32,12 @@ export class Random {
   }
 
   /**
-   * Generate an integer having `bits` random bits
-   * @param bits - Number of bits to generate
-   * @deprecated Prefer {@link nextInt} with explicit bounds: `nextInt(0, (1 << bits) - 1)`
-   */
-  next(bits: number): number {
-    return uniformInt(this.internalRng, 0, (1 << bits) - 1);
-  }
-
-  /**
-   * Generate a random boolean
-   */
-
-  nextBoolean(): boolean {
-    return uniformInt(this.internalRng, 0, 1) === 1;
-  }
-
-  /**
-   * Generate a random integer (32 bits)
-   * @deprecated Prefer {@link nextInt} with explicit bounds: `nextInt(-2147483648, 2147483647)`
-   */
-  nextInt(): number;
-
-  /**
    * Generate a random integer between min (included) and max (included)
    * @param min - Minimal integer value
    * @param max - Maximal integer value
    */
-  nextInt(min: number, max: number): number;
-  nextInt(min?: number, max?: number): number {
-    return uniformInt(this.internalRng, min === undefined ? MIN_INT : min, max === undefined ? MAX_INT : max);
+  nextInt(min: number, max: number): number {
+    return uniformInt(this.internalRng, min, max);
   }
 
   /**
@@ -79,8 +53,8 @@ export class Random {
    * Generate a random floating point number between 0.0 (included) and 1.0 (excluded)
    */
   nextDouble(): number {
-    const a = this.next(26);
-    const b = this.next(27);
+    const a = uniformInt(this.internalRng, 0, 0x3ffffff);
+    const b = uniformInt(this.internalRng, 0, 0x7ffffff);
     return (a * DBL_FACTOR + b) * DBL_DIVISOR;
   }
 
