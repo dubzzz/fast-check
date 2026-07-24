@@ -296,7 +296,7 @@ describe('Runner', () => {
             const p: IRawProperty<[number], true> = {
               isAsync: () => true,
               generate: (rng: Random) => {
-                return new Value([rng.nextInt()], undefined);
+                return new Value([rng.nextInt(-0x80000000, 0x7fffffff)], undefined);
               },
               shrink: () => Stream.nil(),
               runBeforeEach: () => {},
