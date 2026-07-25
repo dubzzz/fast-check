@@ -303,7 +303,6 @@ class FakerBuilder<TValue> extends fc.Arbitrary<TValue> {
   }
   generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<TValue> {
     const randomizer: Randomizer = {
-      // Build a double in [0, 1) out of two integer draws: 26 bits then 27 bits, for 53 bits of randomness
       next: (): number => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
       seed: () => {}, // no-op, no support for updates of the seed, could even throw
     };
