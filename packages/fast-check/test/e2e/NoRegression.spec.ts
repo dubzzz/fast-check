@@ -195,14 +195,14 @@ describe(`NoRegression`, () => {
       ),
     );
   });
-  it('infiniteStream', async () => {
+  it('iterator', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.infiniteStream(fc.nat()), (s) => testFunc([...s.take(10)])),
+      fc.asyncProperty(fc.iterator(fc.nat()), (s) => testFunc([...s.take(10)])),
     );
   });
-  it('infiniteStream (noHistory)', async () => {
+  it('iterator (noHistory)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.infiniteStream(fc.nat(), { noHistory: true }), (s) => testFunc([...s.take(10)])),
+      fc.asyncProperty(fc.iterator(fc.nat(), { noHistory: true }), (s) => testFunc([...s.take(10)])),
     );
   });
   it('uniqueArray', async () => {
@@ -499,15 +499,15 @@ describe(`NoRegression (async)`, () => {
     );
   });
 
-  it('infiniteStream (to Promise)', async () => {
+  it('iterator (to Promise)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
+      fc.asyncProperty(fc.iterator(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
     );
   });
 
-  it('infiniteStream (noHistory) (to Promise)', async () => {
+  it('iterator (noHistory) (to Promise)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.infiniteStream(asyncNumber, { noHistory: true }), async (s) =>
+      fc.asyncProperty(fc.iterator(asyncNumber, { noHistory: true }), async (s) =>
         testFunc(await Promise.all([...s.take(10)])),
       ),
     );
