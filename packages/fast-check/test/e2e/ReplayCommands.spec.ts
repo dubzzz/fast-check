@@ -40,7 +40,7 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
       (cmds) => {
         if (alreadyFailed && mrng !== undefined) {
           // Simulate the behaviour of skipAllAfterTimeLimit
-          skipAllRuns = skipAllRuns || mrng.nextDouble() < 0.05;
+          skipAllRuns = skipAllRuns || mrng.nextInt(1, 20) === 1; // 5% chance to skip all runs
           fc.pre(!skipAllRuns);
         }
         try {
