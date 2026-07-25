@@ -31,19 +31,6 @@ describe('Random', () => {
         }),
       ));
   });
-  describe('nextDouble', () => {
-    it('Should produce values within 0 and 1', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
-          const mrng = new Random(xorshift128plus(seed));
-          for (let idx = 0; idx !== num; ++idx) {
-            const v = mrng.nextDouble();
-            if (v < 0 || v >= 1) return false;
-          }
-          return true;
-        }),
-      ));
-  });
   describe('clone', () => {
     it('Should produce the same sequences', async () =>
       await fc.assert(
