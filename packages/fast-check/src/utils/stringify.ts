@@ -1,6 +1,10 @@
 /**
  * Use this symbol to define a custom serializer for your instances.
- * Serializer must be a function returning a string (see {@link WithToStringMethod}).
+ * Serializer must be a function returning either a string or a promise of string (see {@link WithToStringMethod}).
+ *
+ * Please note that:
+ * 1. Promise-based outputs will only be exploited by asynchronous properties.
+ * 2. Whenever it returns a promise, this promise has to resolve barely instantly.
  *
  * @remarks Since 2.17.0
  * @public
@@ -12,7 +16,7 @@ export const toStringMethod: unique symbol = Symbol.for('fast-check/toStringMeth
  * @remarks Since 2.17.0
  * @public
  */
-export type WithToStringMethod = { [toStringMethod]: () => string };
+export type WithToStringMethod = { [toStringMethod]: () => string | Promise<string> };
 /**
  * Check if an instance implements {@link WithToStringMethod}
  *
@@ -25,40 +29,6 @@ export function hasToStringMethod<T>(instance: T): instance is T & WithToStringM
     (typeof instance === 'object' || typeof instance === 'function') &&
     toStringMethod in instance &&
     typeof (instance as any)[toStringMethod] === 'function'
-  );
-}
-
-/**
- * Use this symbol to define a custom serializer for your instances.
- * Serializer must be a function returning a promise of string (see {@link WithAsyncToStringMethod}).
- *
- * Please note that:
- * 1. It will only be useful for asynchronous properties.
- * 2. It has to return barely instantly.
- *
- * @remarks Since 2.17.0
- * @public
- */
-export const asyncToStringMethod: unique symbol = Symbol.for('fast-check/asyncToStringMethod');
-/**
- * Interface to implement for {@link asyncToStringMethod}
- *
- * @remarks Since 2.17.0
- * @public
- */
-export type WithAsyncToStringMethod = { [asyncToStringMethod]: () => Promise<string> };
-/**
- * Check if an instance implements {@link WithAsyncToStringMethod}
- *
- * @remarks Since 2.17.0
- * @public
- */
-export function hasAsyncToStringMethod<T>(instance: T): instance is T & WithAsyncToStringMethod {
-  return (
-    instance !== null &&
-    (typeof instance === 'object' || typeof instance === 'function') &&
-    asyncToStringMethod in instance &&
-    typeof (instance as any)[asyncToStringMethod] === 'function'
   );
 }
 
@@ -113,7 +83,7 @@ function isSparseArray(arr: unknown[]): boolean {
 export function stringifyInternal<Ts>(
   value: Ts,
   previousValues: any[],
-  getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
+  getAsyncContent: (p: Promise<unknown> | WithToStringMethod) => AsyncContent,
 ): string {
   const currentValues = [...previousValues, value];
   if (typeof value === 'object') {
@@ -123,17 +93,20 @@ export function stringifyInternal<Ts>(
     }
   }
 
-  if (hasAsyncToStringMethod(value)) {
-    // if user defined custom async serialization function, we use it first
-    const content = getAsyncContent(value);
-    if (content.state === 'fulfilled') {
-      return content.value as string;
-    }
-  }
   if (hasToStringMethod(value)) {
-    // if user defined custom sync serialization function, we use it before next ones
+    // if user defined custom serialization function, we use it before next ones
     try {
-      return value[toStringMethod]();
+      const out = value[toStringMethod]();
+      if (typeof out === 'string') {
+        return out;
+      }
+      // the serializer returned a promise of string: it can only be leveraged in asynchronous contexts
+      // oxlint-disable-next-line no-empty-function
+      out.catch(() => {}); // catching potential errors of out to avoid "Unhandled promise rejection"
+      const content = getAsyncContent(value);
+      if (content.state === 'fulfilled') {
+        return content.value as string;
+      }
     } catch {
       // fallback to defaults...
     }
@@ -365,7 +338,7 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
   }
 
   const unknownState = { state: 'unknown', value: undefined } as const;
-  const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithAsyncToStringMethod): AsyncContent {
+  const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithToStringMethod): AsyncContent {
     const cacheKey = data;
     if (cache.has(cacheKey)) {
       // oxlint-disable-next-line typescript/no-non-null-assertion
@@ -374,8 +347,8 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
 
     const delay0 = createDelay0();
     const p: Promise<unknown> =
-      asyncToStringMethod in data
-        ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
+      toStringMethod in data
+        ? Promise.resolve().then(() => (data as WithToStringMethod)[toStringMethod]())
         : (data as Promise<unknown>);
     // oxlint-disable-next-line no-empty-function
     p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"

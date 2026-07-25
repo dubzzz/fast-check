@@ -1,10 +1,5 @@
-import {
-  asyncToStringMethod,
-  hasAsyncToStringMethod,
-  hasToStringMethod,
-  toStringMethod,
-} from '../../../utils/stringify.js';
-import type { WithToStringMethod, WithAsyncToStringMethod } from '../../../utils/stringify.js';
+import { hasToStringMethod, toStringMethod } from '../../../utils/stringify.js';
+import type { WithToStringMethod } from '../../../utils/stringify.js';
 import { cloneMethod, hasCloneMethod } from '../../symbols.js';
 import type { ICommand } from '../command/ICommand.js';
 
@@ -22,16 +17,9 @@ export class CommandWrapper<Model extends object, Real, RunResult, CheckAsync ex
   constructor(readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>) {
     if (hasToStringMethod(cmd)) {
       const method = cmd[toStringMethod];
-      (this as unknown as WithToStringMethod)[toStringMethod] = function toStringMethod(): string {
+      (this as unknown as WithToStringMethod)[toStringMethod] = function toStringMethod(): string | Promise<string> {
         return method.call(cmd);
       };
-    }
-    if (hasAsyncToStringMethod(cmd)) {
-      const method = cmd[asyncToStringMethod];
-      (this as unknown as WithAsyncToStringMethod)[asyncToStringMethod] =
-        function asyncToStringMethod(): Promise<string> {
-          return method.call(cmd);
-        };
     }
   }
   check(m: Readonly<Model>): CheckAsync extends false ? boolean : Promise<boolean> {

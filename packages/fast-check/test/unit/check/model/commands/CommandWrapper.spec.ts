@@ -3,7 +3,7 @@ import { CommandWrapper } from '../../../../../src/check/model/commands/CommandW
 import type { Command } from '../../../../../src/check/model/command/Command.js';
 import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand.js';
 import { cloneMethod } from '../../../../../src/check/symbols.js';
-import { asyncToStringMethod, toStringMethod } from '../../../../../src/utils/stringify.js';
+import { toStringMethod } from '../../../../../src/utils/stringify.js';
 
 type Model = Record<string, unknown>;
 type Real = unknown;
@@ -138,30 +138,18 @@ describe('CommandWrapper', () => {
 
     const wrapper = new CommandWrapper(cmd);
     expect(toStringMethod in wrapper).toBe(true);
-    expect(asyncToStringMethod in wrapper).toBe(false);
     expect((wrapper as any)[toStringMethod]()).toBe('hello');
   });
-  it('Should not define [asyncToStringMethod] if underlying command does not', async () => {
+  it('Should define Promise-based [toStringMethod] if underlying command does', async () => {
     const cmd = new (class implements Command<Model, Real> {
       check = vi.fn();
       run = vi.fn();
       toString = vi.fn();
+      [toStringMethod] = async () => 'world';
     })();
 
     const wrapper = new CommandWrapper(cmd);
-    expect(toStringMethod in wrapper).toBe(false);
-  });
-  it('Should define [asyncToStringMethod] if underlying command does', async () => {
-    const cmd = new (class implements Command<Model, Real> {
-      check = vi.fn();
-      run = vi.fn();
-      toString = vi.fn();
-      [asyncToStringMethod] = async () => 'world';
-    })();
-
-    const wrapper = new CommandWrapper(cmd);
-    expect(asyncToStringMethod in wrapper).toBe(true);
-    expect(toStringMethod in wrapper).toBe(false);
-    expect(await (wrapper as any)[asyncToStringMethod]()).toBe('world');
+    expect(toStringMethod in wrapper).toBe(true);
+    expect(await (wrapper as any)[toStringMethod]()).toBe('world');
   });
 });
