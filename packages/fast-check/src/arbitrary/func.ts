@@ -1,5 +1,5 @@
 import { hash } from '../utils/hash.js';
-import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../utils/stringify.js';
+import { possiblyAsyncStringify, stringify, toStringMethod } from '../utils/stringify.js';
 import { cloneMethod, hasCloneMethod } from '../check/symbols.js';
 import { array } from './array.js';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
@@ -39,8 +39,14 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
       }
       return Object.defineProperties(f, {
         toString: { value: () => prettyPrint(stringify(outs)) },
-        [toStringMethod]: { value: () => prettyPrint(stringify(outs)) },
-        [asyncToStringMethod]: { value: async () => prettyPrint(await asyncStringify(outs)) },
+        [toStringMethod]: {
+          value: () => {
+            const stringifiedOuts = possiblyAsyncStringify(outs);
+            return typeof stringifiedOuts === 'string'
+              ? prettyPrint(stringifiedOuts)
+              : stringifiedOuts.then(prettyPrint);
+          },
+        },
         // We allow reconfiguration of the [cloneMethod] as caller might want to enforce its own
         [cloneMethod]: { value: producer, configurable: true },
       });

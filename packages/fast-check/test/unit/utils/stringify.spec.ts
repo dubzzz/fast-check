@@ -5,13 +5,7 @@ import * as fc from 'fast-check';
 // Instead we want 'buffer' from our node_modules - the most used polyfill for Buffer on browser-side
 import { Buffer as NotNodeBuffer } from 'not-node-buffer';
 
-import {
-  asyncStringify,
-  asyncToStringMethod,
-  possiblyAsyncStringify,
-  stringify,
-  toStringMethod,
-} from '../../../src/utils/stringify.js';
+import { asyncStringify, possiblyAsyncStringify, stringify, toStringMethod } from '../../../src/utils/stringify.js';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
@@ -508,17 +502,15 @@ describe('stringify', () => {
     const instance5 = { [toStringMethod]: 1 }; // not callable
     expect(stringify(instance5)).toEqual('{[Symbol.for("fast-check/toStringMethod")]:1}');
   });
-  it('Should not be able to rely on the output of [asyncToStringMethod] in sync mode', () => {
-    const instance1 = { [asyncToStringMethod]: () => 'hello1' }; // not even async there
-    expect(stringify(instance1)).toEqual('{[Symbol.for("fast-check/asyncToStringMethod")]:() => "hello1"}'); // fallbacking to default
+  it('Should not be able to rely on Promise-based outputs of [toStringMethod] in sync mode', () => {
+    const instance1 = { [toStringMethod]: async () => 'hello1' };
+    expect(stringify(instance1)).toEqual('{[Symbol.for("fast-check/toStringMethod")]:async () => "hello1"}'); // fallbacking to default
 
-    const instance2 = { [asyncToStringMethod]: () => 'hello2', [toStringMethod]: () => 'world' };
-    expect(stringify(instance2)).toEqual('world'); // fallbacking to [toStringMethod]
-
-    const instance3ProbeFn = vi.fn();
-    const instance3 = { [asyncToStringMethod]: instance3ProbeFn };
-    stringify(instance3);
-    expect(instance3ProbeFn).not.toHaveBeenCalled(); // never calling [asyncToStringMethod] in sync mode
+    const p2 = Promise.resolve('hello2');
+    const instance2ProbeFn = vi.fn().mockImplementation(() => p2);
+    const instance2 = { [toStringMethod]: instance2ProbeFn };
+    expect(stringify(instance2)).not.toEqual('hello2'); // fallbacking to default
+    expect(instance2ProbeFn).toHaveBeenCalled(); // [toStringMethod] gets called even in sync mode, but its Promise-based output cannot be leveraged there
   });
 });
 
@@ -611,53 +603,49 @@ describe('asyncStringify', () => {
       'Promise.resolve({"a":Promise.resolve({"a1":[cyclic]}),"b":{"b1":Promise.resolve({"a1":[cyclic]})}})',
     );
   });
-  it('Should use [asyncToStringMethod] if any on the instance or its prototype', async () => {
-    const instance1 = { [asyncToStringMethod]: async () => 'hello1' };
+  it('Should use Promise-based [toStringMethod] if any on the instance or its prototype', async () => {
+    const instance1 = { [toStringMethod]: async () => 'hello1' };
     expect(await asyncStringify(instance1)).toEqual('hello1');
 
     const instance2 = Object.create(null);
-    Object.defineProperty(instance2, asyncToStringMethod, {
-      value: () => 'hello2',
+    Object.defineProperty(instance2, toStringMethod, {
+      value: async () => 'hello2',
       configurable: false,
       enumerable: false,
       writable: false,
     });
     expect(await asyncStringify(instance2)).toEqual('hello2');
 
-    const instance3 = { [asyncToStringMethod]: async () => 'hello3', [toStringMethod]: () => 'world' };
-    expect(await asyncStringify(instance3)).toEqual('hello3'); // even when [toStringMethod] has been defined
+    const instance3 = { [toStringMethod]: () => 'hello3' }; // not even async there
+    expect(await asyncStringify(instance3)).toEqual('hello3');
 
     // prettier-ignore
-    const instance4 = { [asyncToStringMethod]: async () => { throw new Error('hello4'); } };
+    const instance4 = { [toStringMethod]: async () => { throw new Error('hello4'); } };
     const stringified4 = await asyncStringify(instance4);
     expect(stringified4.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol.for("fast-check/asyncToStringMethod")]:async () => { throw new Error("hello4"); }}',
+      '{[Symbol.for("fast-check/toStringMethod")]:async () => { throw new Error("hello4"); }}',
     ); // fallbacking to default
 
     // prettier-ignore
-    const instance5 = { [asyncToStringMethod]: async () => { throw new Error('hello5'); }, [toStringMethod]: () => "world" };
-    expect(await asyncStringify(instance5)).toEqual('world'); // fallbacking to [toStringMethod]
-
-    // prettier-ignore
-    const instance6 = { [asyncToStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
+    const instance6 = { [toStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
     const stringified6 = await asyncStringify(instance6);
     expect(stringified6.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol.for("fast-check/asyncToStringMethod")]:() => { throw new Error("hello6"); }}',
+      '{[Symbol.for("fast-check/toStringMethod")]:() => { throw new Error("hello6"); }}',
     ); // fallbacking to default
 
     class InProto {
-      async [asyncToStringMethod]() {
+      async [toStringMethod]() {
         return 'hello7';
       }
     }
     const instance7 = new InProto();
     expect(await asyncStringify(instance7)).toEqual('hello7');
 
-    const instance8 = { [asyncToStringMethod]: 1 }; // not callable
-    expect(await asyncStringify(instance8)).toEqual('{[Symbol.for("fast-check/asyncToStringMethod")]:1}');
+    const instance8 = { [toStringMethod]: 1 }; // not callable
+    expect(await asyncStringify(instance8)).toEqual('{[Symbol.for("fast-check/toStringMethod")]:1}');
 
     const instance9 = {
-      [asyncToStringMethod]: async () => {
+      [toStringMethod]: async () => {
         const s1 = await asyncStringify(Promise.resolve('hello9'));
         const s2 = await asyncStringify(Promise.resolve('world9'));
         return `${s1} ${s2}`;
@@ -666,7 +654,7 @@ describe('asyncStringify', () => {
     expect(await asyncStringify(instance9)).toEqual('Promise.resolve("hello9") Promise.resolve("world9")');
 
     const p10 = Promise.resolve('hello10');
-    const instance10 = { [asyncToStringMethod]: () => p10.then((v) => `got: ${v}`) };
+    const instance10 = { [toStringMethod]: () => p10.then((v) => `got: ${v}`) };
     expect(await asyncStringify(instance10)).toEqual('got: hello10');
   });
 });

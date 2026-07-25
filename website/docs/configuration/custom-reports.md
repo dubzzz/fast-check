@@ -121,10 +121,10 @@ The official documentation explaining how to build CodeSandbox environments from
 
 By default, fast-check serializes generated values using its internal `stringify` helper. Sometimes you may want a better stringified representation of your instances. In such cases, you have several solutions:
 
-1. If your instance defines a `toString` method, it will used to properly report it, unless you've defined one of the following methods, which take precedence.
-2. If defining `toString` method is to intrusive, you can use `toStringMethod` and `asyncToStringMethod`.
+1. If your instance defines a `toString` method, it will used to properly report it, unless you've defined the following method, which takes precedence.
+2. If defining `toString` method is to intrusive, you can use `toStringMethod`.
 
-In most cases, `toStringMethod` is sufficient. This is the serializer method that fast-check uses to serialize your instance in any context: synchronous or asynchronous.
+`toStringMethod` is the serializer method that fast-check uses to serialize your instance in any context: synchronous or asynchronous.
 
 ```ts
 Object.defineProperties(myInstanceWithoutCustomToString, {
@@ -134,11 +134,11 @@ Object.defineProperties(myInstanceWithoutCustomToString, {
 // that will be used by fast-check whenever needed
 ```
 
-However, if you're working with asynchronous values, you may need an async method to retrieve the value. For example:
+However, if you're working with asynchronous values, you may need an async method to retrieve the value. In such cases, `toStringMethod` can return a promise of string instead of a string. For example:
 
 ```ts
 Object.defineProperties(myPromisePossiblyResolved, {
-  [fc.asyncToStringMethod]: {
+  [fc.toStringMethod]: {
     value: async () => {
       const resolved = await myPromisePossiblyResolved;
       return `My value: ${resolved}`;
@@ -147,11 +147,11 @@ Object.defineProperties(myPromisePossiblyResolved, {
 });
 ```
 
-:::info Limitations of async variant
+:::info Limitations of Promise-based outputs
 Note that:
 
-- `asyncToStringMethod` is only used in asynchronous contexts.
-- Although `asyncToStringMethod` is marked as asynchronous, it should resolve almost instantly.
+- Promise-based outputs of `toStringMethod` are only used in asynchronous contexts.
+- Whenever `toStringMethod` returns a promise, this promise should resolve almost instantly.
 
 :::
 

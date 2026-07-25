@@ -149,15 +149,8 @@ export type { ExecutionTree } from './check/runner/reporter/ExecutionTree.js';
 export type { WithCloneMethod } from './check/symbols.js';
 export { cloneMethod, cloneIfNeeded, hasCloneMethod } from './check/symbols.js';
 export { hash } from './utils/hash.js';
-export type { WithToStringMethod, WithAsyncToStringMethod } from './utils/stringify.js';
-export {
-  stringify,
-  asyncStringify,
-  toStringMethod,
-  hasToStringMethod,
-  asyncToStringMethod,
-  hasAsyncToStringMethod,
-} from './utils/stringify.js';
+export type { WithToStringMethod } from './utils/stringify.js';
+export { stringify, asyncStringify, toStringMethod, hasToStringMethod } from './utils/stringify.js';
 export type {
   Scheduler,
   SchedulerSequenceItem,

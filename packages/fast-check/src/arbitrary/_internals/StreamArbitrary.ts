@@ -3,7 +3,7 @@ import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod } from '../../check/symbols.js';
 import type { Random } from '../../random/generator/Random.js';
 import { nil } from '../../utils/iterator.js';
-import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
+import { possiblyAsyncStringify, stringify, toStringMethod } from '../../utils/stringify.js';
 
 /** @internal */
 function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
@@ -41,14 +41,17 @@ export class StreamArbitrary<T> extends Arbitrary<IteratorObject<T, never>> {
           value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [toStringMethod]: {
-          value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
-        },
-        [asyncToStringMethod]: {
-          value: async () =>
-            prettyPrint(
-              numSeenValues,
-              seenValues !== null ? await Promise.all(seenValues.map(asyncStringify)) : undefined,
-            ),
+          value: () => {
+            if (seenValues === null) {
+              return prettyPrint(numSeenValues, undefined);
+            }
+            const stringifiedValues = seenValues.map((value) => possiblyAsyncStringify(value));
+            return stringifiedValues.every((s): s is string => typeof s === 'string')
+              ? prettyPrint(numSeenValues, stringifiedValues)
+              : Promise.all(stringifiedValues.map((s) => Promise.resolve(s))).then((values) =>
+                  prettyPrint(numSeenValues, values),
+                );
+          },
         },
         // We allow reconfiguration of the [cloneMethod] as caller might want to enforce its own
         [cloneMethod]: { value: enrichedProducer, enumerable: true },
