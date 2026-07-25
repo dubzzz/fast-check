@@ -181,7 +181,9 @@ describe('IteratorArbitrary', () => {
 
           // Assert
           expect(values).toEqual(expectedValues);
-          expect(String(iterator)).toEqual(`Iterator.from([${expectedValues.map(fakeStringify).join(',')}…])`);
+          expect(String(iterator)).toEqual(
+            `Iterator.from([${[...expectedValues.map(fakeStringify), '/*…*/'].join(',')}])`,
+          );
           expect(stringify).toHaveBeenCalledTimes(expectedValues.length);
           expect(generate).toHaveBeenCalledTimes(expectedValues.length);
           if (expectedValues.length > 0) {
@@ -212,7 +214,7 @@ describe('IteratorArbitrary', () => {
           void [...iterator.take(expectedValues.length)];
 
           // Assert
-          expect(String(iterator)).toMatch(`(${expectedValues.length} emitted)`);
+          expect(String(iterator)).toMatch(`(/*${expectedValues.length} emitted*/)`);
           expect(generate).toHaveBeenCalledTimes(expectedValues.length);
         }),
       ));
