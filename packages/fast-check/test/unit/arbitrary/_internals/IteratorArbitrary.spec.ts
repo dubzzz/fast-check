@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { nil } from '../../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
-import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary.js';
+import { IteratorArbitrary } from '../../../../src/arbitrary/_internals/IteratorArbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { cloneIfNeeded, cloneMethod, hasCloneMethod } from '../../../../src/check/symbols.js';
 import {
@@ -14,11 +14,11 @@ import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 import * as StringifyMock from '../../../../src/utils/stringify.js';
 import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
-describe('StreamArbitrary', () => {
+describe('IteratorArbitrary', () => {
   declareCleaningHooksForSpies();
 
   describe('generate', () => {
-    it('should produce a cloneable instance of Stream', async () =>
+    it('should produce a cloneable instance of Iterator', async () =>
       await fc.assert(
         fc.asyncProperty(fc.boolean(), (history) => {
           // Arrange
@@ -27,7 +27,7 @@ describe('StreamArbitrary', () => {
           const { instance: mrng } = fakeRandom();
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(sourceArb, history);
           const out = arb.generate(mrng, biasFactor);
 
           // Assert
@@ -37,7 +37,7 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should not call generate before we pull from the Stream but decide bias', async () =>
+    it('should not call generate before we pull from the Iterator but decide bias', async () =>
       await fc.assert(
         fc.asyncProperty(fc.boolean(), (history) => {
           // Arrange
@@ -46,7 +46,7 @@ describe('StreamArbitrary', () => {
           const { instance: mrng, nextInt } = fakeRandom();
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(sourceArb, history);
           // oxlint-disable-next-line no-unused-expressions
           arb.generate(mrng, biasFactor).value;
 
@@ -68,7 +68,7 @@ describe('StreamArbitrary', () => {
           const { instance: mrng, nextInt } = fakeRandom();
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(sourceArb, history);
           const out = arb.generate(mrng, biasFactor);
           const s1 = out.value;
           const s2 = out.value;
@@ -82,7 +82,7 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should call generate with cloned instance of Random as we pull from the Stream', async () =>
+    it('should call generate with cloned instance of Random as we pull from the Iterator', async () =>
       await fc.assert(
         fc.asyncProperty(fc.boolean(), (history) => {
           // Arrange
@@ -98,9 +98,9 @@ describe('StreamArbitrary', () => {
           clone.mockReturnValueOnce(mrngCloned);
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, history);
-          const stream = arb.generate(mrng, biasFactor).value;
-          const values = [...stream.take(numValuesToPull)];
+          const arb = new IteratorArbitrary(sourceArb, history);
+          const iterator = arb.generate(mrng, biasFactor).value;
+          const values = [...iterator.take(numValuesToPull)];
 
           // Assert
           expect(generate).toHaveBeenCalledTimes(numValuesToPull);
@@ -111,7 +111,7 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should call generate with cloned instance of Random specific for each Stream', async () =>
+    it('should call generate with cloned instance of Random specific for each Iterator', async () =>
       await fc.assert(
         fc.asyncProperty(fc.boolean(), (history) => {
           // Arrange
@@ -127,7 +127,7 @@ describe('StreamArbitrary', () => {
           clone.mockReturnValueOnce(mrngClonedA).mockReturnValueOnce(mrngClonedB);
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(sourceArb, history);
           const out = arb.generate(mrng, biasFactor);
           const s1 = out.value;
           const c1 = s1[Symbol.iterator]();
@@ -175,13 +175,15 @@ describe('StreamArbitrary', () => {
           stringify.mockImplementation(fakeStringify);
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, true);
-          const stream = arb.generate(mrng, biasFactor).value;
-          const values = [...stream.take(expectedValues.length)];
+          const arb = new IteratorArbitrary(sourceArb, true);
+          const iterator = arb.generate(mrng, biasFactor).value;
+          const values = [...iterator.take(expectedValues.length)];
 
           // Assert
           expect(values).toEqual(expectedValues);
-          expect(String(stream)).toEqual(`Stream(${expectedValues.map(fakeStringify).join(',')}…)`);
+          expect(String(iterator)).toEqual(
+            `Iterator.from([${[...expectedValues.map(fakeStringify), '/*…*/'].join(',')}])`,
+          );
           expect(stringify).toHaveBeenCalledTimes(expectedValues.length);
           expect(generate).toHaveBeenCalledTimes(expectedValues.length);
           if (expectedValues.length > 0) {
@@ -207,17 +209,17 @@ describe('StreamArbitrary', () => {
           stringify.mockImplementation(fakeStringify);
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, false);
-          const stream = arb.generate(mrng, biasFactor).value;
-          void [...stream.take(expectedValues.length)];
+          const arb = new IteratorArbitrary(sourceArb, false);
+          const iterator = arb.generate(mrng, biasFactor).value;
+          void [...iterator.take(expectedValues.length)];
 
           // Assert
-          expect(String(stream)).toMatch(`(${expectedValues.length} emitted)`);
+          expect(String(iterator)).toMatch(`(/*${expectedValues.length} emitted*/)`);
           expect(generate).toHaveBeenCalledTimes(expectedValues.length);
         }),
       ));
 
-    it('should create independent Stream', async () =>
+    it('should create independent Iterator', async () =>
       await fc.assert(
         fc.asyncProperty(fc.boolean(), (history) => {
           // Arrange
@@ -233,33 +235,33 @@ describe('StreamArbitrary', () => {
           stringify.mockImplementation((v) => '<' + String(v) + '>');
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(sourceArb, history);
           const out = arb.generate(mrng, biasFactor);
-          const stream1 = out.value;
-          const stream2 = out.value;
-          const values1 = [...stream1.take(2)];
-          const values2 = [...stream2.take(3)];
+          const iterator1 = out.value;
+          const iterator2 = out.value;
+          const values1 = [...iterator1.take(2)];
+          const values2 = [...iterator2.take(3)];
 
           // Assert
-          const expectedFromStream1 = [0, 1];
-          expect(values1).toEqual(expectedFromStream1);
-          const expectedFromStream2 = [2, 3, 4];
+          const expectedFromIterator1 = [0, 1];
+          expect(values1).toEqual(expectedFromIterator1);
+          const expectedFromIterator2 = [2, 3, 4];
           expect(values2).toEqual([2, 3, 4]);
-          const stream1String = String(stream1);
-          const stream2String = String(stream2);
-          for (const v of expectedFromStream1) {
-            expect(stream2String).not.toMatch(`<${v}>`);
+          const iterator1String = String(iterator1);
+          const iterator2String = String(iterator2);
+          for (const v of expectedFromIterator1) {
+            expect(iterator2String).not.toMatch(`<${v}>`);
             if (history) {
-              expect(stream1String).toMatch(`<${v}>`);
+              expect(iterator1String).toMatch(`<${v}>`);
             }
           }
-          for (const v of expectedFromStream2) {
-            expect(stream1String).not.toMatch(`<${v}>`);
+          for (const v of expectedFromIterator2) {
+            expect(iterator1String).not.toMatch(`<${v}>`);
             if (history) {
-              expect(stream2String).toMatch(`<${v}>`);
+              expect(iterator2String).toMatch(`<${v}>`);
             }
           }
-          expect(generate).toHaveBeenCalledTimes(expectedFromStream1.length + expectedFromStream2.length);
+          expect(generate).toHaveBeenCalledTimes(expectedFromIterator1.length + expectedFromIterator2.length);
         }),
       ));
   });
@@ -271,15 +273,15 @@ describe('StreamArbitrary', () => {
     }
     it.each`
       data                               | description
-      ${nil}                             | ${'empty stream'}
-      ${Iterator.from([1, 5, 6, 74, 4])} | ${'finite stream'}
-      ${infiniteG()}                     | ${'infinite stream'}
-    `('should return false for any Stream whatever the size ($description)', ({ data }) => {
+      ${nil}                             | ${'empty iterator'}
+      ${Iterator.from([1, 5, 6, 74, 4])} | ${'finite iterator'}
+      ${infiniteG()}                     | ${'infinite iterator'}
+    `('should return false for any Iterator whatever the size ($description)', ({ data }) => {
       // Arrange
       const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
 
       // Act
-      const arb = new StreamArbitrary(sourceArb, true);
+      const arb = new IteratorArbitrary(sourceArb, true);
       const out = arb.canShrinkWithoutContext(data);
 
       // Assert
@@ -295,7 +297,7 @@ describe('StreamArbitrary', () => {
           const { instance: mrng } = fakeRandom();
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(sourceArb, history);
           const g = arb.generate(mrng, undefined);
           const out = arb.canShrinkWithoutContext(g.value);
 
@@ -316,7 +318,7 @@ describe('StreamArbitrary', () => {
           const { instance: mrng } = fakeRandom();
 
           // Act
-          const arb = new StreamArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(sourceArb, history);
           const { value, context } = arb.generate(mrng, undefined);
           const pullValues = [...value.take(50)];
           const shrinks = [...arb.shrink(value, context)];
@@ -330,7 +332,7 @@ describe('StreamArbitrary', () => {
   });
 });
 
-describe('StreamArbitrary (integration)', () => {
+describe('IteratorArbitrary (integration)', () => {
   const sourceArb = new FakeIntegerArbitrary();
 
   const isEqual = (s1: IteratorObject<number>, s2: IteratorObject<number>) => {
@@ -340,13 +342,13 @@ describe('StreamArbitrary (integration)', () => {
   const isCorrect = (value: IteratorObject<number>) =>
     value instanceof Iterator && [...value.take(10)].every((v) => sourceArb.canShrinkWithoutContext(v));
 
-  const streamBuilder = () => new StreamArbitrary(sourceArb, true);
+  const iteratorBuilder = () => new IteratorArbitrary(sourceArb, true);
 
   it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(streamBuilder, { isEqual });
+    await assertProduceSameValueGivenSameSeed(iteratorBuilder, { isEqual });
   });
 
   it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(streamBuilder, isCorrect);
+    await assertProduceCorrectValues(iteratorBuilder, isCorrect);
   });
 });

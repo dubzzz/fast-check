@@ -7,12 +7,13 @@ import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '
 
 /** @internal */
 function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
-  const seenSegment = seenValuesStrings !== undefined ? `${seenValuesStrings.join(',')}…` : `${numSeen} emitted`;
-  return `Stream(${seenSegment})`;
+  const seenSegment =
+    seenValuesStrings !== undefined ? `[${[...seenValuesStrings, '/*…*/'].join(',')}]` : `/*${numSeen} emitted*/`;
+  return `Iterator.from(${seenSegment})`;
 }
 
 /** @internal */
-export class StreamArbitrary<T> extends Arbitrary<IteratorObject<T, never>> {
+export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, never>> {
   constructor(
     readonly arb: Arbitrary<T>,
     readonly history: boolean,
@@ -58,7 +59,7 @@ export class StreamArbitrary<T> extends Arbitrary<IteratorObject<T, never>> {
   }
 
   canShrinkWithoutContext(_value: unknown): _value is IteratorObject<T, never> {
-    // Knowing if we can generate or not an infinite stream would require to iterate over it
+    // Knowing if we can generate or not an infinite iterator would require to iterate over it
     // (until its "end")
     return false;
   }

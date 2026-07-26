@@ -1,12 +1,12 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { StreamArbitrary } from './_internals/StreamArbitrary.js';
+import { IteratorArbitrary } from './_internals/IteratorArbitrary.js';
 
 /**
- * Constraints to be applied on {@link infiniteStream}
+ * Constraints to be applied on {@link iterator}
  * @remarks Since 4.3.0
  * @public
  */
-interface InfiniteStreamConstraints {
+interface IteratorConstraints {
   /**
    * Do not save items emitted by this arbitrary and print count instead.
    * Recommended for very large tests.
@@ -17,9 +17,9 @@ interface InfiniteStreamConstraints {
 }
 
 /**
- * Produce an infinite stream of values
+ * Produce an infinite iterator of values
  *
- * WARNING: By default, infiniteStream remembers all values it has ever
+ * WARNING: By default, iterator remembers all values it has ever
  * generated. This causes unbounded memory growth during large tests.
  * Set noHistory to disable.
  *
@@ -31,15 +31,12 @@ interface InfiniteStreamConstraints {
  * @remarks Since 1.8.0
  * @public
  */
-function infiniteStream<T>(
-  arb: Arbitrary<T>,
-  constraints?: InfiniteStreamConstraints,
-): Arbitrary<IteratorObject<T, never>> {
+function iterator<T>(arb: Arbitrary<T>, constraints?: IteratorConstraints): Arbitrary<IteratorObject<T, never>> {
   const history =
     constraints !== undefined && typeof constraints === 'object' && 'noHistory' in constraints
       ? !constraints.noHistory
       : true;
-  return new StreamArbitrary(arb, history);
+  return new IteratorArbitrary(arb, history);
 }
 
-export { infiniteStream };
+export { iterator };

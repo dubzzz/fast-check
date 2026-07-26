@@ -23,7 +23,7 @@ describe('TodoList', () => {
           fc.uniqueArray(fc.record({ id: fc.uuid(), label: fc.string(), checked: fc.boolean() }), {
             selector: (entry) => entry.id,
           }),
-          fc.infiniteStream(fc.boolean()),
+          fc.iterator(fc.boolean()),
           async (s, commands, initialTodos, allFailures) => {
             const { mockedApi, expectedTodos } = mockApi(s, initialTodos, allFailures);
 
