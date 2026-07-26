@@ -6,28 +6,48 @@ import { nil } from '../../utils/iterator.js';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
 /** @internal */
-function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
+function prettyPrint(numSeen: number, completed: boolean, seenValuesStrings?: string[]): string {
   const seenSegment =
-    seenValuesStrings !== undefined ? `[${[...seenValuesStrings, '/*…*/'].join(',')}]` : `/*${numSeen} emitted*/`;
+    seenValuesStrings !== undefined
+      ? `[${(completed ? seenValuesStrings : [...seenValuesStrings, '/*…*/']).join(',')}]`
+      : `/*${numSeen} emitted*/`;
   return `Iterator.from(${seenSegment})`;
 }
 
 /** @internal */
-export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, never>> {
+export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>> {
   constructor(
     readonly arb: Arbitrary<T>,
     readonly history: boolean,
+    readonly minLength: number,
+    readonly maxGeneratedLength: number,
+    readonly maxLength: number,
   ) {
     super();
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): Value<IteratorObject<T, never>> {
+  private drawTargetLength(mrng: Random): number {
+    if (this.minLength === Number.POSITIVE_INFINITY) {
+      // Only never-ending iterators can be produced
+      return Number.POSITIVE_INFINITY;
+    }
+    if (this.maxLength === Number.POSITIVE_INFINITY) {
+      // One extra slot on top of the usual finite range: reaching it means never-ending iterator
+      const drawn = mrng.nextInt(this.minLength, this.maxGeneratedLength + 1);
+      return drawn > this.maxGeneratedLength ? Number.POSITIVE_INFINITY : drawn;
+    }
+    return mrng.nextInt(this.minLength, this.maxGeneratedLength);
+  }
+
+  generate(mrng: Random, biasFactor: number | undefined): Value<IteratorObject<T, undefined>> {
     const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
+    const targetLength = this.drawTargetLength(mrng);
     const enrichedProducer = () => {
       const seenValues: T[] | null = this.history ? [] : null;
       let numSeenValues = 0;
-      const g = function* (arb: Arbitrary<T>, clonedMrng: Random): IteratorObject<T, never> {
-        while (true) {
+      let completed = false;
+      const g = function* (arb: Arbitrary<T>, clonedMrng: Random): IteratorObject<T, undefined> {
+        for (let numYields = 0; numYields < targetLength; ++numYields) {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
           numSeenValues++;
           if (seenValues !== null) {
@@ -35,19 +55,23 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, never>> {
           }
           yield value;
         }
+        completed = true;
       };
       const s = g(this.arb, mrng.clone());
       return Object.defineProperties(s, {
         toString: {
-          value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
+          value: () =>
+            prettyPrint(numSeenValues, completed, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [toStringMethod]: {
-          value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
+          value: () =>
+            prettyPrint(numSeenValues, completed, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [asyncToStringMethod]: {
           value: async () =>
             prettyPrint(
               numSeenValues,
+              completed,
               seenValues !== null ? await Promise.all(seenValues.map(asyncStringify)) : undefined,
             ),
         },
@@ -58,13 +82,16 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, never>> {
     return new Value(enrichedProducer(), undefined);
   }
 
-  canShrinkWithoutContext(_value: unknown): _value is IteratorObject<T, never> {
+  canShrinkWithoutContext(_value: unknown): _value is IteratorObject<T, undefined> {
     // Knowing if we can generate or not an infinite iterator would require to iterate over it
     // (until its "end")
     return false;
   }
 
-  shrink(_value: IteratorObject<T, never>, _context?: unknown): IteratorObject<Value<IteratorObject<T, never>>> {
+  shrink(
+    _value: IteratorObject<T, undefined>,
+    _context?: unknown,
+  ): IteratorObject<Value<IteratorObject<T, undefined>>> {
     // Not supported yet, even if context was provided
     return nil;
   }

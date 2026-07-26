@@ -27,7 +27,13 @@ describe('IteratorArbitrary', () => {
           const { instance: mrng } = fakeRandom();
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const out = arb.generate(mrng, biasFactor);
 
           // Assert
@@ -46,7 +52,13 @@ describe('IteratorArbitrary', () => {
           const { instance: mrng, nextInt } = fakeRandom();
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           // oxlint-disable-next-line no-unused-expressions
           arb.generate(mrng, biasFactor).value;
 
@@ -68,7 +80,13 @@ describe('IteratorArbitrary', () => {
           const { instance: mrng, nextInt } = fakeRandom();
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const out = arb.generate(mrng, biasFactor);
           const s1 = out.value;
           const s2 = out.value;
@@ -98,7 +116,13 @@ describe('IteratorArbitrary', () => {
           clone.mockReturnValueOnce(mrngCloned);
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const iterator = arb.generate(mrng, biasFactor).value;
           const values = [...iterator.take(numValuesToPull)];
 
@@ -127,7 +151,13 @@ describe('IteratorArbitrary', () => {
           clone.mockReturnValueOnce(mrngClonedA).mockReturnValueOnce(mrngClonedB);
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const out = arb.generate(mrng, biasFactor);
           const s1 = out.value;
           const c1 = s1[Symbol.iterator]();
@@ -175,7 +205,13 @@ describe('IteratorArbitrary', () => {
           stringify.mockImplementation(fakeStringify);
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, true);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            true,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const iterator = arb.generate(mrng, biasFactor).value;
           const values = [...iterator.take(expectedValues.length)];
 
@@ -209,7 +245,13 @@ describe('IteratorArbitrary', () => {
           stringify.mockImplementation(fakeStringify);
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, false);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            false,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const iterator = arb.generate(mrng, biasFactor).value;
           void [...iterator.take(expectedValues.length)];
 
@@ -235,7 +277,13 @@ describe('IteratorArbitrary', () => {
           stringify.mockImplementation((v) => '<' + String(v) + '>');
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const out = arb.generate(mrng, biasFactor);
           const iterator1 = out.value;
           const iterator2 = out.value;
@@ -264,6 +312,119 @@ describe('IteratorArbitrary', () => {
           expect(generate).toHaveBeenCalledTimes(expectedFromIterator1.length + expectedFromIterator2.length);
         }),
       ));
+
+    it('should stop yielding values as soon as it reaches the drawn target length', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.boolean(), fc.integer({ min: 0, max: 10 }), (history, targetLength) => {
+          // Arrange
+          const biasFactor = 48;
+          let index = 0;
+          const { instance: sourceArb, generate } = fakeArbitrary<number>();
+          generate.mockImplementation(() => new Value(index++, undefined));
+          const { instance: mrng, clone, nextInt } = fakeRandom();
+          nextInt.mockReturnValueOnce(2); // for no bias
+          nextInt.mockReturnValueOnce(targetLength); // for target length
+          const { instance: mrngCloned } = fakeRandom();
+          clone.mockReturnValueOnce(mrngCloned);
+
+          // Act
+          const arb = new IteratorArbitrary(sourceArb, history, 0, 10, 10);
+          const iterator = arb.generate(mrng, biasFactor).value;
+          const values = [...iterator];
+
+          // Assert
+          expect(nextInt).toHaveBeenCalledTimes(2);
+          expect(nextInt).toHaveBeenNthCalledWith(2, 0, 10); // finite maxLength: no extra slot
+          expect(values).toHaveLength(targetLength);
+          expect(generate).toHaveBeenCalledTimes(targetLength);
+          expect(iterator.next()).toEqual({ done: true, value: undefined });
+        }),
+      ));
+
+    it('should draw the target length with one extra slot and produce a never-ending iterator when reaching it', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.boolean(), (history) => {
+          // Arrange
+          const biasFactor = 48;
+          let index = 0;
+          const { instance: sourceArb, generate } = fakeArbitrary<number>();
+          generate.mockImplementation(() => new Value(index++, undefined));
+          const { instance: mrng, clone, nextInt } = fakeRandom();
+          nextInt.mockReturnValueOnce(2); // for no bias
+          nextInt.mockReturnValueOnce(11); // for target length: 11 > maxGeneratedLength=10, aka never-ending
+          const { instance: mrngCloned } = fakeRandom();
+          clone.mockReturnValueOnce(mrngCloned);
+
+          // Act
+          const arb = new IteratorArbitrary(sourceArb, history, 0, 10, Number.POSITIVE_INFINITY);
+          const iterator = arb.generate(mrng, biasFactor).value;
+          for (let i = 0; i !== 50; ++i) {
+            expect(iterator.next().done).toBe(false);
+          }
+
+          // Assert
+          expect(nextInt).toHaveBeenCalledTimes(2);
+          expect(nextInt).toHaveBeenNthCalledWith(2, 0, 11); // infinite maxLength: one extra slot
+          expect(generate).toHaveBeenCalledTimes(50);
+        }),
+      ));
+
+    it('should not draw any target length when minLength is Number.POSITIVE_INFINITY', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.boolean(), (history) => {
+          // Arrange
+          const biasFactor = 48;
+          let index = 0;
+          const { instance: sourceArb, generate } = fakeArbitrary<number>();
+          generate.mockImplementation(() => new Value(index++, undefined));
+          const { instance: mrng, clone, nextInt } = fakeRandom();
+          nextInt.mockReturnValueOnce(2); // for no bias
+          const { instance: mrngCloned } = fakeRandom();
+          clone.mockReturnValueOnce(mrngCloned);
+
+          // Act
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
+          const iterator = arb.generate(mrng, biasFactor).value;
+          for (let i = 0; i !== 50; ++i) {
+            expect(iterator.next().done).toBe(false);
+          }
+
+          // Assert
+          expect(nextInt).toHaveBeenCalledTimes(1); // only called for bias
+          expect(generate).toHaveBeenCalledTimes(50);
+        }),
+      ));
+
+    it('should print values without any trailing … once the iterator completed', () => {
+      // Arrange
+      const biasFactor = 48;
+      let index = 0;
+      const { instance: sourceArb, generate } = fakeArbitrary<number>();
+      generate.mockImplementation(() => new Value(index++, undefined));
+      const { instance: mrng, clone, nextInt } = fakeRandom();
+      nextInt.mockReturnValueOnce(2); // for no bias
+      nextInt.mockReturnValueOnce(2); // for target length
+      const { instance: mrngCloned } = fakeRandom();
+      clone.mockReturnValueOnce(mrngCloned);
+      const fakeStringify = (v: unknown) => '<' + String(v) + '>';
+      const stringify = vi.spyOn(StringifyMock, 'stringify');
+      stringify.mockImplementation(fakeStringify);
+
+      // Act
+      const arb = new IteratorArbitrary(sourceArb, true, 0, 10, 10);
+      const iterator = arb.generate(mrng, biasFactor).value;
+      const values = [...iterator];
+
+      // Assert
+      expect(values).toEqual([0, 1]);
+      expect(String(iterator)).toEqual('Iterator.from([<0>,<1>])');
+    });
   });
 
   describe('canShrinkWithoutContext', () => {
@@ -281,7 +442,13 @@ describe('IteratorArbitrary', () => {
       const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
 
       // Act
-      const arb = new IteratorArbitrary(sourceArb, true);
+      const arb = new IteratorArbitrary(
+        sourceArb,
+        true,
+        Number.POSITIVE_INFINITY,
+        Number.POSITIVE_INFINITY,
+        Number.POSITIVE_INFINITY,
+      );
       const out = arb.canShrinkWithoutContext(data);
 
       // Assert
@@ -297,7 +464,13 @@ describe('IteratorArbitrary', () => {
           const { instance: mrng } = fakeRandom();
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const g = arb.generate(mrng, undefined);
           const out = arb.canShrinkWithoutContext(g.value);
 
@@ -318,7 +491,13 @@ describe('IteratorArbitrary', () => {
           const { instance: mrng } = fakeRandom();
 
           // Act
-          const arb = new IteratorArbitrary(sourceArb, history);
+          const arb = new IteratorArbitrary(
+            sourceArb,
+            history,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+            Number.POSITIVE_INFINITY,
+          );
           const { value, context } = arb.generate(mrng, undefined);
           const pullValues = [...value.take(50)];
           const shrinks = [...arb.shrink(value, context)];
@@ -342,7 +521,16 @@ describe('IteratorArbitrary (integration)', () => {
   const isCorrect = (value: IteratorObject<number>) =>
     value instanceof Iterator && [...value.take(10)].every((v) => sourceArb.canShrinkWithoutContext(v));
 
-  const iteratorBuilder = () => new IteratorArbitrary(sourceArb, true);
+  const iteratorBuilder = () => new IteratorArbitrary(sourceArb, true, 0, 10, Number.POSITIVE_INFINITY);
+  const finiteIteratorBuilder = () => new IteratorArbitrary(sourceArb, true, 2, 5, 5);
+  const infiniteIteratorBuilder = () =>
+    new IteratorArbitrary(
+      sourceArb,
+      true,
+      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY,
+    );
 
   it('should produce the same values given the same seed', async () => {
     await assertProduceSameValueGivenSameSeed(iteratorBuilder, { isEqual });
@@ -350,5 +538,41 @@ describe('IteratorArbitrary (integration)', () => {
 
   it('should only produce correct values', async () => {
     await assertProduceCorrectValues(iteratorBuilder, isCorrect);
+  });
+
+  it('should produce the same values given the same seed (finite only)', async () => {
+    await assertProduceSameValueGivenSameSeed(finiteIteratorBuilder, { isEqual });
+  });
+
+  it('should only produce correct values with lengths in range (finite only)', async () => {
+    await assertProduceCorrectValues(finiteIteratorBuilder, (value) => {
+      if (!(value instanceof Iterator)) {
+        return false;
+      }
+      const values = [...value];
+      return values.length >= 2 && values.length <= 5 && values.every((v) => sourceArb.canShrinkWithoutContext(v));
+    });
+  });
+
+  it('should produce the same values given the same seed (never-ending only)', async () => {
+    await assertProduceSameValueGivenSameSeed(infiniteIteratorBuilder, { isEqual });
+  });
+
+  it('should only produce never-ending iterators when minLength is Number.POSITIVE_INFINITY', async () => {
+    await assertProduceCorrectValues(infiniteIteratorBuilder, (value) => {
+      if (!(value instanceof Iterator)) {
+        return false;
+      }
+      let count = 0;
+      for (const v of value) {
+        if (!sourceArb.canShrinkWithoutContext(v)) {
+          return false;
+        }
+        if (++count === 100) {
+          break;
+        }
+      }
+      return count === 100;
+    });
   });
 });

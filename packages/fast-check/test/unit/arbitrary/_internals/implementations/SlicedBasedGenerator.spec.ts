@@ -46,7 +46,7 @@ describe('SlicedBasedGenerator', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
-          fc.iterator(fc.anything()),
+          fc.iterator(fc.anything(), { minLength: Number.POSITIVE_INFINITY }),
           fc.nat({ max: 10 }),
           fc.integer({ min: 2 }),
           (slices, streamValues, targetLength, biasFactor) => {
@@ -82,7 +82,7 @@ describe('SlicedBasedGenerator', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
-          fc.iterator(fc.nat()),
+          fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }),
           fc.nat({ max: 10 }),
           fc.integer({ min: 2 }),
           fc.boolean(),
@@ -106,7 +106,7 @@ describe('SlicedBasedGenerator', () => {
                   returnedBias = true;
                   return min; // ask for bias, to make sure we use slices
                 }
-                return (streamModValues.next().value % (max - min + 1)) + min; // pure random for next calls
+                return (streamModValues.next().value! % (max - min + 1)) + min; // pure random for next calls, never-ending source
               });
               const value = generator.next().value;
               expect(allValuesFromSlices).toContainEqual(value); // should only produce values coming from slices
