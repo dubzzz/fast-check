@@ -103,6 +103,7 @@ export type {
 export { uniqueArray } from './arbitrary/uniqueArray.js';
 export type { SetConstraints } from './arbitrary/set.js';
 export { set } from './arbitrary/set.js';
+export type { IteratorConstraints } from './arbitrary/iterator.js';
 export { iterator } from './arbitrary/iterator.js';
 export { base64String } from './arbitrary/base64String.js';
 export type { StringSharedConstraints, StringConstraints } from './arbitrary/string.js';
