@@ -132,8 +132,8 @@ describe('LimitedShrinkArbitrary', () => {
           fc.anything(),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.nat({ max: 50 }), // limiting shrink count to 50 to avoid taking hours
-          fc.infiniteStream(fc.infiniteStream(fc.tuple(fc.anything(), fc.anything()))),
-          fc.infiniteStream(fc.integer({ min: 1 })),
+          fc.iterator(fc.iterator(fc.tuple(fc.anything(), fc.anything()))),
+          fc.iterator(fc.integer({ min: 1 })),
           (generatedValue, context, biasFactor, maxShrinks, shrunkValuesLevels, shrinkingPath) => {
             // Arrange
             const value = new Value(generatedValue, context);

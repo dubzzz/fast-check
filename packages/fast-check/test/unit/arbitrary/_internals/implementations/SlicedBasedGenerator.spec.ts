@@ -46,7 +46,7 @@ describe('SlicedBasedGenerator', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
-          fc.infiniteStream(fc.anything()),
+          fc.iterator(fc.anything()),
           fc.nat({ max: 10 }),
           fc.integer({ min: 2 }),
           (slices, streamValues, targetLength, biasFactor) => {
@@ -82,7 +82,7 @@ describe('SlicedBasedGenerator', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
-          fc.infiniteStream(fc.nat()),
+          fc.iterator(fc.nat()),
           fc.nat({ max: 10 }),
           fc.integer({ min: 2 }),
           fc.boolean(),

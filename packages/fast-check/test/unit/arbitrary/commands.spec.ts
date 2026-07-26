@@ -163,7 +163,7 @@ describe('commands (integration)', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.noShrink(fc.integer()),
-        fc.infiniteStream(fc.nat()),
+        fc.iterator(fc.nat()),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (seed, shrinkPath, biasFactor) => {
           // Generate the first Value
@@ -201,7 +201,7 @@ describe('commands (integration)', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.noShrink(fc.integer()),
-        fc.infiniteStream(fc.nat()),
+        fc.iterator(fc.nat()),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (seed, shrinkPath, biasFactor) => {
           // Generate the first Value

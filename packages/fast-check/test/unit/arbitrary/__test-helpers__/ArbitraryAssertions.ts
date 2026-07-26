@@ -50,7 +50,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
       .asyncProperty(
         fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
-        fc.infiniteStream(fc.nat({ max: 20 })),
+        fc.iterator(fc.nat({ max: 20 })),
         extra,
         (seed, biasFactor, shrinkPath, extraParameters) => {
           // Arrange
@@ -97,7 +97,7 @@ export function assertProduceCorrectValues<T, U = never>(
       .asyncProperty(
         fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
-        fc.infiniteStream(fc.nat({ max: 20 })),
+        fc.iterator(fc.nat({ max: 20 })),
         extra,
         (seed, biasFactor, shrinkPath, extraParameters) => {
           // Arrange

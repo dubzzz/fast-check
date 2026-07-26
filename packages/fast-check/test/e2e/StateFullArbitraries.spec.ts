@@ -225,11 +225,11 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         expect(dict[k].size()).toEqual(1);
       }
     });
-    it('fc.infiniteStream', async () => {
+    it('fc.iterator', async () => {
       let alwaysWithElements = true;
       let nonClonedDetected = false;
       const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.infiniteStream(fc.context()), fc.integer(), (a, s, b) => {
+        fc.asyncProperty(fc.integer(), fc.iterator(fc.context()), fc.integer(), (a, s, b) => {
           let accessedCtx = 0;
           for (const ctx of s.take(3)) {
             ++accessedCtx;
