@@ -42,6 +42,7 @@ describe('uniqueArray', () => {
           expect.any(Number),
           0x7fffffff,
           undefined,
+          expect.any(Number),
           expect.any(Function),
           [],
         );
@@ -75,6 +76,7 @@ describe('uniqueArray', () => {
           expect.any(Number),
           maxLength,
           undefined,
+          expect.any(Number),
           expect.any(Function),
           [],
         );
@@ -89,6 +91,7 @@ describe('uniqueArray', () => {
             maxLength,
             maxLength,
             undefined,
+            expect.any(Number),
             expect.any(Function),
             [],
           );
@@ -120,6 +123,7 @@ describe('uniqueArray', () => {
           expect.any(Number),
           0x7fffffff,
           undefined,
+          expect.any(Number),
           expect.any(Function),
           [],
         );
@@ -163,6 +167,7 @@ describe('uniqueArray', () => {
             expect.any(Number),
             maxLength,
             undefined,
+            expect.any(Number),
             expect.any(Function),
             [],
           );
@@ -177,6 +182,7 @@ describe('uniqueArray', () => {
               maxLength,
               maxLength,
               undefined,
+              expect.any(Number),
               expect.any(Function),
               [],
             );
@@ -233,6 +239,7 @@ describe('uniqueArray', () => {
             expect.any(Number),
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
             constraints.depthIdentifier,
+            expect.any(Number),
             expect.any(Function),
             [],
           );
