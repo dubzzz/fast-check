@@ -163,7 +163,7 @@ describe('commands (integration)', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.noShrink(fc.integer()),
-        fc.iterator(fc.nat()),
+        fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (seed, shrinkPath, biasFactor) => {
           // Generate the first Value
@@ -188,7 +188,7 @@ describe('commands (integration)', () => {
                 startCommands(nextValue);
                 return nextValue;
               }),
-              it.next().value,
+              it.next().value!, // shrinkPath never ends: minLength is +infinity
             );
           }
         },
@@ -201,7 +201,7 @@ describe('commands (integration)', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.noShrink(fc.integer()),
-        fc.iterator(fc.nat()),
+        fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (seed, shrinkPath, biasFactor) => {
           // Generate the first Value
@@ -226,7 +226,7 @@ describe('commands (integration)', () => {
                 // Next is eligible for shrinking
                 return nextValue;
               }),
-              it.next().value,
+              it.next().value!, // shrinkPath never ends: minLength is +infinity
             );
           }
         },

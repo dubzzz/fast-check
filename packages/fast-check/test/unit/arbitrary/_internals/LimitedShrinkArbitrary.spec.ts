@@ -132,8 +132,10 @@ describe('LimitedShrinkArbitrary', () => {
           fc.anything(),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.nat({ max: 50 }), // limiting shrink count to 50 to avoid taking hours
-          fc.iterator(fc.iterator(fc.tuple(fc.anything(), fc.anything()))),
-          fc.iterator(fc.integer({ min: 1 })),
+          fc.iterator(fc.iterator(fc.tuple(fc.anything(), fc.anything()), { minLength: Number.POSITIVE_INFINITY }), {
+            minLength: Number.POSITIVE_INFINITY,
+          }),
+          fc.iterator(fc.integer({ min: 1 }), { minLength: Number.POSITIVE_INFINITY }),
           (generatedValue, context, biasFactor, maxShrinks, shrunkValuesLevels, shrinkingPath) => {
             // Arrange
             const value = new Value(generatedValue, context);
@@ -156,7 +158,7 @@ describe('LimitedShrinkArbitrary', () => {
             let lastValue = g;
             while (!done) {
               // Shrinking the value until we reach an end
-              const shrinkLength: number = shrinkingPath.next().value;
+              const shrinkLength: number = shrinkingPath.next().value!; // shrinkingPath never ends: minLength is +infinity
               const shrinks = arb.shrink(lastValue.value_, lastValue.context);
               for (let i = 0; i !== shrinkLength; ++i) {
                 const nextShrink = shrinks.next();
