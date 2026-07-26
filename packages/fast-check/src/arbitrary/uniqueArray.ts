@@ -2,6 +2,7 @@ import { ArrayArbitrary } from './_internals/ArrayArbitrary.js';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import {
+  depthBiasFromSizeForArbitrary,
   maxGeneratedLengthFromSizeForArbitrary,
   MaxLengthUpperBound,
 } from './_internals/helpers/MaxLengthFromMinLength.js';
@@ -74,8 +75,8 @@ export type UniqueArraySharedConstraints = {
    * then the generated items will tend to be less deep to avoid creating structures a lot
    * larger than expected.
    *
-   * For the moment, the depth is not taken into account to compute the number of items to
-   * define for a precise generate call of the array. Just applied onto eligible items.
+   * The deeper the structure is the more chances the arbitrary will have to generate
+   * an array having the minimal accepted length.
    *
    * @remarks Since 2.25.0
    */
@@ -223,6 +224,7 @@ export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayCon
     constraints.maxLength !== undefined,
   );
   const depthIdentifier = constraints.depthIdentifier;
+  const depthBias = depthBiasFromSizeForArbitrary(constraints.size, constraints.maxLength !== undefined);
   const setBuilder = buildUniqueArraySetBuilder(constraints);
 
   const arrayArb = new ArrayArbitrary<T>(
@@ -231,6 +233,7 @@ export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayCon
     maxGeneratedLength,
     maxLength,
     depthIdentifier,
+    depthBias,
     setBuilder,
     [],
   );
