@@ -1,5 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers.js';
+import { doubleToIndex, indexToDouble, NAN_64_VALUES } from './_internals/helpers/DoubleHelpers.js';
 import {
   doubleOnlyMapper,
   doubleOnlyUnmapper,
@@ -14,7 +14,15 @@ const safeNumberIsNaN = Number.isNaN;
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
 const safeMaxValue = Number.MAX_VALUE;
-const safeNaN = Number.NaN;
+
+// NAN_64_VALUES[2] and NAN_64_VALUES[3] are two distinct, non-canonical, 64-bit NaN bit patterns (see
+// DoubleHelpers.ts for the full list). We deliberately do not use NAN_64_VALUES[0] (the canonical NaN) below:
+// see the comment next to their usage in anyDouble for the rationale. We also avoid the signaling patterns
+// (index 1 and 4): some engines quiet signaling NaNs (flipping their quiet bit) when they transit through a
+// TypedArray, which would silently turn them into yet another (still non-canonical, but unplanned) pattern.
+// Patterns 2 and 3 are already quiet, so they are not affected by that.
+const nonCanonicalNaNAfterMax = NAN_64_VALUES[2];
+const nonCanonicalNaNBeforeMin = NAN_64_VALUES[3];
 
 /**
  * Constraints to be applied on {@link double}
@@ -122,12 +130,25 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
   //               or [min, ..., max, NaN] if min > +0
   // Otherwise,
   //   values will be [NaN, min, ..., max] with max <= +0
+  //
+  // We keep a single extra index dedicated to NaN, exactly as before: widening it to host several possible NaN
+  // bit patterns would mean drawing extra randomness for it, which showed to destabilize the shrinker of the
+  // underlying bigInt arbitrary on arrays of doubles (see #6532 discussion for details, and in particular the
+  // existing "shrink without any initial context" contract that float32Array/float64Array rely on).
+  //
+  // Instead, we reuse this single index to surface a non-canonical NaN bit pattern (rather than the canonical
+  // Number.NaN that used to be hardcoded here): NaN values are indistinguishable from each other at the
+  // language level (Number.isNaN, ===, Object.is...) so nothing that inspects the produced value the "normal"
+  // way can ever notice this change - it only becomes observable when writing the value into a Float64Array,
+  // which is exactly the scenario reported in #6532. We use two different bit patterns (one for each side of
+  // the range) so that, depending on their constraints, users can stumble upon more than a single pattern.
   const positiveMaxIdx = maxIndex > BigInt(0);
   const minIndexWithNaN = positiveMaxIdx ? minIndex : minIndex - BigInt(1);
   const maxIndexWithNaN = positiveMaxIdx ? maxIndex + BigInt(1) : maxIndex;
+  const nanForRange = positiveMaxIdx ? nonCanonicalNaNAfterMax : nonCanonicalNaNBeforeMin;
   return bigInt({ min: minIndexWithNaN, max: maxIndexWithNaN }).map(
     (index) => {
-      if (maxIndex < index || index < minIndex) return safeNaN;
+      if (maxIndex < index || index < minIndex) return nanForRange;
       else return indexToDouble(index);
     },
     (value) => {
