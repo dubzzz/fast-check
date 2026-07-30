@@ -18,6 +18,7 @@ import type {
   RunDetailsCommon,
 } from './check/runner/reporter/RunDetails.js';
 import { assert, check } from './check/runner/Runner.js';
+import type { StatisticsReport } from './check/runner/Sampler.js';
 import { sample, statistics } from './check/runner/Sampler.js';
 
 import type { GeneratorValue } from './arbitrary/gen.js';
@@ -338,6 +339,7 @@ export type {
   RunDetailsFailureInterrupted,
   RunDetailsSuccess,
   RunDetailsCommon,
+  StatisticsReport,
   DepthIdentifier,
 };
 export {
