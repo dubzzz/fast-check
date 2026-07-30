@@ -10,11 +10,12 @@ import { sizeArb } from '../__test-helpers__/SizeHelpers.js';
 function beforeEachHook() {
   vi.restoreAllMocks();
 }
-// No need to restore hook between each execution of fast-check
-// the hooks will be resetted within the tests themselves if needed
-//  >  fc.configureGlobal({ beforeEach: beforeEachHook });
+// Restore spies between tests and between each execution of a predicate: call counts on
+// vi.spyOn-based spies must not leak from one run to the next one.
+// Spreading the already configured global settings preserves the seed possibly set from
+// DEFAULT_SEED by vitest.setup.mjs (configureGlobal replaces the whole configuration).
 beforeEach(beforeEachHook);
-fc.configureGlobal({ beforeEach: beforeEachHook });
+fc.configureGlobal({ ...fc.readConfigureGlobal(), beforeEach: beforeEachHook });
 
 const frequencyValidInputsArb = fc
   .tuple(
@@ -141,14 +142,18 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    // This test does not pass even alone
     it('should reject calls having a total weight of zero', async () =>
       await fc.assert(
         fc.asyncProperty(fc.nat({ max: 1000 }), (numEntries) => {
           // Arrange
+          // Reuse a single mocked arbitrary for all the entries: allocating one per entry means
+          // up to 1000 x 6 vi.fn() per run of the predicate, all of them staying registered in the
+          // mock registry of Vitest for the lifetime of the test file and thus slowing down any
+          // subsequent call to vi.restoreAllMocks (it runs before every execution of a predicate)
+          const { instance: arbitrary } = fakeArbitrary();
           const weightedArbs = [...Array(numEntries)].map(() => ({
             weight: 0,
-            arbitrary: fakeArbitrary(),
+            arbitrary,
           }));
 
           // Act / Assert
