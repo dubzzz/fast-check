@@ -155,16 +155,19 @@ jobs:
         with:
           node-version: '24.x'
           cache: 'pnpm'
-      - parallel:
-          - name: Install dependencies
-            run: pnpm install --frozen-lockfile --ignore-scripts
-          - name: Download production packages
-            uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-            with:
-              name: bundles
-              path: packages/
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        background: true
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
+      - name: Wait for dependencies to be installed
+        wait: install
       - parallel:
           - name: Typecheck
             run: node --run typecheck:all
@@ -187,16 +190,19 @@ jobs:
         with:
           node-version: '24.x'
           cache: 'pnpm'
-      - parallel:
-          - name: Install dependencies
-            run: pnpm install --frozen-lockfile --ignore-scripts
-          - name: Download production packages
-            uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-            with:
-              name: bundles
-              path: packages/
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        background: true
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
+      - name: Wait for dependencies to be installed
+        wait: install
       # These are not real npm publish commands, but pnpm exec pkg-pr-new publish
       # pkg-pr-new is a tool for creating preview deployments, not for publishing to npm
       - name: Preview (no comment) # zizmor: ignore[use-trusted-publishing]
@@ -258,14 +264,15 @@ jobs:
         with:
           node-version: ${{matrix.node-version}}
           cache: 'pnpm'
-      - parallel:
-          - name: Install dependencies
-            run: pnpm install --frozen-lockfile --ignore-scripts
-          - name: Download production packages
-            uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-            with:
-              name: bundles
-              path: packages/
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        background: true
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
       - name: Unpack production packages
         if: matrix.os != 'windows-latest'
         run: pnpm run unpack:all
@@ -273,6 +280,8 @@ jobs:
         if: matrix.os == 'windows-latest'
         # untar seems to fail on Windows when untaring already existing files
         run: pnpm run unpack:all || true
+      - name: Wait for dependencies to be installed
+        wait: install
       - name: Unit tests
         shell: bash -l {0}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
@@ -335,14 +344,15 @@ jobs:
         with:
           node-version: '24.x'
           cache: 'pnpm'
-      - parallel:
-          - name: Install dependencies
-            run: pnpm --filter website install --frozen-lockfile --ignore-scripts
-          - name: Download production packages
-            uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-            with:
-              name: bundles
-              path: packages/
+      - name: Install dependencies
+        id: install
+        run: pnpm --filter website install --frozen-lockfile --ignore-scripts
+        background: true
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
       - name: Get date cache buster
@@ -358,6 +368,8 @@ jobs:
             website/static/img/**/*.gif
             website/static/img/**/*.png
           key: assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc', 'website/prebuild/optimize-images.mjs')}}
+      - name: Wait for dependencies to be installed
+        wait: install
       - name: Generate documentation
         run: pnpm --filter website run build
       - name: Copy raw logo within documentation
@@ -386,16 +398,19 @@ jobs:
         with:
           node-version: '24.x'
           cache: 'pnpm'
-      - parallel:
-          - name: Install dependencies
-            run: pnpm install --frozen-lockfile --ignore-scripts
-          - name: Download production packages
-            uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-            with:
-              name: bundles
-              path: packages/
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        background: true
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
+      - name: Wait for dependencies to be installed
+        wait: install
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-bundle
       - parallel:
@@ -449,16 +464,19 @@ jobs:
         with:
           node-version: '24.x'
           cache: 'pnpm'
-      - parallel:
-          - name: Install dependencies
-            run: pnpm install --frozen-lockfile --ignore-scripts
-          - name: Download production packages
-            uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-            with:
-              name: bundles
-              path: packages/
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        background: true
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
+      - name: Wait for dependencies to be installed
+        wait: install
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
       - name: Switch folder to CommonJS
@@ -484,23 +502,26 @@ jobs:
         with:
           node-version: '24.x'
           cache: 'pnpm'
-      - parallel:
-          - name: Install dependencies
-            run: pnpm install --frozen-lockfile --ignore-scripts
-          - name: Restore results from last benchmark execution on main
-            uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-            with:
-              path: benchmark.json
-              # Non-matching key so restore-keys picks the most recent main cache
-              key: bench-main-will-not-match
-              restore-keys: bench-main-
-          - name: Download production packages
-            uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-            with:
-              name: bundles
-              path: packages/
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile --ignore-scripts
+        background: true
+      - name: Restore results from last benchmark execution on main
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: benchmark.json
+          # Non-matching key so restore-keys picks the most recent main cache
+          key: bench-main-will-not-match
+          restore-keys: bench-main-
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
+      - name: Wait for dependencies to be installed
+        wait: install
       - name: Benchmark
         id: bench
         shell: bash -l {0}
