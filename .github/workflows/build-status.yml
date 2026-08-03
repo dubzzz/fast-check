@@ -103,10 +103,11 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --filter @fast-check/monorepo install --frozen-lockfile --ignore-scripts
-      - name: Check format
-        run: node --run format:check
-      - name: Check lint
-        run: node --run lint:check
+      - parallel:
+          - name: Check format
+            run: node --run format:check
+          - name: Check lint
+            run: node --run lint:check
   production_packages:
     name: 'Build production packages'
     needs: warmup_pnpm_cache
