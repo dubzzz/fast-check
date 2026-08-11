@@ -405,7 +405,7 @@ describe('IteratorArbitrary', () => {
       description: string;
       history: boolean;
       constructorArgs: [minLength: number, maxGeneratedLength: number, maxLength: number];
-      drawnTargetLength?: number;
+      drawnTargetLength: number | undefined;
       numToPull: number | undefined;
       expectedPulledValues: number[];
       expectedPrint: string;
@@ -451,6 +451,7 @@ describe('IteratorArbitrary', () => {
         description: 'with history, never-ending iterator (minLength is +infinity)',
         history: true,
         constructorArgs: [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        drawnTargetLength: undefined, // never-ending iterator
         numToPull: 2,
         expectedPulledValues: [0, 1],
         expectedPrint: 'Iterator.from([0,1,/*…*/])',
@@ -468,6 +469,7 @@ describe('IteratorArbitrary', () => {
         description: 'with history, never-ending iterator not consumed at all',
         history: true,
         constructorArgs: [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        drawnTargetLength: undefined, // never-ending iterator
         numToPull: 0,
         expectedPulledValues: [],
         expectedPrint: 'Iterator.from([/*…*/])',
@@ -504,6 +506,7 @@ describe('IteratorArbitrary', () => {
         description: 'without history, never-ending iterator (minLength is +infinity)',
         history: false,
         constructorArgs: [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        drawnTargetLength: undefined, // never-ending iterator
         numToPull: 2,
         expectedPulledValues: [0, 1],
         expectedPrint: 'Iterator.from(/*2 emitted*/)',
