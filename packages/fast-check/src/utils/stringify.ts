@@ -35,6 +35,7 @@ export function hasToStringMethod<T>(instance: T): instance is T & WithToStringM
  * Please note that:
  * 1. It will only be useful for asynchronous properties.
  * 2. It has to return barely instantly.
+ * 3. When not defined using an async function, it should not throw synchronously.
  *
  * @remarks Since 2.17.0
  * @public
@@ -112,15 +113,17 @@ function isSparseArray(arr: unknown[]): boolean {
 /** @internal */
 export function stringifyInternal<Ts>(
   value: Ts,
-  previousValues: any[],
+  previousValues: Set<unknown>,
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
 ): string {
-  const currentValues = [...previousValues, value];
+  let currentValues = previousValues;
   if (typeof value === 'object') {
     // early cycle detection for objects
-    if (previousValues.indexOf(value) !== -1) {
+    if (previousValues.has(value)) {
       return '[cyclic]';
     }
+    currentValues = new Set(previousValues);
+    currentValues.add(value);
   }
 
   if (hasAsyncToStringMethod(value)) {
@@ -315,6 +318,12 @@ export function stringifyInternal<Ts>(
   }
 }
 
+/** @internal */
+const emptySet = new Set();
+
+/** @internal */
+const unknownAsyncContentGetter = () => ({ state: 'unknown', value: undefined }) satisfies AsyncContent;
+
 /**
  * Convert any value to its fast-check string representation
  *
@@ -324,8 +333,12 @@ export function stringifyInternal<Ts>(
  * @public
  */
 export function stringify<Ts>(value: Ts): string {
-  return stringifyInternal(value, [], () => ({ state: 'unknown', value: undefined }));
+  return stringifyInternal(value, emptySet, unknownAsyncContentGetter);
 }
+
+/** @internal */
+// oxlint-disable-next-line no-empty-function
+function noop() {}
 
 /**
  * Mid-way between stringify and asyncStringify
@@ -367,18 +380,14 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
   const unknownState = { state: 'unknown', value: undefined } as const;
   const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithAsyncToStringMethod): AsyncContent {
     const cacheKey = data;
-    if (cache.has(cacheKey)) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      return cache.get(cacheKey)!;
+    const match = cache.get(cacheKey);
+    if (match !== undefined) {
+      return match;
     }
 
     const delay0 = createDelay0();
-    const p: Promise<unknown> =
-      asyncToStringMethod in data
-        ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
-        : (data as Promise<unknown>);
-    // oxlint-disable-next-line no-empty-function
-    p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
+    const p: Promise<unknown> = asyncToStringMethod in data ? data[asyncToStringMethod]() : data;
+    p.catch(noop); // catching potential errors of p to avoid "Unhandled promise rejection"
 
     pendingPromisesForCache.push(
       // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
@@ -406,7 +415,7 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
     //      a single loop (or two) will must of the time be enough for most of the values.
     //      Nested Promise will be a sub-optimal case, but given the fact that it barely never
     //      happens in real world, we may pay the cost for it for time to time.
-    const stringifiedValue = stringifyInternal(value, [], getAsyncContent);
+    const stringifiedValue = stringifyInternal(value, emptySet, getAsyncContent);
     if (pendingPromisesForCache.length === 0) {
       return stringifiedValue;
     }

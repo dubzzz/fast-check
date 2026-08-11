@@ -166,7 +166,7 @@ export type {
   SchedulerConstraints,
 } from './arbitrary/scheduler.js';
 export { scheduler, schedulerFor } from './arbitrary/scheduler.js';
-export { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter.js';
+export { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter.js';
 export type { CommandsContraints } from './check/model/commands/CommandsContraints.js';
 export { PreconditionFailure } from './check/precondition/PreconditionFailure.js';
 export type { IntArrayConstraints } from './arbitrary/int8Array.js';
