@@ -261,7 +261,7 @@ describe('SchedulerImplem', () => {
 
     it('should wrap waitAll call using act whenever specified', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.iterator(fc.nat()), async (seeds) => {
+        fc.asyncProperty(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
           // Arrange
           let actCount = 0;
           const act = (f: () => Promise<void>) => {
@@ -290,7 +290,7 @@ describe('SchedulerImplem', () => {
 
     it('should wait the end of act before moving to the next task', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.iterator(fc.nat()), async (seeds) => {
+        fc.asyncProperty(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
           // Arrange
           let locked = false;
           const updateLocked = (newLocked: boolean) => (locked = newLocked);
@@ -1170,7 +1170,7 @@ describe('SchedulerImplem', () => {
           fc.scheduler(),
           // Stream of positive integers used to tell which task should be selected by `nextTaskIndex`
           // whenever asked for the next task to be scheduled
-          fc.iterator(fc.nat()),
+          fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }),
           // Define the tree of pre-requisite tasks:
           // - type of scheduling: should they be scheduled within the Schduler under test?
           // - when should they resolved: on init or when `fc.scheduler` decides it?
@@ -1184,7 +1184,7 @@ describe('SchedulerImplem', () => {
           fc.tuple(fc.boolean(), dependenciesArbFor(6)),
           fc.tuple(fc.boolean(), dependenciesArbFor(6)),
           // Extra boolean values used to add some delays between resolved Promises and next ones
-          fc.iterator(fc.boolean()),
+          fc.iterator(fc.boolean(), { minLength: Number.POSITIVE_INFINITY }),
           // Logger for easier troubleshooting
           fc.context(),
           async (
@@ -1217,7 +1217,7 @@ describe('SchedulerImplem', () => {
             const taskSelector: TaskSelector<unknown> = {
               clone: vi.fn(),
               nextTaskIndex: (scheduledTasks) => {
-                const selectedId = nextTaskIndexSeed.next().value % scheduledTasks.length;
+                const selectedId = nextTaskIndexSeed.next().value! % scheduledTasks.length; // seeds never end: minLength is +infinity
                 const selectedPx = rawAllPs.find((p) => p.p === scheduledTasks[selectedId].original);
                 const newPx = `p${rawAllPs.indexOf(selectedPx!) + 1}`;
                 ctx.log(`Releasing ${newPx}${selectedPx!.hasBeenResolved() ? ' (resolved)' : ''}`);
@@ -1546,7 +1546,7 @@ describe('SchedulerImplem', () => {
 
     it('should be able to waitAll promises scheduling others', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.iterator(fc.nat()), async (seeds) => {
+        fc.asyncProperty(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
           // Arrange
           const status = { done: false };
           const nothingResolved = {
@@ -1803,7 +1803,7 @@ describe('SchedulerImplem', () => {
             })).self,
             { minLength: 1 },
           ),
-          fc.iterator(fc.nat()),
+          fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }),
           async (plan, seeds) => {
             // Arrange
             const act = (f: () => Promise<void>) => f();
