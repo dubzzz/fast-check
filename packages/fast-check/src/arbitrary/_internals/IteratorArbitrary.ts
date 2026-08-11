@@ -29,17 +29,18 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
   }
 
   private drawTargetLength(mrng: Random): number {
-    if (this.minLength === Number.POSITIVE_INFINITY) {
+    const minLength = this.minLength;
+    if (minLength === Number.POSITIVE_INFINITY) {
       // Only never-ending iterators can be produced
       return Number.POSITIVE_INFINITY;
     }
     if (this.maxLength === Number.POSITIVE_INFINITY) {
       // One extra slot on top of the usual finite range: reaching it means never-ending iterator
       // WARNING: maxGeneratedLength MUST always be a finite value when minLength !== +infinity
-      const drawn = mrng.nextInt(this.minLength, this.maxGeneratedLength + 1);
-      return drawn > this.maxGeneratedLength ? Number.POSITIVE_INFINITY : drawn;
+      const drawn = mrng.nextInt(minLength - 1, this.maxGeneratedLength);
+      return drawn < minLength ? Number.POSITIVE_INFINITY : drawn;
     }
-    return mrng.nextInt(this.minLength, this.maxGeneratedLength);
+    return mrng.nextInt(minLength, this.maxGeneratedLength);
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<IteratorObject<T, undefined>> {
