@@ -52,8 +52,8 @@ export interface SparseArrayConstraints {
    * then the generated items will tend to be less deep to avoid creating structures a lot
    * larger than expected.
    *
-   * For the moment, the depth is not taken into account to compute the number of items to
-   * define for a precise generate call of the array. Just applied onto eligible items.
+   * The deeper the structure is the more chances the arbitrary will have to generate
+   * an array having the minimal accepted number of elements.
    *
    * @remarks Since 2.25.0
    */

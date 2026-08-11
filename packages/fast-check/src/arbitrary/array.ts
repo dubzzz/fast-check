@@ -3,6 +3,7 @@ import { ArrayArbitrary } from './_internals/ArrayArbitrary.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import {
   MaxLengthUpperBound,
+  depthBiasFromSizeForArbitrary,
   maxGeneratedLengthFromSizeForArbitrary,
 } from './_internals/helpers/MaxLengthFromMinLength.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
@@ -43,8 +44,8 @@ export interface ArrayConstraints {
    * then the generated items will tend to be less deep to avoid creating structures a lot
    * larger than expected.
    *
-   * For the moment, the depth is not taken into account to compute the number of items to
-   * define for a precise generate call of the array. Just applied onto eligible items.
+   * The deeper the structure is the more chances the arbitrary will have to generate
+   * an array having the minimal accepted length.
    *
    * @remarks Since 2.25.0
    */
@@ -83,7 +84,17 @@ function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitr
   const maxLength = maxLengthOrUnset !== undefined ? maxLengthOrUnset : MaxLengthUpperBound;
   const specifiedMaxLength = maxLengthOrUnset !== undefined;
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
+  const depthBias = depthBiasFromSizeForArbitrary(size, specifiedMaxLength);
   const customSlices = (constraints as ArrayConstraintsInternal<T>).experimentalCustomSlices || [];
-  return new ArrayArbitrary<T>(arb, minLength, maxGeneratedLength, maxLength, depthIdentifier, undefined, customSlices);
+  return new ArrayArbitrary<T>(
+    arb,
+    minLength,
+    maxGeneratedLength,
+    maxLength,
+    depthIdentifier,
+    depthBias,
+    undefined,
+    customSlices,
+  );
 }
 export { array };

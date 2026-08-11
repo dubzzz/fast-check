@@ -38,6 +38,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     readonly maxGeneratedLength: number,
     readonly maxLength: number,
     depthIdentifier: DepthIdentifier | string | undefined,
+    readonly depthBias: number,
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
     readonly setBuilder: CustomSetBuilder<Value<T>> | undefined,
@@ -172,10 +173,27 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     return new Value(vs, context);
   }
 
+  /** Compute the benefit for the current depth, the higher the more chances to fallback to minimal-length arrays */
+  private computeDepthBenefit(): number {
+    const depth = this.depthContext.depth;
+    if (depth <= 0 || this.depthBias <= 0) {
+      return 0;
+    }
+    // We use a pow-based biased benefit as the deeper we go the more chance we have
+    // to encounter thousands of instances of the current arbitrary.
+    const depthBenefit = Math.floor(Math.pow(1 + this.depthBias, depth)) - 1;
+    return Math.min(depthBenefit, Number.MAX_SAFE_INTEGER);
+  }
+
   generate(mrng: Random, biasFactor: number | undefined): Value<T[]> {
     let targetSize: number;
     let biasFactorItems: number | undefined;
-    if (biasFactor === undefined) {
+    const depthBenefit = this.computeDepthBenefit();
+    if (depthBenefit > 0 && mrng.nextInt(0, depthBenefit) !== 0) {
+      // The deeper we are, the higher the chances to generate an array with the minimal accepted length
+      targetSize = this.minLength;
+      biasFactorItems = biasFactor;
+    } else if (biasFactor === undefined) {
       // We don't bias anything
       targetSize = this.lengthArb.generate(mrng, undefined).value;
     }

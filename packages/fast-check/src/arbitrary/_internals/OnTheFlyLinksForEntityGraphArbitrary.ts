@@ -52,15 +52,10 @@ function buildLinkIndexArbitrary(
       return linkArbitrary;
     case 'many': {
       let randomUnicity = 0;
-      return option(
-        // given the depth does not control the size of an array, we cheat and use an option to do so
-        uniqueArray(linkArbitrary, {
-          depthIdentifier: currentEntityDepth, // passed just in case, but probably ignored by arrays
-          selector: (v) => (v === countInTargetType ? v + ++randomUnicity : v),
-          minLength: 1, // we handle length 0 with the option
-        }),
-        { nil: [], depthIdentifier: currentEntityDepth },
-      ).map((values) => {
+      return uniqueArray(linkArbitrary, {
+        depthIdentifier: currentEntityDepth, // the deeper we go, the more likely we are to link to no entity at all
+        selector: (v) => (v === countInTargetType ? v + ++randomUnicity : v),
+      }).map((values) => {
         let offset = 0;
         return values.map((v) => (v === countInTargetType ? v + offset++ : v));
       });

@@ -47,6 +47,7 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
+              0,
               undefined,
               [],
             );
@@ -93,6 +94,7 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
+              0,
               setBuilder,
               [],
             );
@@ -145,6 +147,7 @@ describe('ArrayArbitrary', () => {
               minLength,
               maxLength,
               undefined,
+              0,
               withSetBuilder ? setBuilder : undefined,
               [],
             );
@@ -212,6 +215,7 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
+              0,
               withSetBuilder ? setBuilder : undefined,
               [],
             );
@@ -225,6 +229,81 @@ describe('ArrayArbitrary', () => {
             } else {
               expect([...seenDepths]).toHaveLength(0); // never called on items
             }
+          },
+        ),
+      );
+    });
+
+    it('should fallback to arrays of minimal length when the depth benefit applies', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.integer({ min: 1, max: 1000 }),
+          fc.constantFrom(0.5, 1, 2),
+          fc.option(fc.integer({ min: 2 }), { nil: undefined }),
+          (depth, depthBias, biasFactor) => {
+            // Arrange
+            const expectedDepthBenefit = Math.floor(Math.pow(1 + depthBias, depth)) - 1;
+            fc.pre(expectedDepthBenefit > 0);
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
+            const depthContext = { depth };
+            getDepthContextFor.mockReturnValue(depthContext);
+            const { instance, generate } = fakeArbitrary();
+            const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
+            const integer = vi.spyOn(IntegerMock, 'integer');
+            integer.mockReturnValue(integerInstance);
+            const { instance: mrng, nextInt } = fakeRandom();
+            nextInt.mockReturnValueOnce(1); // any value != 0 implies minimal length
+
+            // Act
+            const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, depthBias, undefined, []);
+            const g = arb.generate(mrng, biasFactor);
+
+            // Assert
+            expect(g.value).toEqual([]); // minLength=0 implies empty array
+            expect(nextInt).toHaveBeenCalledTimes(1);
+            expect(nextInt).toHaveBeenCalledWith(0, Math.min(expectedDepthBenefit, Number.MAX_SAFE_INTEGER));
+            expect(generateInteger).not.toHaveBeenCalled(); // no need to generate any length
+            expect(generate).not.toHaveBeenCalled(); // no need to generate any item
+          },
+        ),
+      );
+    });
+
+    it('should not fallback to arrays of minimal length when the depth benefit does not apply', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.integer({ min: 1, max: 1000 }),
+          fc.constantFrom(0, 0.5, 1, 2),
+          fc.anything(),
+          (depth, depthBias, integerContext) => {
+            // Arrange
+            const expectedDepthBenefit = Math.floor(Math.pow(1 + depthBias, depth)) - 1;
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
+            const depthContext = { depth };
+            getDepthContextFor.mockReturnValue(depthContext);
+            const { instance, generate } = fakeArbitrary();
+            generate.mockReturnValue(new Value('a', undefined));
+            const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
+            generateInteger.mockReturnValue(new Value(1, integerContext));
+            const integer = vi.spyOn(IntegerMock, 'integer');
+            integer.mockReturnValue(integerInstance);
+            const { instance: mrng, nextInt } = fakeRandom();
+            nextInt.mockReturnValueOnce(0); // 0 implies usual generation process
+
+            // Act
+            const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, depthBias, undefined, []);
+            const g = arb.generate(mrng, undefined);
+
+            // Assert
+            expect(g.value).toEqual(['a']); // came from the usual generation process
+            if (expectedDepthBenefit > 0) {
+              expect(nextInt).toHaveBeenCalledTimes(1);
+              expect(nextInt).toHaveBeenCalledWith(0, Math.min(expectedDepthBenefit, Number.MAX_SAFE_INTEGER));
+            } else {
+              expect(nextInt).not.toHaveBeenCalled(); // no draw when no benefit
+            }
+            expect(generateInteger).toHaveBeenCalledTimes(1);
+            expect(generateInteger).toHaveBeenCalledWith(mrng, undefined);
           },
         ),
       );
@@ -245,7 +324,7 @@ describe('ArrayArbitrary', () => {
       const { instance: mrng } = fakeRandom();
 
       // Act
-      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, undefined, []);
+      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, 0, undefined, []);
       const g = arb.generate(mrng, undefined);
 
       // Assert
@@ -273,7 +352,7 @@ describe('ArrayArbitrary', () => {
       const { instance: mrng } = fakeRandom();
 
       // Act
-      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, undefined, []);
+      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, 0, undefined, []);
       const g = arb.generate(mrng, undefined);
 
       // Assert
@@ -326,6 +405,7 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
+              0,
               withSetBuilder ? setBuilder : undefined,
               [],
             );
@@ -380,6 +460,7 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
+              0,
               withSetBuilder ? setBuilder : undefined,
               [],
             );
@@ -433,6 +514,7 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
+              0,
               setBuilder,
               [],
             );
@@ -481,6 +563,7 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
+              0,
               withSetBuilder ? setBuilder : undefined,
               [],
             );
@@ -526,6 +609,7 @@ describe('ArrayArbitrary', () => {
               maxGeneratedLength,
               maxLength,
               undefined,
+              0,
               withSetBuilder ? setBuilder : undefined,
               [],
             );
@@ -545,7 +629,7 @@ describe('ArrayArbitrary (integration)', () => {
     // Arrange
     const alreadySeenCloneable = new Set<unknown>();
     const mrng = new Random(mersenne(0));
-    const arb = new ArrayArbitrary(new CloneableArbitrary(), 0, 5, 100, undefined, undefined, []); // 0 to 5 generated items
+    const arb = new ArrayArbitrary(new CloneableArbitrary(), 0, 5, 100, undefined, 0, undefined, []); // 0 to 5 generated items
 
     // Act
     let g = arb.generate(mrng, undefined);

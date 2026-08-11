@@ -35,8 +35,8 @@ export type SetConstraints = {
    * then the generated items will tend to be less deep to avoid creating structures a lot
    * larger than expected.
    *
-   * For the moment, the depth is not taken into account to compute the number of items to
-   * define for a precise generate call of the set. Just applied onto eligible items.
+   * The deeper the structure is the more chances the arbitrary will have to generate
+   * a set having the minimal accepted length.
    *
    * @remarks Since 4.4.0
    */
