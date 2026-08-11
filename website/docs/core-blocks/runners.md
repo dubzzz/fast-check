@@ -49,7 +49,7 @@ The structure `RunDetails` provides all the details needed to report what happen
 async function assert(property, params) {
   const out = await fc.check(property, params);
   if (out.failed) {
-    const message = await fc.asyncDefaultReportMessage(out);
+    const message = await fc.defaultReportMessage(out);
     throw new Error(message, { cause: out.errorInstance });
   }
 }
