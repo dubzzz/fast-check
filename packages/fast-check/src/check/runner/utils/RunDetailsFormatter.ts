@@ -7,6 +7,7 @@ import type {
   RunDetailsFailureInterrupted,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
+  RunDetailsSuccess,
 } from '../reporter/RunDetails.js';
 
 /** @internal */
@@ -182,7 +183,9 @@ function defaultReportMessageInternal<Ts>(
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): Promise<string> | string;
+function defaultReportMessage<Ts>(
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
+): Promise<string> | string;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}
  *
@@ -192,7 +195,7 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): Promi
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): Promise<undefined> | undefined;
+function defaultReportMessage<Ts>(out: RunDetailsSuccess<Ts>): Promise<undefined> | undefined;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}
  *
@@ -241,7 +244,10 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefin
 }
 
 /** @internal */
-function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
+function buildError<Ts>(
+  errorMessage: string | undefined,
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
+) {
   if (out.runConfiguration.includeErrorInReport) {
     throw new Error(errorMessage);
   }
