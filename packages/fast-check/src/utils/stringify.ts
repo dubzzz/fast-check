@@ -35,6 +35,7 @@ export function hasToStringMethod<T>(instance: T): instance is T & WithToStringM
  * Please note that:
  * 1. It will only be useful for asynchronous properties.
  * 2. It has to return barely instantly.
+ * 3. When not defined using an async function, it should not throw synchronously.
  *
  * @remarks Since 2.17.0
  * @public
@@ -373,10 +374,7 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
     }
 
     const delay0 = createDelay0();
-    const p: Promise<unknown> =
-      asyncToStringMethod in data
-        ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
-        : (data as Promise<unknown>);
+    const p: Promise<unknown> = asyncToStringMethod in data ? data[asyncToStringMethod]() : data;
     // oxlint-disable-next-line no-empty-function
     p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
 
