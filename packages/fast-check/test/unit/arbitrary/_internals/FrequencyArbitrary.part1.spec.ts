@@ -17,10 +17,6 @@ import { sizeArb } from '../__test-helpers__/SizeHelpers.js';
 function beforeEachHook() {
   vi.restoreAllMocks();
 }
-// Restore spies between tests and between each execution of a predicate: call counts on
-// vi.spyOn-based spies must not leak from one run to the next one.
-// Spreading the already configured global settings preserves the seed possibly set from
-// DEFAULT_SEED by vitest.setup.mjs (configureGlobal replaces the whole configuration).
 beforeEach(beforeEachHook);
 fc.configureGlobal({ ...fc.readConfigureGlobal(), beforeEach: beforeEachHook });
 

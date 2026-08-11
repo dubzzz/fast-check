@@ -10,10 +10,6 @@ import { sizeArb } from '../__test-helpers__/SizeHelpers.js';
 function beforeEachHook() {
   vi.restoreAllMocks();
 }
-// Restore spies between tests and between each execution of a predicate: call counts on
-// vi.spyOn-based spies must not leak from one run to the next one.
-// Spreading the already configured global settings preserves the seed possibly set from
-// DEFAULT_SEED by vitest.setup.mjs (configureGlobal replaces the whole configuration).
 beforeEach(beforeEachHook);
 fc.configureGlobal({ ...fc.readConfigureGlobal(), beforeEach: beforeEachHook });
 
@@ -146,10 +142,7 @@ describe('FrequencyArbitrary', () => {
       await fc.assert(
         fc.asyncProperty(fc.nat({ max: 1000 }), (numEntries) => {
           // Arrange
-          // Reuse a single mocked arbitrary for all the entries: allocating one per entry means
-          // up to 1000 x 6 vi.fn() per run of the predicate, all of them staying registered in the
-          // mock registry of Vitest for the lifetime of the test file and thus slowing down any
-          // subsequent call to vi.restoreAllMocks (it runs before every execution of a predicate)
+          // Reuse a single mocked arbitrary for faster throughput and prevent memory issues
           const { instance: arbitrary } = fakeArbitrary();
           const weightedArbs = [...Array(numEntries)].map(() => ({
             weight: 0,
