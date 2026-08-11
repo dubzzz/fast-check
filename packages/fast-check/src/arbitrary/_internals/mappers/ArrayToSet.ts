@@ -1,9 +1,7 @@
-/** @internal */
 export function arrayToSetMapper<TValue>(data: TValue[]): Set<TValue> {
   return new Set(data);
 }
 
-/** @internal */
 export function arrayToSetUnmapper<TValue>(value: unknown): TValue[] {
   if (typeof value !== 'object' || value === null) {
     throw new Error('Incompatible instance received: should be a non-null object');

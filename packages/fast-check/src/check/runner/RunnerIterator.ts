@@ -12,8 +12,6 @@ import type { SourceValuesIterator } from './SourceValuesIterator.js';
  * 1- Call to `next` gives back the value to test
  * 2- Call to `handleResult` takes into account the execution status
  * 3- Back to 1
- *
- * @internal
  */
 export class RunnerIterator<Ts> implements IterableIterator<Ts> {
   runExecution: RunExecution<Ts>;

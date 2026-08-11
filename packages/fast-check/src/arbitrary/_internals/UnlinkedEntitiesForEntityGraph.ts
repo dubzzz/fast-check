@@ -6,7 +6,6 @@ import type { UniqueArrayConstraintsRecommended } from '../uniqueArray.js';
 import { uniqueArray } from '../uniqueArray.js';
 import type { Arbitraries, UnlinkedEntities } from './interfaces/EntityGraphTypes.js';
 
-/** @internal */
 export function unlinkedEntitiesForEntityGraph<TEntityFields>(
   arbitraries: Arbitraries<TEntityFields>,
   countFor: (entityName: keyof TEntityFields) => number,

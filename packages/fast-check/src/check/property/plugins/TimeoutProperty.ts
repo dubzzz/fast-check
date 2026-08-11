@@ -4,7 +4,6 @@ import type { PreconditionFailure } from '../../precondition/PreconditionFailure
 import type { PropertyFailure } from '../types/PropertyFailure.js';
 import type { Property } from '../types/Property.js';
 
-/** @internal */
 const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTimeoutSafe: typeof clearTimeout) => {
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
   const promise = new Promise<PropertyFailure>((resolve) => {
@@ -20,7 +19,6 @@ const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTi
   };
 };
 
-/** @internal */
 export class TimeoutProperty<Ts> implements Property<Ts> {
   constructor(
     readonly property: Property<Ts>,

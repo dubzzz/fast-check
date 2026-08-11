@@ -45,7 +45,6 @@ export interface JsonSharedConstraints {
 
 /**
  * Derive `ObjectConstraints` from a `JsonSharedConstraints`
- * @internal
  */
 
 export function jsonConstraintsBuilder(

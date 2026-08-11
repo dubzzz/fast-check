@@ -13,11 +13,9 @@ import { resolveSize, relativeSizeToSize } from './_internals/helpers/MaxLengthF
 import type { AdapterOutput } from './_internals/AdapterArbitrary.js';
 import { adapter } from './_internals/AdapterArbitrary.js';
 
-/** @internal */
 function toSubdomainLabelMapper([f, d]: [string, [string, string] | null]): string {
   return d === null ? f : `${f}${d[0]}${d[1]}`;
 }
-/** @internal */
 function toSubdomainLabelUnmapper(value: unknown): [string, [string, string] | null] {
   if (typeof value !== 'string' || value.length === 0) {
     throw new Error('Unsupported');
@@ -28,7 +26,6 @@ function toSubdomainLabelUnmapper(value: unknown): [string, [string, string] | n
   return [value[0], [value.substring(1, value.length - 1), value[value.length - 1]]];
 }
 
-/** @internal */
 function subdomainLabel(size: Size) {
   const alphaNumericArb = getOrCreateLowerAlphaNumericArbitrary('');
   const alphaNumericHyphenArb = getOrCreateLowerAlphaNumericArbitrary('-');
@@ -53,11 +50,9 @@ function subdomainLabel(size: Size) {
     .filter(filterInvalidSubdomainLabel);
 }
 
-/** @internal */
 function labelsMapper(elements: [string[], string]): string {
   return `${elements[0].join('.')}.${elements[1]}`;
 }
-/** @internal */
 function labelsUnmapper(value: unknown): [string[], string] {
   if (typeof value !== 'string') {
     throw new Error('Unsupported type');
@@ -66,7 +61,6 @@ function labelsUnmapper(value: unknown): [string[], string] {
   return [value.substring(0, lastDotIndex).split('.'), value.substring(lastDotIndex + 1)];
 }
 
-/** @internal */
 function labelsAdapter(labels: [string[], string]): AdapterOutput<[string[], string]> {
   // labels[0].length is always >=1
   const [subDomains, suffix] = labels;

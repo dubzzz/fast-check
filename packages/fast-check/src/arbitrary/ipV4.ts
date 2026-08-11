@@ -3,12 +3,10 @@ import { nat } from './nat.js';
 import { tuple } from './tuple.js';
 import { tryParseStringifiedNat } from './_internals/mappers/NatToStringifiedNat.js';
 
-/** @internal */
 function dotJoinerMapper(data: number[]): string {
   return data.join('.');
 }
 
-/** @internal */
 function dotJoinerUnmapper(value: unknown): number[] {
   if (typeof value !== 'string') {
     throw new Error('Invalid type');

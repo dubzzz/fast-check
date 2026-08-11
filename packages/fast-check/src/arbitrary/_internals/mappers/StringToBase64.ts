@@ -1,4 +1,4 @@
-/** @internal - s is supposed to be composed of valid base64 values, not any '=' */
+/** s is supposed to be composed of valid base64 values, not any '=' */
 export function stringToBase64Mapper(s: string): string {
   switch (s.length % 4) {
     case 0:
@@ -12,7 +12,6 @@ export function stringToBase64Mapper(s: string): string {
   }
 }
 
-/** @internal */
 export function stringToBase64Unmapper(value: unknown): string {
   if (typeof value !== 'string' || value.length % 4 !== 0) {
     throw new Error('Invalid string received');

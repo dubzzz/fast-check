@@ -5,7 +5,6 @@ import type { Random } from '../../random/generator/Random.js';
 import { nil } from '../../utils/iterator.js';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
-/** @internal */
 function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings?: string[]): string {
   const seenSegment =
     seenValuesStrings !== undefined
@@ -16,7 +15,6 @@ function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings
   return `Iterator.from(${seenSegment})`;
 }
 
-/** @internal */
 export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>> {
   constructor(
     readonly arb: Arbitrary<T>,

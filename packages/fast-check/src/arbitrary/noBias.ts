@@ -4,7 +4,6 @@ import type { Random } from '../random/generator/Random.js';
 
 const stableObjectGetPrototypeOf = Object.getPrototypeOf;
 
-/** @internal */
 class NoBiasArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arb: Arbitrary<T>) {
     super();

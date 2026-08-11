@@ -3,13 +3,10 @@ import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
 import { nil } from '../../utils/iterator.js';
 
-/** @internal */
 export type AdapterOutput<T> = { adapted: boolean; value: T };
 
-/** @internal */
 const AdaptedValue = Symbol('adapted-value');
 
-/** @internal */
 function toAdapterValue<T>(rawValue: Value<T>, adapter: (value: T) => AdapterOutput<T>): Value<T> {
   const adapted = adapter(rawValue.value_);
   if (!adapted.adapted) {
@@ -19,7 +16,6 @@ function toAdapterValue<T>(rawValue: Value<T>, adapter: (value: T) => AdapterOut
 }
 
 /**
- * @internal
  * Adapt an existing Arbitrary by truncating its generating values
  * if they don't fit the requirements
  */
@@ -50,7 +46,6 @@ class AdapterArbitrary<T> extends Arbitrary<T> {
   }
 }
 
-/** @internal */
 export function adapter<T>(sourceArb: Arbitrary<T>, adapter: (value: T) => AdapterOutput<T>): Arbitrary<T> {
   return new AdapterArbitrary(sourceArb, adapter);
 }

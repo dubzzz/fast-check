@@ -4,7 +4,6 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod, hasCloneMethod } from '../../check/symbols.js';
 
-/** @internal */
 class FastConstantValuesLookup<T> {
   private readonly hasMinusZero: boolean;
   private readonly hasPlusZero: boolean;
@@ -37,7 +36,6 @@ class FastConstantValuesLookup<T> {
   }
 }
 
-/** @internal */
 export class ConstantArbitrary<T> extends Arbitrary<T> {
   private fastValues: FastConstantValuesLookup<T> | undefined;
 

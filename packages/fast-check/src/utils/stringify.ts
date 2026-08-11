@@ -63,16 +63,13 @@ export function hasAsyncToStringMethod<T>(instance: T): instance is T & WithAsyn
   );
 }
 
-/** @internal */
 const findSymbolNameRegex = /^Symbol\((.*)\)$/;
 
-/** @internal */
 type AsyncContent = { state: 'fulfilled' | 'rejected' | 'pending' | 'unknown'; value: unknown };
 
 /**
  * Only called with symbol produced by Symbol(string | undefined)
  * Not Symbol.for(string)
- * @internal
  */
 function getSymbolDescription(s: symbol): string | null {
   if (s.description !== undefined) return s.description;
@@ -84,7 +81,6 @@ function getSymbolDescription(s: symbol): string | null {
   return m && m[1].length ? m[1] : null;
 }
 
-/** @internal */
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
@@ -98,7 +94,6 @@ function stringifyNumber(numValue: number) {
   }
 }
 
-/** @internal */
 function isSparseArray(arr: unknown[]): boolean {
   let previousNumberedIndex = -1;
   // oxlint-disable-next-line typescript/no-for-in-array
@@ -110,7 +105,6 @@ function isSparseArray(arr: unknown[]): boolean {
   return previousNumberedIndex + 1 !== arr.length; // we've got a hole if length does not match
 }
 
-/** @internal */
 export function stringifyInternal<Ts>(
   value: Ts,
   previousValues: Set<unknown>,
@@ -318,10 +312,8 @@ export function stringifyInternal<Ts>(
   }
 }
 
-/** @internal */
 const emptySet = new Set();
 
-/** @internal */
 const unknownAsyncContentGetter = () => ({ state: 'unknown', value: undefined }) satisfies AsyncContent;
 
 /**
@@ -336,10 +328,8 @@ export function stringify<Ts>(value: Ts): string {
   return stringifyInternal(value, emptySet, unknownAsyncContentGetter);
 }
 
-/** @internal */
 const stillPendingMarker = Symbol();
 
-/** @internal */
 function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
   let handleId: ReturnType<typeof setTimeout> | null = null;
   const cancel = () => {
@@ -369,8 +359,6 @@ function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: ()
  * Otherwise, it tries to go further in investigations and return a Promise<string>.
  *
  * Not publicly exposed yet!
- *
- * @internal
  */
 export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
   const pendingPromisesForCache = new Map<unknown, Promise<unknown>>();

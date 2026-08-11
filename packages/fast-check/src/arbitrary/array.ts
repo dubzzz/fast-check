@@ -54,7 +54,6 @@ export interface ArrayConstraints {
 /**
  * Extra but internal constraints that can be passed to array.
  * This extra set is made of constraints mostly targets experimental and internal features not yet mature to be exposed.
- * @internal
  */
 export interface ArrayConstraintsInternal<T> extends ArrayConstraints {
   /**

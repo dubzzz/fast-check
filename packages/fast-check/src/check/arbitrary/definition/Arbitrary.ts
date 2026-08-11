@@ -143,7 +143,6 @@ export abstract class Arbitrary<T> {
   }
 }
 
-/** @internal */
 type ChainArbitraryContext<T, U> = {
   originalBias: number | undefined;
   originalValue: T;
@@ -154,7 +153,6 @@ type ChainArbitraryContext<T, U> = {
   clonedMrng: Random;
 };
 
-/** @internal */
 class ChainArbitrary<T, U> extends Arbitrary<U> {
   constructor(
     readonly arb: Arbitrary<T>,
@@ -227,13 +225,11 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
   }
 }
 
-/** @internal */
 type MapArbitraryContext<T> = {
   originalValue: T;
   originalContext: unknown;
 };
 
-/** @internal */
 function mapperWithCloneIfNeeded<T, U>(v: Value<T>, mapper: (t: T) => U): [U, T] {
   const sourceValue = v.value;
   const mappedValue = mapper(sourceValue);
@@ -249,14 +245,12 @@ function mapperWithCloneIfNeeded<T, U>(v: Value<T>, mapper: (t: T) => U): [U, T]
   return [mappedValue, sourceValue];
 }
 
-/** @internal */
 function valueMapper<T, U>(v: Value<T>, mapper: (t: T) => U): Value<U> {
   const [mappedValue, sourceValue] = mapperWithCloneIfNeeded(v, mapper);
   const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
   return new Value(mappedValue, context);
 }
 
-/** @internal */
 class MapArbitrary<T, U> extends Arbitrary<U> {
   readonly bindValueMapper: (v: Value<T>) => Value<U>;
   constructor(
@@ -313,7 +307,6 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
   }
 }
 
-/** @internal */
 class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
   readonly bindRefinementOnValue: (v: Value<T>) => v is Value<U>;
   constructor(
@@ -345,7 +338,6 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
 /**
  * Ensure an instance is an instance of Arbitrary
  * @param instance - The instance to be checked
- * @internal
  */
 export function isArbitrary(instance: unknown): instance is Arbitrary<unknown> {
   return (

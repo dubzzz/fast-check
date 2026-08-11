@@ -32,7 +32,6 @@ const dangerousStrings = [
   'ref',
 ];
 
-/** @internal */
 function computeCandidateStringLegacy(
   dangerous: string,
   charArbitrary: Arbitrary<string>,
@@ -55,7 +54,6 @@ function computeCandidateStringLegacy(
   return candidate;
 }
 
-/** @internal */
 export function createSlicesForStringLegacy(
   charArbitrary: Arbitrary<string>,
   stringSplitter: (value: string) => string[],
@@ -70,10 +68,8 @@ export function createSlicesForStringLegacy(
   return slicesForString;
 }
 
-/** @internal */
 const slicesPerArbitrary = new WeakMap<Arbitrary<string>, string[][]>();
 
-/** @internal */
 function createSlicesForStringNoConstraints(charArbitrary: Arbitrary<string>): string[][] {
   const slicesForString: string[][] = [];
   for (const dangerous of dangerousStrings) {
@@ -85,7 +81,6 @@ function createSlicesForStringNoConstraints(charArbitrary: Arbitrary<string>): s
   return slicesForString;
 }
 
-/** @internal */
 export function createSlicesForString(
   charArbitrary: Arbitrary<string>,
   constraints: StringSharedConstraints,

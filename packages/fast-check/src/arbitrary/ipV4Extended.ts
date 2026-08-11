@@ -3,12 +3,10 @@ import { oneof } from './oneof.js';
 import { tuple } from './tuple.js';
 import { buildStringifiedNatArbitrary } from './_internals/builders/StringifiedNatArbitraryBuilder.js';
 
-/** @internal */
 function dotJoinerMapper(data: string[]): string {
   return data.join('.');
 }
 
-/** @internal */
 function dotJoinerUnmapper(value: unknown): string[] {
   if (typeof value !== 'string') {
     throw new Error('Invalid type');

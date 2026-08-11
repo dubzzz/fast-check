@@ -61,11 +61,7 @@ export interface FloatConstraints {
   noInteger?: boolean;
 }
 
-/**
- * Same as {@link floatToIndex} except it throws if f is NaN or not representable as a 32-bit float
- *
- * @internal
- */
+/** Same as {@link floatToIndex} except it throws if f is NaN or not representable as a 32-bit float */
 function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
   const conversionTrick = 'you can convert any double to a 32-bit float by using `Math.fround(myDouble)`';
   const errorMessage = 'fc.float constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
@@ -77,13 +73,11 @@ function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
   return floatToIndex(f);
 }
 
-/** @internal */
 function unmapperFloatToIndex(value: unknown): number {
   if (typeof value !== 'number') throw new Error('Unsupported type');
   return floatToIndex(value);
 }
 
-/** @internal */
 function numberIsNotInteger(value: number): boolean {
   return !Number.isInteger(value);
 }

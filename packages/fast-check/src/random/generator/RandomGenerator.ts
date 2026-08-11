@@ -19,10 +19,8 @@ interface RandomGenerator7x {
  */
 export type RandomGenerator = RandomGenerator7x | RandomGenerator8x | JumpableRandomGenerator8x;
 
-/** @internal */
 export type RandomGeneratorInternal = JumpableRandomGenerator8x;
 
-/** @internal */
 function adaptRandomGeneratorTo8x(rng: RandomGenerator): RandomGenerator8x | JumpableRandomGenerator8x {
   if ('unsafeNext' in rng) {
     // 7.x generation
@@ -45,7 +43,6 @@ function adaptRandomGeneratorTo8x(rng: RandomGenerator): RandomGenerator8x | Jum
   return rng;
 }
 
-/** @internal */
 function adaptRandomGeneratorToInternal(rng: RandomGenerator8x | JumpableRandomGenerator8x): RandomGeneratorInternal {
   if ('jump' in rng && typeof rng.jump === 'function') {
     return rng;
@@ -58,7 +55,6 @@ function adaptRandomGeneratorToInternal(rng: RandomGenerator8x | JumpableRandomG
   };
 }
 
-/** @internal */
 export function adaptRandomGenerator(rng: RandomGenerator): RandomGeneratorInternal {
   return adaptRandomGeneratorToInternal(adaptRandomGeneratorTo8x(rng));
 }

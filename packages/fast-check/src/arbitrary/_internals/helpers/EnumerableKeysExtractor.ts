@@ -1,7 +1,5 @@
-/** @internal */
 export type EnumerableKeyOf<T> = Extract<keyof T, string | symbol>;
 
-/** @internal */
 export function extractEnumerableKeys<T extends object>(instance: T): EnumerableKeyOf<T>[] {
   const keys = Object.keys(instance) as EnumerableKeyOf<T>[]; // Only enumerable own properties
   const symbols = Object.getOwnPropertySymbols(instance) as EnumerableKeyOf<T>[];
