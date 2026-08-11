@@ -164,10 +164,10 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - name: Unpack production packages
-        run: node --run unpack:all
       - name: Wait for dependencies to be installed
         wait: install
+      - name: Unpack production packages
+        run: node --run unpack:all
       - parallel:
           - name: Typecheck
             run: node --run typecheck:all
@@ -199,10 +199,10 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - name: Unpack production packages
-        run: node --run unpack:all
       - name: Wait for dependencies to be installed
         wait: install
+      - name: Unpack production packages
+        run: node --run unpack:all
       # These are not real npm publish commands, but pnpm exec pkg-pr-new publish
       # pkg-pr-new is a tool for creating preview deployments, not for publishing to npm
       - name: Preview (no comment) # zizmor: ignore[use-trusted-publishing]
@@ -273,6 +273,8 @@ jobs:
         with:
           name: bundles
           path: packages/
+      - name: Wait for dependencies to be installed
+        wait: install
       - name: Unpack production packages
         if: matrix.os != 'windows-latest'
         run: pnpm run unpack:all
@@ -280,8 +282,6 @@ jobs:
         if: matrix.os == 'windows-latest'
         # untar seems to fail on Windows when untaring already existing files
         run: pnpm run unpack:all || true
-      - name: Wait for dependencies to be installed
-        wait: install
       - name: Unit tests
         shell: bash -l {0}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
@@ -353,8 +353,6 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - name: Unpack production packages
-        run: node --run unpack:all
       - name: Get date cache buster
         id: get-date
         shell: bash
@@ -370,6 +368,8 @@ jobs:
           key: assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc', 'website/prebuild/optimize-images.mjs')}}
       - name: Wait for dependencies to be installed
         wait: install
+      - name: Unpack production packages
+        run: node --run unpack:all
       - name: Generate documentation
         run: pnpm --filter website run build
       - name: Copy raw logo within documentation
@@ -407,10 +407,10 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - name: Unpack production packages
-        run: node --run unpack:all
       - name: Wait for dependencies to be installed
         wait: install
+      - name: Unpack production packages
+        run: node --run unpack:all
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-bundle
       - parallel:
@@ -473,10 +473,10 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - name: Unpack production packages
-        run: node --run unpack:all
       - name: Wait for dependencies to be installed
         wait: install
+      - name: Unpack production packages
+        run: node --run unpack:all
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
       - name: Switch folder to CommonJS
@@ -518,10 +518,10 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - name: Unpack production packages
-        run: node --run unpack:all
       - name: Wait for dependencies to be installed
         wait: install
+      - name: Unpack production packages
+        run: node --run unpack:all
       - name: Benchmark
         id: bench
         shell: bash -l {0}
