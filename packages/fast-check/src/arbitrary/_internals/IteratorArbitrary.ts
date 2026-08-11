@@ -35,6 +35,7 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
     }
     if (this.maxLength === Number.POSITIVE_INFINITY) {
       // One extra slot on top of the usual finite range: reaching it means never-ending iterator
+      // WARNING: maxGeneratedLength MUST always be a finite value when minLength !== +infinity
       const drawn = mrng.nextInt(this.minLength, this.maxGeneratedLength + 1);
       return drawn > this.maxGeneratedLength ? Number.POSITIVE_INFINITY : drawn;
     }
