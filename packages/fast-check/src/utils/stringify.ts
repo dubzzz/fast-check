@@ -112,13 +112,14 @@ function isSparseArray(arr: unknown[]): boolean {
 /** @internal */
 export function stringifyInternal<Ts>(
   value: Ts,
-  previousValues: any[],
+  previousValues: Set<unknown>,
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
 ): string {
-  const currentValues = [...previousValues, value];
+  const currentValues = new Set(previousValues);
+  currentValues.add(value);
   if (typeof value === 'object') {
     // early cycle detection for objects
-    if (previousValues.indexOf(value) !== -1) {
+    if (previousValues.has(value)) {
       return '[cyclic]';
     }
   }
@@ -315,6 +316,12 @@ export function stringifyInternal<Ts>(
   }
 }
 
+/** @internal */
+const emptySet = new Set();
+
+/** @internal */
+const unknownAsyncContentGetter = () => ({ state: 'unknown', value: undefined }) satisfies AsyncContent;
+
 /**
  * Convert any value to its fast-check string representation
  *
@@ -324,7 +331,7 @@ export function stringifyInternal<Ts>(
  * @public
  */
 export function stringify<Ts>(value: Ts): string {
-  return stringifyInternal(value, [], () => ({ state: 'unknown', value: undefined }));
+  return stringifyInternal(value, emptySet, unknownAsyncContentGetter);
 }
 
 /**
@@ -406,7 +413,7 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
     //      a single loop (or two) will must of the time be enough for most of the values.
     //      Nested Promise will be a sub-optimal case, but given the fact that it barely never
     //      happens in real world, we may pay the cost for it for time to time.
-    const stringifiedValue = stringifyInternal(value, [], getAsyncContent);
+    const stringifiedValue = stringifyInternal(value, emptySet, getAsyncContent);
     if (pendingPromisesForCache.length === 0) {
       return stringifiedValue;
     }
