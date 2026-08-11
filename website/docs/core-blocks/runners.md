@@ -47,11 +47,10 @@ The structure `RunDetails` provides all the details needed to report what happen
 
 ```js
 async function assert(property, params) {
-  // In this example we only support synchronous properties.
-  // To support both of them, you could use `property.isAsync()` and `asyncDefaultReportMessage`.
   const out = await fc.check(property, params);
   if (out.failed) {
-    throw new Error(fc.defaultReportMessage(out), { cause: out.errorInstance });
+    const message = await fc.defaultReportMessage(out);
+    throw new Error(message, { cause: out.errorInstance });
   }
 }
 ```
