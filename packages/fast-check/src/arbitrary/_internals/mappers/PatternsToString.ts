@@ -3,27 +3,23 @@ import { MaxLengthUpperBound } from '../helpers/MaxLengthFromMinLength.js';
 import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints.js';
 import { tokenizeString } from '../helpers/TokenizeString.js';
 
-/** @internal - tab is supposed to be composed of valid entries extracted from the source arbitrary */
+/** tab is supposed to be composed of valid entries extracted from the source arbitrary */
 export function patternsToStringMapper(tab: string[]): string {
   return tab.join('');
 }
 
-/** @internal */
 function minLengthFrom(constraints: StringSharedConstraints): number {
   return constraints.minLength !== undefined ? constraints.minLength : 0;
 }
 
-/** @internal */
 function maxLengthFrom(constraints: StringSharedConstraints): number {
   return constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
 }
 
-/** @internal */
 export function patternsToStringUnmapperIsValidLength(tokens: string[], constraints: StringSharedConstraints): boolean {
   return minLengthFrom(constraints) <= tokens.length && tokens.length <= maxLengthFrom(constraints);
 }
 
-/** @internal */
 export function patternsToStringUnmapperFor(
   patternsArb: Arbitrary<string>,
   constraints: StringSharedConstraints,

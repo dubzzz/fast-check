@@ -37,7 +37,6 @@ export type StringConstraints = StringSharedConstraints & {
   unit?: 'grapheme' | 'grapheme-composite' | 'grapheme-ascii' | 'binary' | 'binary-ascii' | Arbitrary<string>;
 };
 
-/** @internal */
 function extractUnitArbitrary(constraints: Pick<StringConstraints, 'unit'>): Arbitrary<string> {
   if (typeof constraints.unit === 'object') {
     return constraints.unit;

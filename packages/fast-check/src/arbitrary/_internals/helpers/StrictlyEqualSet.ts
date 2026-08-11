@@ -5,7 +5,6 @@ import type { CustomSet } from '../interfaces/CustomSet.js';
  * https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal
  *
  * And coming with the ability to select a sub-value from the received one.
- * @internal
  */
 export class StrictlyEqualSet<T, U> implements CustomSet<T> {
   // Warning: Set uses SameValueZero equality

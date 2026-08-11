@@ -1,11 +1,9 @@
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
 
-/** @internal */
 export type GraphemeRangeEntry = { num: number; build: (idInGroup: number) => string };
 
 /**
  * Convert a range into an entry for mapToConstant
- * @internal
  */
 export function convertGraphemeRangeToMapToConstantEntry(range: GraphemeRange): GraphemeRangeEntry {
   if (range.length === 1) {
@@ -18,7 +16,6 @@ export function convertGraphemeRangeToMapToConstantEntry(range: GraphemeRange): 
 
 /**
  * Ranges have to be ordered and non-overlapping
- * @internal
  */
 export function intersectGraphemeRanges(rangesA: GraphemeRange[], rangesB: GraphemeRange[]): GraphemeRange[] {
   const mergedRanges: GraphemeRange[] = [];

@@ -1,10 +1,7 @@
-/** @internal */
 type Entry<T> = { num: number; build: (idInGroup: number) => T };
 
-/** @internal */
 type DicothomyEntry<T> = { from: number; to: number; entry: Pick<Entry<T>, 'build'> };
 
-/** @internal */
 function buildDichotomyEntries<T>(entries: Entry<T>[]): DicothomyEntry<T>[] {
   let currentFrom = 0;
   const dichotomyEntries: DicothomyEntry<T>[] = [];
@@ -17,7 +14,6 @@ function buildDichotomyEntries<T>(entries: Entry<T>[]): DicothomyEntry<T>[] {
   return dichotomyEntries;
 }
 
-/** @internal */
 function findDichotomyEntry<T>(dichotomyEntries: DicothomyEntry<T>[], choiceIndex: number): DicothomyEntry<T> {
   let min = 0;
   let max = dichotomyEntries.length;
@@ -32,7 +28,6 @@ function findDichotomyEntry<T>(dichotomyEntries: DicothomyEntry<T>[], choiceInde
   return dichotomyEntries[min];
 }
 
-/** @internal */
 export function indexToMappedConstantMapperFor<T>(entries: Entry<T>[]): (choiceIndex: number) => T {
   const dichotomyEntries = buildDichotomyEntries(entries);
   return function indexToMappedConstantMapper(choiceIndex: number): T {
@@ -41,10 +36,8 @@ export function indexToMappedConstantMapperFor<T>(entries: Entry<T>[]): (choiceI
   };
 }
 
-/** @internal */
 type ReverseMapping = { mapping: Map<unknown, number>; negativeZeroIndex: number | undefined };
 
-/** @internal */
 function buildReverseMapping(entries: { num: number; build: (idInGroup: number) => unknown }[]): ReverseMapping {
   const reverseMapping: ReverseMapping = { mapping: new Map(), negativeZeroIndex: undefined };
   let choiceIndex = 0;
@@ -71,7 +64,6 @@ function buildReverseMapping(entries: { num: number; build: (idInGroup: number) 
   return reverseMapping;
 }
 
-/** @internal */
 export function indexToMappedConstantUnmapperFor<T>(
   entries: { num: number; build: (idInGroup: number) => T }[],
 ): (value: unknown) => number {

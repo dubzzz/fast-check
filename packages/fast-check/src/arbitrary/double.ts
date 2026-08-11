@@ -61,11 +61,7 @@ export interface DoubleConstraints {
   noInteger?: boolean;
 }
 
-/**
- * Same as {@link doubleToIndex} except it throws in case of invalid double (NaN)
- *
- * @internal
- */
+/** Same as {@link doubleToIndex} except it throws in case of invalid double (NaN) */
 function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints): bigint {
   if (Number.isNaN(d)) {
     // Number.NaN does not have any associated index in the current implementation
@@ -74,18 +70,15 @@ function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints)
   return doubleToIndex(d);
 }
 
-/** @internal */
 function unmapperDoubleToIndex(value: unknown): bigint {
   if (typeof value !== 'number') throw new Error('Unsupported type');
   return doubleToIndex(value);
 }
 
-/** @internal */
 function numberIsNotInteger(value: number): boolean {
   return !Number.isInteger(value);
 }
 
-/** @internal */
 function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary<number> {
   const {
     noDefaultInfinity = false,

@@ -2,7 +2,6 @@ import type { Random } from '../../../random/generator/Random.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 import type { Property } from '../types/Property.js';
 
-/** @internal */
 export class UnbiasedProperty<Ts> implements Property<Ts> {
   constructor(readonly property: Property<Ts>) {}
 

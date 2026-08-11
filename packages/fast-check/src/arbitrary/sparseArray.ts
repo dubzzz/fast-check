@@ -60,7 +60,6 @@ export interface SparseArrayConstraints {
   depthIdentifier?: DepthIdentifier | string;
 }
 
-/** @internal */
 function extractMaxIndex(indexesAndValues: [number, unknown][]) {
   let maxIndex = -1;
   for (let index = 0; index !== indexesAndValues.length; ++index) {
@@ -69,7 +68,6 @@ function extractMaxIndex(indexesAndValues: [number, unknown][]) {
   return maxIndex;
 }
 
-/** @internal */
 function arrayFromItems<T>(length: number, indexesAndValues: [number, T][]) {
   const array = Array<T>(length);
   for (let index = 0; index !== indexesAndValues.length; ++index) {

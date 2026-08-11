@@ -20,7 +20,6 @@ function canHaveAtLeastOneItem<TEntityNames extends PropertyKey>(
   return false;
 }
 
-/** @internal */
 export function initialPoolForEntityGraph<TEntityNames extends PropertyKey>(
   keys: TEntityNames[],
   constraints: InitialPoolForEntityGraphConstraints<TEntityNames>,

@@ -10,7 +10,6 @@ import type {
   RunDetailsSuccess,
 } from '../reporter/RunDetails.js';
 
-/** @internal */
 function formatHints(hints: string[]): string {
   if (hints.length === 1) {
     return `Hint: ${hints[0]}`;
@@ -18,12 +17,10 @@ function formatHints(hints: string[]): string {
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
 }
 
-/** @internal */
 function formatFailures<Ts>(failures: Ts[], stringifyOne: (value: Ts) => string): string {
   return `Encountered failures were:\n- ${failures.map(stringifyOne).join('\n- ')}`;
 }
 
-/** @internal */
 function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringifyOne: (value: Ts) => string): string {
   const summaryLines: string[] = [];
   const remainingTreesAndDepth: { depth: number; tree: ExecutionTree<Ts> }[] = [];
@@ -56,7 +53,6 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringi
   return `Execution summary:\n${summaryLines.join('\n')}`;
 }
 
-/** @internal */
 function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, stringifyOne: (value: Ts) => string) {
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
   let details: string | null = null;
@@ -76,7 +72,6 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
   return { message, details, hints };
 }
 
-/** @internal */
 function prettyError(errorInstance: unknown) {
   // Print the Error message and its associated stacktrace
   if (errorInstance instanceof Error && errorInstance.stack !== undefined) {
@@ -112,7 +107,6 @@ function prettyError(errorInstance: unknown) {
   return 'Failed to serialize errorInstance';
 }
 
-/** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
   const includeErrorInReport = out.runConfiguration.includeErrorInReport;
   const messageErrorPart = includeErrorInReport
@@ -137,7 +131,6 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
   return { message, details, hints };
 }
 
-/** @internal */
 function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, stringifyOne: (value: Ts) => string) {
   const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
   let details: string | null = null;
@@ -154,7 +147,6 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, st
   return { message, details, hints };
 }
 
-/** @internal */
 function defaultReportMessageInternal<Ts>(
   out: RunDetails<Ts>,
   stringifyOne: (value: Ts) => string,
@@ -243,7 +235,6 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefin
   });
 }
 
-/** @internal */
 function buildError<Ts>(
   errorMessage: string | undefined,
   out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
@@ -258,7 +249,6 @@ function buildError<Ts>(
   return error;
 }
 
-/** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (!out.failed) {
     return;
@@ -273,7 +263,6 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   });
 }
 
-/** @internal */
 export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (out.runConfiguration.reporter !== undefined) {
     return out.runConfiguration.reporter(out);

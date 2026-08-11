@@ -3,7 +3,6 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
 import { nil } from '../utils/iterator.js';
 
-/** @internal */
 type ChainUntilEntry<T> = {
   arbitrary: Arbitrary<T>;
   value: T;
@@ -11,14 +10,12 @@ type ChainUntilEntry<T> = {
   clonedMrng: Random;
 };
 
-/** @internal */
 type ChainUntilArbitraryContext<T> = {
   biasFactor: number | undefined;
   entries: ChainUntilEntry<T>[];
   currentShrinkLevel: number;
 };
 
-/** @internal */
 class ChainUntilArbitrary<T> extends Arbitrary<T> {
   constructor(
     readonly startArb: Arbitrary<T>,

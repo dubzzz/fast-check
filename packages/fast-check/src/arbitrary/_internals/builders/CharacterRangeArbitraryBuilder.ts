@@ -3,21 +3,16 @@ import { oneof } from '../../oneof.js';
 import { mapToConstant } from '../../mapToConstant.js';
 import { string } from '../../string.js';
 
-/** @internal */
 const lowerCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x61) };
 
-/** @internal */
 const upperCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x41) };
 
-/** @internal */
 const numericMapper = { num: 10, build: (v: number) => String.fromCharCode(v + 0x30) };
 
-/** @internal */
 function percentCharArbMapper(c: string): string {
   const encoded = encodeURIComponent(c);
   return c !== encoded ? encoded : `%${c.charCodeAt(0).toString(16)}`; // always %xy / no %x or %xyz
 }
-/** @internal */
 function percentCharArbUnmapper(value: unknown): string {
   if (typeof value !== 'string') {
     throw new Error('Unsupported');
@@ -26,13 +21,11 @@ function percentCharArbUnmapper(value: unknown): string {
   return decoded;
 }
 
-/** @internal */
 const percentCharArb = () =>
   string({ unit: 'binary', minLength: 1, maxLength: 1 }).map(percentCharArbMapper, percentCharArbUnmapper);
 
 let lowerAlphaArbitrary: Arbitrary<string> | undefined = undefined;
 
-/** @internal */
 export function getOrCreateLowerAlphaArbitrary(): Arbitrary<string> {
   if (lowerAlphaArbitrary === undefined) {
     lowerAlphaArbitrary = mapToConstant(lowerCaseMapper);
@@ -42,7 +35,6 @@ export function getOrCreateLowerAlphaArbitrary(): Arbitrary<string> {
 
 let lowerAlphaNumericArbitraries: Map<string, Arbitrary<string>> | undefined = undefined;
 
-/** @internal */
 export function getOrCreateLowerAlphaNumericArbitrary(others: string): Arbitrary<string> {
   if (lowerAlphaNumericArbitraries === undefined) {
     lowerAlphaNumericArbitraries = new Map();
@@ -58,7 +50,6 @@ export function getOrCreateLowerAlphaNumericArbitrary(others: string): Arbitrary
   return match;
 }
 
-/** @internal */
 function buildAlphaNumericArbitrary(others: string): Arbitrary<string> {
   return mapToConstant(lowerCaseMapper, upperCaseMapper, numericMapper, {
     num: others.length,
@@ -68,7 +59,6 @@ function buildAlphaNumericArbitrary(others: string): Arbitrary<string> {
 
 let alphaNumericPercentArbitraries: Map<string, Arbitrary<string>> | undefined = undefined;
 
-/** @internal */
 export function getOrCreateAlphaNumericPercentArbitrary(others: string): Arbitrary<string> {
   if (alphaNumericPercentArbitraries === undefined) {
     alphaNumericPercentArbitraries = new Map();

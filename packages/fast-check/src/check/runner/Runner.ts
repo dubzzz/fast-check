@@ -15,7 +15,6 @@ import { pathWalk } from './utils/PathWalker.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 
-/** @internal */
 async function runIt<Ts>(
   property: Property<Ts>,
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,

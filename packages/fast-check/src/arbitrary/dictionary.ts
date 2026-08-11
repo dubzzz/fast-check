@@ -10,7 +10,6 @@ import { constant } from './constant.js';
 import { boolean } from './boolean.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
-/** @internal */
 function dictionaryKeyExtractor<K extends PropertyKey>(entry: [K, unknown]): K {
   return entry[0];
 }

@@ -43,7 +43,6 @@ export type GeneratorValue = GeneratorValueFunction & GeneratorValueMethods;
 
 /**
  * Details related to pre-built values
- * @internal
  */
 export type PreBuiltValue = {
   /** The arbitrary used to generate the value */
@@ -58,7 +57,6 @@ export type PreBuiltValue = {
 
 /**
  * Context attached next to {@link GeneratorValue}
- * @internal
  */
 export type GeneratorContext = {
   /** Cloned version of the random number generator */
@@ -71,7 +69,6 @@ export type GeneratorContext = {
 
 /**
  * An internal builder of values of type {@link GeneratorValue}
- * @internal
  */
 export function buildGeneratorValue(
   mrng: Random,

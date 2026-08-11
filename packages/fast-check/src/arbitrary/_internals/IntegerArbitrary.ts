@@ -4,7 +4,6 @@ import type { Random } from '../../random/generator/Random.js';
 import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange.js';
 import { shrinkInteger } from './helpers/ShrinkInteger.js';
 
-/** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
   private readonly ranges: { min: number; max: number }[];
   constructor(

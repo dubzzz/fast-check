@@ -12,16 +12,13 @@ import { string } from './string.js';
 import { tuple } from './tuple.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 
-/** @internal */
 function hostUserInfo(size: SizeForArbitrary): Arbitrary<string> {
   return string({ unit: getOrCreateAlphaNumericPercentArbitrary("-._~!$&'()*+,;=:"), size });
 }
 
-/** @internal */
 function userHostPortMapper([u, h, p]: [string | null, string, number | null]): string {
   return (u === null ? '' : `${u}@`) + h + (p === null ? '' : `:${p}`);
 }
-/** @internal */
 function userHostPortUnmapper(value: unknown): [string | null, string, number | null] {
   if (typeof value !== 'string') {
     throw new Error('Unsupported');
@@ -35,11 +32,9 @@ function userHostPortUnmapper(value: unknown): [string | null, string, number | 
     m !== null ? value.substring(atPosition + 1, value.length - m[1].length - 1) : value.substring(atPosition + 1);
   return [user, host, port];
 }
-/** @internal */
 function bracketedMapper(s: string): string {
   return `[${s}]`;
 }
-/** @internal */
 function bracketedUnmapper(value: unknown): string {
   if (typeof value !== 'string' || value[0] !== '[' || value[value.length - 1] !== ']') {
     throw new Error('Unsupported');

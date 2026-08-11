@@ -1,4 +1,3 @@
-/** @internal */
 export function segmentsToPathMapper(segments: string[]): string {
   let path = '';
   for (let index = 0; index !== segments.length; ++index) {
@@ -7,7 +6,6 @@ export function segmentsToPathMapper(segments: string[]): string {
   return path;
 }
 
-/** @internal */
 export function segmentsToPathUnmapper(value: unknown): string[] {
   if (typeof value !== 'string') {
     throw new Error('Incompatible value received: type');

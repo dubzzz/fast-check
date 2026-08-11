@@ -13,7 +13,6 @@ import { SameValueSet } from './_internals/helpers/SameValueSet.js';
 import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
-/** @internal */
 function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T, U>): CustomSetBuilder<Value<T>> {
   // Remark: Whenever we don't pass any custom selector U=T
   // so v of type T is simply a U

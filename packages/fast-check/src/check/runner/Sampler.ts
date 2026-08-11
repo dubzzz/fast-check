@@ -9,7 +9,6 @@ import type { QualifiedParameters } from './configuration/QualifiedParameters.js
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 
-/** @internal */
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
     ? new PropertyImplem(generator as Arbitrary<Ts>, () => true)
@@ -17,7 +16,6 @@ function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>, qParams: Qualif
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
 }
 
-/** @internal */
 function streamSample<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   params?: Parameters<Ts> | number,
@@ -55,7 +53,6 @@ function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters
   return [...streamSample(generator, params)];
 }
 
-/** @internal */
 function round2(n: number): string {
   return (Math.round(n * 100) / 100).toFixed(2);
 }

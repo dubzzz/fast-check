@@ -2,7 +2,6 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import type { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
 
-/** @internal */
 export class LazyArbitrary<T> extends Arbitrary<T> {
   underlying: Arbitrary<T> | null = null;
   constructor(readonly name: string) {

@@ -4,14 +4,12 @@ import { stringify } from '../../../utils/stringify.js';
 import { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 
-/** @internal */
 function fromSyncCached<Ts>(
   cachedValue: Awaited<ReturnType<Property<Ts>['run']>>,
 ): Awaited<ReturnType<Property<Ts>['run']>> {
   return cachedValue === null ? new PreconditionFailure() : cachedValue;
 }
 
-/** @internal */
 function fromCached<Ts>(cachedValue: ReturnType<Property<Ts>['run']>): ReturnType<Property<Ts>['run']> {
   if (cachedValue !== null && typeof cachedValue === 'object' && 'then' in cachedValue) {
     return cachedValue.then(fromSyncCached);
@@ -20,7 +18,6 @@ function fromCached<Ts>(cachedValue: ReturnType<Property<Ts>['run']>): ReturnTyp
   return fromSyncCached(cachedValue);
 }
 
-/** @internal */
 export class IgnoreEqualValuesProperty<Ts> implements Property<Ts> {
   private coveredCases: Map<string, ReturnType<Property<Ts>['run']>> = new Map();
 

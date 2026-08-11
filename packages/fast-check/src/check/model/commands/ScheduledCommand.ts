@@ -2,7 +2,6 @@ import type { ICommand } from '../command/ICommand.js';
 import type { AsyncCommand } from '../command/AsyncCommand.js';
 import type { Scheduler } from '../../../arbitrary/scheduler.js';
 
-/** @internal */
 export class ScheduledCommand<
   Model extends object,
   Real,
@@ -59,7 +58,6 @@ export class ScheduledCommand<
   }
 }
 
-/** @internal */
 export const scheduleCommands = function* <Model extends object, Real, CheckAsync extends boolean>(
   s: Scheduler,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,

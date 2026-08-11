@@ -2,7 +2,6 @@ import type { Scheduler } from '../interfaces/Scheduler.js';
 import type { ScheduledTask, TaskSelector } from '../implementations/SchedulerImplem.js';
 import { SchedulerImplem } from '../implementations/SchedulerImplem.js';
 
-/** @internal */
 function buildNextTaskIndex<TMetaData>(ordering: number[]): TaskSelector<TMetaData> {
   let numTasks = 0;
   return {
@@ -21,7 +20,6 @@ function buildNextTaskIndex<TMetaData>(ordering: number[]): TaskSelector<TMetaDa
   };
 }
 
-/** @internal */
 export function buildSchedulerFor<TMetaData>(
   act: (f: () => Promise<void>) => Promise<unknown>,
   ordering: number[],

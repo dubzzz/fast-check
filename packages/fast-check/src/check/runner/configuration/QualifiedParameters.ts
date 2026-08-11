@@ -9,15 +9,12 @@ import type { RandomGenerator, RandomGeneratorInternal } from '../../../random/g
 // This helper MUST capture the following globals to avoid test runners to mock our internals and defeat us
 const safeDateNow = Date.now;
 
-/** @internal */
 export type QualifiedRandomGenerator = RandomGeneratorInternal;
 
 /**
  * Configuration extracted from incoming Parameters
  *
  * It handles and set the default settings that will be used by runners.
- *
- * @internal
  */
 export class QualifiedParameters<T> {
   seed: number;
@@ -92,7 +89,6 @@ export class QualifiedParameters<T> {
   }
 }
 
-/** @internal */
 function createQualifiedRandomGenerator(
   random: (seed: number) => RandomGenerator,
 ): (seed: number) => QualifiedRandomGenerator {
@@ -102,7 +98,6 @@ function createQualifiedRandomGenerator(
   };
 }
 
-/** @internal */
 function readSeed<T>(p: Parameters<T>): number {
   // No seed specified
   if (p.seed === undefined) return safeDateNow() ^ (Math.random() * 0x100000000);
@@ -116,7 +111,6 @@ function readSeed<T>(p: Parameters<T>): number {
   return seed32 ^ (gap * 0x100000000);
 }
 
-/** @internal */
 function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomGenerator {
   if (p.randomType === undefined) return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
   const mrng = p.randomType(0);
@@ -132,14 +126,12 @@ function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomG
   return createQualifiedRandomGenerator(p.randomType);
 }
 
-/** @internal */
 function readNumRuns<T>(p: Parameters<T>): number {
   const defaultValue = 100;
   if (p.numRuns !== undefined) return p.numRuns;
   return defaultValue;
 }
 
-/** @internal */
 function readVerbose<T>(p: Parameters<T>): VerbosityLevel {
   if (p.verbose === undefined) return VerbosityLevel.None;
   if (typeof p.verbose === 'boolean') {
@@ -148,7 +140,6 @@ function readVerbose<T>(p: Parameters<T>): VerbosityLevel {
   return p.verbose;
 }
 
-/** @internal */
 function safeTimeout(value: number | undefined): number | undefined {
   if (value === undefined) {
     return undefined;

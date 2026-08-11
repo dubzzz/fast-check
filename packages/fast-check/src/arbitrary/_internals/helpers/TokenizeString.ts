@@ -2,7 +2,6 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js
 
 /**
  * Split a string into valid tokens of patternsArb
- * @internal
  */
 export function tokenizeString(
   patternsArb: Arbitrary<string>,
@@ -62,7 +61,6 @@ export function tokenizeString(
   return undefined;
 }
 
-/** @internal */
 type StackItem = {
   /** Currently selected chunks */
   chunks: string[];

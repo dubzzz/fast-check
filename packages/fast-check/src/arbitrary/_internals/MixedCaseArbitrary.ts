@@ -10,7 +10,6 @@ import {
   computeTogglePositions,
 } from './helpers/ToggleFlags.js';
 
-/** @internal */
 type MixedCaseArbitraryContext = {
   rawString: string;
   rawStringContext: unknown;
@@ -18,7 +17,6 @@ type MixedCaseArbitraryContext = {
   flagsContext: unknown;
 };
 
-/** @internal */
 export class MixedCaseArbitrary extends Arbitrary<string> {
   constructor(
     private readonly stringArb: Arbitrary<string>,

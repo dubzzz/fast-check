@@ -4,7 +4,6 @@ import type { Random } from '../../random/generator/Random.js';
 import { nil } from '../../utils/iterator.js';
 import { zipIterableIterators } from './helpers/ZipIterableIterators.js';
 
-/** @internal */
 function* iotaFrom(startValue: number) {
   let value = startValue;
   while (true) {
@@ -13,7 +12,6 @@ function* iotaFrom(startValue: number) {
   }
 }
 
-/** @internal */
 export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
   constructor(
     readonly arb: Arbitrary<T>,
@@ -58,7 +56,6 @@ export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
   }
 }
 
-/** @internal */
 type LimitedShrinkArbitraryContext = {
   originalContext: unknown;
   length: number;

@@ -7,7 +7,6 @@ import type { ScheduledTask, TaskSelector } from './implementations/SchedulerImp
 import { SchedulerImplem } from './implementations/SchedulerImplem.js';
 
 /**
- * @internal
  * Passed instance of mrng should never be altered from the outside.
  * Passed instance will never be affected by current code but always cloned before usage.
  */
@@ -21,7 +20,6 @@ function buildNextTaskIndex<TMetaData>(mrng: Random): TaskSelector<TMetaData> {
   };
 }
 
-/** @internal */
 export class SchedulerArbitrary<TMetaData> extends Arbitrary<Scheduler<TMetaData>> {
   constructor(readonly act: (f: () => Promise<void>) => Promise<unknown>) {
     super();
