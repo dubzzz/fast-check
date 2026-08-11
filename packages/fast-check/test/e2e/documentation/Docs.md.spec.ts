@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as fc from '../../../src/fast-check.js';
 
 const TargetNumExamples = 5;
+const TargetNumPulledItems = 3;
 const JsBlockStart = '```js';
 const JsBlockEnd = '```';
 const CommentForGeneratedValues = '// Examples of generated values:';
@@ -126,6 +127,20 @@ function addJsCodeBlock(blockContent: string): string {
   return `${JsBlockStart}\n${blockContent}${JsBlockEnd}\n`;
 }
 
+// @ts-expect-error - Used by eval
+// oxlint-disable-next-line no-unused-vars
+function withPulledFirstItems(value: unknown): unknown {
+  if (typeof value === 'object' && value !== null && typeof (value as Iterator<unknown>).next === 'function') {
+    const iterator = value as Iterator<unknown>;
+    for (let index = 0; index !== TargetNumPulledItems; ++index) {
+      if (iterator.next().done) {
+        break;
+      }
+    }
+  }
+  return value;
+}
+
 function sanitizeNonCharacters(str: string): string {
   let result = '';
   for (const char of str) {
@@ -185,7 +200,7 @@ function refreshContent(originalContent: string): { content: string; numExecuted
           .trim()
           .replace(/;$/, '')
           .replace(/;\n\/\/.*$/m, '\n//');
-        const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
+        const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(withPulledFirstItems(v)))`;
         try {
           return eval(evalCode);
         } catch (err) {

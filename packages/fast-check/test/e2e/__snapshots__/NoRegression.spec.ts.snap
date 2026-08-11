@@ -645,23 +645,25 @@ Execution summary:
 `;
 
 exports[`NoRegression (async) > iterator (noHistory) (to Promise) 1`] = `
-[Error: Property failed after 1 tests
-{ seed: 42, path: "0", endOnFailure: true }
-Counterexample: [Iterator.from(/*10 emitted*/)]
+[Error: Property failed after 2 tests
+{ seed: 42, path: "1", endOnFailure: true }
+Counterexample: [Iterator.from(/*9 emitted over 9*/)]
 Shrunk 0 time(s)
 
 Execution summary:
-[31m×[0m [Iterator.from(/*10 emitted*/)]]
+[32m√[0m [Iterator.from(/*1 emitted over 1*/)]
+[31m×[0m [Iterator.from(/*9 emitted over 9*/)]]
 `;
 
 exports[`NoRegression (async) > iterator (to Promise) 1`] = `
-[Error: Property failed after 1 tests
-{ seed: 42, path: "0", endOnFailure: true }
-Counterexample: [Iterator.from([Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645),/*…*/])]
+[Error: Property failed after 2 tests
+{ seed: 42, path: "1", endOnFailure: true }
+Counterexample: [Iterator.from([Promise.resolve(-576819238),Promise.resolve(-872008521),Promise.resolve(1594409417),Promise.resolve(-1285903064),Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587)])]
 Shrunk 0 time(s)
 
 Execution summary:
-[31m×[0m [Iterator.from([Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645),/*…*/])]]
+[32m√[0m [Iterator.from([Promise.resolve(19)])]
+[31m×[0m [Iterator.from([Promise.resolve(-576819238),Promise.resolve(-872008521),Promise.resolve(1594409417),Promise.resolve(-1285903064),Promise.resolve(1752520020),Promise.resolve(-864546692),Promise.resolve(-246443128),Promise.resolve(440518484),Promise.resolve(-730766587)])]]
 `;
 
 exports[`NoRegression (async) > number 1`] = `
@@ -3538,21 +3540,22 @@ Execution summary:
 exports[`NoRegression > iterator (noHistory) 1`] = `
 [Error: Property failed after 1 tests
 { seed: 42, path: "0", endOnFailure: true }
-Counterexample: [Iterator.from(/*10 emitted*/)]
+Counterexample: [Iterator.from(/*1 emitted over 1*/)]
 Shrunk 0 time(s)
 
 Execution summary:
-[31m×[0m [Iterator.from(/*10 emitted*/)]]
+[31m×[0m [Iterator.from(/*1 emitted over 1*/)]]
 `;
 
 exports[`NoRegression > iterator 1`] = `
-[Error: Property failed after 1 tests
-{ seed: 42, path: "0", endOnFailure: true }
-Counterexample: [Iterator.from([2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28,/*…*/])]
+[Error: Property failed after 2 tests
+{ seed: 42, path: "1", endOnFailure: true }
+Counterexample: [Iterator.from([1570664410,1275475127,1594409417,/*6 others…*/])]
 Shrunk 0 time(s)
 
 Execution summary:
-[31m×[0m [Iterator.from([2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28,/*…*/])]]
+[32m√[0m [Iterator.from([19])]
+[31m×[0m [Iterator.from([1570664410,1275475127,1594409417,/*6 others…*/])]]
 `;
 
 exports[`NoRegression > json 1`] = `
