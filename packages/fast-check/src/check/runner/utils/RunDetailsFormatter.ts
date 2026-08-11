@@ -182,7 +182,7 @@ function defaultReportMessageInternal<Ts>(
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): undefined;
+function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): Promise<string> | string;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}
  *
@@ -192,7 +192,7 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): unde
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): string;
+function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): Promise<undefined> | undefined;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}
  *
@@ -202,42 +202,8 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): strin
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined;
-function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined {
-  return defaultReportMessageInternal(out, stringify);
-}
-
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): Promise<undefined>;
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): Promise<string>;
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined>;
-async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> {
+function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined;
+function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined {
   // The asynchronous version might require two passes:
   // - the first one will register the asynchronous values that will need to be stringified
   // - the second one will take the computed values
@@ -259,17 +225,19 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
   }
 
   // Retry with async stringified versions in mind
-  const registeredValues = new Map(await Promise.all(pendingStringifieds));
-  function stringifySecond(value: unknown): string {
-    const asyncStringifiedIfRegistered = registeredValues.get(value);
-    if (asyncStringifiedIfRegistered !== undefined) {
-      return asyncStringifiedIfRegistered;
+  return Promise.all(pendingStringifieds).then((rawRegisteredValues) => {
+    const registeredValues = new Map(rawRegisteredValues);
+    function stringifySecond(value: unknown): string {
+      const asyncStringifiedIfRegistered = registeredValues.get(value);
+      if (asyncStringifiedIfRegistered !== undefined) {
+        return asyncStringifiedIfRegistered;
+      }
+      // Here we ALWAYS recompute sync versions to avoid putting a cost penalty
+      // on usual paths, the ones not having any async generated values
+      return stringify(value);
     }
-    // Here we ALWAYS recompute sync versions to avoid putting a cost penalty
-    // on usual paths, the ones not having any async generated values
-    return stringify(value);
-  }
-  return defaultReportMessageInternal(out, stringifySecond);
+    return defaultReportMessageInternal(out, stringifySecond);
+  });
 }
 
 /** @internal */
@@ -285,21 +253,26 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & 
 }
 
 /** @internal */
-function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+function throwIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (!out.failed) {
     return;
   }
-  return asyncDefaultReportMessage(out).then((message) => {
+  const messageOrThenable: Promise<string> | string = defaultReportMessage(out);
+  if (typeof messageOrThenable === 'string') {
+    // Synchrounous handling for non-Promise values for faster throughput
+    throw buildError<Ts>(messageOrThenable, out);
+  }
+  return messageOrThenable.then((message) => {
     throw buildError<Ts>(message, out);
   });
 }
 
 /** @internal */
-export function asyncReportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (out.runConfiguration.reporter !== undefined) {
     return out.runConfiguration.reporter(out);
   }
-  return asyncThrowIfFailed(out);
+  return throwIfFailed(out);
 }
 
-export { defaultReportMessage, asyncDefaultReportMessage };
+export { defaultReportMessage };
