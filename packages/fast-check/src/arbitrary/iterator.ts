@@ -22,14 +22,14 @@ export interface IteratorConstraints {
    * `Number.POSITIVE_INFINITY` is accepted and means never-ending iterators may be generated,
    * while any finite value makes every generated iterator finite.
    *
-   * @defaultValue Number.POSITIVE_INFINITY — Number.MAX_SAFE_INTEGER when `noDefaultInfinity` is true
+   * @defaultValue Number.POSITIVE_INFINITY by default, Number.MAX_SAFE_INTEGER when `noDefaultInfinity` is true
    * @remarks Since 5.0.0
    */
   maxLength?: number;
   /**
    * By default, `maxLength` defaults to `Number.POSITIVE_INFINITY` meaning never-ending iterators
    * get generated from time to time. By setting `noDefaultInfinity` to true, you move this default
-   * to `Number.MAX_SAFE_INTEGER` so that only finite iterators get generated — unless you explicitly
+   * to `Number.MAX_SAFE_INTEGER` so that only finite iterators get generated unless you explicitly
    * pass `maxLength: Number.POSITIVE_INFINITY`.
    *
    * @defaultValue false
@@ -41,6 +41,7 @@ export interface IteratorConstraints {
    *
    * It caps the number of items the generated finite iterators will yield the same way it caps
    * the length of arrays, `maxLength` staying the hard upper bound.
+   *
    * It has no impact on never-ending iterators.
    *
    * @remarks Since 5.0.0
@@ -98,6 +99,8 @@ function iterator<T>(
     throw new Error('fc.iterator expects minLength to be smaller than or equal to maxLength');
   }
   const specifiedMaxLength = constraints.maxLength !== undefined && constraints.maxLength !== Number.POSITIVE_INFINITY;
+
+  // By construct, it will always be a finite value except for minLength being +infinity
   const maxGeneratedLength =
     minLength === Number.POSITIVE_INFINITY
       ? Number.POSITIVE_INFINITY
