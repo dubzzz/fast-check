@@ -1,9 +1,8 @@
-import type { Value } from '../check/arbitrary/definition/Value.js';
-import type { Random } from '../random/generator/Random.js';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { nil } from '../utils/iterator.js';
+import type { Value } from "../check/arbitrary/definition/Value.js";
+import type { Random } from "../random/generator/Random.js";
+import { Arbitrary } from "../check/arbitrary/definition/Arbitrary.js";
+import { nil } from "../utils/iterator.js";
 
-/** @internal */
 class NoShrinkArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arb: Arbitrary<T>) {
     super();
@@ -36,7 +35,8 @@ export function noShrink<T>(arb: Arbitrary<T>): Arbitrary<T> {
   if (
     Object.getPrototypeOf(arb) === NoShrinkArbitrary.prototype &&
     arb.generate === NoShrinkArbitrary.prototype.generate &&
-    arb.canShrinkWithoutContext === NoShrinkArbitrary.prototype.canShrinkWithoutContext &&
+    arb.canShrinkWithoutContext ===
+      NoShrinkArbitrary.prototype.canShrinkWithoutContext &&
     arb.shrink === NoShrinkArbitrary.prototype.shrink
   ) {
     return arb;

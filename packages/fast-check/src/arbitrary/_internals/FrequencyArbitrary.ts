@@ -7,7 +7,6 @@ import { getDepthContextFor } from './helpers/DepthContext.js';
 import type { DepthSize } from './helpers/MaxLengthFromMinLength.js';
 import { depthBiasFromSizeForArbitrary } from './helpers/MaxLengthFromMinLength.js';
 
-/** @internal */
 export class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly cumulatedWeights: number[];
   readonly totalWeight: number;
@@ -192,7 +191,6 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
   }
 }
 
-/** @internal */
 export type _Constraints = {
   withCrossShrink?: boolean;
   depthSize?: DepthSize;
@@ -200,14 +198,12 @@ export type _Constraints = {
   depthIdentifier?: DepthIdentifier | string;
 };
 
-/** @internal */
 type _SanitizedConstraints = {
   withCrossShrink: boolean;
   depthBias: number;
   maxDepth: number;
 };
 
-/** @internal */
 interface _WeightedArbitrary<T> {
   weight: number;
   arbitrary: Arbitrary<T>;
@@ -215,7 +211,6 @@ interface _WeightedArbitrary<T> {
   fallbackValue?: { default: T };
 }
 
-/** @internal */
 type _FrequencyArbitraryContext<T> = {
   selectedIndex: number;
   originalBias: number | undefined;

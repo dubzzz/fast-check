@@ -1,4 +1,3 @@
-/** @internal */
 function initZippedValues<ITs extends IterableIterator<unknown>[]>(its: ITs) {
   const vs: IteratorResult<unknown, any>[] = [];
   for (let index = 0; index !== its.length; ++index) {
@@ -7,14 +6,12 @@ function initZippedValues<ITs extends IterableIterator<unknown>[]>(its: ITs) {
   return vs;
 }
 
-/** @internal */
 function nextZippedValues<ITs extends IterableIterator<unknown>[]>(its: ITs, vs: IteratorResult<unknown, any>[]) {
   for (let index = 0; index !== its.length; ++index) {
     vs[index] = its[index].next();
   }
 }
 
-/** @internal */
 function isDoneZippedValues(vs: IteratorResult<unknown, any>[]): boolean {
   for (let index = 0; index !== vs.length; ++index) {
     if (vs[index].done) {
@@ -23,7 +20,6 @@ function isDoneZippedValues(vs: IteratorResult<unknown, any>[]): boolean {
   }
   return false;
 }
-/** @internal */
 export function* zipIterableIterators<ITs extends IterableIterator<unknown>[]>(
   ...its: ITs
 ): ZippedIterableIterator<ITs> {
@@ -35,12 +31,10 @@ export function* zipIterableIterators<ITs extends IterableIterator<unknown>[]>(
   return undefined;
 }
 
-/** @internal */
 type ZippedIterableIteratorValues<ITs extends IterableIterator<unknown>[]> = {
   [K in keyof ITs]: ITs[K] extends IterableIterator<infer IT> ? IT : unknown;
 };
 
-/** @internal */
 type ZippedIterableIterator<ITs extends IterableIterator<unknown>[]> = IteratorObject<
   ZippedIterableIteratorValues<ITs>
 >;

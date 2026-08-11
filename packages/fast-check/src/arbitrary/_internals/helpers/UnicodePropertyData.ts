@@ -1,11 +1,9 @@
-/** @internal */
 const NON_BINARY_ALIASES_TO_PROP_NAMES: Record<string, string> = {
   gc: 'General_Category',
   sc: 'Script',
   scx: 'Script_Extensions',
 };
 
-/** @internal */
 const BINARY_PROP_NAMES_TO_ALIASES: Record<string, string> = {
   ASCII: 'ASCII',
   ASCII_Hex_Digit: 'AHex',
@@ -62,10 +60,8 @@ const BINARY_PROP_NAMES_TO_ALIASES: Record<string, string> = {
   XID_Start: 'XIDS',
 };
 
-/** @internal */
 const BINARY_ALIASES_TO_PROP_NAMES: Record<string, string> = inverseMap(BINARY_PROP_NAMES_TO_ALIASES);
 
-/** @internal */
 const GENERAL_CATEGORY_VALUE_TO_ALIASES: Record<string, string | string[]> = {
   Cased_Letter: 'LC',
   Close_Punctuation: 'Pe',
@@ -107,10 +103,8 @@ const GENERAL_CATEGORY_VALUE_TO_ALIASES: Record<string, string | string[]> = {
   Uppercase_Letter: 'Lu',
 };
 
-/** @internal */
 const GENERAL_CATEGORY_VALUE_ALIASES_TO_VALUES: Record<string, string> = inverseMap(GENERAL_CATEGORY_VALUE_TO_ALIASES);
 
-/** @internal */
 const SCRIPT_VALUE_TO_ALIASES: Record<string, string | string[]> = {
   Adlam: 'Adlm',
   Ahom: 'Ahom',
@@ -262,7 +256,6 @@ const SCRIPT_VALUE_TO_ALIASES: Record<string, string | string[]> = {
   Zanabazar_Square: 'Zanb',
 };
 
-/** @internal */
 const SCRIPT_VALUE_ALIASES_TO_VALUES: Record<string, string> = inverseMap(SCRIPT_VALUE_TO_ALIASES);
 
 function inverseMap(data: Record<string, string | string[]>): Record<string, string> {
@@ -326,7 +319,6 @@ function getCanonicalValue(value: string): string {
   throw new Error(`Unknown Unicode property value: ${value}`);
 }
 
-/** @internal */
 export type ResolvedUnicodeProperty = {
   type: 'UnicodeProperty';
   name: string;
@@ -344,7 +336,6 @@ export type ResolvedUnicodeProperty = {
  *
  * @param propertySpec - The content between \p\{ and \}, e.g. "Letter", "Script=Latin", "Emoji"
  * @param negative - true for \P\{\}, false for \p\{\}
- * @internal
  */
 export function resolveUnicodeProperty(propertySpec: string, negative: boolean): ResolvedUnicodeProperty {
   const equalIndex = propertySpec.indexOf('=');

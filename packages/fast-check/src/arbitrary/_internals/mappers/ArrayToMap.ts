@@ -1,9 +1,7 @@
-/** @internal */
 export function arrayToMapMapper<TKey, TValue>(data: [TKey, TValue][]): Map<TKey, TValue> {
   return new Map(data);
 }
 
-/** @internal */
 export function arrayToMapUnmapper<TKey, TValue>(value: unknown): [TKey, TValue][] {
   if (typeof value !== 'object' || value === null) {
     throw new Error('Incompatible instance received: should be a non-null object');

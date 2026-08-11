@@ -3,7 +3,6 @@ import { Value } from '../../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../../random/generator/Random.js';
 import type { SlicedGenerator } from '../interfaces/SlicedGenerator.js';
 
-/** @internal */
 export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
   private activeSliceIndex = 0;
   private nextIndexInSlice = 0; // the next index to take from the slice

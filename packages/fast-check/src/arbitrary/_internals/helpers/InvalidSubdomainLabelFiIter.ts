@@ -1,4 +1,3 @@
-/** @internal */
 export function filterInvalidSubdomainLabel(subdomainLabel: string): boolean {
   // Here our definition of a subdomain is <label> and "[l]abels must be 63 characters or less"
   // According RFC 1034 a subdomain should be defined as follows:

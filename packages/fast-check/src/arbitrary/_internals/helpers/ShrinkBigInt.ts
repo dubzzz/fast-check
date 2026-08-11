@@ -2,7 +2,6 @@ import { Value } from '../../../check/arbitrary/definition/Value.js';
 
 /**
  * Halve towards zero
- * @internal
  */
 function halveBigInt(n: bigint): bigint {
   return n / 2n;
@@ -10,7 +9,6 @@ function halveBigInt(n: bigint): bigint {
 
 /**
  * Compute shrunk values to move from current to target
- * @internal
  */
 export function shrinkBigInt(current: bigint, target: bigint, tryTargetAsap: boolean): IteratorObject<Value<bigint>> {
   const realGap = current - target;

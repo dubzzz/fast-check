@@ -4,7 +4,6 @@ import type { JsonSharedConstraints, JsonValue } from './_internals/helpers/Json
 
 export type { JsonSharedConstraints };
 
-/** @internal */
 function jsonStringUnmapper(value: unknown): JsonValue {
   if (typeof value !== 'string') {
     throw new Error('Cannot unmap the passed value');

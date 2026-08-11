@@ -17,7 +17,6 @@ import type { Value } from '../arbitrary/definition/Value.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
-/** @internal */
 async function runIt<Ts>(
   run: Property<Ts>['run'],
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,

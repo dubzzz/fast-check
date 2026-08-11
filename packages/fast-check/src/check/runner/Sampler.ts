@@ -1,28 +1,26 @@
-import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
-import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
-import type { Property } from '../property/types/Property.js';
-import { readConfigureGlobal } from './configuration/GlobalParameters.js';
-import type { Parameters } from './configuration/Parameters.js';
-import { read } from './configuration/QualifiedParameters.js';
-import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import { lazyToss, toss } from './Tosser.js';
-import { pathWalk } from './utils/PathWalker.js';
+import type { Arbitrary } from "../arbitrary/definition/Arbitrary.js";
+import { PropertyImplem } from "../property/_internals/PropertyImplem.js";
+import type { Property } from "../property/types/Property.js";
+import { readConfigureGlobal } from "./configuration/GlobalParameters.js";
+import type { Parameters } from "./configuration/Parameters.js";
+import { read } from "./configuration/QualifiedParameters.js";
+import type { QualifiedParameters } from "./configuration/QualifiedParameters.js";
+import { lazyToss, toss } from "./Tosser.js";
+import { pathWalk } from "./utils/PathWalker.js";
 
-/** @internal */
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
-  const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
+  const prop = !Object.prototype.hasOwnProperty.call(generator, "runBeforeEach")
     ? new PropertyImplem(generator as Arbitrary<Ts>, () => true)
     : (generator as Property<Ts>);
   return prop;
 }
 
-/** @internal */
 function streamSample<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   params?: Parameters<Ts> | number,
 ): IterableIterator<Ts> {
   const extendedParams =
-    typeof params === 'number'
+    typeof params === "number"
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
@@ -31,7 +29,16 @@ function streamSample<Ts>(
   const tossedValues =
     qParams.path.length === 0
       ? toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples), shrink);
+      : pathWalk(
+          qParams.path,
+          lazyToss(
+            nextProperty,
+            qParams.seed,
+            qParams.randomType,
+            qParams.examples,
+          ),
+          shrink,
+        );
   return tossedValues.take(qParams.numRuns).map((s) => s.value_);
 }
 
@@ -50,11 +57,13 @@ function streamSample<Ts>(
  * @remarks Since 0.0.6
  * @public
  */
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
+function sample<Ts>(
+  generator: Property<Ts> | Arbitrary<Ts>,
+  params?: Parameters<Ts> | number,
+): Ts[] {
   return [...streamSample(generator, params)];
 }
 
-/** @internal */
 function round2(n: number): string {
   return (Math.round(n * 100) / 100).toFixed(2);
 }
@@ -89,7 +98,7 @@ function statistics<Ts>(
   params?: Parameters<Ts> | number,
 ): void {
   const extendedParams =
-    typeof params === 'number'
+    typeof params === "number"
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
@@ -104,10 +113,16 @@ function statistics<Ts>(
   const data = Object.entries(recorded)
     .sort((a, b) => b[1] - a[1])
     .map((i) => [i[0], `${round2((i[1] * 100.0) / qParams.numRuns)}%`]);
-  const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
-  const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
+  const longestName = data
+    .map((i) => i[0].length)
+    .reduce((p, c) => Math.max(p, c), 0);
+  const longestPercent = data
+    .map((i) => i[1].length)
+    .reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
-    qParams.logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
+    qParams.logger(
+      `${item[0].padEnd(longestName, ".")}..${item[1].padStart(longestPercent, ".")}`,
+    );
   }
 }
 

@@ -5,12 +5,9 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { makeLazy, joinAll } from '../../utils/iterator.js';
 
-/** @internal */
 type TupleContext = unknown[];
-/** @internal */
 type TupleExtendedValue<Ts> = Value<Ts> & { context: TupleContext };
 
-/** @internal */
 function tupleMakeItCloneable<TValue>(
   vs: TValue[],
   ctxs: TupleContext,
@@ -32,7 +29,6 @@ function tupleMakeItCloneable<TValue>(
   }) as unknown as WithCloneMethod<TValue[]>;
 }
 
-/** @internal */
 export function tupleShrink<Ts extends unknown[]>(
   arbs: ArbsArray<Ts>,
   value: Ts,
@@ -70,12 +66,9 @@ export function tupleShrink<Ts extends unknown[]>(
   return joinAll(shrinks);
 }
 
-/** @internal */
 type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: Arbitrary<Ts[K]> };
-/** @internal */
 type ValuesArray<Ts extends unknown[]> = { [K in keyof Ts]?: Value<Ts[K]> };
 
-/** @internal */
 export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
   constructor(readonly arbs: ArbsArray<Ts>) {
     super();

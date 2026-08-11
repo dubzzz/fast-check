@@ -1,4 +1,3 @@
-/** @internal */
 const SharedFootPrint: symbol = Symbol.for('fast-check/PreconditionFailure');
 
 /**

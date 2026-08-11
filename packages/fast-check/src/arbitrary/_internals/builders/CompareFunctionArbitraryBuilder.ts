@@ -7,7 +7,6 @@ import { integer } from '../../integer.js';
 import { noShrink } from '../../noShrink.js';
 import { tuple } from '../../tuple.js';
 
-/** @internal */
 export function buildCompareFunctionArbitrary<T, TOut>(
   cmp: (hA: number, hB: number) => TOut,
 ): Arbitrary<(a: T, b: T) => TOut> {

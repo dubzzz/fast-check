@@ -5,7 +5,6 @@ import { makeLazy, joinAll, nil } from '../../utils/iterator.js';
 import { isSubarrayOf } from './helpers/IsSubarrayOf.js';
 import { IntegerArbitrary } from './IntegerArbitrary.js';
 
-/** @internal */
 export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly biasedLengthArb: Arbitrary<number>;

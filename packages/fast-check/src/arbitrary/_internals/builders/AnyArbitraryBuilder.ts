@@ -24,7 +24,6 @@ import { dictionary } from '../../dictionary.js';
 import { set } from '../../set.js';
 import { map } from '../../map.js';
 
-/** @internal */
 function dictOf<U>(
   ka: Arbitrary<string>,
   va: Arbitrary<U>,
@@ -41,7 +40,6 @@ function dictOf<U>(
   });
 }
 
-/** @internal */
 function typedArray(constraints: { maxLength: number | undefined; size: SizeForArbitrary }) {
   return oneof(
     int8Array(constraints),
@@ -56,7 +54,6 @@ function typedArray(constraints: { maxLength: number | undefined; size: SizeForA
   );
 }
 
-/** @internal */
 export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Arbitrary<unknown> {
   const arbitrariesForBase = constraints.values;
   const depthSize = constraints.depthSize;

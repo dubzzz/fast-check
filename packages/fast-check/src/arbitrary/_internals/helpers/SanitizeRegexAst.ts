@@ -110,8 +110,6 @@ function addMissingDotStarTraversal(
  *
  * WARNING: The produced tree may not define the same groups.
  * Refer to the unit tests for more details on this limitation.
- *
- * @internal
  */
 export function addMissingDotStar(astNode: RegexToken): RegexToken {
   return addMissingDotStarTraversalAddMissing(astNode, true, true);
