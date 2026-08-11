@@ -334,6 +334,10 @@ export function stringify<Ts>(value: Ts): string {
   return stringifyInternal(value, emptySet, unknownAsyncContentGetter);
 }
 
+/** @internal */
+// oxlint-disable-next-line no-empty-function
+function noop() {}
+
 /**
  * Mid-way between stringify and asyncStringify
  *
@@ -374,9 +378,9 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
   const unknownState = { state: 'unknown', value: undefined } as const;
   const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithAsyncToStringMethod): AsyncContent {
     const cacheKey = data;
-    if (cache.has(cacheKey)) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      return cache.get(cacheKey)!;
+    const match = cache.get(cacheKey);
+    if (match !== undefined) {
+      return match;
     }
 
     const delay0 = createDelay0();
@@ -384,8 +388,7 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
       asyncToStringMethod in data
         ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
         : (data as Promise<unknown>);
-    // oxlint-disable-next-line no-empty-function
-    p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
+    p.catch(noop); // catching potential errors of p to avoid "Unhandled promise rejection"
 
     pendingPromisesForCache.push(
       // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
