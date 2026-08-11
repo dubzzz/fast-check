@@ -336,6 +336,32 @@ export function stringify<Ts>(value: Ts): string {
   return stringifyInternal(value, emptySet, unknownAsyncContentGetter);
 }
 
+/** @internal */
+const stillPendingMarker = Symbol();
+
+/** @internal */
+function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
+  let handleId: ReturnType<typeof setTimeout> | null = null;
+  const cancel = () => {
+    if (handleId !== null) {
+      clearTimeout(handleId);
+    }
+  };
+  const delay = new Promise<typeof stillPendingMarker>((resolve) => {
+    // setTimeout allows to keep higher priority on any already resolved Promise (or close to)
+    // including nested ones like:
+    // >  (async () => {
+    // >    await Promise.resolve();
+    // >    await Promise.resolve();
+    // >  })()
+    handleId = setTimeout(() => {
+      handleId = null;
+      resolve(stillPendingMarker);
+    }, 0);
+  });
+  return { delay, cancel };
+}
+
 /**
  * Mid-way between stringify and asyncStringify
  *
@@ -347,31 +373,8 @@ export function stringify<Ts>(value: Ts): string {
  * @internal
  */
 export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
-  const stillPendingMarker = Symbol();
   const pendingPromisesForCache = new Map<unknown, Promise<unknown>>();
   const cache = new Map<unknown, AsyncContent>();
-
-  function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
-    let handleId: ReturnType<typeof setTimeout> | null = null;
-    const cancel = () => {
-      if (handleId !== null) {
-        clearTimeout(handleId);
-      }
-    };
-    const delay = new Promise<typeof stillPendingMarker>((resolve) => {
-      // setTimeout allows to keep higher priority on any already resolved Promise (or close to)
-      // including nested ones like:
-      // >  (async () => {
-      // >    await Promise.resolve();
-      // >    await Promise.resolve();
-      // >  })()
-      handleId = setTimeout(() => {
-        handleId = null;
-        resolve(stillPendingMarker);
-      }, 0);
-    });
-    return { delay, cancel };
-  }
 
   const unknownState = { state: 'unknown', value: undefined } as const;
   const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithAsyncToStringMethod): AsyncContent {
