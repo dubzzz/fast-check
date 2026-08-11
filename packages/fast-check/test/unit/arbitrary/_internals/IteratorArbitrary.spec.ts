@@ -401,30 +401,151 @@ describe('IteratorArbitrary', () => {
         }),
       ));
 
-    it('should print values without any trailing … once the iterator completed', () => {
-      // Arrange
-      const biasFactor = 48;
-      let index = 0;
-      const { instance: sourceArb, generate } = fakeArbitrary<number>();
-      generate.mockImplementation(() => new Value(index++, undefined));
-      const { instance: mrng, clone, nextInt } = fakeRandom();
-      nextInt.mockReturnValueOnce(2); // for no bias
-      nextInt.mockReturnValueOnce(2); // for target length
-      const { instance: mrngCloned } = fakeRandom();
-      clone.mockReturnValueOnce(mrngCloned);
-      const fakeStringify = (v: unknown) => '<' + String(v) + '>';
-      const stringify = vi.spyOn(StringifyMock, 'stringify');
-      stringify.mockImplementation(fakeStringify);
+    it.each<{
+      description: string;
+      history: boolean;
+      constructorArgs: [minLength: number, maxGeneratedLength: number, maxLength: number];
+      drawnTargetLength?: number;
+      numToPull: number | undefined;
+      expectedPulledValues: number[];
+      expectedPrint: string;
+    }>([
+      // With history: we print the values that have been pulled so far
+      {
+        description: 'with history, finite iterator fully consumed',
+        history: true,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 2,
+        numToPull: undefined, // fully drained
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from([<0>,<1>])',
+      },
+      {
+        description: 'with history, empty finite iterator fully consumed',
+        history: true,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 0,
+        numToPull: undefined, // fully drained
+        expectedPulledValues: [],
+        expectedPrint: 'Iterator.from([])',
+      },
+      {
+        description: 'with history, finite iterator partially consumed',
+        history: true,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 5,
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from([<0>,<1>,/*3 others…*/])',
+      },
+      {
+        description: 'with history, finite iterator not consumed at all',
+        history: true,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 5,
+        numToPull: 0,
+        expectedPulledValues: [],
+        expectedPrint: 'Iterator.from([/*5 others…*/])',
+      },
+      {
+        description: 'with history, never-ending iterator (minLength is +infinity)',
+        history: true,
+        constructorArgs: [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from([<0>,<1>,/*…*/])',
+      },
+      {
+        description: 'with history, never-ending iterator (drawn on the extra slot)',
+        history: true,
+        constructorArgs: [0, 10, Number.POSITIVE_INFINITY],
+        drawnTargetLength: -1, // minLength - 1, aka never-ending
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from([<0>,<1>,/*…*/])',
+      },
+      {
+        description: 'with history, never-ending iterator not consumed at all',
+        history: true,
+        constructorArgs: [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        numToPull: 0,
+        expectedPulledValues: [],
+        expectedPrint: 'Iterator.from([/*…*/])',
+      },
+      // Without history: we only print counters
+      {
+        description: 'without history, finite iterator fully consumed',
+        history: false,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 2,
+        numToPull: undefined, // fully drained
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from(/*2 emitted over 2*/)',
+      },
+      {
+        description: 'without history, finite iterator partially consumed',
+        history: false,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 5,
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from(/*2 emitted over 5*/)',
+      },
+      {
+        description: 'without history, finite iterator not consumed at all',
+        history: false,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 5,
+        numToPull: 0,
+        expectedPulledValues: [],
+        expectedPrint: 'Iterator.from(/*0 emitted over 5*/)',
+      },
+      {
+        description: 'without history, never-ending iterator (minLength is +infinity)',
+        history: false,
+        constructorArgs: [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from(/*2 emitted*/)',
+      },
+      {
+        description: 'without history, never-ending iterator (drawn on the extra slot)',
+        history: false,
+        constructorArgs: [0, 10, Number.POSITIVE_INFINITY],
+        drawnTargetLength: -1, // minLength - 1, aka never-ending
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from(/*2 emitted*/)',
+      },
+    ])(
+      'should print $description',
+      ({ history, constructorArgs, drawnTargetLength, numToPull, expectedPulledValues, expectedPrint }) => {
+        // Arrange
+        const biasFactor = 48;
+        let index = 0;
+        const { instance: sourceArb, generate } = fakeArbitrary<number>();
+        generate.mockImplementation(() => new Value(index++, undefined));
+        const { instance: mrng, clone, nextInt } = fakeRandom();
+        nextInt.mockReturnValueOnce(2); // for no bias
+        if (drawnTargetLength !== undefined) {
+          nextInt.mockReturnValueOnce(drawnTargetLength); // for target length
+        }
+        const { instance: mrngCloned } = fakeRandom();
+        clone.mockReturnValueOnce(mrngCloned);
+        const fakeStringify = (v: unknown) => '<' + String(v) + '>';
+        const stringify = vi.spyOn(StringifyMock, 'stringify');
+        stringify.mockImplementation(fakeStringify);
 
-      // Act
-      const arb = new IteratorArbitrary(sourceArb, true, 0, 10, 10);
-      const iterator = arb.generate(mrng, biasFactor).value;
-      const values = [...iterator];
+        // Act
+        const arb = new IteratorArbitrary(sourceArb, history, ...constructorArgs);
+        const iterator = arb.generate(mrng, biasFactor).value;
+        const values = numToPull !== undefined ? [...iterator.take(numToPull)] : [...iterator];
 
-      // Assert
-      expect(values).toEqual([0, 1]);
-      expect(String(iterator)).toEqual('Iterator.from([<0>,<1>])');
-    });
+        // Assert
+        expect(values).toEqual(expectedPulledValues);
+        expect(String(iterator)).toEqual(expectedPrint);
+      },
+    );
   });
 
   describe('canShrinkWithoutContext', () => {
