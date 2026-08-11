@@ -229,7 +229,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       let alwaysWithElements = true;
       let nonClonedDetected = false;
       const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.iterator(fc.context()), fc.integer(), (a, s, b) => {
+        fc.asyncProperty(fc.integer(), fc.iterator(fc.context(), { minLength: 3 }), fc.integer(), (a, s, b) => {
           let accessedCtx = 0;
           for (const ctx of s.take(3)) {
             ++accessedCtx;
