@@ -127,7 +127,8 @@ function addJsCodeBlock(blockContent: string): string {
   return `${JsBlockStart}\n${blockContent}${JsBlockEnd}\n`;
 }
 
-// oxlint-disable-next-line no-unused-vars - Actually used by eval
+// @ts-expect-error - Used by eval
+// oxlint-disable-next-line no-unused-vars
 function withPulledFirstItems(value: unknown): unknown {
   if (typeof value === 'object' && value !== null && typeof (value as Iterator<unknown>).next === 'function') {
     const iterator = value as Iterator<unknown>;
