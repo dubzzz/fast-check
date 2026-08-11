@@ -350,6 +350,7 @@ jobs:
         background: true
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        background: true
         with:
           name: bundles
           path: packages/
@@ -359,6 +360,7 @@ jobs:
         run: echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
       - name: Cache for assets
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        background: true
         with:
           path: |
             website/static/img/sponsors.svg
@@ -366,8 +368,8 @@ jobs:
             website/static/img/**/*.gif
             website/static/img/**/*.png
           key: assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc', 'website/prebuild/optimize-images.mjs')}}
-      - name: Wait for dependencies to be installed
-        wait: install
+      - name: Wait for background steps to complete
+        wait-all:
       - name: Unpack production packages
         run: node --run unpack:all
       - name: Generate documentation
@@ -508,6 +510,7 @@ jobs:
         background: true
       - name: Restore results from last benchmark execution on main
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        background: true
         with:
           path: benchmark.json
           # Non-matching key so restore-keys picks the most recent main cache
@@ -515,11 +518,12 @@ jobs:
           restore-keys: bench-main-
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        background: true
         with:
           name: bundles
           path: packages/
-      - name: Wait for dependencies to be installed
-        wait: install
+      - name: Wait for background steps to complete
+        wait-all:
       - name: Unpack production packages
         run: node --run unpack:all
       - name: Benchmark
