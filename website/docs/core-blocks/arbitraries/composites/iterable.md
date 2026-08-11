@@ -33,14 +33,14 @@ fc.iterator(fc.nat(9));
 // • Iterator.from([9])
 // • Iterator.from([4,7,8,/*3 others…*/])
 // • Iterator.from([4,6,9,/*7 others…*/])
-// • Iterator.from([7,6,9,/*1 others…*/])
+// • Iterator.from([7,6,9,/*1 other…*/])
 // • Iterator.from([3,0,1,/*2 others…*/])
 // • …
 
 fc.iterator(fc.nat(9), { minLength: 2, maxLength: 7 });
 // Note: Only finite iterators yielding between 2 and 7 items
 // Examples of generated values:
-// • Iterator.from([4,2,2,/*1 others…*/])
+// • Iterator.from([4,2,2,/*1 other…*/])
 // • Iterator.from([7,1,8])
 // • Iterator.from([7,4])
 // • Iterator.from([4,4])

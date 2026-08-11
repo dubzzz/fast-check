@@ -9,7 +9,7 @@ import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '
 function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings?: string[]): string {
   const seenSegment =
     seenValuesStrings !== undefined
-      ? `[${(numSeen === numTargetValues ? seenValuesStrings : numTargetValues === Number.POSITIVE_INFINITY ? [...seenValuesStrings, `/*…*/`] : [...seenValuesStrings, `/*${numTargetValues - numSeen} others…*/`]).join(',')}]`
+      ? `[${(numSeen === numTargetValues ? seenValuesStrings : numTargetValues === Number.POSITIVE_INFINITY ? [...seenValuesStrings, `/*…*/`] : numSeen === numTargetValues - 1 ? [...seenValuesStrings, `/*${numTargetValues - numSeen} other…*/`] : [...seenValuesStrings, `/*${numTargetValues - numSeen} others…*/`]).join(',')}]`
       : numTargetValues === Number.POSITIVE_INFINITY
         ? `/*${numSeen} emitted*/`
         : `/*${numSeen} emitted over ${numTargetValues}*/`;
