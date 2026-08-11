@@ -57,13 +57,10 @@ export interface IteratorConstraints {
 }
 
 /**
- * Produce an iterator of values
+ * Produce an iterator of values.
  *
- * By default, most of the generated iterators are finite ones: they stop yielding items after
- * a number of items computed the same way as the length of arrays. From time to time, a
- * never-ending iterator gets generated as the default upper bound is `Number.POSITIVE_INFINITY`:
- * pass a finite `maxLength` or set `noDefaultInfinity` to true to only produce finite iterators,
- * or set `minLength` to `Number.POSITIVE_INFINITY` to only produce never-ending ones.
+ * By default, the produced iterator can be either finite or infinite.
+ * You can tweak this behavior by playing with `minLength`, `maxLength` and `noDefaultInfinity`.
  *
  * WARNING: By default, iterator remembers all values it has ever
  * generated. This causes unbounded memory growth during large tests.
