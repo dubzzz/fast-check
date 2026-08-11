@@ -578,6 +578,123 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
   });
+
+  describe('from', () => {
+    it('should build instances of FrequencyArbitrary', async () =>
+      await fc.assert(
+        fc.asyncProperty(
+          frequencyValidInputsArb,
+          frequencyConstraintsArbFor({}),
+          fc.nat(),
+          (validInputs, constraints, depth) => {
+            // Arrange
+            const warbs = fromValidInputs(validInputs);
+            const depthContext = { depth };
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
+            getDepthContextFor.mockReturnValue(depthContext);
+
+            // Act
+            const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
+
+            // Assert
+            expect(arb).toBeInstanceOf(FrequencyArbitrary);
+          },
+        ),
+      ));
+
+    it('should always use the context coming from getDepthContextFor', async () =>
+      await fc.assert(
+        fc.asyncProperty(
+          frequencyValidInputsArb,
+          frequencyConstraintsArbFor({}),
+          fc.nat(),
+          (validInputs, constraints, depth) => {
+            // Arrange
+            const warbs = fromValidInputs(validInputs);
+            const depthContext = { depth };
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
+            getDepthContextFor.mockReturnValue(depthContext);
+
+            // Act
+            const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
+            const typedArb = arb as FrequencyArbitrary<number>;
+
+            // Assert
+            expect(getDepthContextFor).toHaveBeenCalledTimes(1);
+            expect(getDepthContextFor).toHaveBeenCalledWith(constraints.depthIdentifier);
+            expect(typedArb.context).toBe(depthContext);
+          },
+        ),
+      ));
+
+    it('should reject calls without any weighted arbitraries', () => {
+      // Arrange / Act / Assert
+      expect(() => FrequencyArbitrary.from([], {}, 'test')).toThrowError();
+    });
+
+    it('should reject calls without weight', () => {
+      // Arrange / Act / Assert
+      expect(() =>
+        FrequencyArbitrary.from([{ arbitrary: fakeArbitrary(), weight: undefined! }], {}, 'test'),
+      ).toThrowError(/expects weights to be integer values/);
+    });
+
+    it('should reject calls including at least one strictly negative weight', async () =>
+      await fc.assert(
+        fc.asyncProperty(
+          fc.integer({ max: -1 }),
+          fc.array(fc.nat()),
+          fc.array(fc.nat()),
+          (negativeWeight, headingWeights, traillingWeights) => {
+            // Arrange
+            const weightedArbs = [...headingWeights, negativeWeight, ...traillingWeights].map((weight) => ({
+              weight,
+              arbitrary: fakeArbitrary(),
+            }));
+
+            // Act / Assert
+            expect(() => FrequencyArbitrary.from(weightedArbs, {}, 'test')).toThrowError();
+          },
+        ),
+      ));
+
+    it('should reject calls having a total weight of zero', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.nat({ max: 1000 }), (numEntries) => {
+          // Arrange
+          // Reuse a single mocked arbitrary for faster throughput and prevent memory issues
+          const { instance: arbitrary } = fakeArbitrary();
+          const weightedArbs = [...Array(numEntries)].map(() => ({
+            weight: 0,
+            arbitrary,
+          }));
+
+          // Act / Assert
+          // Combined with: 'Should reject calls including at one strictly negative weight'
+          // it means that we have: 'Should reject calls having a total weight inferior or equal to zero'
+          expect(() => FrequencyArbitrary.from(weightedArbs, {}, 'test')).toThrowError();
+        }),
+      ));
+
+    it('should not reject calls defining a strictly positive total weight without any negative weights', async () =>
+      await fc.assert(
+        fc.asyncProperty(
+          fc.integer({ min: 1 }),
+          fc.array(fc.nat()),
+          fc.array(fc.nat()),
+          (positiveWeight, headingWeights, traillingWeights) => {
+            // Arrange
+            const weightedArbs = [...headingWeights, positiveWeight, ...traillingWeights].map((weight) => ({
+              weight,
+              arbitrary: fakeArbitrary(),
+            }));
+
+            // Act / Assert
+            expect(() => FrequencyArbitrary.from(weightedArbs, {}, 'test')).not.toThrowError();
+          },
+        ),
+      ));
+  });
 });
 
 describe('FrequencyArbitrary (integration)', () => {
