@@ -6,11 +6,13 @@ import { nil } from '../../utils/iterator.js';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
 /** @internal */
-function prettyPrint(numSeen: number, completed: boolean, seenValuesStrings?: string[]): string {
+function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings?: string[]): string {
   const seenSegment =
     seenValuesStrings !== undefined
-      ? `[${(completed ? seenValuesStrings : [...seenValuesStrings, '/*…*/']).join(',')}]`
-      : `/*${numSeen} emitted*/`;
+      ? `[${(numSeen === numTargetValues ? seenValuesStrings : numTargetValues === Number.POSITIVE_INFINITY ? [...seenValuesStrings, `/*…*/`] : [...seenValuesStrings, `/*${numTargetValues - numSeen} others…*/`]).join(',')}]`
+      : numTargetValues === Number.POSITIVE_INFINITY
+        ? `/*${numSeen} emitted*/`
+        : `/*${numSeen} emitted over ${numTargetValues}*/`;
   return `Iterator.from(${seenSegment})`;
 }
 
@@ -45,7 +47,6 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
     const enrichedProducer = () => {
       const seenValues: T[] | null = this.history ? [] : null;
       let numSeenValues = 0;
-      let completed = false;
       const g = function* (arb: Arbitrary<T>, clonedMrng: Random): IteratorObject<T, undefined> {
         for (let numYields = 0; numYields < targetLength; ++numYields) {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
@@ -55,23 +56,22 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
           }
           yield value;
         }
-        completed = true;
       };
       const s = g(this.arb, mrng.clone());
       return Object.defineProperties(s, {
         toString: {
           value: () =>
-            prettyPrint(numSeenValues, completed, seenValues !== null ? seenValues.map(stringify) : undefined),
+            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [toStringMethod]: {
           value: () =>
-            prettyPrint(numSeenValues, completed, seenValues !== null ? seenValues.map(stringify) : undefined),
+            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [asyncToStringMethod]: {
           value: async () =>
             prettyPrint(
               numSeenValues,
-              completed,
+              targetLength,
               seenValues !== null ? await Promise.all(seenValues.map(asyncStringify)) : undefined,
             ),
         },
