@@ -351,7 +351,7 @@ describe('IteratorArbitrary', () => {
           generate.mockImplementation(() => new Value(index++, undefined));
           const { instance: mrng, clone, nextInt } = fakeRandom();
           nextInt.mockReturnValueOnce(2); // for no bias
-          nextInt.mockReturnValueOnce(11); // for target length: 11 > maxGeneratedLength=10, aka never-ending
+          nextInt.mockReturnValueOnce(-1); // for target length, aka never-ending (minLength - 1)
           const { instance: mrngCloned } = fakeRandom();
           clone.mockReturnValueOnce(mrngCloned);
 
@@ -364,7 +364,7 @@ describe('IteratorArbitrary', () => {
 
           // Assert
           expect(nextInt).toHaveBeenCalledTimes(2);
-          expect(nextInt).toHaveBeenNthCalledWith(2, 0, 11); // infinite maxLength: one extra slot
+          expect(nextInt).toHaveBeenNthCalledWith(2, -1, 10); // infinite maxLength: one extra slot at the beginning
           expect(generate).toHaveBeenCalledTimes(50);
         }),
       ));
