@@ -115,14 +115,14 @@ export function stringifyInternal<Ts>(
   previousValues: Set<unknown>,
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
 ): string {
-  const currentValues = new Set(previousValues);
-  currentValues.add(value);
   if (typeof value === 'object') {
     // early cycle detection for objects
     if (previousValues.has(value)) {
       return '[cyclic]';
     }
   }
+  const currentValues = new Set(previousValues);
+  currentValues.add(value);
 
   if (hasAsyncToStringMethod(value)) {
     // if user defined custom async serialization function, we use it first
