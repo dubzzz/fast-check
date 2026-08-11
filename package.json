@@ -44,7 +44,7 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/e2e/documentation"
   },
   "devDependencies": {
-    "@atproto/api": "^0.20.30",
+    "@atproto/api": "^0.20.39",
     "@changesets/cli": "^2.31.1",
     "@fast-check/packaged": "workspace:*",
     "@types/jest": "^30.0.0",
@@ -56,7 +56,7 @@
     "oxlint-tsgolint": "^0.24.0",
     "pkg-pr-new": "^0.0.86",
     "prettier": "3.9.6",
-    "publint": "^0.3.21",
+    "publint": "^0.3.23",
     "rolldown": "^1.2.3",
     "rolldown-plugin-dts": "^0.27.12",
     "typescript": "~6.0.3",
