@@ -418,7 +418,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 2,
         numToPull: undefined, // fully drained
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([<0>,<1>])',
+        expectedPrint: 'Iterator.from([0,1])',
       },
       {
         description: 'with history, empty finite iterator fully consumed',
@@ -436,7 +436,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 5,
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([<0>,<1>,/*3 others…*/])',
+        expectedPrint: 'Iterator.from([0,1,/*3 others…*/])',
       },
       {
         description: 'with history, finite iterator not consumed at all',
@@ -453,7 +453,7 @@ describe('IteratorArbitrary', () => {
         constructorArgs: [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([<0>,<1>,/*…*/])',
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
       },
       {
         description: 'with history, never-ending iterator (drawn on the extra slot)',
@@ -462,7 +462,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: -1, // minLength - 1, aka never-ending
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([<0>,<1>,/*…*/])',
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
       },
       {
         description: 'with history, never-ending iterator not consumed at all',
@@ -532,7 +532,7 @@ describe('IteratorArbitrary', () => {
         }
         const { instance: mrngCloned } = fakeRandom();
         clone.mockReturnValueOnce(mrngCloned);
-        const fakeStringify = (v: unknown) => '<' + String(v) + '>';
+        const fakeStringify = (v: unknown) => String(v);
         const stringify = vi.spyOn(StringifyMock, 'stringify');
         stringify.mockImplementation(fakeStringify);
 
