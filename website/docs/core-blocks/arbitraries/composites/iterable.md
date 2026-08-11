@@ -37,8 +37,8 @@ fc.iterator(fc.nat(9));
 // • Iterator.from([/*5 others…*/])
 // • …
 
-fc.iterator(fc.nat(9), { minLength: 2, maxLength: 3 });
-// Note: Only finite iterators yielding between 2 and 3 items
+fc.iterator(fc.nat(9), { minLength: 2, maxLength: 5 });
+// Note: Only finite iterators yielding between 2 and 5 items
 // Examples of generated values: Iterator.from([/*2 others…*/]), Iterator.from([/*3 others…*/])…
 
 fc.iterator(fc.nat(9), { noDefaultInfinity: true });
