@@ -225,9 +225,9 @@ describe('myArbitrary (integration)', () => {
 });
 ```
 
-- No regression test - in `test/e2e/NoRegression.spec.ts`
+- No regression test - in `test/NoRegression.spec.ts`
 
-Then run `pnpm --filter fast-check e2e -- -u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
+Then run `pnpm test NoRegression --u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
 
 - Legacy support test - in `packages/test-minimal-support/main.js`
 
