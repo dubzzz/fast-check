@@ -15,11 +15,11 @@ exports[`NoRegressionStack > not a function 1`] = `
 Counterexample: [0]
 Shrunk 1 time(s)
 Got TypeError: v is not a function
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?
+    at packages/fast-check/test/NoRegressionStack.spec.ts:?:?
     at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
+    at packages/fast-check/test/__test-helpers__/StackSanitizer.ts:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
 `;
@@ -62,7 +62,7 @@ exports[`NoRegressionStack > throw 1`] = `
 Counterexample: [0,1]
 Shrunk 32 time(s)
 Got error: a must be >= b
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?
+    at packages/fast-check/test/NoRegressionStack.spec.ts:?:?
     at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)

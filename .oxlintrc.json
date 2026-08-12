@@ -73,8 +73,8 @@
     {
       "files": [
         "**/*.spec.ts",
-        "**/test/unit/**/*.ts",
-        "**/test/e2e/**/*.ts",
+        "**/bench/**/*.ts",
+        "**/test/**/*.ts",
         "**/test-types/**/*.ts",
         "**/test-types/**/*.mts"
       ],
