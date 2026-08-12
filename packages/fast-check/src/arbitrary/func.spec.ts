@@ -1,0 +1,139 @@
+import { describe, it, expect } from 'vitest';
+import { nil } from '../utils/iterator.js';
+import * as fc from 'fast-check';
+import { func } from './func.js';
+
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../check/arbitrary/definition/Value.js';
+import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../check/symbols.js';
+import type { Random } from '../random/generator/Random.js';
+import {
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
+} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+import { FakeIntegerArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { assertToStringIsSameFunction } from '../../test/unit/arbitrary/__test-helpers__/ToStringIsSameFunction.js';
+
+describe('func (integration)', () => {
+  const funcBuilder = () => func(new FakeIntegerArbitrary());
+
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(funcBuilder, {
+      extraParameters: fc.array(fc.array(fc.anything()), { minLength: 1 }),
+      isEqual: (fa, fb, calls) => {
+        for (const args of calls) {
+          expect(fb(...args)).toBe(fa(...args));
+        }
+      },
+    });
+  });
+
+  it('should not depend on the ordering of the calls', async () => {
+    await assertProduceSameValueGivenSameSeed(funcBuilder, {
+      extraParameters: fc.record({
+        call: fc.array(fc.anything()),
+        noiseCallsA: fc.array(fc.array(fc.anything())),
+        noiseCallsB: fc.array(fc.array(fc.anything())),
+      }),
+      isEqual: (fa, fb, { call, noiseCallsA, noiseCallsB }) => {
+        for (const args of noiseCallsA) {
+          fa(...args);
+        }
+        for (const args of noiseCallsB) {
+          fb(...args);
+        }
+        expect(fb(...call)).toBe(fa(...call));
+      },
+    });
+  });
+
+  it('should return the same value given the same input', async () => {
+    await assertProduceCorrectValues(
+      funcBuilder,
+      (f, { call, noiseCallsA, noiseCallsB }) => {
+        for (const args of noiseCallsA) {
+          f(...args);
+        }
+        const out = f(...call);
+        for (const args of noiseCallsB) {
+          f(...args);
+        }
+        expect(f(...call)).toBe(out);
+      },
+      {
+        extraParameters: fc.record({
+          call: fc.array(fc.anything()),
+          noiseCallsA: fc.array(fc.array(fc.anything())),
+          noiseCallsB: fc.array(fc.array(fc.anything())),
+        }),
+      },
+    );
+  });
+
+  it('should give a re-usable string representation of the function', async () => {
+    await assertProduceCorrectValues(funcBuilder, (f, calls) => assertToStringIsSameFunction(f, calls), {
+      extraParameters: fc.array(fc.array(fc.anything())),
+    });
+  });
+
+  it('should produce cloneable instances with independant histories', async () => {
+    await assertProduceCorrectValues(
+      funcBuilder,
+      (f, calls) => {
+        for (const args of calls) {
+          f(...args);
+        }
+        expect(String(f)).toBe(String(f)); // calling toString does not alter the output
+        expect(hasCloneMethod(f)).toBe(true); // f should be cloneable
+        const clonedF = cloneIfNeeded(f);
+        expect(String(clonedF)).not.toBe(String(f)); // f has been called with inputs, clonedF has not yet!
+        for (const args of calls) {
+          clonedF(...args);
+        }
+        expect(String(clonedF)).toBe(String(f)); // both called with same inputs in the same order
+      },
+      { extraParameters: fc.array(fc.array(fc.anything()), { minLength: 1 }) },
+    );
+  });
+
+  it('should only clone produced values if they implement [fc.cloneMethod]', async () => {
+    class CloneableArbitrary extends Arbitrary<number[]> {
+      private instance(value: number, cloneable: boolean) {
+        if (!cloneable) return [value, 0];
+        return Object.defineProperty([value, 1], cloneMethod, { value: () => this.instance(value, cloneable) });
+      }
+      generate(mrng: Random): Value<number[]> {
+        return new Value(this.instance(mrng.nextInt(-0x80000000, 0x7fffffff), mrng.nextInt(0, 1) === 1), {
+          shrunkOnce: false,
+        });
+      }
+      canShrinkWithoutContext(_value: unknown): _value is number[] {
+        throw new Error('No call expected in that scenario');
+      }
+      shrink(value: number[], context?: unknown): IteratorObject<Value<number[]>> {
+        const safeContext = context as { shrunkOnce: boolean };
+        if (safeContext.shrunkOnce) {
+          return nil;
+        }
+        return Iterator.from([new Value(this.instance(0, value[1] === 1), { shrunkOnce: true })]);
+      }
+    }
+    await assertProduceCorrectValues(
+      () => func(new CloneableArbitrary()),
+      (f, args) => {
+        const out1 = f(...args);
+        const out2 = f(...args);
+        expect(out2).toEqual(out1);
+        const cloneable = out1[1] === 1;
+        if (!cloneable) {
+          expect(out2).toBe(out1);
+        } else {
+          expect(out2).not.toBe(out1);
+        }
+        expect(hasCloneMethod(out1)).toBe(cloneable);
+        expect(hasCloneMethod(out2)).toBe(cloneable);
+      },
+      { extraParameters: fc.array(fc.anything()) },
+    );
+  });
+});
