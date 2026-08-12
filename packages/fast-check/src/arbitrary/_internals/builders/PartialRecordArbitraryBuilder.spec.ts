@@ -1,0 +1,218 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
+import { buildPartialRecordArbitrary } from './PartialRecordArbitraryBuilder.js';
+
+import * as BooleanMock from '../../boolean.js';
+import * as ConstantMock from '../../constant.js';
+import * as OptionMock from '../../option.js';
+import * as TupleMock from '../../tuple.js';
+import * as ValuesAndSeparateKeysToObjectMock from '../mappers/ValuesAndSeparateKeysToObject.js';
+
+function beforeEachHook() {
+  vi.resetModules();
+  vi.restoreAllMocks();
+}
+beforeEach(beforeEachHook);
+
+describe('buildPartialRecordArbitrary', () => {
+  it.each([{ noNullPrototype: true }, { noNullPrototype: false }])(
+    'should never wrap arbitraries linked to required keys and forward all keys to mappers (noNullPrototype: $noNullPrototype)',
+    ({ noNullPrototype }) => {
+      // Arrange
+      const { instance: mappedInstance } = fakeArbitrary<any>();
+      const { instance: tupleInstance, map } = fakeArbitrary<any[]>();
+      const { instance: booleanInstance } = fakeArbitrary<any>();
+      const boolean = vi.spyOn(BooleanMock, 'boolean');
+      const constant = vi.spyOn(ConstantMock, 'constant');
+      const option = vi.spyOn(OptionMock, 'option');
+      const tuple = vi.spyOn(TupleMock, 'tuple');
+      boolean.mockReturnValueOnce(booleanInstance);
+      constant.mockReturnValueOnce(booleanInstance);
+      tuple.mockReturnValueOnce(tupleInstance);
+      map.mockReturnValueOnce(mappedInstance);
+
+      const mapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectMapper = vi.spyOn(
+        ValuesAndSeparateKeysToObjectMock,
+        'buildValuesAndSeparateKeysToObjectMapper',
+      );
+      buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
+
+      const unmapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectUnmapper = vi.spyOn(
+        ValuesAndSeparateKeysToObjectMock,
+        'buildValuesAndSeparateKeysToObjectUnmapper',
+      );
+      buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
+
+      const arbKey1 = fakeArbitrary();
+      const arbKey2 = fakeArbitrary();
+      const recordModel = {
+        a: arbKey1,
+        b: arbKey2,
+      };
+      const requiredKeys: (keyof typeof recordModel)[] = ['a', 'b'];
+      const allKeys: (keyof typeof recordModel)[] = ['a', 'b'];
+
+      // Act
+      const arb = buildPartialRecordArbitrary(recordModel, requiredKeys, noNullPrototype);
+
+      // Assert
+      expect(arb).toBe(mappedInstance);
+      expect(option).not.toHaveBeenCalled();
+      expect(tuple).toHaveBeenCalledTimes(1);
+      expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b, booleanInstance);
+      expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
+      expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+      expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledTimes(1);
+      expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+      expect(map).toHaveBeenCalledTimes(1);
+      expect(map).toHaveBeenCalledWith(mapper, unmapper);
+      if (noNullPrototype) {
+        expect(boolean).not.toHaveBeenCalled();
+        expect(constant).toHaveBeenCalledTimes(1);
+        expect(constant).toHaveBeenCalledWith(false); // ie withNullPrototype=false
+      } else {
+        expect(boolean).toHaveBeenCalledTimes(1);
+        expect(constant).not.toHaveBeenCalled();
+      }
+    },
+  );
+
+  it.each([{ noNullPrototype: true }, { noNullPrototype: false }])(
+    'should wrap arbitraries not linked to required keys into option and forward all keys to mappers (noNullPrototype: $noNullPrototype)',
+    ({ noNullPrototype }) => {
+      // Arrange
+      const { instance: mappedInstance } = fakeArbitrary<any>();
+      const { instance: tupleInstance, map } = fakeArbitrary<any[]>();
+      const { instance: booleanInstance } = fakeArbitrary<any>();
+      const { instance: optionInstance1 } = fakeArbitrary();
+      const { instance: optionInstance2 } = fakeArbitrary();
+      const boolean = vi.spyOn(BooleanMock, 'boolean');
+      const constant = vi.spyOn(ConstantMock, 'constant');
+      const option = vi.spyOn(OptionMock, 'option');
+      const tuple = vi.spyOn(TupleMock, 'tuple');
+      const optionInstance1Old = optionInstance1;
+      const optionInstance2Old = optionInstance2;
+      boolean.mockReturnValueOnce(booleanInstance);
+      constant.mockReturnValueOnce(booleanInstance);
+      option.mockReturnValueOnce(optionInstance1Old).mockReturnValueOnce(optionInstance2Old);
+      tuple.mockReturnValueOnce(tupleInstance);
+      map.mockReturnValueOnce(mappedInstance);
+
+      const mapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectMapper = vi.spyOn(
+        ValuesAndSeparateKeysToObjectMock,
+        'buildValuesAndSeparateKeysToObjectMapper',
+      );
+      buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
+
+      const unmapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectUnmapper = vi.spyOn(
+        ValuesAndSeparateKeysToObjectMock,
+        'buildValuesAndSeparateKeysToObjectUnmapper',
+      );
+      buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
+
+      const arbKey1 = fakeArbitrary();
+      const arbKey2 = fakeArbitrary();
+      const arbKey3 = fakeArbitrary();
+      const recordModel = {
+        a: arbKey1,
+        b: arbKey2,
+        c: arbKey3,
+      };
+      const requiredKeys: (keyof typeof recordModel)[] = ['b'];
+      const allKeys: (keyof typeof recordModel)[] = ['a', 'b', 'c'];
+
+      // Act
+      const arb = buildPartialRecordArbitrary(recordModel, requiredKeys, noNullPrototype);
+
+      // Assert
+      expect(arb).toBe(mappedInstance);
+      expect(option).toHaveBeenCalledTimes(2);
+      expect(option).toHaveBeenCalledWith(recordModel.a, { nil: expect.any(Symbol) });
+      expect(option).toHaveBeenCalledWith(recordModel.c, { nil: expect.any(Symbol) });
+      expect(tuple).toHaveBeenCalledTimes(1);
+      expect(tuple).toHaveBeenCalledWith(optionInstance1Old, recordModel.b, optionInstance2Old, booleanInstance);
+      expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
+      expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+      expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledTimes(1);
+      expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+      expect(map).toHaveBeenCalledTimes(1);
+      expect(map).toHaveBeenCalledWith(mapper, unmapper);
+      if (noNullPrototype) {
+        expect(boolean).not.toHaveBeenCalled();
+        expect(constant).toHaveBeenCalledTimes(1);
+        expect(constant).toHaveBeenCalledWith(false); // ie withNullPrototype=false
+      } else {
+        expect(boolean).toHaveBeenCalledTimes(1);
+        expect(constant).not.toHaveBeenCalled();
+      }
+    },
+  );
+
+  it.each([{ noNullPrototype: true }, { noNullPrototype: false }])(
+    'should not wrap any arbitrary when required keys is not specified (all required) and forward all keys to mappers (noNullPrototype: $noNullPrototype)',
+    ({ noNullPrototype }) => {
+      // Arrange
+      const { instance: mappedInstance } = fakeArbitrary<any>();
+      const { instance: tupleInstance, map } = fakeArbitrary<any[]>();
+      const { instance: booleanInstance } = fakeArbitrary<any>();
+      const boolean = vi.spyOn(BooleanMock, 'boolean');
+      const constant = vi.spyOn(ConstantMock, 'constant');
+      const option = vi.spyOn(OptionMock, 'option');
+      const tuple = vi.spyOn(TupleMock, 'tuple');
+      boolean.mockReturnValueOnce(booleanInstance);
+      constant.mockReturnValueOnce(booleanInstance);
+      tuple.mockReturnValueOnce(tupleInstance);
+      map.mockReturnValueOnce(mappedInstance);
+
+      const mapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectMapper = vi.spyOn(
+        ValuesAndSeparateKeysToObjectMock,
+        'buildValuesAndSeparateKeysToObjectMapper',
+      );
+      buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
+
+      const unmapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectUnmapper = vi.spyOn(
+        ValuesAndSeparateKeysToObjectMock,
+        'buildValuesAndSeparateKeysToObjectUnmapper',
+      );
+      buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
+
+      const arbKey1 = fakeArbitrary();
+      const arbKey2 = fakeArbitrary();
+      const recordModel = {
+        a: arbKey1,
+        b: arbKey2,
+      };
+      const requiredKeys = undefined;
+      const allKeys: (keyof typeof recordModel)[] = ['a', 'b'];
+
+      // Act
+      const arb = buildPartialRecordArbitrary(recordModel, requiredKeys, noNullPrototype);
+
+      // Assert
+      expect(arb).toBe(mappedInstance);
+      expect(option).not.toHaveBeenCalled();
+      expect(tuple).toHaveBeenCalledTimes(1);
+      expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b, booleanInstance);
+      expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
+      expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+      expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledTimes(1);
+      expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+      expect(map).toHaveBeenCalledTimes(1);
+      expect(map).toHaveBeenCalledWith(mapper, unmapper);
+      if (noNullPrototype) {
+        expect(boolean).not.toHaveBeenCalled();
+        expect(constant).toHaveBeenCalledTimes(1);
+        expect(constant).toHaveBeenCalledWith(false); // ie withNullPrototype=false
+      } else {
+        expect(boolean).toHaveBeenCalledTimes(1);
+        expect(constant).not.toHaveBeenCalled();
+      }
+    },
+  );
+});
