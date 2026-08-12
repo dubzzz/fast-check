@@ -73,6 +73,7 @@
     {
       "files": [
         "**/*.spec.ts",
+        "**/__test-helpers__/**/*.ts",
         "**/bench/**/*.ts",
         "**/test/**/*.ts",
         "**/test-types/**/*.ts",
