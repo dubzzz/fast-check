@@ -11,10 +11,10 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceSomeSpecificValues,
   assertProduceValuesShrinkableWithoutContext,
-} from '../../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { computeObjectDepth } from '../../../../test/unit/arbitrary/__test-helpers__/ComputeObjectDepth.js';
-import { computeObjectMaxKeys } from '../../../../test/unit/arbitrary/__test-helpers__/ComputeObjectMaxKeys.js';
-import { sizeArb } from '../../../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
+} from '../../__test-helpers__/ArbitraryAssertions.js';
+import { computeObjectDepth } from '../../__test-helpers__/ComputeObjectDepth.js';
+import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKeys.js';
+import { sizeArb } from '../../__test-helpers__/SizeHelpers.js';
 
 describe('anyArbitraryBuilder (integration)', () => {
   it('should be able to produce Set (when asked to)', async () => {

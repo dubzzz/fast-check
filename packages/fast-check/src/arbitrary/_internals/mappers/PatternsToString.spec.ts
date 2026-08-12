@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { patternsToStringUnmapperFor } from './PatternsToString.js';
-import { fakeArbitrary } from '../../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
 
 // prettier-ignore
 const MorseCode = ['._', '_...', '_._.', '_..', '.', '.._.', '__.', '....', '..', '.___', '._..', '__', '_.', '___', '.__.', '__._', '._.', '...', '_', '.._', '..._', '.__', '_.._', '_.__', '__..'];

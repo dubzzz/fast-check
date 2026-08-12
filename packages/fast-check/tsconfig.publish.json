@@ -6,5 +6,5 @@
     "lib": ["es2025"]
   },
   "include": ["src/"],
-  "exclude": ["src/**/*.spec.ts"]
+  "exclude": ["src/**/*.spec.ts", "src/**/__test-helpers__/"]
 }

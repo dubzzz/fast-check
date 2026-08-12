@@ -1,12 +1,12 @@
 import { expect } from 'vitest';
-import { getNthOrLast } from '../../../../src/utils/iterator.js';
+import { getNthOrLast } from '../../utils/iterator.js';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
-import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
-import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
-import { Random } from '../../../../src/random/generator/Random.js';
+import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import { Random } from '../../random/generator/Random.js';
 import { withConfiguredGlobal } from './GlobalSettingsHelpers.js';
 import { sizeArb } from './SizeHelpers.js';
 

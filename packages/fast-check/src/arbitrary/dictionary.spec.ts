@@ -11,7 +11,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('dictionary (integration)', () => {
   type Extra = { keys: PropertyKey[]; values: unknown[]; constraints?: DictionaryConstraints };

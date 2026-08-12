@@ -9,8 +9,8 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { relativeSizeArb, sizeArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers.js';
 
 describe('webAuthority (integration)', () => {
   type Extra = WebAuthorityConstraints;

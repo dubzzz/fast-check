@@ -8,8 +8,8 @@ import {
   assertGenerateEquivalentTo,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { assertToStringIsSameFunction } from '../../test/unit/arbitrary/__test-helpers__/ToStringIsSameFunction.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction.js';
 
 describe('compareBooleanFunc (integration)', () => {
   const compareBooleanFuncBuilder = () => compareBooleanFunc();

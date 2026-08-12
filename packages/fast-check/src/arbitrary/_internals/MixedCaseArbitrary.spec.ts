@@ -6,15 +6,15 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from '../__test-helpers__/ArbitraryAssertions.js';
 import { MixedCaseArbitrary } from './MixedCaseArbitrary.js';
 import { string } from '../string.js';
 import { nat } from '../nat.js';
 import * as BigIntMock from '../bigInt.js';
-import { fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
-import { declareCleaningHooksForSpies } from '../../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('MixedCaseArbitrary', () => {
   declareCleaningHooksForSpies();

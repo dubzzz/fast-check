@@ -2,11 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { constantFrom } from './constantFrom.js';
 
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import { cloneMethod } from '../check/symbols.js';
 
 import * as ConstantArbitraryMock from './_internals/ConstantArbitrary.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('constantFrom', () => {
   declareCleaningHooksForSpies();

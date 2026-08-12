@@ -11,12 +11,12 @@ import {
   isStrictlySmaller,
   defaultFloatRecordConstraints,
   is32bits,
-} from '../../test/unit/arbitrary/__test-helpers__/FloatingPointHelpers.js';
+} from './__test-helpers__/FloatingPointHelpers.js';
 import { floatToIndex, indexToFloat, MIN_VALUE_32, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers.js';
 
-import { fakeArbitrary, fakeArbitraryStaticValue } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { fakeRandom } from '../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 import {
   assertProduceCorrectValues,
@@ -24,7 +24,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 import * as IntegerMock from './integer.js';
 

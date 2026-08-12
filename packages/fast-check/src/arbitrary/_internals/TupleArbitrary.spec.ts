@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { nil } from '../../utils/iterator.js';
 import { TupleArbitrary } from './TupleArbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { FakeIntegerArbitrary, fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 import { cloneMethod, hasCloneMethod } from '../../check/symbols.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -11,8 +11,8 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { buildShrinkTree, renderTree, walkTree } from '../../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+} from '../__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import type { Random } from '../../random/generator/Random.js';
 

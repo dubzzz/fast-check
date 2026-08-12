@@ -10,9 +10,9 @@ import type { Random } from '../random/generator/Random.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { FakeIntegerArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { assertToStringIsSameFunction } from '../../test/unit/arbitrary/__test-helpers__/ToStringIsSameFunction.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { FakeIntegerArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction.js';
 
 describe('func (integration)', () => {
   const funcBuilder = () => func(new FakeIntegerArbitrary());

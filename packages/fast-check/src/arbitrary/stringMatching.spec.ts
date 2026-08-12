@@ -5,7 +5,7 @@ import { stringMatching } from './stringMatching.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('stringMatching (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc.oneof(hardcodedRegex(), regexBasedOnChunks());

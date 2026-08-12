@@ -4,19 +4,19 @@ import type { MockInstance } from 'vitest';
 import * as fc from 'fast-check';
 import { IntegerArbitrary } from './IntegerArbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { buildShrinkTree, renderTree, walkTree } from '../../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+} from '../__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
 
 import * as BiasNumericRangeMock from './helpers/BiasNumericRange.js';
 import * as ShrinkIntegerMock from './helpers/ShrinkInteger.js';
-import { declareCleaningHooksForSpies } from '../../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('IntegerArbitrary', () => {
   declareCleaningHooksForSpies();

@@ -9,14 +9,14 @@ import {
   relativeSizeToSize,
   resolveSize,
 } from './MaxLengthFromMinLength.js';
-import { withConfiguredGlobal } from '../../../../test/unit/arbitrary/__test-helpers__/GlobalSettingsHelpers.js';
+import { withConfiguredGlobal } from '../../__test-helpers__/GlobalSettingsHelpers.js';
 import {
   sizeArb,
   isSmallerSize,
   relativeSizeArb,
   sizeForArbitraryArb,
   sizeRelatedGlobalConfigArb,
-} from '../../../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
+} from '../../__test-helpers__/SizeHelpers.js';
 
 describe('maxLengthFromMinLength', () => {
   it('should result into higher or equal maxLength given higher size', async () => {

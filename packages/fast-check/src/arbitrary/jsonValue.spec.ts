@@ -8,10 +8,10 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { computeObjectDepth } from '../../test/unit/arbitrary/__test-helpers__/ComputeObjectDepth.js';
-import { isObjectWithNumericKeys } from '../../test/unit/arbitrary/__test-helpers__/ObjectWithNumericKeys.js';
-import { sizeArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth.js';
+import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKeys.js';
+import { sizeArb } from './__test-helpers__/SizeHelpers.js';
 
 describe('jsonValue (integration)', () => {
   type Extra = JsonSharedConstraints | undefined;

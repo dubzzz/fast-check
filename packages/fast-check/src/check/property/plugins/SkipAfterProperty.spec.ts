@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { SkipAfterProperty } from './SkipAfterProperty.js';
 import { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
-import { fakeProperty } from '../../../../test/unit/check/property/__test-helpers__/PropertyHelpers.js';
-import { fakeRandom } from '../../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeProperty } from '../__test-helpers__/PropertyHelpers.js';
+import { fakeRandom } from '../../../arbitrary/__test-helpers__/RandomHelpers.js';
 import { Value } from '../../arbitrary/definition/Value.js';
 
 const startTimeMs = 200;

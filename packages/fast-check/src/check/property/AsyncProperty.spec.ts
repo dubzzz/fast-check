@@ -7,7 +7,7 @@ import { configureGlobal, resetConfigureGlobal } from '../runner/configuration/G
 import * as stubArb from '../../../test/unit/stubs/arbitraries.js';
 import * as stubRng from '../../../test/unit/stubs/generators.js';
 import { Value } from '../arbitrary/definition/Value.js';
-import { fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
 import type { PropertyFailure } from './types/PropertyFailure.js';
 import * as fc from 'fast-check';
 

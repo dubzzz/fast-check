@@ -2,7 +2,7 @@ import * as fc from 'fast-check';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { iterator } from './iterator.js';
 
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as IteratorArbitraryMock from './_internals/IteratorArbitrary.js';
 

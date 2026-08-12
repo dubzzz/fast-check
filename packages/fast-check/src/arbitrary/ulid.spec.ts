@@ -1,17 +1,17 @@
 import { describe, it, expect, vi } from 'vitest';
 import { ulid } from './ulid.js';
-import { fakeArbitraryStaticValue } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as _IntegerMock from './integer.js';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { fakeRandom } from '../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
 describe('ulid', () => {

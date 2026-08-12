@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { falsy } from './falsy.js';
 
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 import * as ConstantFromMock from './constantFrom.js';
 

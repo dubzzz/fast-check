@@ -8,12 +8,12 @@ import {
   doubleConstraints,
   float64raw,
   isStrictlySmaller,
-} from '../../test/unit/arbitrary/__test-helpers__/FloatingPointHelpers.js';
+} from './__test-helpers__/FloatingPointHelpers.js';
 import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers.js';
 
-import { fakeArbitrary, fakeArbitraryStaticValue } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { fakeRandom } from '../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 import {
   assertProduceCorrectValues,
@@ -21,7 +21,7 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 import * as BigIntMock from './bigInt.js';
 

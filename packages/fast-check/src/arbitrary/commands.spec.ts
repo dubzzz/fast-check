@@ -10,7 +10,7 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
 import { tuple } from './tuple.js';
 import { nat } from './nat.js';
-import { isStrictlySmallerArray } from '../../test/unit/arbitrary/__test-helpers__/ArrayHelpers.js';
+import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers.js';
 
 type Model = Record<string, unknown>;
 type Real = unknown;

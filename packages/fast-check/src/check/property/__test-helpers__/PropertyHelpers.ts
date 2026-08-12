@@ -1,8 +1,8 @@
 import { vi } from 'vitest';
-import { nil } from '../../../../../src/utils/iterator.js';
+import { nil } from '../../../utils/iterator.js';
 import type { MockInstance } from 'vitest';
-import type { Property } from '../../../../../src/check/property/types/Property.js';
-import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
+import type { Property } from '../types/Property.js';
+import { Value } from '../../arbitrary/definition/Value.js';
 
 /**
  * Generate a fake instance inheriting from IProperty with all methods being mocked

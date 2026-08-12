@@ -3,16 +3,16 @@ import * as fc from 'fast-check';
 import type { RecordConstraints } from './record.js';
 import { record } from './record.js';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { FakeIntegerArbitrary, fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 import * as PartialRecordArbitraryBuilderMock from './_internals/builders/PartialRecordArbitraryBuilder.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('record', () => {
   declareCleaningHooksForSpies();

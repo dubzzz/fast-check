@@ -9,10 +9,10 @@ import {
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
-import { relativeSizeArb, sizeArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('emailAddress (integration)', () => {
   declareCleaningHooksForSpies();

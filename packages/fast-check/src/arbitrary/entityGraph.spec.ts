@@ -6,7 +6,7 @@ import { entityGraph } from './entityGraph.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 
 enum WithValues {

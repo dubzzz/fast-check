@@ -7,9 +7,9 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { computeObjectDepth } from '../../test/unit/arbitrary/__test-helpers__/ComputeObjectDepth.js';
-import { sizeArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth.js';
+import { sizeArb } from './__test-helpers__/SizeHelpers.js';
 
 describe('json (integration)', () => {
   type Extra = JsonSharedConstraints | undefined;

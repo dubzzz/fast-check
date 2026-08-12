@@ -1,6 +1,6 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { SchedulerArbitrary } from './SchedulerArbitrary.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
 import * as SchedulerImplemMock from './implementations/SchedulerImplem.js';
 import type { ScheduledTask } from './implementations/SchedulerImplem.js';

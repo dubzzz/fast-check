@@ -1,10 +1,6 @@
 import { assert } from 'console';
 import * as fc from 'fast-check';
-import type {
-  RelativeSize,
-  Size,
-  SizeForArbitrary,
-} from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
+import type { RelativeSize, Size, SizeForArbitrary } from '../_internals/helpers/MaxLengthFromMinLength.js';
 
 const allSizeOrdered = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
 export const sizeArb: fc.Arbitrary<Size> = fc.constantFrom<Size>(...allSizeOrdered);

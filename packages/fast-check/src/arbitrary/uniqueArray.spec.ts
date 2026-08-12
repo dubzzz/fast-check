@@ -3,7 +3,7 @@ import * as fc from 'fast-check';
 import type { UniqueArrayConstraints } from './uniqueArray.js';
 import { uniqueArray } from './uniqueArray.js';
 
-import { FakeIntegerArbitrary, fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as ArrayArbitraryMock from './_internals/ArrayArbitrary.js';
 import {
@@ -11,12 +11,12 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
-import { sizeRelatedGlobalConfigArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
-import { withConfiguredGlobal } from '../../test/unit/arbitrary/__test-helpers__/GlobalSettingsHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers.js';
+import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('uniqueArray', () => {
   declareCleaningHooksForSpies();

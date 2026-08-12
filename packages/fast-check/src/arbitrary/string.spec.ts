@@ -10,8 +10,8 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import type { Random } from '../random/generator/Random.js';
 

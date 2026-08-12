@@ -1,7 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { boolean } from './boolean.js';
 
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as IntegerMock from './integer.js';
 import * as NoBiasMock from './noBias.js';

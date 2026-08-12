@@ -4,7 +4,7 @@ import * as fc from 'fast-check';
 import type { SparseArrayConstraints } from './sparseArray.js';
 import { sparseArray } from './sparseArray.js';
 
-import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as RestrictedIntegerArbitraryBuilderMock from './_internals/builders/RestrictedIntegerArbitraryBuilder.js';
 import * as TupleMock from './tuple.js';
@@ -13,11 +13,11 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 import { MaxLengthUpperBound } from './_internals/helpers/MaxLengthFromMinLength.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('sparseArray', () => {
   declareCleaningHooksForSpies();

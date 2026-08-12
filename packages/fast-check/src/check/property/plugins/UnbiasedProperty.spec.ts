@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { UnbiasedProperty } from './UnbiasedProperty.js';
-import { fakeRandom } from '../../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
-import { fakeProperty } from '../../../../test/unit/check/property/__test-helpers__/PropertyHelpers.js';
+import { fakeRandom } from '../../../arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeProperty } from '../__test-helpers__/PropertyHelpers.js';
 
 describe('UnbiasedProperty', () => {
   it('should not pass runId towards the decorated property on generate', () => {

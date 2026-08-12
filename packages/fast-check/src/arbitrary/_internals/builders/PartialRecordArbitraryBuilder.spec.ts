@@ -1,5 +1,5 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { fakeArbitrary } from '../../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
 import { buildPartialRecordArbitrary } from './PartialRecordArbitraryBuilder.js';
 
 import * as BooleanMock from '../../boolean.js';

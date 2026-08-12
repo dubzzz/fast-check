@@ -20,7 +20,7 @@ export default defineConfig({
     exclude: [...defaultExclude, '**/test-bundle/**', '**/.test-artifacts/**', '**/templates/*-tutorial/**'],
     coverage: {
       include: ['packages/fast-check/src/**'],
-      exclude: [...coverageConfigDefaults.exclude, '**/*.spec.ts'],
+      exclude: [...coverageConfigDefaults.exclude, '**/*.spec.ts', '**/__test-helpers__/**'],
     },
     testTimeout,
     env: { TEST_TIMEOUT: testTimeout },

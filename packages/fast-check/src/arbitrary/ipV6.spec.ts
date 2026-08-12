@@ -8,8 +8,8 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertGenerateIndependentOfSize,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 
 describe('ipV6 (integration)', () => {
   const isValidIpV4 = (value: string) => {

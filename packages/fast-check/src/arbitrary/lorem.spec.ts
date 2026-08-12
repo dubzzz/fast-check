@@ -7,7 +7,7 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('lorem', () => {
   it('should reject any negative or zero maxCount whatever the mode', async () =>

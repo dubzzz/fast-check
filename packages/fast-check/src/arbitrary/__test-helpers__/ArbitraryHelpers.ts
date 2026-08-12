@@ -1,8 +1,8 @@
 import { vi } from 'vitest';
 import type { MaybeMocked, MockWithArgs } from '../../__test-helpers__/Mocked.js';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
-import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
-import type { Random } from '../../../../src/random/generator/Random.js';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../random/generator/Random.js';
 
 /**
  * Generate a fake Class inheriting from Arbitrary with all methods being mocked

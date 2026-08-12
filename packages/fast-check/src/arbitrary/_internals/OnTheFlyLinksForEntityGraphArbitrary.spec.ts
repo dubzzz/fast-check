@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import * as fc from 'fast-check';
-import { assertProduceCorrectValues, assertProduceSameValueGivenSameSeed } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+import {
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
+} from '../__test-helpers__/ArbitraryAssertions.js';
 import type { Arity, EntityRelations, Relationship } from './interfaces/EntityGraphTypes.js';
 import { onTheFlyLinksForEntityGraph } from './OnTheFlyLinksForEntityGraphArbitrary.js';
 import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';

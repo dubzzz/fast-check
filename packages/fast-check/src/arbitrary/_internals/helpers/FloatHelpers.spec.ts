@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { float32raw, isNotNaN32bits, isStrictlySmaller, isFiniteNotNaN32bits } from '../../../../test/unit/arbitrary/__test-helpers__/FloatingPointHelpers.js';
+import {
+  float32raw,
+  isNotNaN32bits,
+  isStrictlySmaller,
+  isFiniteNotNaN32bits,
+} from '../../__test-helpers__/FloatingPointHelpers.js';
 import { decomposeFloat, EPSILON_32, floatToIndex, indexToFloat, MAX_VALUE_32, MIN_VALUE_32 } from './FloatHelpers.js';
 
 describe('decomposeFloat', () => {

@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { WithShrinkFromOtherArbitrary } from './WithShrinkFromOtherArbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 import * as fc from 'fast-check';
 
 describe('WithShrinkFromOtherArbitrary', () => {

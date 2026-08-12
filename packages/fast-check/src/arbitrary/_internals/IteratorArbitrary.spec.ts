@@ -4,12 +4,15 @@ import * as fc from 'fast-check';
 import { IteratorArbitrary } from './IteratorArbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneIfNeeded, cloneMethod, hasCloneMethod } from '../../check/symbols.js';
-import { assertProduceCorrectValues, assertProduceSameValueGivenSameSeed } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { FakeIntegerArbitrary, fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import {
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
+} from '../__test-helpers__/ArbitraryAssertions.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
 import * as StringifyMock from '../../utils/stringify.js';
-import { declareCleaningHooksForSpies } from '../../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('IteratorArbitrary', () => {
   declareCleaningHooksForSpies();

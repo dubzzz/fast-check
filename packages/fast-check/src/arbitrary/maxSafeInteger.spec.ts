@@ -1,7 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { maxSafeInteger } from './maxSafeInteger.js';
 
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as IntegerArbitraryMock from './_internals/IntegerArbitrary.js';
 

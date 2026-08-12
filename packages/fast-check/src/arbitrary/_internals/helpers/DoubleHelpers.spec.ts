@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { float64raw, isStrictlySmaller } from '../../../../test/unit/arbitrary/__test-helpers__/FloatingPointHelpers.js';
+import { float64raw, isStrictlySmaller } from '../../__test-helpers__/FloatingPointHelpers.js';
 import { decomposeDouble, doubleToIndex, indexToDouble } from './DoubleHelpers.js';
 
 describe('decomposeDouble', () => {

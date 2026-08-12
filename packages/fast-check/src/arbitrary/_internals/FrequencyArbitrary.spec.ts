@@ -3,16 +3,16 @@ import * as fc from 'fast-check';
 import type { _Constraints } from './FrequencyArbitrary.js';
 import { FrequencyArbitrary } from './FrequencyArbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
-import { FakeIntegerArbitrary, fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
-} from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from '../__test-helpers__/ArbitraryAssertions.js';
 import * as DepthContextMock from './helpers/DepthContext.js';
-import { sizeArb } from '../../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
+import { sizeArb } from '../__test-helpers__/SizeHelpers.js';
 
 function beforeEachHook() {
   vi.restoreAllMocks();

@@ -6,14 +6,14 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 import * as ArrayMock from './array.js';
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
-import { sizeForArbitraryArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers.js';
 
 describe('base64String', () => {
   declareCleaningHooksForSpies();

@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
-import { hash } from '../../../../src/utils/hash.js';
-import { stringify } from '../../../../src/utils/stringify.js';
+import { hash } from '../../utils/hash.js';
+import { stringify } from '../../utils/stringify.js';
 
 export function assertToStringIsSameFunction<T extends any[] | [any], TOut>(
   f: (...args: T) => TOut,

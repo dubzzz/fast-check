@@ -1,8 +1,8 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { Value } from '../../arbitrary/definition/Value.js';
 import { TimeoutProperty } from './TimeoutProperty.js';
-import { fakeRandom } from '../../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
-import { fakeProperty } from '../../../../test/unit/check/property/__test-helpers__/PropertyHelpers.js';
+import { fakeRandom } from '../../../arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeProperty } from '../__test-helpers__/PropertyHelpers.js';
 
 describe('TimeoutProperty', () => {
   beforeEach(() => {

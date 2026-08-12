@@ -4,7 +4,7 @@ import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { chainUntil } from './chainUntil.js';
 import { nil } from '../utils/iterator.js';
 import * as stubRng from '../../test/unit/stubs/generators.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 import type { Random } from '../random/generator/Random.js';
 
 const mrngNoCall = stubRng.mutable.nocall();

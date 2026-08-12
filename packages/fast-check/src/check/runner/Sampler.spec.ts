@@ -6,7 +6,7 @@ import { sample, statistics } from './Sampler.js';
 import * as stubArb from '../../../test/unit/stubs/arbitraries.js';
 import { noShrink } from '../../arbitrary/noShrink.js';
 import { cloneMethod } from '../symbols.js';
-import { fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
 import { Value } from '../arbitrary/definition/Value.js';
 
 const MAX_NUM_RUNS = 1000;

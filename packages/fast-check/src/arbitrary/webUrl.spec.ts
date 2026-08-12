@@ -9,18 +9,18 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
-import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers.js';
 
 import * as WebAuthorityMock from './webAuthority.js';
 import * as WebFragmentsMock from './webFragments.js';
 import * as WebQueryParametersMock from './webQueryParameters.js';
 import * as WebPathMock from './webPath.js';
-import { withConfiguredGlobal } from '../../test/unit/arbitrary/__test-helpers__/GlobalSettingsHelpers.js';
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('webUrl', () => {
   declareCleaningHooksForSpies();

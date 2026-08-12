@@ -1,17 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
-import { declareCleaningHooksForSpies } from '../../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
-import { fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { LimitedShrinkArbitrary } from './LimitedShrinkArbitrary.js';
 import { IntegerArbitrary } from './IntegerArbitrary.js';
 import {
   assertProduceSameValueGivenSameSeed,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { buildShrinkTree, renderTree } from '../../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+} from '../__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from '../__test-helpers__/ShrinkTree.js';
 
 describe('LimitedShrinkArbitrary', () => {
   declareCleaningHooksForSpies();

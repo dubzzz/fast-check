@@ -12,11 +12,11 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Random } from '../../random/generator/Random.js';
 
 import * as IntegerMock from '../integer.js';
-import { fakeArbitrary } from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
-import { buildShrinkTree, walkTree } from '../../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
+import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
 import * as DepthContextMock from './helpers/DepthContext.js';
-import { declareCleaningHooksForSpies } from '../../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('ArrayArbitrary', () => {
   declareCleaningHooksForSpies();

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { OptionConstraints } from './option.js';
 import { option } from './option.js';
-import { FakeIntegerArbitrary, fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import * as FrequencyArbitraryMock from './_internals/FrequencyArbitrary.js';
 import * as ConstantMock from './constant.js';
 import { constant } from './constant.js';
@@ -11,9 +11,9 @@ import {
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { sizeArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { sizeArb } from './__test-helpers__/SizeHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('option', () => {
   declareCleaningHooksForSpies();

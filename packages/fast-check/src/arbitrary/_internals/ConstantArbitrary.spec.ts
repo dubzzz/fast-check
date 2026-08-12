@@ -1,15 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { ConstantArbitrary } from './ConstantArbitrary.js';
-import { fakeRandom } from '../../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 import { cloneMethod } from '../../check/symbols.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { buildShrinkTree, walkTree } from '../../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
+} from '../__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
 
 describe('ConstantArbitrary', () => {
   describe('generate', () => {

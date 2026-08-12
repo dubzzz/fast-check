@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { tuple } from './tuple.js';
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import * as TupleArbitraryMock from './_internals/TupleArbitrary.js';
 
 describe('tuple', () => {

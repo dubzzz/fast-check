@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { IgnoreEqualValuesProperty } from './IgnoreEqualValuesProperty.js';
 import { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
-import { fakeProperty } from '../../../../test/unit/check/property/__test-helpers__/PropertyHelpers.js';
+import { fakeProperty } from '../__test-helpers__/PropertyHelpers.js';
 
 describe('IgnoreEqualValuesProperty', () => {
   it.each`

@@ -8,7 +8,7 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-} from '../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from '../__test-helpers__/ArbitraryAssertions.js';
 
 describe('SubarrayArbitrary', () => {
   describe('constructor', () => {

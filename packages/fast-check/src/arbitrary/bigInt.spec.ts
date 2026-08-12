@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { bigInt, type BigIntConstraints } from './bigInt.js';
 
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 import * as BigIntArbitraryMock from './_internals/BigIntArbitrary.js';
 

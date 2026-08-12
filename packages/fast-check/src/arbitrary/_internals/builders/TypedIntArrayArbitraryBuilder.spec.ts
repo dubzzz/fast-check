@@ -2,7 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { typedIntArrayArbitraryArbitraryBuilder } from './TypedIntArrayArbitraryBuilder.js';
 
-import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from '../../../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import {
+  FakeIntegerArbitrary,
+  fakeArbitrary,
+  fakeArbitraryStaticValue,
+} from '../../__test-helpers__/ArbitraryHelpers.js';
 
 import * as ArrayMock from '../../array.js';
 import {
@@ -10,8 +14,8 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { declareCleaningHooksForSpies } from '../../../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+} from '../../__test-helpers__/ArbitraryAssertions.js';
+import { declareCleaningHooksForSpies } from '../../__test-helpers__/SpyCleaner.js';
 
 describe('typedIntArrayArbitraryArbitraryBuilder', () => {
   declareCleaningHooksForSpies();

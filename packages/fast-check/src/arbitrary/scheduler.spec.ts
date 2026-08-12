@@ -1,7 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import type { Scheduler } from './scheduler.js';
 import { scheduler, schedulerFor } from './scheduler.js';
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as BuildSchedulerForMock from './_internals/helpers/BuildSchedulerFor.js';
 import * as SchedulerArbitraryMock from './_internals/SchedulerArbitrary.js';

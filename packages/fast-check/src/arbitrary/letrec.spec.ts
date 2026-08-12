@@ -2,14 +2,14 @@ import { describe, it, expect } from 'vitest';
 import { letrec } from './letrec.js';
 import { LazyArbitrary } from './_internals/LazyArbitrary.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
-import { FakeIntegerArbitrary, fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
-import { fakeRandom } from '../../test/unit/arbitrary/__test-helpers__/RandomHelpers.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
 import {
   assertGenerateEquivalentTo,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('letrec', () => {
   describe('builder', () => {

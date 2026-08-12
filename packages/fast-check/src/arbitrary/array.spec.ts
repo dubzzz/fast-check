@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { array } from './array.js';
 
-import { FakeIntegerArbitrary, fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as ArrayArbitraryMock from './_internals/ArrayArbitrary.js';
 import {
@@ -11,13 +11,13 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-} from '../../test/unit/arbitrary/__test-helpers__/ArbitraryAssertions.js';
-import { isStrictlySmallerArray } from '../../test/unit/arbitrary/__test-helpers__/ArrayHelpers.js';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers.js';
 import { Value } from '../check/arbitrary/definition/Value.js';
-import { buildShrinkTree, renderTree } from '../../test/unit/arbitrary/__test-helpers__/ShrinkTree.js';
-import { sizeRelatedGlobalConfigArb } from '../../test/unit/arbitrary/__test-helpers__/SizeHelpers.js';
-import { withConfiguredGlobal } from '../../test/unit/arbitrary/__test-helpers__/GlobalSettingsHelpers.js';
-import { declareCleaningHooksForSpies } from '../../test/unit/arbitrary/__test-helpers__/SpyCleaner.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers.js';
+import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('array', () => {
   declareCleaningHooksForSpies();

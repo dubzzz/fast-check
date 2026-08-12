@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { int16Array } from './int16Array.js';
 
-import { fakeArbitrary } from '../../test/unit/arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
 import * as TypedIntArrayArbitraryArbitraryBuilderMock from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
 
