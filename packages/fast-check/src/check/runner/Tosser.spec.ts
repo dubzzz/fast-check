@@ -8,7 +8,7 @@ import type { Property } from '../property/types/Property.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Value } from '../arbitrary/definition/Value.js';
 
-import * as stubArb from '../../../test/unit/stubs/arbitraries.js';
+import * as stubArb from '../../__test-helpers__/arbitraries.js';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters.js';
 

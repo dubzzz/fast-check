@@ -3,7 +3,7 @@ import { getNthOrLast } from '../../utils/iterator.js';
 import { GeneratorArbitrary } from './GeneratorArbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import type { MockWithArgs } from '../../../test/unit/__test-helpers__/Mocked.js';
+import type { MockWithArgs } from '../../__test-helpers__/Mocked.js';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 

@@ -3,7 +3,7 @@ import * as fc from 'fast-check';
 
 import { sample, statistics } from './Sampler.js';
 
-import * as stubArb from '../../../test/unit/stubs/arbitraries.js';
+import * as stubArb from '../../__test-helpers__/arbitraries.js';
 import { noShrink } from '../../arbitrary/noShrink.js';
 import { cloneMethod } from '../symbols.js';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';

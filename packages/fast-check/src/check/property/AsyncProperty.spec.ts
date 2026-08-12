@@ -4,8 +4,8 @@ import { pre } from '../precondition/Pre.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import { configureGlobal, resetConfigureGlobal } from '../runner/configuration/GlobalParameters.js';
 
-import * as stubArb from '../../../test/unit/stubs/arbitraries.js';
-import * as stubRng from '../../../test/unit/stubs/generators.js';
+import * as stubArb from '../../__test-helpers__/arbitraries.js';
+import * as stubRng from '../../__test-helpers__/generators.js';
 import { Value } from '../arbitrary/definition/Value.js';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
 import type { PropertyFailure } from './types/PropertyFailure.js';

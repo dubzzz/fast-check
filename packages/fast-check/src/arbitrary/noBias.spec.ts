@@ -2,7 +2,7 @@ import { describe, it, vi, expect } from 'vitest';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import type { Value } from '../check/arbitrary/definition/Value.js';
 import { noBias } from './noBias.js';
-import * as stubRng from '../../test/unit/stubs/generators.js';
+import * as stubRng from '../__test-helpers__/generators.js';
 
 const mrngNoCall = stubRng.mutable.nocall();
 

@@ -6,7 +6,7 @@ import { Value } from './Value.js';
 import { cloneMethod, hasCloneMethod } from '../../symbols.js';
 import type { Random } from '../../../random/generator/Random.js';
 
-import * as stubRng from '../../../../test/unit/stubs/generators.js';
+import * as stubRng from '../../../__test-helpers__/generators.js';
 import { buildShrinkTree, renderTree, walkTree } from '../../../arbitrary/__test-helpers__/ShrinkTree.js';
 
 const mrngNoCall = stubRng.mutable.nocall();

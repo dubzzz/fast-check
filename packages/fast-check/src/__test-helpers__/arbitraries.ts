@@ -1,7 +1,7 @@
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
-import { nil } from '../../../src/utils/iterator.js';
-import { Value } from '../../../src/check/arbitrary/definition/Value.js';
-import type { Random } from '../../../src/random/generator/Random.js';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { nil } from '../utils/iterator.js';
+import { Value } from '../check/arbitrary/definition/Value.js';
+import type { Random } from '../random/generator/Random.js';
 
 /**
  * CounterArbitrary

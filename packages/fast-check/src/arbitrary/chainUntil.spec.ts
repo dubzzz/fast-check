@@ -3,7 +3,7 @@ import { Value } from '../check/arbitrary/definition/Value.js';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { chainUntil } from './chainUntil.js';
 import { nil } from '../utils/iterator.js';
-import * as stubRng from '../../test/unit/stubs/generators.js';
+import * as stubRng from '../__test-helpers__/generators.js';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 import type { Random } from '../random/generator/Random.js';
 
