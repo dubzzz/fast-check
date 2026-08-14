@@ -17,7 +17,7 @@ import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsForma
 import type { IAsyncProperty } from '../property/AsyncProperty.js';
 import type { IProperty } from '../property/Property.js';
 import type { Value } from '../arbitrary/definition/Value.js';
-import type { Plugin, PluginRuntime } from '../plugin/Plugin.js';
+import type { Plugin, PluginInstance } from '../plugin/Plugin.js';
 
 /** @internal */
 function runIt<Ts>(
@@ -127,20 +127,20 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
 
   const pluginSharedSessionContext: { [K in any]?: unknown } = {};
   const plugins: Plugin<Ts, boolean>[] = [];
-  const pluginEndSessionCallbacks: Required<PluginRuntime<Ts, boolean>>['endSession'][] = [];
+  const pluginEndSessionCallbacks: Required<PluginInstance<Ts, boolean>>['endSession'][] = [];
   let run: typeof property.run = property.isAsync()
     ? async (v) => asyncPropertyExecution(property, v)
     : (v) => propertyExecution(property, v);
   for (let index = 0; index !== plugins.length; ++index) {
-    const runtime = plugins[index](pluginSharedSessionContext);
-    if (runtime.asyncOnly && !property.isAsync()) {
+    const pluginInstance = plugins[index](pluginSharedSessionContext);
+    if (pluginInstance.asyncOnly && !property.isAsync()) {
       throw new Error('Cannot execute an asynchronous plugin on a synchronous property');
     }
-    if ('decorateRun' in runtime && runtime.decorateRun !== undefined) {
-      run = runtime.decorateRun(run);
+    if ('decorateRun' in pluginInstance && pluginInstance.decorateRun !== undefined) {
+      run = pluginInstance.decorateRun(run);
     }
-    if ('endSession' in runtime && runtime.endSession !== undefined) {
-      pluginEndSessionCallbacks.push(runtime.endSession.bind(runtime));
+    if ('endSession' in pluginInstance && pluginInstance.endSession !== undefined) {
+      pluginEndSessionCallbacks.push(pluginInstance.endSession.bind(pluginInstance));
     }
   }
 

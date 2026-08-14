@@ -2,7 +2,7 @@ import type { IRawProperty } from '../property/IRawProperty.js';
 
 // better name needed for session? maybe another term would fit better?
 
-export type PluginRuntime<Ts, IsAsync extends boolean> = {
+export type PluginInstance<Ts, IsAsync extends boolean> = {
   asyncOnly?: IsAsync;
   // wrapping calls to property.run(v)
   // returned run call inplace of property::run, the custom run is theoritically supposed to wrap the source run
@@ -18,7 +18,7 @@ export type PluginRuntime<Ts, IsAsync extends boolean> = {
 // This variable is only read by plugins and share with all of them. It can be used to share details between two instances of plugins
 // evolving in the same assert/check. As such we can envision leveraging it to merge all instanbces of a given plugin into a single
 // wrapper. Eg.: beforeEach(beforeEach(beforeEach(...))) could be beforeEachs(...) withg the first (or last) instance of the plugin stacking all the others.
-export type Plugin<Ts, IsAsync extends boolean> = (sharedSessionContext: { [K in any]?: unknown }) => PluginRuntime<
+export type Plugin<Ts, IsAsync extends boolean> = (sharedSessionContext: { [K in any]?: unknown }) => PluginInstance<
   Ts,
   IsAsync
 >;
@@ -26,7 +26,7 @@ export type Plugin<Ts, IsAsync extends boolean> = (sharedSessionContext: { [K in
 // Eg for beforeEach
 const beforeEachPluginSymbol = Symbol();
 export function beforeEachPlugin<Ts>(fn: () => void): Plugin<Ts, false> {
-  return function startSession(sharedSessionContext: { [K in any]?: unknown }): PluginRuntime<Ts, false> {
+  return function startSession(sharedSessionContext: { [K in any]?: unknown }): PluginInstance<Ts, false> {
     if (beforeEachPluginSymbol in sharedSessionContext) {
       const otherInstancesOfPlugin = sharedSessionContext[beforeEachPluginSymbol] as (() => void)[];
       otherInstancesOfPlugin.push(fn);
