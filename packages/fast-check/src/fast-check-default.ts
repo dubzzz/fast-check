@@ -208,6 +208,7 @@ import { noShrink } from './arbitrary/noShrink.js';
 import { noBias } from './arbitrary/noBias.js';
 import { limitShrink } from './arbitrary/limitShrink.js';
 import type { RandomGenerator } from './random/generator/RandomGenerator.js';
+import type { Plugin } from './check/plugin/Plugin.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**
@@ -237,6 +238,7 @@ const __commitHash = process.env.__COMMIT_HASH__ as string;
 // combination of others
 // complex combinations
 export type {
+  Plugin,
   IRawProperty,
   IProperty,
   IPropertyWithHooks,
