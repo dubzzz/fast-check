@@ -17,10 +17,11 @@ import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsForma
 import type { IAsyncProperty } from '../property/AsyncProperty.js';
 import type { IProperty } from '../property/Property.js';
 import type { Value } from '../arbitrary/definition/Value.js';
+import type { Plugin, PluginInstance } from '../plugin/Plugin.js';
 
 /** @internal */
 function runIt<Ts>(
-  property: IRawProperty<Ts>,
+  run: IRawProperty<Ts>['run'],
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
@@ -28,17 +29,22 @@ function runIt<Ts>(
 ): RunExecution<Ts> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    (property.runBeforeEach as () => void)();
-    const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
-    (property.runAfterEach as () => void)();
+    const out = run(v) as PreconditionFailure | PropertyFailure | null;
     runner.handleResult(out);
   }
   return runner.runExecution;
 }
 
+function propertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
+  (property.runBeforeEach as () => void)();
+  const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
+  (property.runAfterEach as () => void)();
+  return out;
+}
+
 /** @internal */
 async function asyncRunIt<Ts>(
-  property: IRawProperty<Ts>,
+  run: IRawProperty<Ts>['run'],
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
@@ -46,12 +52,17 @@ async function asyncRunIt<Ts>(
 ): Promise<RunExecution<Ts>> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    await property.runBeforeEach();
-    const out = await property.run(v);
-    await property.runAfterEach();
+    const out = await run(v);
     runner.handleResult(out);
   }
   return runner.runExecution;
+}
+
+async function asyncPropertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
+  await property.runBeforeEach();
+  const out = await property.run(v);
+  await property.runAfterEach();
+  return out;
 }
 
 /**
@@ -114,6 +125,25 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
 
+  const pluginSharedSessionContext: { [K in any]?: unknown } = {};
+  const plugins: Plugin<Ts, boolean>[] = qParams.plugins;
+  const pluginAfterAllCallbacks: Required<PluginInstance<Ts, boolean>>['afterAll'][] = [];
+  let run: typeof property.run = property.isAsync()
+    ? async (v) => asyncPropertyExecution(property, v)
+    : (v) => propertyExecution(property, v);
+  for (let index = 0; index !== plugins.length; ++index) {
+    const pluginInstance = plugins[index](pluginSharedSessionContext);
+    if (pluginInstance.asyncOnly && !property.isAsync()) {
+      throw new Error('Cannot execute an asynchronous plugin on a synchronous property');
+    }
+    if (pluginInstance.decorateRun !== undefined) {
+      run = pluginInstance.decorateRun(run);
+    }
+    if (pluginInstance.afterAll !== undefined) {
+      pluginAfterAllCallbacks.push(pluginInstance.afterAll.bind(pluginInstance));
+    }
+  }
+
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof property.shrink = (...args) => property.shrink(...args);
@@ -123,16 +153,32 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
       : pathWalk(qParams.path, stream(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
-  return property.isAsync()
-    ? asyncRunIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-      )
-    : runIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
-        qParams.seed,
-        qParams.path,
-        maxSkips,
-        qParams,
-      );
+  if (property.isAsync()) {
+    const out = asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
+      e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+    );
+    if (pluginAfterAllCallbacks.length === 0) {
+      return out;
+    }
+    return out.then((details) => {
+      let queued = pluginAfterAllCallbacks[0](details);
+      for (let index = 1; index < pluginAfterAllCallbacks.length; ++index) {
+        const afterAll = pluginAfterAllCallbacks[index];
+        queued = queued === undefined ? afterAll(details) : queued.then(() => afterAll(details));
+      }
+      return queued === undefined ? details : queued.then(() => details);
+    });
+  }
+  const out = runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
+    qParams.seed,
+    qParams.path,
+    maxSkips,
+    qParams,
+  );
+  for (let index = 0; index !== pluginAfterAllCallbacks.length; ++index) {
+    (pluginAfterAllCallbacks[index] as () => void)();
+  }
+  return out;
 }
 
 /**

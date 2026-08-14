@@ -8,6 +8,7 @@ import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { read } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType.js';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel.js';
+import type { Plugin } from '../../../../../src/check/plugin/Plugin.js';
 
 const prand = { mersenne, congruential32, xorshift128plus, xoroshiro128plus };
 const parametersArbitrary = fc.record(
@@ -31,6 +32,7 @@ const parametersArbitrary = fc.record(
     reporter: fc.func(fc.constant(undefined)),
     asyncReporter: fc.func(fc.constant(Promise.resolve(undefined))),
     includeErrorInReport: fc.boolean(),
+    plugins: fc.constant([] satisfies Plugin<any, boolean>[]),
   },
   { requiredKeys: [] },
 );
