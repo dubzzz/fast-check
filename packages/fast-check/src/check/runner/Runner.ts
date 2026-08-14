@@ -17,10 +17,11 @@ import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsForma
 import type { IAsyncProperty } from '../property/AsyncProperty.js';
 import type { IProperty } from '../property/Property.js';
 import type { Value } from '../arbitrary/definition/Value.js';
+import type { Plugin, PluginRuntime } from '../plugin/Plugin.js';
 
 /** @internal */
 function runIt<Ts>(
-  property: IRawProperty<Ts>,
+  run: IRawProperty<Ts>['run'],
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
@@ -28,17 +29,22 @@ function runIt<Ts>(
 ): RunExecution<Ts> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    (property.runBeforeEach as () => void)();
-    const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
-    (property.runAfterEach as () => void)();
+    const out = run(v) as PreconditionFailure | PropertyFailure | null;
     runner.handleResult(out);
   }
   return runner.runExecution;
 }
 
+function propertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
+  (property.runBeforeEach as () => void)();
+  const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
+  (property.runAfterEach as () => void)();
+  return out;
+}
+
 /** @internal */
 async function asyncRunIt<Ts>(
-  property: IRawProperty<Ts>,
+  run: IRawProperty<Ts>['run'],
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
@@ -46,12 +52,17 @@ async function asyncRunIt<Ts>(
 ): Promise<RunExecution<Ts>> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    await property.runBeforeEach();
-    const out = await property.run(v);
-    await property.runAfterEach();
+    const out = await run(v);
     runner.handleResult(out);
   }
   return runner.runExecution;
+}
+
+async function asyncPropertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
+  await property.runBeforeEach();
+  const out = await property.run(v);
+  await property.runAfterEach();
+  return out;
 }
 
 /**
@@ -114,6 +125,22 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
 
+  const pluginSharedSessionContext: { [K in any]?: unknown } = {};
+  const plugins: Plugin<Ts, boolean>[] = [];
+  const pluginEndSessionCallbacks: Required<PluginRuntime<Ts, boolean>>['endSession'][] = [];
+  let run: typeof property.run = property.isAsync()
+    ? async (v) => asyncPropertyExecution(property, v)
+    : (v) => propertyExecution(property, v);
+  for (let index = 0; index !== plugins.length; ++index) {
+    const runtime = plugins[index](pluginSharedSessionContext);
+    if ('decorateRun' in runtime && runtime.decorateRun !== undefined) {
+      run = runtime.decorateRun(run);
+    }
+    if ('endSession' in runtime && runtime.endSession !== undefined) {
+      pluginEndSessionCallbacks.push(runtime.endSession.bind(runtime));
+    }
+  }
+
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof property.shrink = (...args) => property.shrink(...args);
@@ -124,10 +151,10 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()
-    ? asyncRunIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
+    ? asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
         e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
       )
-    : runIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
+    : runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
         maxSkips,
