@@ -99,9 +99,6 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
                   ? // oxlint-disable-next-line typescript/no-non-null-assertion
                     (runDetails) => params.asyncReporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
-              // Plugins are tied to the shape of the values received by the property.
-              // The record-flavour of the runner deals with `[TsParameters]` while the user deals with `TsParameters`,
-              // so we cannot forward them as-is and prefer dropping them for the moment.
               plugins: undefined,
             }
           : undefined;
