@@ -8,6 +8,7 @@ import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
 import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.js';
 
 import type { RandomGenerator, RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
+import type { Plugin } from '../../plugin/Plugin.js';
 
 const safeDateNow = Date.now;
 const safeMathMin = Math.min;
@@ -43,6 +44,7 @@ export class QualifiedParameters<T> {
   reporter: ((runDetails: RunDetails<T>) => void) | undefined;
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | undefined;
   includeErrorInReport: boolean;
+  plugins: Plugin<T, boolean>[];
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
@@ -71,6 +73,7 @@ export class QualifiedParameters<T> {
     this.reporter = p.reporter;
     this.asyncReporter = p.asyncReporter;
     this.includeErrorInReport = p.includeErrorInReport === true;
+    this.plugins = p.plugins !== undefined ? p.plugins : [];
   }
 
   toParameters(): Parameters<T> {
@@ -94,6 +97,7 @@ export class QualifiedParameters<T> {
       reporter: this.reporter,
       asyncReporter: this.asyncReporter,
       includeErrorInReport: this.includeErrorInReport,
+      plugins: this.plugins,
     };
     return parameters;
   }

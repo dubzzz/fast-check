@@ -2,6 +2,7 @@ import type { RandomType } from './RandomType.js';
 import type { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from '../../../random/generator/RandomGenerator.js';
+import type { Plugin } from '../../plugin/Plugin.js';
 
 /**
  * Customization of the parameters used to run the properties
@@ -203,4 +204,13 @@ export interface Parameters<T = void> {
    * as part of the message and not as a cause.
    */
   includeErrorInReport?: boolean;
+  /**
+   * Set of plugins extending the way the property gets executed by the runner
+   *
+   * Each plugin is instantiated once per run.
+   * They can be leveraged to control and enrich the execution flow of each predicate.
+   *
+   * @remarks Since 4.10.0
+   */
+  plugins?: Plugin<T, boolean>[];
 }
