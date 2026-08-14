@@ -26,7 +26,7 @@ export type Plugin<Ts, IsAsync extends boolean> = (sharedSessionContext: { [K in
 // Eg for beforeEach
 const beforeEachPluginSymbol = Symbol();
 export function beforeEachPlugin<Ts>(fn: () => void): Plugin<Ts, false> {
-  return function startSession(sharedSessionContext: { [K in any]?: unknown }): PluginInstance<Ts, false> {
+  return function createPluginInstance(sharedSessionContext: { [K in any]?: unknown }): PluginInstance<Ts, false> {
     if (beforeEachPluginSymbol in sharedSessionContext) {
       const otherInstancesOfPlugin = sharedSessionContext[beforeEachPluginSymbol] as (() => void)[];
       otherInstancesOfPlugin.push(fn);
