@@ -23,22 +23,3 @@ export type Plugin<Ts, IsAsync extends boolean> = (crossPluginContext: { [K in a
   Ts,
   IsAsync
 >;
-
-// Eg for beforeEach
-const beforeEachPluginSymbol = Symbol();
-export function beforeEachPlugin<Ts>(fn: () => void): Plugin<Ts, false> {
-  return function createPluginInstance(crossPluginContext: { [K in any]?: unknown }): PluginInstance<Ts, false> {
-    if (beforeEachPluginSymbol in crossPluginContext) {
-      const otherInstancesOfPlugin = crossPluginContext[beforeEachPluginSymbol] as (() => void)[];
-      otherInstancesOfPlugin.push(fn);
-      return {}; // no runtime for this instance, delegated to the first instance
-    }
-    crossPluginContext[beforeEachPluginSymbol] = [fn];
-    return {
-      decorateRun: (nestedRun) => (value) => {
-        fn();
-        return nestedRun(value);
-      },
-    };
-  };
-}
