@@ -716,7 +716,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/fast-check/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
@@ -788,7 +788,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/ava/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
@@ -860,7 +860,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/jest/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
@@ -932,7 +932,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/packaged/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
@@ -1004,7 +1004,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/poisoning/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
@@ -1076,7 +1076,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/vitest/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
@@ -1148,7 +1148,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/worker/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
