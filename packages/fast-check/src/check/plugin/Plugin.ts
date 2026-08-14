@@ -1,4 +1,5 @@
 import type { IRawProperty } from '../property/IRawProperty.js';
+import type { RunDetails } from '../runner/reporter/RunDetails.js';
 
 // better name needed for session? maybe another term would fit better?
 
@@ -8,8 +9,8 @@ export type PluginInstance<Ts, IsAsync extends boolean> = {
   // returned run call inplace of property::run, the custom run is theoritically supposed to wrap the source run
   // and enrich its behavior with custom things not coming by default (eg.: timeout)
   decorateRun?: (nestedRun: IRawProperty<Ts, IsAsync>['run']) => IRawProperty<Ts, IsAsync>['run'];
-  // called when session ends
-  endSession?: () => IsAsync extends true ? Promise<void> | void : void;
+  // called once all the runs have been executed, including the ones triggered by the shrinking phase
+  afterAll?: (runDetails: RunDetails<Ts>) => IsAsync extends true ? Promise<void> | void : void;
 };
 
 // The Plugin is a builder function called when the assert/check execution flows starts
