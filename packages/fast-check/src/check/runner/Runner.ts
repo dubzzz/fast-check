@@ -150,16 +150,25 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
       : pathWalk(qParams.path, stream(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
-  return property.isAsync()
-    ? asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-      )
-    : runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
-        qParams.seed,
-        qParams.path,
-        maxSkips,
-        qParams,
-      );
+  if (property.isAsync()) {
+    return asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure)
+      .then((e) => e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams))
+      .finally(() => {
+        for (let index = 0; index !== pluginEndSessionCallbacks.length; ++index) {
+          pluginEndSessionCallbacks[index]();
+        }
+      });
+  }
+  const out = runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
+    qParams.seed,
+    qParams.path,
+    maxSkips,
+    qParams,
+  );
+  for (let index = 0; index !== pluginEndSessionCallbacks.length; ++index) {
+    pluginEndSessionCallbacks[index]();
+  }
+  return out;
 }
 
 /**
