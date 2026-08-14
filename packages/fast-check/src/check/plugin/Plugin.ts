@@ -4,8 +4,8 @@ import type { IRawProperty } from '../property/IRawProperty.js';
 
 type PluginRuntime<Ts, IsAsync extends boolean> = {
   // wrapping calls to property.run(v)
-  decorateRun: (nestedRun: IRawProperty<Ts, IsAsync>['run']) => IRawProperty<Ts, IsAsync>['run'];
-  endSession: () => void;
+  decorateRun?: (nestedRun: IRawProperty<Ts, IsAsync>['run']) => IRawProperty<Ts, IsAsync>['run'];
+  endSession?: () => void;
 };
 
 // The Plugin is a builder function called when the assert/check execution flows starts
@@ -14,4 +14,23 @@ type PluginRuntime<Ts, IsAsync extends boolean> = {
 // This variable is only read by plugins and share with all of them. It can be used to share details between two instances of plugins
 // evolving in the same assert/check. As such we can envision leveraging it to merge all instanbces of a given plugin into a single
 // wrapper. Eg.: beforeEach(beforeEach(beforeEach(...))) could be beforeEachs(...) withg the first (or last) instance of the plugin stacking all the others.
-type Plugin<T, IsAsync extends boolean> = (sharedSessionContext: object) => PluginRuntime<T, IsAsync>;
+type Plugin<T, IsAsync extends boolean> = (sharedSessionContext: { [K in any]?: unknown }) => PluginRuntime<T, IsAsync>;
+
+// Eg for beforeEach
+const beforeEachPluginSymbol = Symbol();
+function beforeEachPlugin<Ts>(fn: () => void): Plugin<Ts, false> {
+  return function startSession(sharedSessionContext: { [K in any]?: unknown }): PluginRuntime<Ts, IsAsync> {
+    if (beforeEachPluginSymbol in sharedSessionContext) {
+      const otherInstancesOfPlugin = sharedSessionContext[beforeEachPluginSymbol] as (() => void)[];
+      otherInstancesOfPlugin.push(fn);
+      return {}; // no runtime for this instance, delegated to the first instance
+    }
+    sharedSessionContext[beforeEachPluginSymbol] = [fn];
+    return {
+      decorateRun: (nestedRun) => (value) => {
+        fn();
+        return nestedRun(value);
+      },
+    };
+  };
+}
