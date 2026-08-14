@@ -9,7 +9,7 @@ export type PluginInstance<Ts, IsAsync extends boolean> = {
   // and enrich its behavior with custom things not coming by default (eg.: timeout)
   decorateRun?: (nestedRun: IRawProperty<Ts, IsAsync>['run']) => IRawProperty<Ts, IsAsync>['run'];
   // called when session ends
-  endSession?: () => void;
+  endSession?: () => IsAsync extends true ? Promise<void> | void : void;
 };
 
 // The Plugin is a builder function called when the assert/check execution flows starts

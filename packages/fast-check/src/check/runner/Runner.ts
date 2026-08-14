@@ -154,13 +154,14 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   if (property.isAsync()) {
-    return asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure)
-      .then((e) => e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams))
-      .finally(() => {
-        for (let index = 0; index !== pluginEndSessionCallbacks.length; ++index) {
-          pluginEndSessionCallbacks[index]();
-        }
-      });
+    let out = asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
+      e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+    );
+    for (let index = 0; index !== pluginEndSessionCallbacks.length; ++index) {
+      const end = pluginEndSessionCallbacks[index];
+      out = out.finally(end as () => void);
+    }
+    return out;
   }
   const out = runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
     qParams.seed,
@@ -169,7 +170,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     qParams,
   );
   for (let index = 0; index !== pluginEndSessionCallbacks.length; ++index) {
-    pluginEndSessionCallbacks[index]();
+    (pluginEndSessionCallbacks[index] as () => void)();
   }
   return out;
 }
