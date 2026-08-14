@@ -18,8 +18,8 @@ export type PluginRuntime<Ts, IsAsync extends boolean> = {
 // This variable is only read by plugins and share with all of them. It can be used to share details between two instances of plugins
 // evolving in the same assert/check. As such we can envision leveraging it to merge all instanbces of a given plugin into a single
 // wrapper. Eg.: beforeEach(beforeEach(beforeEach(...))) could be beforeEachs(...) withg the first (or last) instance of the plugin stacking all the others.
-export type Plugin<T, IsAsync extends boolean> = (sharedSessionContext: { [K in any]?: unknown }) => PluginRuntime<
-  T,
+export type Plugin<Ts, IsAsync extends boolean> = (sharedSessionContext: { [K in any]?: unknown }) => PluginRuntime<
+  Ts,
   IsAsync
 >;
 
