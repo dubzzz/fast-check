@@ -13,12 +13,19 @@ import type { RunDetails } from '../runner/reporter/RunDetails.js';
  * @public
  */
 export type PluginInstance<Ts, IsAsync extends boolean> = {
-  asyncOnly?: IsAsync;
+  /**
+   * Whether or not the plugin can only be attached to asynchronous properties.
+   *
+   * @defaultValue false
+   * @remarks Since 4.10.0
+   */
+  asyncOnly?: IsAsync extends false ? false : boolean;
   /**
    * Enrich the execution of the predicate linked to the property with extra behaviors.
    * Called once per execution of the predicate.
    *
    * WARNING: `nestedRun` never throws and neither should the function returned by `decorateRun`.
+   * WARNING: Except in `asyncOnly: true` mode, if run returns synchronously, the decorated function must too.
    *
    * @remarks Since 4.10.0
    */
@@ -28,6 +35,7 @@ export type PluginInstance<Ts, IsAsync extends boolean> = {
    * Gets called with the result of the execution.
    *
    * WARNING: `afterAll` must not throw. Throwing would shadow the output of the property execution.
+   * WARNING: Make sure to always return synchronously except if you set `asyncOnly: true`.
    *
    * @remarks Since 4.10.0
    */
