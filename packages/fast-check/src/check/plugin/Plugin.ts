@@ -1,8 +1,17 @@
 import type { IRawProperty } from '../property/IRawProperty.js';
 import type { RunDetails } from '../runner/reporter/RunDetails.js';
 
-// better name needed for session? maybe another term would fit better?
-
+/**
+ * Runtime part of a plugin.
+ *
+ * The runtime part is made of the hooks called by the runner.
+ * Hooks will be called when relevant for the runner.
+ *
+ * All the hooks are optional.
+ *
+ * @remarks Since 4.10.0
+ * @public
+ */
 export type PluginInstance<Ts, IsAsync extends boolean> = {
   asyncOnly?: IsAsync;
   /**
@@ -25,12 +34,17 @@ export type PluginInstance<Ts, IsAsync extends boolean> = {
   afterAll?: (runDetails: RunDetails<Ts>) => IsAsync extends true ? Promise<void> | void : void;
 };
 
-// The Plugin is a builder function called when the assert/check execution flows starts
-// it is responsible to instatiate the plugin at init time
-// The variable called crossPluginContext will be passed to all Plugins being instantiated for this assert/chekc flow.
-// This variable is only read by plugins and share with all of them. It can be used to share details between two instances of plugins
-// evolving in the same assert/check. As such we can envision leveraging it to merge all instanbces of a given plugin into a single
-// wrapper. Eg.: beforeEach(beforeEach(beforeEach(...))) could be beforeEachs(...) withg the first (or last) instance of the plugin stacking all the others.
+/**
+ * Builder instantiating a plugin.
+ * Each property will instantiate its own plugin when starting to be assessed via {@link check} or {@link assert}.
+ *
+ * NOTE: The function gets called with a parameter shared across all builders.
+ * The variable can be leveraged to exchange insights with other builders. As such it is writable and can be mutated via the builder.
+ * We recommend using symbol keys when adding entries to the variable to reduce the risk of collision with other unrelated plugins.
+ *
+ * @remarks Since 4.10.0
+ * @public
+ */
 export type Plugin<Ts, IsAsync extends boolean> = (crossPluginContext: { [K in any]?: unknown }) => PluginInstance<
   Ts,
   IsAsync
