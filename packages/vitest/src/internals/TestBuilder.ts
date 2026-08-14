@@ -31,6 +31,7 @@ function adaptParametersForRecord<Ts>(
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
     reporter: originalParamaters.reporter,
     asyncReporter: originalParamaters.asyncReporter,
+    plugins: undefined,
   };
   return enrichedParameters;
 }
@@ -98,6 +99,7 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
                   ? // oxlint-disable-next-line typescript/no-non-null-assertion
                     (runDetails) => params.asyncReporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
+              plugins: undefined,
             }
           : undefined;
       buildTestWithPropRunner(
