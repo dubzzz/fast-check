@@ -31,9 +31,6 @@ function adaptParametersForRecord<Ts>(
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
     reporter: originalParamaters.reporter,
     asyncReporter: originalParamaters.asyncReporter,
-    // Plugins are tied to the shape of the values received by the property.
-    // As the record-flavour of the runner deals with `[Ts]` while the user deals with `Ts`,
-    // we cannot forward them as-is and prefer dropping them for the moment.
     plugins: undefined,
   };
   return enrichedParameters;
