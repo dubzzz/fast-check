@@ -29,6 +29,10 @@ function adaptParametersForRecord<Ts>(
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
     reporter: originalParamaters.reporter,
     asyncReporter: originalParamaters.asyncReporter,
+    // Plugins are tied to the shape of the values received by the property.
+    // As the record-flavour of the runner deals with `[Ts]` while the user deals with `Ts`,
+    // we cannot forward them as-is and prefer dropping them for the moment.
+    plugins: undefined,
   };
 }
 
@@ -98,6 +102,10 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
                   ? // oxlint-disable-next-line typescript/no-non-null-assertion
                     (runDetails) => params.asyncReporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
+              // Plugins are tied to the shape of the values received by the property.
+              // The record-flavour of the runner deals with `[TsParameters]` while the user deals with `TsParameters`,
+              // so we cannot forward them as-is and prefer dropping them for the moment.
+              plugins: undefined,
             }
           : undefined;
       buildTestWithPropRunner(
