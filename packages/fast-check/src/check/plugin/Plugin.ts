@@ -5,11 +5,23 @@ import type { RunDetails } from '../runner/reporter/RunDetails.js';
 
 export type PluginInstance<Ts, IsAsync extends boolean> = {
   asyncOnly?: IsAsync;
-  // wrapping calls to property.run(v)
-  // returned run call inplace of property::run, the custom run is theoritically supposed to wrap the source run
-  // and enrich its behavior with custom things not coming by default (eg.: timeout)
+  /**
+   * Enrich the execution of the predicate linked to the property with extra behaviors.
+   * Called once per execution of the predicate.
+   *
+   * WARNING: `nestedRun` never throws and neither should the function returned by `decorateRun`.
+   *
+   * @remarks Since 4.10.0
+   */
   decorateRun?: (nestedRun: IRawProperty<Ts, IsAsync>['run']) => IRawProperty<Ts, IsAsync>['run'];
-  // called once all the runs have been executed, including the ones triggered by the shrinking phase
+  /**
+   * Called once at the end of the full property assessment.
+   * Gets called with the result of the execution.
+   *
+   * WARNING: `afterAll` must not throw. Throwing would shadow the output of the property execution.
+   *
+   * @remarks Since 4.10.0
+   */
   afterAll?: (runDetails: RunDetails<Ts>) => IsAsync extends true ? Promise<void> | void : void;
 };
 
