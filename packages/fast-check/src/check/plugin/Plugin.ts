@@ -3,6 +3,7 @@ import type { IRawProperty } from '../property/IRawProperty.js';
 // better name needed for session? maybe another term would fit better?
 
 export type PluginRuntime<Ts, IsAsync extends boolean> = {
+  asyncOnly?: IsAsync;
   // wrapping calls to property.run(v)
   // returned run call inplace of property::run, the custom run is theoritically supposed to wrap the source run
   // and enrich its behavior with custom things not coming by default (eg.: timeout)

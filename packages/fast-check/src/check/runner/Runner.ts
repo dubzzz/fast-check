@@ -133,6 +133,9 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     : (v) => propertyExecution(property, v);
   for (let index = 0; index !== plugins.length; ++index) {
     const runtime = plugins[index](pluginSharedSessionContext);
+    if (runtime.asyncOnly && !property.isAsync()) {
+      throw new Error('Cannot execute an asynchronous plugin on a synchronous property');
+    }
     if ('decorateRun' in runtime && runtime.decorateRun !== undefined) {
       run = runtime.decorateRun(run);
     }
