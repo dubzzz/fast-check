@@ -126,7 +126,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const property = decorateProperty(rawProperty, qParams);
 
   const pluginSharedSessionContext: { [K in any]?: unknown } = {};
-  const plugins: Plugin<Ts, boolean>[] = [];
+  const plugins: Plugin<Ts, boolean>[] = qParams.plugins;
   const pluginAfterAllCallbacks: Required<PluginInstance<Ts, boolean>>['afterAll'][] = [];
   let run: typeof property.run = property.isAsync()
     ? async (v) => asyncPropertyExecution(property, v)
