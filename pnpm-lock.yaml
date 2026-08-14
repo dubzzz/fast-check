@@ -570,8 +570,8 @@ importers:
         specifier: ^19.2.18
         version: 19.2.18
       docusaurus-plugin-llms:
-        specifier: ^0.4.0
-        version: 0.4.0(@docusaurus/core@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)))(@mdx-js/react@3.1.1(@types/react@19.2.18)(react@19.2.8))(@rspack/core@1.7.11)(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3))
+        specifier: ^0.5.1
+        version: 0.5.1(@docusaurus/core@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)))(@mdx-js/react@3.1.1(@types/react@19.2.18)(react@19.2.8))(@rspack/core@1.7.11)(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3))
       docusaurus-plugin-typedoc:
         specifier: ^1.4.2
         version: 1.4.2(typedoc-plugin-markdown@4.12.0(typedoc@0.28.20(typescript@6.0.3)))
@@ -5265,8 +5265,8 @@ packages:
     resolution: {integrity: sha512-l4gcSouhcgIKRvyy99RNVOgxXiicE+2jZoNmaNmZ6JXiGajBOJAesk1OBlJuM5k2c+eudGdLxDqXuPCKIj6kpw==}
     engines: {node: '>=6'}
 
-  docusaurus-plugin-llms@0.4.0:
-    resolution: {integrity: sha512-jYlj2HJ5+gu7oJZuJ83Hk8KlB65YlZZ/7UpHXiL7Qr+qpNBkVocmt2Molc6F3HNr5RqcfhWD/98CvgyNztg/ow==}
+  docusaurus-plugin-llms@0.5.1:
+    resolution: {integrity: sha512-4kNSK+TU67Y+pV45MJhvkW2ISNDh3SYet8PcPvwShV3VL/Ydwpvms0pTgvmOx1GEdLtJMYjD4PNkdmO3kAvLyw==}
     engines: {node: '>=18.0'}
     peerDependencies:
       '@docusaurus/core': ^3.0.0
@@ -7255,6 +7255,10 @@ packages:
   minimatch@5.1.9:
     resolution: {integrity: sha512-7o1wEA2RyMP7Iu7GNba9vc0RWWGACJOCZBJX2GJWip0ikV+wcOsgVuY9uE8CPiyQhkGFSlhuSkZPavN7u1c2Fw==}
     engines: {node: '>=10'}
+
+  minimatch@9.0.3:
+    resolution: {integrity: sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==}
+    engines: {node: '>=16 || 14 >=14.17'}
 
   minimatch@9.0.9:
     resolution: {integrity: sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==}
@@ -9853,6 +9857,11 @@ packages:
   yallist@5.0.0:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
+
+  yaml@2.8.1:
+    resolution: {integrity: sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
 
   yaml@2.9.0:
     resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
@@ -15956,12 +15965,12 @@ snapshots:
     dependencies:
       '@leichtgewicht/ip-codec': 2.0.5
 
-  docusaurus-plugin-llms@0.4.0(@docusaurus/core@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)))(@mdx-js/react@3.1.1(@types/react@19.2.18)(react@19.2.8))(@rspack/core@1.7.11)(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)):
+  docusaurus-plugin-llms@0.5.1(@docusaurus/core@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)))(@mdx-js/react@3.1.1(@types/react@19.2.18)(react@19.2.8))(@rspack/core@1.7.11)(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)):
     dependencies:
       '@docusaurus/core': 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)))(@mdx-js/react@3.1.1(@types/react@19.2.18)(react@19.2.8))(@rspack/core@1.7.11)(@swc/core@1.15.46)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
       gray-matter: 4.0.3
-      minimatch: 9.0.9
-      yaml: 2.9.0
+      minimatch: 9.0.3
+      yaml: 2.8.1
 
   docusaurus-plugin-typedoc@1.4.2(typedoc-plugin-markdown@4.12.0(typedoc@0.28.20(typescript@6.0.3))):
     dependencies:
@@ -18611,6 +18620,10 @@ snapshots:
       brace-expansion: 1.1.18
 
   minimatch@5.1.9:
+    dependencies:
+      brace-expansion: 2.1.4
+
+  minimatch@9.0.3:
     dependencies:
       brace-expansion: 2.1.4
 
@@ -21493,6 +21506,8 @@ snapshots:
   yallist@4.0.0: {}
 
   yallist@5.0.0: {}
+
+  yaml@2.8.1: {}
 
   yaml@2.9.0: {}
 
