@@ -12,14 +12,7 @@ import type { RunDetails } from '../runner/reporter/RunDetails.js';
  * @remarks Since 4.10.0
  * @public
  */
-export type PluginInstance<Ts, IsAsync extends boolean> = {
-  /**
-   * Whether or not the plugin can only be attached to asynchronous properties.
-   *
-   * @defaultValue false
-   * @remarks Since 4.10.0
-   */
-  asyncOnly?: IsAsync extends false ? false : boolean;
+export type PluginInstance<Ts> = {
   /**
    * Enrich the execution of the predicate linked to the property with extra behaviors.
    * Called once per execution of the predicate.
@@ -29,7 +22,7 @@ export type PluginInstance<Ts, IsAsync extends boolean> = {
    *
    * @remarks Since 4.10.0
    */
-  decorateRun?: (nestedRun: IRawProperty<Ts, IsAsync>['run']) => IRawProperty<Ts, IsAsync>['run'];
+  decorateRun?: (nestedRun: IRawProperty<Ts, boolean>['run']) => IRawProperty<Ts, boolean>['run'];
   /**
    * Called once at the end of the full property assessment.
    * Gets called with the result of the execution.
@@ -39,21 +32,21 @@ export type PluginInstance<Ts, IsAsync extends boolean> = {
    *
    * @remarks Since 4.10.0
    */
-  afterAll?: (runDetails: RunDetails<Ts>) => IsAsync extends true ? Promise<void> | void : void;
+  afterAll?: (runDetails: RunDetails<Ts>) => Promise<void> | void;
 };
 
 /**
  * Builder instantiating a plugin.
  * Each property will instantiate its own plugin when starting to be assessed via {@link check} or {@link assert}.
  *
- * NOTE: The function gets called with a parameter shared across all builders.
- * The variable can be leveraged to exchange insights with other builders. As such it is writable and can be mutated via the builder.
- * We recommend using symbol keys when adding entries to the variable to reduce the risk of collision with other unrelated plugins.
+ * Parameters received by the Plugin function:
+ * - 1st argument or pluginIndex: Corresponds to the index of the plugin (starts at zero).
+ * - 2nd argument or crossPluginContext: Context parameter shared across all builders.
+ *   The variable can be leveraged to exchange insights with other builders.
+ *   As such it is writable and can be mutated via the builder.
+ *   We recommend using symbol keys when adding entries to the variable to reduce the risk of collision with other unrelated plugins.
  *
  * @remarks Since 4.10.0
  * @public
  */
-export type Plugin<Ts, IsAsync extends boolean> = (crossPluginContext: { [K in any]?: unknown }) => PluginInstance<
-  Ts,
-  IsAsync
->;
+export type Plugin<Ts> = (pluginIndex: number, crossPluginContext: { [K in any]?: unknown }) => PluginInstance<Ts>;
