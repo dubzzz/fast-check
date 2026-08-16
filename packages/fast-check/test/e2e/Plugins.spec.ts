@@ -6,7 +6,7 @@ describe(`Plugins (seed: ${seed})`, () => {
   it('should wait and queue afterAll', async () => {
     // Arrange
     const probes: string[] = [];
-    const buildPlugin = (pluginName: string): fc.Plugin<[number], true> => {
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
@@ -45,7 +45,7 @@ describe(`Plugins (seed: ${seed})`, () => {
   it('should stack decorateRun with the first plugin being the closest to the predicate', () => {
     // Arrange
     const probes: string[] = [];
-    const buildPlugin = (pluginName: string): fc.Plugin<[number], false> => {
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
@@ -94,7 +94,7 @@ describe(`Plugins (seed: ${seed})`, () => {
   it('should await decorateRun of asynchronous plugins', async () => {
     // Arrange
     const probes: string[] = [];
-    const buildPlugin = (pluginName: string): fc.Plugin<[number], true> => {
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
       return () => {
         return {
           asyncOnly: true,
@@ -137,7 +137,7 @@ describe(`Plugins (seed: ${seed})`, () => {
   it('should support mixes of sync and async afterAll', async () => {
     // Arrange
     const probes: string[] = [];
-    const buildPlugin = (pluginName: string, isAsync: boolean): fc.Plugin<[number], true> => {
+    const buildPlugin = (pluginName: string, isAsync: boolean): fc.Plugin<[number]> => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
