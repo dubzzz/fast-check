@@ -19,7 +19,7 @@ const globalPlugins: Plugin<any>[] = [];
  * @remarks Since 4.10.0
  * @public
  */
-export function installGlobalPlugin(plugin: Plugin<any>): void {
+export function installGlobalPlugin(plugin: Plugin<unknown>): void {
   globalPlugins.push(plugin);
 }
 
