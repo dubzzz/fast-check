@@ -58,6 +58,10 @@ fc.configureGlobal({ ...fc.readConfigureGlobal(), ...myNewOptions });
 You can also fully reset all the global options by calling `resetConfigureGlobal`.
 :::
 
+:::info Plugins
+[Plugins](/docs/advanced/plugins/) cannot be shared via `configureGlobal`, they have their own installer: `fc.installGlobalPlugin(myPlugin())`.
+:::
+
 Resources: [API reference](/docs/api/functions/configureGlobal).  
 Available since 1.18.0.
 
