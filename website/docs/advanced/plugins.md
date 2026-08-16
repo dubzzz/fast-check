@@ -25,3 +25,13 @@ await fc.assert(fc.asyncProperty(...arbs, predicate), {
   plugins: [pluginA(...paramsForPluginA), pluginB(...paramsForPluginB)],
 });
 ```
+
+## Installing plugins globally
+
+Plugins needed by all your properties can be installed once, typically in a [setup file](/docs/configuration/global-settings/#integration-with-test-frameworks), with `installGlobalPlugin`.
+
+```ts
+fc.installGlobalPlugin(pluginA());
+```
+
+Installed plugins run before the ones passed to the runner, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB()]`.
