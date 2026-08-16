@@ -67,11 +67,11 @@ async function asyncPropertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
 }
 
 function applyPlugins<Ts>(
-  plugins: Plugin<Ts, boolean>[],
+  plugins: Plugin<Ts>[],
   pluginOffset: number,
   crossPluginContext: { [K in any]?: unknown },
   run: IRawProperty<Ts>['run'],
-  pluginAfterAllCallbacks: Required<PluginInstance<Ts, boolean>>['afterAll'][],
+  pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][],
 ) {
   let nextRun = run;
   for (let index = 0; index !== plugins.length; ++index) {
@@ -149,7 +149,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   let run: typeof property.run = property.isAsync()
     ? async (v) => asyncPropertyExecution(property, v)
     : (v) => propertyExecution(property, v);
-  const pluginAfterAllCallbacks: Required<PluginInstance<Ts, boolean>>['afterAll'][] = [];
+  const pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][] = [];
 
   const crossPluginContext: { [K in any]?: unknown } = {};
   const globalPlugins = readInstalledGlobalPlugins();
