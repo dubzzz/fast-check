@@ -212,5 +212,5 @@ export interface Parameters<T = void> {
    *
    * @remarks Since 4.10.0
    */
-  plugins?: Plugin<T, boolean>[];
+  plugins?: Plugin<T>[];
 }

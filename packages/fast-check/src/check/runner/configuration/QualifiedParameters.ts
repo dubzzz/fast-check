@@ -44,7 +44,7 @@ export class QualifiedParameters<T> {
   reporter: ((runDetails: RunDetails<T>) => void) | undefined;
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | undefined;
   includeErrorInReport: boolean;
-  plugins: Plugin<T, boolean>[];
+  plugins: Plugin<T>[];
 
   constructor(op?: Parameters<T>) {
     const p = op || {};

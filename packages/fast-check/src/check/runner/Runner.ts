@@ -126,16 +126,13 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const property = decorateProperty(rawProperty, qParams);
 
   const pluginSharedSessionContext: { [K in any]?: unknown } = {};
-  const plugins: Plugin<Ts, boolean>[] = qParams.plugins;
-  const pluginAfterAllCallbacks: Required<PluginInstance<Ts, boolean>>['afterAll'][] = [];
+  const plugins: Plugin<Ts>[] = qParams.plugins;
+  const pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][] = [];
   let run: typeof property.run = property.isAsync()
     ? async (v) => asyncPropertyExecution(property, v)
     : (v) => propertyExecution(property, v);
   for (let index = 0; index !== plugins.length; ++index) {
-    const pluginInstance = plugins[index](pluginSharedSessionContext);
-    if (pluginInstance.asyncOnly && !property.isAsync()) {
-      throw new Error('Cannot execute an asynchronous plugin on a synchronous property');
-    }
+    const pluginInstance = plugins[index](index, pluginSharedSessionContext);
     if (pluginInstance.decorateRun !== undefined) {
       run = pluginInstance.decorateRun(run);
     }
