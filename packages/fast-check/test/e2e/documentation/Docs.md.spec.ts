@@ -232,18 +232,18 @@ function refreshContent(originalContent: string): { content: string; numExecuted
           const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
           const evalCode = refinedSnippet;
           const originalConsoleLog = console.log;
-          const originalGlobal = fc.readConfigureGlobal();
+          const originalGlobal = fc.readGlobalConfiguration();
           try {
             const lines: string[] = [];
             console.log = (line) => lines.push(line);
-            fc.configureGlobal({ seed, numRuns: 10000, baseSize });
+            fc.extendGlobalConfiguration({ seed, numRuns: 10000, baseSize });
             eval(evalCode);
             return lines;
           } catch (err) {
             throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, { cause: err });
           } finally {
             console.log = originalConsoleLog;
-            fc.configureGlobal(originalGlobal);
+            fc.extendGlobalConfiguration(() => originalGlobal);
           }
         })(fc);
       const formatForSize = (size: fc.Size) =>

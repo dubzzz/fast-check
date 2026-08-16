@@ -179,7 +179,7 @@ export interface RunDetailsCommon<Ts> {
    * Configuration of the run
    *
    * It includes both local parameters set on {@link check} or {@link assert}
-   * and global ones specified using {@link configureGlobal}
+   * and global ones specified using {@link extendGlobalConfiguration}
    *
    * @remarks Since 1.25.0
    */

@@ -107,6 +107,7 @@ export type GlobalParameters = Pick<
  * @param parameters - Global parameters
  *
  * @remarks Since 1.18.0
+ * @deprecated Prefer relying on the updater form of {@link extendGlobalConfiguration}
  * @public
  */
 export function configureGlobal(parameters: GlobalParameters): void {
@@ -116,6 +117,7 @@ export function configureGlobal(parameters: GlobalParameters): void {
 /**
  * Read global parameters that will be used by runners
  * @remarks Since 1.18.0
+ * @deprecated Prefer using the new naming {@link readGlobalConfiguration}
  * @public
  */
 export function readConfigureGlobal(): GlobalParameters {
@@ -123,8 +125,51 @@ export function readConfigureGlobal(): GlobalParameters {
 }
 
 /**
+ * Read global parameters that will be used by runners
+ * @remarks Since 4.10.0
+ * @public
+ */
+export function readGlobalConfiguration(): GlobalParameters {
+  return globalParameters;
+}
+
+/**
+ * Extend global parameters that will be used by all the runners
+ *
+ * @example
+ * ```typescript
+ * // no call to extendGlobalConfiguration before that point
+ * fc.extendGlobalConfiguration({ numRuns: 10 });
+ * //...later
+ * fc.assert(
+ *   fc.property(
+ *     fc.nat(), fc.nat(),
+ *     (a, b) => a + b === b + a
+ *   ), { seed: 42 }
+ * ) // equivalent to { numRuns: 10, seed: 42 }
+ * ```
+ *
+ * @param updaterOrPartialConfiguration - Updater function or partial global configuration
+ * @remarks Since 4.10.0
+ * @public
+ */
+export function extendGlobalConfiguration(
+  updaterOrPartialConfiguration: GlobalParameters | ((currentConfiguration: GlobalParameters) => GlobalParameters),
+): void {
+  const updater =
+    typeof updaterOrPartialConfiguration === 'function'
+      ? updaterOrPartialConfiguration
+      : (currentConfiguration: GlobalParameters): GlobalParameters => ({
+          ...currentConfiguration,
+          ...updaterOrPartialConfiguration,
+        });
+  globalParameters = updater(globalParameters);
+}
+
+/**
  * Reset global parameters
  * @remarks Since 1.18.0
+ * @deprecated Prefer relying on the updater form of {@link extendGlobalConfiguration}
  * @public
  */
 export function resetConfigureGlobal(): void {

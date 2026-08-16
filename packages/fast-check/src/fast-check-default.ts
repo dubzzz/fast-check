@@ -151,6 +151,8 @@ import {
   configureGlobal,
   readConfigureGlobal,
   resetConfigureGlobal,
+  readGlobalConfiguration,
+  extendGlobalConfiguration,
 } from './check/runner/configuration/GlobalParameters.js';
 import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel.js';
 import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus.js';
@@ -449,6 +451,8 @@ export {
   asyncDefaultReportMessage,
   hash,
   VerbosityLevel,
+  readGlobalConfiguration,
+  extendGlobalConfiguration,
   configureGlobal,
   readConfigureGlobal,
   resetConfigureGlobal,

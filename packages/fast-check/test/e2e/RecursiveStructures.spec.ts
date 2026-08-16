@@ -80,8 +80,8 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     'Should be able to generate $baseSize simple recursive structures without reaching out-of-memory',
     ({ baseSize }) => {
       // Arrange
-      const initialGlobal = fc.readConfigureGlobal();
-      fc.configureGlobal({ ...initialGlobal, baseSize });
+      const initialGlobal = fc.readGlobalConfiguration();
+      fc.extendGlobalConfiguration({ baseSize });
       try {
         const arb = fc.letrec((tie) => ({
           self: fc.oneof(fc.nat(), fc.record({ left: tie('self'), right: tie('self') })),
@@ -90,7 +90,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
         // Act / Assert
         expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
       } finally {
-        fc.configureGlobal(initialGlobal);
+        fc.extendGlobalConfiguration(() => initialGlobal);
       }
     },
   );
@@ -106,8 +106,8 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     'Should be able to generate $baseSize array-based recursive structures without reaching out-of-memory',
     ({ baseSize }) => {
       // Arrange
-      const initialGlobal = fc.readConfigureGlobal();
-      fc.configureGlobal({ ...initialGlobal, baseSize });
+      const initialGlobal = fc.readGlobalConfiguration();
+      fc.extendGlobalConfiguration({ baseSize });
       try {
         const depthIdentifier = fc.createDepthIdentifier();
         const arb = fc.letrec((tie) => ({
@@ -117,7 +117,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
         // Act / Assert
         expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
       } finally {
-        fc.configureGlobal(initialGlobal);
+        fc.extendGlobalConfiguration(() => initialGlobal);
       }
     },
   );
