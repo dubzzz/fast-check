@@ -42,6 +42,23 @@ function lifeCycleHooksRunner(
   return runOut;
 }
 
+/**
+ * Register a callback to be called before each run of your predicate.
+ * If the function returns a promise, we wait until the promise resolves before running anything else.
+ *
+ * @example
+ * ```ts
+ * fc.assert(
+ *   fc.property(..., (...) => {...}),
+ *   { plugins: [fc.beforeEachPlugin(() => {...})] }
+ * )
+ * ```
+ *
+ * @param fn - Hook to be executed before each execution of the predicate
+ *
+ * @remarks Since 4.10.0
+ * @public
+ */
 export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
   return (pluginIndex, crossPluginContext): PluginInstance<unknown> => {
     let lifeCycleHooks = crossPluginContext[LifeCyclePluginSymbol] as LifeCycleHooks | undefined;
