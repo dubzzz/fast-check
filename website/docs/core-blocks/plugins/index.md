@@ -1,12 +1,10 @@
 ---
-slug: /advanced/plugins/
+sidebar_position: 4
+slug: /core-blocks/plugins/
+description: Extend the default execution flow provided by runners to meet your needs.
 ---
 
 # Plugins
-
-Extend execution flow to meet your needs
-
-## Overview
 
 Plugins provide a way to extend and refine the runtime and execution behavior of your properties. The same way building custom arbitraries gives you the flexibility to tweak the generation flows, the plugins will give you ways to customize the way your properties will run.
 
@@ -35,3 +33,13 @@ fc.installGlobalPlugin(pluginA());
 ```
 
 Installed plugins run before the ones passed to the runner, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB()]`.
+
+## The plugins
+
+We come up with a set of plugins to extend the library using built-ins plugins. The following pages provide extended details and deep dive into each of them.
+
+```mdx-code-block
+import DocCardList from '@theme/DocCardList';
+
+<DocCardList />
+```
