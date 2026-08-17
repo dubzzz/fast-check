@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { beforeEach } from './LifeCyclePlugins.js';
-import type { IRawProperty } from '../property/IRawProperty.js';
-import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { Plugin } from './Plugin.js';
+import { beforeEach } from '../../../../src/check/plugin/LifeCyclePlugins.js';
+import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
+import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
+import type { Plugin } from '../../../../src/check/plugin/Plugin.js';
 
 describe('LifeCyclePlugins', () => {
   describe('ordering', () => {
