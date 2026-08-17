@@ -295,20 +295,38 @@ describe('LifeCyclePlugins', () => {
   });
 
   describe('merge instances', () => {
-    it('should merge consecutive instances of the plugin into a single instance', () => {
-      // Arrange
-      let pluginIndex = 5;
-      const sharedContext = {};
+    it('should merge consecutive instances of the plugin into a single instance but create a new instance at each index gap', async () => {
+      await fc.assert(
+        fc.property(
+          fc.nat(),
+          fc.array(
+            fc.record({
+              hookTypes: fc.array(hookTypeArbitrary(), { minLength: 1 }),
+              gap: fc.integer({ min: 1, max: 100 }),
+            }),
+            { minLength: 1 },
+          ),
+          (startLifeCyclePluginsIndex, hookTypesAndGaps) => {
+            // Arrange
+            let pluginIndex = startLifeCyclePluginsIndex;
+            const sharedContext = {};
 
-      // Act
-      const instanceA = beforeEach(() => {})(pluginIndex++, sharedContext);
-      const instanceB = beforeEach(() => {})(pluginIndex++, sharedContext);
-      const instanceC = beforeEach(() => {})(pluginIndex++, sharedContext);
-
-      // Assert
-      expect(instanceA.decorateRun).not.toBe(undefined);
-      expect(instanceB.decorateRun).toBe(undefined); // handled by instanceA
-      expect(instanceC.decorateRun).toBe(undefined); // handled by instanceA
+            // Act / Assert
+            for (const { hookTypes, gap } of hookTypesAndGaps) {
+              for (let index = 0; index !== hookTypes.length; ++index) {
+                const plugin = successfulPluginFor(hookTypes[index]);
+                const instance = plugin(pluginIndex++, sharedContext);
+                if (index === 0) {
+                  expect(instance.decorateRun).not.toBe(undefined);
+                } else {
+                  expect(instance.decorateRun).toBe(undefined); // handled by first instance of the plugin
+                }
+              }
+              pluginIndex += gap;
+            }
+          },
+        ),
+      );
     });
   });
 });
