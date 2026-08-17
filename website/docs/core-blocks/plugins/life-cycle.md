@@ -2,13 +2,15 @@
 slug: /core-blocks/plugins/life-cycle/
 ---
 
-# Life-Cycle hooks
+# Life-cycle
+
+Life-cycle plugins are providing you with hooks to prepare or clean things for your predicates to run with the appropriate setup.
 
 ## `beforeEach`
 
-The `beforeEach` plugin is providing users with a way to run code right before the execution of the predicate function.
+The `beforeEach` plugin lets you run code right before the execution of your predicate.
 
-It expects to receive a function either `void` or `Promise<void>`. Any other returned value may lead to unexpected behavior and is subject to change between versions.
+It expects to receive a function returning either `void` or `Promise<void>`. Any other returned value may lead to unexpected behavior and is subject to change between versions.
 
 The hooks will execute in the order they get declared. As such if you declare:
 
@@ -25,9 +27,9 @@ The hooks will execute in the order they get declared. As such if you declare:
 }
 ```
 
-We will first run #1 then #2. If #1 fails, #2 will never get executed and the predicate neither.
+We will first run #1 then #2. If #1 fails, #2 will never get executed and neither will the predicate.
 
-Also note that `beforeEach` hooks have been designed in a way to properly integrate themselves with other plugins. As such, in the hypothesis of a plugin called `retryOnFailure(count)`, declaring plugins as follow:
+Also note that `beforeEach` hooks integrate themselves with other plugins. As such, in the hypothesis of a plugin named `retryOnFailure(count)`, declaring plugins as follows:
 
 ```ts
 {
@@ -43,4 +45,4 @@ Also note that `beforeEach` hooks have been designed in a way to properly integr
 }
 ```
 
-May result into hook #2 being executed more often than #1. Hook #2 will be re-executed for every retry, while #1 will wrap all the retries.
+May result in hook #2 being executed more often than #1. Hook #2 will be re-executed for every retry, while #1 will wrap all the retries.
