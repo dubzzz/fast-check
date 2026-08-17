@@ -312,14 +312,16 @@ describe('LifeCyclePlugins', () => {
             const sharedContext = {};
 
             // Act / Assert
-            for (const { hookTypes, gap } of hookTypesAndGaps) {
+            for (let nth = 0; nth !== hookTypesAndGaps.length; ++nth) {
+              const { hookTypes, gap } = hookTypesAndGaps[nth];
               for (let index = 0; index !== hookTypes.length; ++index) {
                 const plugin = successfulPluginFor(hookTypes[index]);
                 const instance = plugin(pluginIndex++, sharedContext);
+                const expectHint = `at index ${index} of ${nth + 1}th chunk`;
                 if (index === 0) {
-                  expect(instance.decorateRun).not.toBe(undefined);
+                  expect(instance.decorateRun, expectHint).not.toBe(undefined);
                 } else {
-                  expect(instance.decorateRun).toBe(undefined); // handled by first instance of the plugin
+                  expect(instance.decorateRun, expectHint).toBe(undefined); // handled by first instance of the plugin
                 }
               }
               pluginIndex += gap;
