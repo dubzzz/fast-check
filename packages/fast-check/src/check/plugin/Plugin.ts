@@ -40,7 +40,8 @@ export type PluginInstance<Ts> = {
  * Each property will instantiate its own plugin when starting to be assessed via {@link check} or {@link assert}.
  *
  * Parameters received by the Plugin function:
- * - 1st argument or pluginIndex: Corresponds to the index of the plugin (starts at zero).
+ * - 1st argument or pluginIndex: Corresponds to the index of the plugin within the run (starts at zero).
+ *   Plugins are instantiated in order. As such, for a given batch expect to see index 0 instantiated first, followed by others.
  * - 2nd argument or crossPluginContext: Context parameter shared across all builders.
  *   The variable can be leveraged to exchange insights with other builders.
  *   As such it is writable and can be mutated via the builder.
