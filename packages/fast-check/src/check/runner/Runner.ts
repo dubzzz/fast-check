@@ -18,6 +18,7 @@ import type { IAsyncProperty } from '../property/AsyncProperty.js';
 import type { IProperty } from '../property/Property.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 import type { Plugin, PluginInstance } from '../plugin/Plugin.js';
+import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
 /** @internal */
 function runIt<Ts>(
@@ -63,6 +64,26 @@ async function asyncPropertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
   const out = await property.run(v);
   await property.runAfterEach();
   return out;
+}
+
+function applyPlugins<Ts>(
+  plugins: Plugin<Ts>[],
+  pluginOffset: number,
+  crossPluginContext: { [K in any]?: unknown },
+  run: IRawProperty<Ts>['run'],
+  pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][],
+) {
+  let nextRun = run;
+  for (let index = 0; index !== plugins.length; ++index) {
+    const pluginInstance = plugins[index](pluginOffset, crossPluginContext);
+    if (pluginInstance.decorateRun !== undefined) {
+      nextRun = pluginInstance.decorateRun(nextRun);
+    }
+    if (pluginInstance.afterAll !== undefined) {
+      pluginAfterAllCallbacks.push(pluginInstance.afterAll.bind(pluginInstance));
+    }
+  }
+  return nextRun;
 }
 
 /**
@@ -125,21 +146,15 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
 
-  const pluginSharedSessionContext: { [K in any]?: unknown } = {};
-  const plugins: Plugin<Ts>[] = qParams.plugins;
-  const pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][] = [];
   let run: typeof property.run = property.isAsync()
     ? async (v) => asyncPropertyExecution(property, v)
     : (v) => propertyExecution(property, v);
-  for (let index = 0; index !== plugins.length; ++index) {
-    const pluginInstance = plugins[index](index, pluginSharedSessionContext);
-    if (pluginInstance.decorateRun !== undefined) {
-      run = pluginInstance.decorateRun(run);
-    }
-    if (pluginInstance.afterAll !== undefined) {
-      pluginAfterAllCallbacks.push(pluginInstance.afterAll.bind(pluginInstance));
-    }
-  }
+  const pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][] = [];
+
+  const crossPluginContext: { [K in any]?: unknown } = {};
+  const globalPlugins = readInstalledGlobalPlugins();
+  run = applyPlugins(globalPlugins, 0, crossPluginContext, run, pluginAfterAllCallbacks);
+  run = applyPlugins(qParams.plugins, globalPlugins.length, crossPluginContext, run, pluginAfterAllCallbacks);
 
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
