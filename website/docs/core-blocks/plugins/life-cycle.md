@@ -4,7 +4,7 @@ slug: /core-blocks/plugins/life-cycle/
 
 # Life-cycle
 
-Life-cycle plugins are providing you with hooks to prepare or clean things for your predicates to run with the appropriate setup.
+Life-cycle plugins provide hooks to prepare or clean up things for your predicates.
 
 ## `beforeEach`
 
