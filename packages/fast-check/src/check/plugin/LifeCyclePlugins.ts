@@ -53,10 +53,7 @@ function lifeCycleHooksRunner(
 export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
   return (pluginIndex, crossPluginContext): PluginInstance<unknown> => {
     let lifeCycleHooks = crossPluginContext[LifeCyclePluginSymbol] as LifeCycleHooks | undefined;
-    if (lifeCycleHooks !== undefined) {
-      if (lifeCycleHooks.lastPluginIndex !== pluginIndex - 1) {
-        throw new Error('Life-cycle hooks have to be defined in a contiguous manner');
-      }
+    if (lifeCycleHooks !== undefined && lifeCycleHooks.lastPluginIndex === pluginIndex - 1) {
       lifeCycleHooks.lastPluginIndex = pluginIndex;
       lifeCycleHooks.beforeHooks.push(fn);
       return {};
