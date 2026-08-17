@@ -118,7 +118,7 @@ describe('LifeCyclePlugins', () => {
     it('should produce a sync value if and only if all hooks and run were returning a sync value', async () => {
       await fc.assert(
         fc.property(
-          fc.array(fc.constantFrom('sync beforeEach', 'async beforeEach'), { minLength: 1 }),
+          fc.array(hookTypeArbitrary(), { minLength: 1 }),
           fc.boolean(),
           fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
             error: new Error('abc'),
@@ -127,23 +127,9 @@ describe('LifeCyclePlugins', () => {
             // Arrange
             let pluginIndex = 0;
             const sharedContext = {};
-            let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
-              ? async () => runValue // emulates successful async run
-              : () => runValue; // emulates successful sync run
+            let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
             for (const hookType of hookTypes) {
-              let plugin: Plugin<unknown>;
-              switch (hookType) {
-                case 'sync beforeEach':
-                  plugin = beforeEach(() => {});
-                  break;
-                case 'async beforeEach':
-                  plugin = beforeEach(async () => {});
-                  break;
-                default: {
-                  const _unused: never = hookType;
-                  throw new Error(`Unsupported hookType: ${_unused}`);
-                }
-              }
+              const plugin = successfulPluginFor(hookType);
               const instance = plugin(pluginIndex++, sharedContext);
               if (instance.decorateRun !== undefined) {
                 finalRun = instance.decorateRun(finalRun);
@@ -168,7 +154,7 @@ describe('LifeCyclePlugins', () => {
     it('should return the same value as the run function if no hook failed to run', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.array(fc.constantFrom('sync beforeEach', 'async beforeEach'), { minLength: 1 }),
+          fc.array(hookTypeArbitrary(), { minLength: 1 }),
           fc.boolean(),
           fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
             error: new Error('abc'),
@@ -177,23 +163,9 @@ describe('LifeCyclePlugins', () => {
             // Arrange
             let pluginIndex = 0;
             const sharedContext = {};
-            let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
-              ? async () => runValue // emulates successful async run
-              : () => runValue; // emulates successful sync run
+            let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
             for (const hookType of hookTypes) {
-              let plugin: Plugin<unknown>;
-              switch (hookType) {
-                case 'sync beforeEach':
-                  plugin = beforeEach(() => {});
-                  break;
-                case 'async beforeEach':
-                  plugin = beforeEach(async () => {});
-                  break;
-                default: {
-                  const _unused: never = hookType;
-                  throw new Error(`Unsupported hookType: ${_unused}`);
-                }
-              }
+              const plugin = successfulPluginFor(hookType);
               const instance = plugin(pluginIndex++, sharedContext);
               if (instance.decorateRun !== undefined) {
                 finalRun = instance.decorateRun(finalRun);
@@ -212,6 +184,52 @@ describe('LifeCyclePlugins', () => {
   });
 
   describe('errors', () => {
+    it('should mark a successful run as failed whenever one of the hooks failed', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.array(hookTypeArbitrary()),
+          hookTypeArbitrary(),
+          fc.array(hookTypeArbitrary()),
+          fc.boolean(),
+          async (hookTypesBeforeFailure, hookTypeFailing, hookTypesAfterFailure, isAsyncRun) => {
+            // Arrange
+            let pluginIndex = 0;
+            const sharedContext = {};
+            let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
+              ? async () => null // emulates successful async run
+              : () => null; // emulates successful sync run
+            for (const hookType of hookTypesBeforeFailure) {
+              const plugin = successfulPluginFor(hookType);
+              const instance = plugin(pluginIndex++, sharedContext);
+              if (instance.decorateRun !== undefined) {
+                finalRun = instance.decorateRun(finalRun);
+              }
+            }
+            {
+              const plugin = failingPluginFor(hookTypeFailing);
+              const instance = plugin(pluginIndex++, sharedContext);
+              if (instance.decorateRun !== undefined) {
+                finalRun = instance.decorateRun(finalRun);
+              }
+            }
+            for (const hookType of hookTypesAfterFailure) {
+              const plugin = successfulPluginFor(hookType);
+              const instance = plugin(pluginIndex++, sharedContext);
+              if (instance.decorateRun !== undefined) {
+                finalRun = instance.decorateRun(finalRun);
+              }
+            }
+
+            // Act
+            const out = await finalRun(null);
+
+            // Assert
+            expect(out).toMatchObject({ error: expect.any(Error) });
+          },
+        ),
+      );
+    });
+
     it.each([{ kind: 'sync' as const }, { kind: 'async' as const }])(
       'should stop and forward beforeEach error on $kind throw',
       async ({ kind }) => {
@@ -299,4 +317,30 @@ describe('LifeCyclePlugins', () => {
 
 function delay0() {
   return new Promise((r) => setTimeout(r, 0));
+}
+
+function hookTypeArbitrary() {
+  return fc.constantFrom('sync beforeEach', 'async beforeEach');
+}
+
+function successfulPluginFor(hookType: 'sync beforeEach' | 'async beforeEach'): Plugin<unknown> {
+  switch (hookType) {
+    case 'sync beforeEach':
+      return beforeEach(() => {});
+    case 'async beforeEach':
+      return beforeEach(async () => {});
+  }
+}
+
+function failingPluginFor(hookType: 'sync beforeEach' | 'async beforeEach'): Plugin<unknown> {
+  switch (hookType) {
+    case 'sync beforeEach':
+      return beforeEach(() => {
+        throw new Error('sync throw');
+      });
+    case 'async beforeEach':
+      return beforeEach(async () => {
+        throw new Error('async throw');
+      });
+  }
 }
