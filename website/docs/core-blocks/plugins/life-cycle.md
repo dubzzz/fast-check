@@ -46,3 +46,5 @@ Also note that `beforeEach` hooks integrate themselves with other plugins. As su
 ```
 
 May result in hook #2 being executed more often than #1. Hook #2 will be re-executed for every retry, while #1 will wrap all the retries.
+
+Resources: [API reference](/docs/api/functions/beforeEachPlugin).
