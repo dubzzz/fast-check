@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
+import * as fc from 'fast-check';
 import { beforeEach } from './LifeCyclePlugins.js';
 import type { IRawProperty } from '../property/IRawProperty.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import type { Plugin } from './Plugin.js';
 
 describe('LifeCyclePlugins', () => {
   describe('ordering', () => {
@@ -113,52 +115,100 @@ describe('LifeCyclePlugins', () => {
   });
 
   describe('preserve output', () => {
-    const allAnswers: { answer: ReturnType<IRawProperty<unknown, boolean>['run']>; answerType: string }[] = [
-      { answer: null, answerType: 'success' },
-      { answer: new PreconditionFailure(), answerType: 'precondition failure' },
-      { answer: { error: new Error('abc') }, answerType: 'error' },
-      { answer: null, answerType: 'asynchronous success' },
-      { answer: new PreconditionFailure(), answerType: 'asynchronous precondition failure' },
-      { answer: { error: new Error('abc') }, answerType: 'asynchronous error' },
-      { answer: null, answerType: 'success' },
-    ];
+    it('should produce a sync value if and only if all hooks and run were returning a sync value', async () => {
+      await fc.assert(
+        fc.property(
+          fc.array(fc.constantFrom('sync beforeEach', 'async beforeEach'), { minLength: 1 }),
+          fc.boolean(),
+          fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
+            error: new Error('abc'),
+          }),
+          (hookTypes, isAsyncRun, runValue) => {
+            // Arrange
+            let pluginIndex = 0;
+            const sharedContext = {};
+            let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
+              ? async () => runValue // emulates successful async run
+              : () => runValue; // emulates successful sync run
+            for (const hookType of hookTypes) {
+              let plugin: Plugin<unknown>;
+              switch (hookType) {
+                case 'sync beforeEach':
+                  plugin = beforeEach(() => {});
+                  break;
+                case 'async beforeEach':
+                  plugin = beforeEach(async () => {});
+                  break;
+                default: {
+                  const _unused: never = hookType;
+                  throw new Error(`Unsupported hookType: ${_unused}`);
+                }
+              }
+              const instance = plugin(pluginIndex++, sharedContext);
+              if (instance.decorateRun !== undefined) {
+                finalRun = instance.decorateRun(finalRun);
+              }
+            }
 
-    it.each(allAnswers.map((value) => ({ kind: 'sync beforeEach' as const, ...value })))(
-      "should forward runner's answer $answerType as-is on $kind",
-      ({ answer }) => {
-        // Arrange
-        let pluginIndex = 0;
-        const sharedContext = {};
-        const pluginA = beforeEach(() => {});
-        const instanceA = pluginA(pluginIndex++, sharedContext);
-        const finalRun = instanceA.decorateRun!(() => answer);
+            // Act
+            const out = finalRun(null);
 
-        // Act
-        const out = finalRun(null);
+            // Assert
+            const expectsSync = !isAsyncRun && !hookTypes.some((hookType) => hookType.includes('async'));
+            if (expectsSync) {
+              expect(out).not.toBeInstanceOf(Promise);
+            } else {
+              expect(out).toBeInstanceOf(Promise);
+            }
+          },
+        ),
+      );
+    });
 
-        // Assert
-        expect(out).toBe(answer);
-      },
-    );
+    it('should return the same value as the run function if no hook failed to run', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.array(fc.constantFrom('sync beforeEach', 'async beforeEach'), { minLength: 1 }),
+          fc.boolean(),
+          fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
+            error: new Error('abc'),
+          }),
+          async (hookTypes, isAsyncRun, runValue) => {
+            // Arrange
+            let pluginIndex = 0;
+            const sharedContext = {};
+            let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
+              ? async () => runValue // emulates successful async run
+              : () => runValue; // emulates successful sync run
+            for (const hookType of hookTypes) {
+              let plugin: Plugin<unknown>;
+              switch (hookType) {
+                case 'sync beforeEach':
+                  plugin = beforeEach(() => {});
+                  break;
+                case 'async beforeEach':
+                  plugin = beforeEach(async () => {});
+                  break;
+                default: {
+                  const _unused: never = hookType;
+                  throw new Error(`Unsupported hookType: ${_unused}`);
+                }
+              }
+              const instance = plugin(pluginIndex++, sharedContext);
+              if (instance.decorateRun !== undefined) {
+                finalRun = instance.decorateRun(finalRun);
+              }
+            }
 
-    it.each(allAnswers.map((value) => ({ kind: 'async beforeEach' as const, ...value })))(
-      "should wrap runner's answer $answerType into a fresh Promise on $kind",
-      async ({ answer }) => {
-        // Arrange
-        let pluginIndex = 0;
-        const sharedContext = {};
-        const pluginA = beforeEach(async () => {});
-        const instanceA = pluginA(pluginIndex++, sharedContext);
-        const finalRun = instanceA.decorateRun!(() => answer);
+            // Act
+            const out = await finalRun(null);
 
-        // Act
-        const out = finalRun(null);
-
-        // Assert
-        expect(out).not.toBe(answer);
-        expect(await out).toBe(await answer);
-      },
-    );
+            // Assert
+            expect(out).toBe(runValue);
+          },
+        ),
+      );
+    });
   });
 
   describe('errors', () => {
