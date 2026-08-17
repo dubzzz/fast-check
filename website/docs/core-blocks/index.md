@@ -6,13 +6,14 @@ description: The three reference building blocks of fast-check — arbitraries, 
 
 # Core Blocks
 
-Every fast-check test is built from the same three pieces:
+Every fast-check test is built from the same four pieces:
 
 1. **Arbitraries** describe what values to generate. They pair a random generator with a shrinker so that failing inputs collapse back to readable counterexamples.
 2. **Properties** describe what must hold for those values. A property takes one or more arbitraries and a predicate. It asserts that for any input the predicate stays valid.
 3. **Runners** describe how to execute the property: how many runs, with what seed, how to report failures, whether to throw or return details.
+4. **Plugins** describe how to extend runners to make them even more tailored to your needs.
 
-The children below are the reference pages for each block: start with [Properties](/docs/core-blocks/properties/) if you have never written one, jump to [Arbitraries](/docs/core-blocks/arbitraries/) when you need the right generator and come back to [Runners](/docs/core-blocks/runners/) when you need to tune execution.
+The children below are the reference pages for each block: start with [Properties](/docs/core-blocks/properties/) if you have never written one, jump to [Arbitraries](/docs/core-blocks/arbitraries/) when you need the right generator and come back to [Plugins](/docs/core-blocks/plugins/) and [Runners](/docs/core-blocks/runners/) when you need to tune execution.
 
 :::tip Reference, not tutorial
 The Core Blocks pages are the exhaustive reference. If you are looking for a guided, hands-on walkthrough instead, start with the [Quick Start tutorial](/docs/tutorials/quick-start/basic-setup/).
