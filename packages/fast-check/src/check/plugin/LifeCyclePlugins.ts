@@ -1,14 +1,6 @@
 import type { IRawProperty, PropertyFailure } from '../property/IRawProperty.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
-// if b throws in a sync or async manner:
-// - next b are not fired
-// - but a are fired
-
-// if b returns sync or async a f it gets executed after all others a
-// nested first
-// except if one of the bs threw
-
 const LifeCyclePluginSymbol = Symbol.for('fast-check/plugin/life-cycle');
 
 type AfterEachHook = () => Promise<void> | void;
