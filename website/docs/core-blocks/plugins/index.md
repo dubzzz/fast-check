@@ -6,17 +6,17 @@ description: Extend the default execution flow provided by runners to meet your 
 
 # Plugins
 
-Plugins provide a way to extend and refine the runtime and execution behavior of your properties. The same way building custom arbitraries gives you the flexibility to tweak the generation flows, the plugins will give you ways to customize the way your properties will run.
+Plugins provide a way to extend and refine the runtime and execution behavior of your properties. In the same way building custom arbitraries gives you the flexibility to tweak the generation flows, plugins gives you ways to customize how your properties run.
 
-Plugins have been designed in a way to be capable of supporting things such as:
+Plugins are designed to support things such as:
 
 - Executing something before the predicate
-- Cutting predicate running for too long
+- Stopping a predicate running for too long
 - Capturing key insights about the execution flows including timings for observability
 
 ## Using plugins
 
-Plugins can just be passed as part of the customizations accepted by the `fc.assert` runner.
+Plugins can be passed as part of the customizations accepted by the `fc.assert` runner.
 
 ```ts
 await fc.assert(fc.asyncProperty(...arbs, predicate), {
@@ -36,7 +36,7 @@ Installed plugins run before the ones passed to the runner, so the snippet above
 
 ## The plugins
 
-We come up with a set of plugins to extend the library using built-ins plugins. The following pages provide extended details and deep dive into each of them.
+We come up with a set of plugins to extend the library using built-in plugins. The following pages provide extended details and deep dive into each of them.
 
 ```mdx-code-block
 import DocCardList from '@theme/DocCardList';
