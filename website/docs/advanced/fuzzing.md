@@ -24,7 +24,7 @@ For instance, if you intend to run the tests an infinite number of times, you ca
 fc.configureGlobal({ numRuns: Number.POSITIVE_INFINITY });
 ```
 
-:::warning Multi-process
+:::warning[Multi-process]
 Please note that if you intend to run multiple properties an infinite number of times, it may be necessary to run them via multiple processes. JavaScript being a single-threaded language, running multiple infinite loops in a single thread may result in only one property being executed.
 
 Therefore, to avoid this limitation and ensure that all properties are executed as intended, you should consider running them in separate processes.

@@ -36,7 +36,7 @@ fc.assert(fc.property(fc.string(), fc.string(), fc.string(), myCheckFunction), {
 });
 ```
 
-:::tip Usage with `context`
+:::tip[Usage with `context`]
 If you are using `context` to log within a predicate, you will need to use the following context implementation in your examples.
 
 ```ts
@@ -49,7 +49,7 @@ fc.assert(fc.property(fc.string(), fc.string(), fc.context(), myCheckFunction), 
 
 :::
 
-:::info Trust the framework
+:::info[Trust the framework]
 Please keep in mind that property based testing frameworks are fully able to find corner-cases with no help at all.
 :::
 

@@ -53,7 +53,7 @@ On its side the scheduled `Promise` will only resolve when the scheduler decides
 
 Once scheduled by the scheduler, the scheduler will wait the wrapped `Promise` to resolve before sheduling anything else.
 
-:::warning Catching exceptions is your responsability
+:::warning[Catching exceptions is your responsability]
 Similar to any other `Promise`, if there is a possibility that the wrapped `Promise` may be rejected, you have to handle the output of the scheduled `Promise` on your end, just as you would with the original `Promise`.
 :::
 
@@ -113,7 +113,7 @@ scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Pr
 
 Any algorithm making calls to asynchronous APIs can highly benefit from this wrapper to re-order calls.
 
-:::warning Only postpone the resolution
+:::warning[Only postpone the resolution]
 `scheduleFunction` is only postponing the resolution of the function. The call to the function itself is started immediately when the caller calls something on the scheduled function.
 :::
 
@@ -145,7 +145,7 @@ await s.waitNext(1);
 
 Create a sequence of asynchrnous calls running in a precise order.
 
-:::info While running, tasks prevent others to complete
+:::info[While running, tasks prevent others to complete]
 One important fact about scheduled sequence is that whenever one task of the sequence gets scheduled, no other scheduled task in the scheduler can be unqueued while this task has not ended. It means that tasks defined within a scheduled sequence must not require other scheduled task to end to fulfill themselves — _it does not mean that they should not force the scheduling of other scheduled tasks_.
 :::
 
@@ -164,7 +164,7 @@ scheduleSequence(sequenceBuilders: SchedulerSequenceItem[], customAct?: Schedule
 
 You want to check the status of a database, a webpage after many known operations.
 
-:::tip Alternative
+:::tip[Alternative]
 Most of the time, model based testing might be a better fit for that purpose.
 :::
 
@@ -258,7 +258,7 @@ fc.assert(
 
 This pattern can be helpful whenever you need to make sure that continuations attached to your tasks get called in proper contexts. For instance, when testing React applications, one cannot perform updates of states outside of `act`.
 
-:::tip Finer act
+:::tip[Finer act]
 The `act` function can be defined on case by case basis instead of being defined globally for all tasks. Check the `act` argument available on the methods of the scheduler.
 :::
 
@@ -306,6 +306,6 @@ function buildWrapWithTimersAct(s: fc.Scheduler) {
 
 Model-based testing features can be combined with race condition detection through the use of [`scheduledModelRun`](/docs/api/functions/scheduledModelRun). By utilizing this function, the execution of the model will also be processed through the scheduler.
 
-:::warning Do not depend on other scheduled tasks in the model
+:::warning[Do not depend on other scheduled tasks in the model]
 Neither `check` nor `run` should rely on the completion of other scheduled tasks to fulfill themselves. But they can still trigger new scheduled tasks as long as they don't wait for them to resolve.
 :::
