@@ -210,6 +210,10 @@ export interface Parameters<T = void> {
    * Each plugin is instantiated once per run.
    * They can be leveraged to control and enrich the execution flow of each predicate.
    *
+   * They come after the plugins installed globally via {@link installGlobalPlugin}.
+   * At execution time, the first plugin of the resulting array is entered first while the last one is the closest to the predicate.
+   * Plugins are instantiated in order.
+   *
    * @remarks Since 4.10.0
    */
   plugins?: Plugin<T>[];

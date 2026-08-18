@@ -34,10 +34,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       'assert started',
       'a instantiated',
       'b instantiated',
-      'a::afterAll started',
-      'a::afterAll done',
       'b::afterAll started',
       'b::afterAll done',
+      'a::afterAll started',
+      'a::afterAll done',
       'assert done',
     ]);
   });
@@ -77,16 +77,16 @@ describe(`Plugins (seed: ${seed})`, () => {
       'assert started',
       'a instantiated',
       'b instantiated',
-      'b::run started',
       'a::run started',
-      'predicate called',
-      'a::run done',
-      'b::run done',
       'b::run started',
-      'a::run started',
       'predicate called',
-      'a::run done',
       'b::run done',
+      'a::run done',
+      'a::run started',
+      'b::run started',
+      'predicate called',
+      'b::run done',
+      'a::run done',
       'assert done',
     ]);
   });
@@ -121,16 +121,16 @@ describe(`Plugins (seed: ${seed})`, () => {
 
     // Assert
     expect(probes).toEqual([
-      'b::run started',
       'a::run started',
-      'predicate called',
-      'a::run done',
-      'b::run done',
       'b::run started',
-      'a::run started',
       'predicate called',
-      'a::run done',
       'b::run done',
+      'a::run done',
+      'a::run started',
+      'b::run started',
+      'predicate called',
+      'b::run done',
+      'a::run done',
     ]);
   });
 
@@ -181,16 +181,16 @@ describe(`Plugins (seed: ${seed})`, () => {
       'c instantiated',
       'd instantiated',
       'e instantiated',
-      'a::afterAll started',
-      'a::afterAll done',
-      'b::afterAll started',
-      'b::afterAll done',
-      'c::afterAll started',
-      'c::afterAll done',
-      'd::afterAll started',
-      'd::afterAll done',
       'e::afterAll started',
       'e::afterAll done',
+      'd::afterAll started',
+      'd::afterAll done',
+      'c::afterAll started',
+      'c::afterAll done',
+      'b::afterAll started',
+      'b::afterAll done',
+      'a::afterAll started',
+      'a::afterAll done',
       'assert done',
     ]);
   });

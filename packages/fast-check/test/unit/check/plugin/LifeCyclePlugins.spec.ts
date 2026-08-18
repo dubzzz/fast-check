@@ -3,7 +3,7 @@ import * as fc from 'fast-check';
 import { beforeEach } from '../../../../src/check/plugin/LifeCyclePlugins.js';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
-import type { Plugin } from '../../../../src/check/plugin/Plugin.js';
+import type { Plugin, PluginInstance } from '../../../../src/check/plugin/Plugin.js';
 
 describe('LifeCyclePlugins', () => {
   describe('ordering', () => {
@@ -128,13 +128,10 @@ describe('LifeCyclePlugins', () => {
             let pluginIndex = 0;
             const sharedContext = {};
             let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
-            for (const hookType of hookTypes) {
-              const plugin = successfulPluginFor(hookType);
-              const instance = plugin(pluginIndex++, sharedContext);
-              if (instance.decorateRun !== undefined) {
-                finalRun = instance.decorateRun(finalRun);
-              }
-            }
+            const instances = hookTypes
+              .map((hookType) => successfulPluginFor(hookType))
+              .map((plugin) => plugin(pluginIndex++, sharedContext));
+            finalRun = produceFinalRun(finalRun, instances);
 
             // Act
             const out = finalRun(null);
@@ -164,13 +161,10 @@ describe('LifeCyclePlugins', () => {
             let pluginIndex = 0;
             const sharedContext = {};
             let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
-            for (const hookType of hookTypes) {
-              const plugin = successfulPluginFor(hookType);
-              const instance = plugin(pluginIndex++, sharedContext);
-              if (instance.decorateRun !== undefined) {
-                finalRun = instance.decorateRun(finalRun);
-              }
-            }
+            const instances = hookTypes
+              .map((hookType) => successfulPluginFor(hookType))
+              .map((plugin) => plugin(pluginIndex++, sharedContext));
+            finalRun = produceFinalRun(finalRun, instances);
 
             // Act
             const out = await finalRun(null);
@@ -198,27 +192,12 @@ describe('LifeCyclePlugins', () => {
             let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
               ? async () => null // emulates successful async run
               : () => null; // emulates successful sync run
-            for (const hookType of hookTypesBeforeFailure) {
-              const plugin = successfulPluginFor(hookType);
-              const instance = plugin(pluginIndex++, sharedContext);
-              if (instance.decorateRun !== undefined) {
-                finalRun = instance.decorateRun(finalRun);
-              }
-            }
-            {
-              const plugin = failingPluginFor(hookTypeFailing);
-              const instance = plugin(pluginIndex++, sharedContext);
-              if (instance.decorateRun !== undefined) {
-                finalRun = instance.decorateRun(finalRun);
-              }
-            }
-            for (const hookType of hookTypesAfterFailure) {
-              const plugin = successfulPluginFor(hookType);
-              const instance = plugin(pluginIndex++, sharedContext);
-              if (instance.decorateRun !== undefined) {
-                finalRun = instance.decorateRun(finalRun);
-              }
-            }
+            const instances = [
+              ...hookTypesBeforeFailure.map((hookType) => successfulPluginFor(hookType)),
+              failingPluginFor(hookTypeFailing),
+              ...hookTypesAfterFailure.map((hookType) => successfulPluginFor(hookType)),
+            ].map((plugin) => plugin(pluginIndex++, sharedContext));
+            finalRun = produceFinalRun(finalRun, instances);
 
             // Act
             const out = await finalRun(null);
@@ -363,4 +342,15 @@ function failingPluginFor(hookType: 'sync beforeEach' | 'async beforeEach'): Plu
         throw new Error('async throw');
       });
   }
+}
+
+function produceFinalRun(sourceRun: IRawProperty<null, boolean>['run'], instances: PluginInstance<unknown>[]) {
+  let finalRun = sourceRun;
+  for (let index = instances.length - 1; index >= 0; --index) {
+    const instance = instances[index];
+    if (instance.decorateRun !== undefined) {
+      finalRun = instance.decorateRun(finalRun);
+    }
+  }
+  return finalRun;
 }
