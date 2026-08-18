@@ -5,8 +5,6 @@ import type { IRawProperty } from '../../../../src/check/property/IRawProperty.j
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 import type { Plugin, PluginInstance } from '../../../../src/check/plugin/Plugin.js';
 
-// TODO check wait end
-
 describe('LifeCyclePlugins', () => {
   describe('ordering', () => {
     it.each([{ runner: 'sync' }, { runner: 'async' }])(
