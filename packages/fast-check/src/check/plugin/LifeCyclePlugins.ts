@@ -30,6 +30,7 @@ function lifeCycleHooksRunner(
       beforeFailed = { error };
     }
   }
+
   const runOut: ReturnType<typeof nestedRun> =
     beforeFailed === undefined
       ? beforeContinuation === undefined
@@ -39,7 +40,47 @@ function lifeCycleHooksRunner(
             (error) => ({ error }),
           )
       : beforeFailed;
-  return runOut;
+
+  let afterFailed: PropertyFailure | undefined = undefined;
+  let finalContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined =
+    runOut !== null && 'then' in runOut ? runOut : undefined;
+  for (let index = hooks.afterHooks.length - 1; index >= 0; --index) {
+    const after = hooks.afterHooks[index];
+    if (finalContinuation === undefined) {
+      try {
+        const out = after();
+        if (typeof out === 'object') {
+          finalContinuation = out.then(
+            () => runOut ?? afterFailed ?? null,
+            (error) => runOut ?? afterFailed ?? { error },
+          );
+        }
+      } catch (error) {
+        afterFailed = { error };
+      }
+    } else {
+      finalContinuation = finalContinuation.then((previous): ReturnType<typeof nestedRun> => {
+        try {
+          const out = after();
+          if (typeof out === 'object') {
+            return out.then(
+              () => previous,
+              (error) => previous ?? { error },
+            );
+          }
+          return previous;
+        } catch (error) {
+          return previous ?? { error };
+        }
+      });
+    }
+  }
+
+  if (finalContinuation !== undefined) {
+    return finalContinuation;
+  }
+
+  return beforeFailed ?? runOut ?? afterFailed ?? null;
 }
 
 /**
@@ -68,6 +109,37 @@ export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
       return {};
     }
     lifeCycleHooks = { lastPluginIndex: pluginIndex, beforeHooks: [fn], afterHooks: [] };
+    crossPluginContext[LifeCyclePluginSymbol] = lifeCycleHooks;
+    return { decorateRun: (nestedRun) => (value) => lifeCycleHooksRunner(lifeCycleHooks, nestedRun, value) };
+  };
+}
+
+/**
+ * Register a callback to be called after each run of your predicate.
+ * If the function returns a promise, we wait until the promise resolves before running anything else.
+ *
+ * @example
+ * ```ts
+ * fc.assert(
+ *   fc.property(..., (...) => {...}),
+ *   { plugins: [fc.afterEachPlugin(() => {...})] }
+ * )
+ * ```
+ *
+ * @param fn - Hook to be executed after each execution of the predicate
+ *
+ * @remarks Since 4.10.0
+ * @public
+ */
+export function afterEach(fn: AfterEachHook): Plugin<unknown> {
+  return (pluginIndex, crossPluginContext): PluginInstance<unknown> => {
+    let lifeCycleHooks = crossPluginContext[LifeCyclePluginSymbol] as LifeCycleHooks | undefined;
+    if (lifeCycleHooks !== undefined && lifeCycleHooks.lastPluginIndex === pluginIndex - 1) {
+      lifeCycleHooks.lastPluginIndex = pluginIndex;
+      lifeCycleHooks.afterHooks.push(fn);
+      return {};
+    }
+    lifeCycleHooks = { lastPluginIndex: pluginIndex, beforeHooks: [], afterHooks: [fn] };
     crossPluginContext[LifeCyclePluginSymbol] = lifeCycleHooks;
     return { decorateRun: (nestedRun) => (value) => lifeCycleHooksRunner(lifeCycleHooks, nestedRun, value) };
   };
