@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { buildTimeoutPlugin, timeout } from '../../../../src/check/plugin/TimeoutPlugin.js';
+import { timeout } from '../../../../src/check/plugin/TimeoutPlugin.js';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 
@@ -165,25 +165,11 @@ describe('TimeoutPlugin', () => {
     expect(instanceB.decorateRun).not.toBe(undefined);
     expect(instanceB.decorateRun).not.toBe(instanceA.decorateRun);
   });
-
-  it('should timeout with real timers when relying on the public plugin', async () => {
-    // Arrange
-    vi.useRealTimers();
-    const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(new Promise(() => {}));
-    const instance = timeout(10)(0, {});
-
-    // Act
-    const finalRun = instance.decorateRun!(nestedRun);
-
-    // Assert
-    expect(await finalRun({})).toEqual({ error: new Error(`Property timeout: exceeded limit of 10 milliseconds`) });
-  });
 });
 
 // Helpers
 
 function timeoutPluginRun(timeMs: number, nestedRun: IRawProperty<unknown, boolean>['run']) {
-  const plugin = buildTimeoutPlugin(timeMs, setTimeout, clearTimeout);
-  const instance = plugin(0, {});
+  const instance = timeout(timeMs)(0, {});
   return instance.decorateRun!(nestedRun);
 }

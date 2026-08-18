@@ -2,21 +2,18 @@ import type { IRawProperty, PropertyFailure } from '../property/IRawProperty.js'
 import { Error } from '../../utils/globals.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
-const safeSetTimeout = setTimeout;
-const safeClearTimeout = clearTimeout;
-
 /** @internal */
-function timeoutAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clearTimeoutSafe: typeof clearTimeout) {
+function timeoutAfter(timeMs: number) {
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
   const promise = new Promise<PropertyFailure>((resolve) => {
-    timeoutHandle = setTimeoutSafe(() => {
+    timeoutHandle = setTimeout(() => {
       resolve({ error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`) });
     }, timeMs);
   });
   return {
     // `timeoutHandle` will always be initialised at this point: body of `new Promise` has already been executed
     // oxlint-disable-next-line typescript/no-non-null-assertion
-    clear: () => clearTimeoutSafe(timeoutHandle!),
+    clear: () => clearTimeout(timeoutHandle!),
     promise,
   };
 }
@@ -24,12 +21,10 @@ function timeoutAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clearTi
 /** @internal */
 function timeoutRunner(
   timeMs: number,
-  setTimeoutSafe: typeof setTimeout,
-  clearTimeoutSafe: typeof clearTimeout,
   nestedRun: IRawProperty<unknown, boolean>['run'],
   value: unknown,
 ): ReturnType<typeof nestedRun> {
-  const t = timeoutAfter(timeMs, setTimeoutSafe, clearTimeoutSafe);
+  const t = timeoutAfter(timeMs);
   const runOut = nestedRun(value);
   if (runOut === null || !('then' in runOut)) {
     // synchronous run: it already came to an end, no need to wait for any timeout
@@ -39,19 +34,6 @@ function timeoutRunner(
   const raced = Promise.race([runOut, t.promise]);
   raced.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
   return raced;
-}
-
-/** @internal */
-export function buildTimeoutPlugin(
-  timeMs: number,
-  setTimeoutSafe: typeof setTimeout,
-  clearTimeoutSafe: typeof clearTimeout,
-): Plugin<unknown> {
-  return (): PluginInstance<unknown> => {
-    return {
-      decorateRun: (nestedRun) => (value) => timeoutRunner(timeMs, setTimeoutSafe, clearTimeoutSafe, nestedRun, value),
-    };
-  };
 }
 
 /**
@@ -75,5 +57,9 @@ export function buildTimeoutPlugin(
  * @public
  */
 export function timeout(timeMs: number): Plugin<unknown> {
-  return buildTimeoutPlugin(timeMs, safeSetTimeout, safeClearTimeout);
+  return (): PluginInstance<unknown> => {
+    return {
+      decorateRun: (nestedRun) => (value) => timeoutRunner(timeMs, nestedRun, value),
+    };
+  };
 }
