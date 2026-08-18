@@ -4,16 +4,14 @@ import type { Plugin, PluginInstance } from './Plugin.js';
 
 /** @internal */
 function timeoutAfter(timeMs: number) {
-  let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = setTimeout(() => {
       resolve({ error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`) });
     }, timeMs);
   });
   return {
-    // `timeoutHandle` will always be initialised at this point: body of `new Promise` has already been executed
-    // oxlint-disable-next-line typescript/no-non-null-assertion
-    clear: () => clearTimeout(timeoutHandle!),
+    clear: () => clearTimeout(timeoutHandle),
     promise,
   };
 }
