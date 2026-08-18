@@ -17,7 +17,7 @@ They can be summarized by:
 > such that precondition(x, y, ...) holds  
 > predicate(x, y, ...) is true
 
-:::info Equivalence in fast-check
+:::info[Equivalence in fast-check]
 Each part of the definition can be achieved directly within fast-check:
 
 - "_for any (x, y, ...)_" via [arbitraries](/docs/core-blocks/arbitraries/primitives/number/)
@@ -45,7 +45,7 @@ The predicate can:
 - either throw in case of failure by relying on `assert`, `expect` or even directly throwing,
 - or return `true` or `undefined` for success and `false` for failure.
 
-:::warning Beware of side effects
+:::warning[Beware of side effects]
 The predicate function should not change the inputs it received. If it needs to, it has to clone them before going on. Impacting the inputs might led to bad shrinking and wrong display on error.
 :::
 
@@ -61,11 +61,11 @@ fc.property(...arbitraries, (...args) => {})
 
 They both only accept synchronous functions and give the user the ability to call the previously defined hook function if any. The before-each (respectively: after-each) function will be launched before (respectively: after) each execution of the predicate.
 
-:::info Independent
+:::info[Independent]
 No need to define both. You may only call `beforeEach` or `afterEach` without the other.
 :::
 
-:::tip Share them
+:::tip[Share them]
 Consider using `fc.configureGlobal` to share your `beforeEach` and `afterEach` functions across multiple properties.
 :::
 
@@ -98,7 +98,7 @@ fc.property(
 );
 ```
 
-:::info Filtering and performance
+:::info[Filtering and performance]
 Whatever the filtering solution you chose between `fc.pre` or `.filter`, they both consist into generating values and then dropping them. When filter is too strict it means that plenty of values could be rejected for only a few kept.
 
 As a consequence, whenever feasible it's recommended to prefer relying on options directly providing by the arbitraries rather than filtering them. For instance, if you want to generate strings having at least two characters you should prefer `fc.string({ minLength: 2 })` over `fc.string().filter(s => s.length >= 2)`.
@@ -120,6 +120,6 @@ fc.asyncProperty(...arbitraries, async (...args) => {});
 
 They also accept `beforeEach` and `afterEach` functions to be provided: the passed functions can either be synchronous or asynchronous.
 
-:::info Lifecycle
+:::info[Lifecycle]
 The `beforeEach` and `afterEach` functions will always be executed, regardless of whether the property times out. It's important to note that the `timeout` option passed to `fc.assert` only measures the time taken by the actual property test, not the setup and teardown phases.
 :::

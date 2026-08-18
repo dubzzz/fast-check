@@ -15,7 +15,7 @@ Every fast-check test is built from the same four pieces:
 
 The children below are the reference pages for each block: start with [Properties](/docs/core-blocks/properties/) if you have never written one, jump to [Arbitraries](/docs/core-blocks/arbitraries/) when you need the right generator and come back to [Plugins](/docs/core-blocks/plugins/) and [Runners](/docs/core-blocks/runners/) when you need to tune execution.
 
-:::tip Reference, not tutorial
+:::tip[Reference, not tutorial]
 The Core Blocks pages are the exhaustive reference. If you are looking for a guided, hands-on walkthrough instead, start with the [Quick Start tutorial](/docs/tutorials/quick-start/basic-setup/).
 :::
 

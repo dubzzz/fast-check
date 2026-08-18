@@ -8,7 +8,7 @@ sidebar_label: Ecosystem
 
 Bring additional capabilities to fast-check by leveraging its rich ecosystem of extensions and plugins
 
-:::warning Stability
+:::warning[Stability]
 This page provides a list of packages available in the fast-check ecosystem. It includes both official and third-party packages. While we can ensure the stability, usage, and maintenance of the official packages, we cannot provide any specific details or guarantees regarding the non-official packages.
 
 <details>
@@ -470,7 +470,7 @@ if (isMainThread) {
 }
 ```
 
-:::info Integration with Jest runner
+:::info[Integration with Jest runner]
 `@fast-check/worker` is directly integrating with `@fast-check/jest`. Checkout the [official documentation of `@fast-check/jest`](https://www.npmjs.com/package/@fast-check/jest) for more details.
 :::
 

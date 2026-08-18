@@ -17,7 +17,7 @@ We recommend two distinct approaches for integrating fast-check with Jest:
 
 Both options have their unique benefits and strengths. This guide walks you through the connector-based approach; the manual path is documented in its own page.
 
-:::info You don't have Jest yet?
+:::info[You don't have Jest yet?]
 
 If you don't have Jest yet, we recommend you to have a look at their official [Getting Started Guide](https://jestjs.io/docs/getting-started) first.
 :::
@@ -64,7 +64,7 @@ You can now run your test with your usual test command.
 
 You've connected your first Property-Based Test within Jest 🚀
 
-:::info Changes compared to a usual test
+:::info[Changes compared to a usual test]
 
 In the above specification file, note that we didn't rely on the `it` or `test` functions from `@jest/globals` or those provided automatically by Jest. Instead, we imported them from `@fast-check/jest`. These imported functions handle everything supported by Jest's `it` and `test`, while also extending them with Property-Based Testing capabilities via `.prop`.
 :::
@@ -110,7 +110,7 @@ You can now run your test with your usual test command.
 
 You've connected your first asynchronous Property-Based Test within Jest 🚀
 
-:::info Difference with synchronous predicate
+:::info[Difference with synchronous predicate]
 
 The only difference is that the predicate function is now asynchronous. Compared to the [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/) approach, we don't have to use another set of helpers to run asynchronous checks.
 
@@ -135,6 +135,6 @@ The generic sync and async patterns, along with the recommended usage of `fc.con
 
 The most common reason to call `fc.configureGlobal` is to align property-based tests with [Jest's default 5-second timeout](https://jestjs.io/docs/cli#--testtimeoutnumber) via `interruptAfterTimeLimit`. Jest exposes `setupFiles` for this use case — the exact snippet (`jest.config.js` + `jest.setup.js`) is documented in the [Jest section of Global settings](/docs/configuration/global-settings/#jest).
 
-:::warning Multiple time limits
+:::warning[Multiple time limits]
 Unlike `@fast-check/jest`, this manual setup does not automatically adapt to command-line or test-level time limits. It will ignore any customized time limit passed via `--testTimeout=<number>` or at test level via `test(label, fn, timeout)`.
 :::

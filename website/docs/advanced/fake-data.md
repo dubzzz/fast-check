@@ -95,7 +95,7 @@ For example, while an IPv4 address may be commonly represented as something like
 
 However, fast-check does not currently provide generators for names, surnames, or other non-fully constrained values. It is up to the user to provide their own generators for such data types.
 
-:::tip Build your own arbitraries
+:::tip[Build your own arbitraries]
 If you need to generate custom fake data, such as names and surnames, you can refer to fast-check's [combiners](/docs/core-blocks/arbitraries/combiners/any/), which are designed to allow users to create their own values according to their specific needs.
 :::
 
@@ -103,11 +103,11 @@ If you need to generate custom fake data, such as names and surnames, you can re
 
 In order to integrate external fake data libraries with fast-check, the generators have to be wrapped as arbitraries.
 
-:::warning Minimal requirements
+:::warning[Minimal requirements]
 The minimal requirement that needs to be fulfilled by the wrapped library is to provide a way to be seeded and reproducible. fast-check cannot offer replay capabilities if the underlying generators are not able to generate the same values from one run to another.
 :::
 
-:::warning Limitations
+:::warning[Limitations]
 Please note that if not explictely defined, the arbitraries will not be able to shrink the generated values.
 :::
 
@@ -140,7 +140,7 @@ const streetAddressArb = fakerToArb(faker.address.streetAddress);
 const customArb = fakerToArb(() => faker.fake('{{name.lastName}}, {{name.firstName}} {{name.suffix}}'));
 ```
 
-:::tip Recommended integration for Faker
+:::tip[Recommended integration for Faker]
 
 Our recommended integration for Faker has changed since the release of the version 8.2.0 of Faker. We recommend you to have a look to [our article](/blog/2024/07/18/integrating-faker-with-fast-check/) on the subject.
 :::

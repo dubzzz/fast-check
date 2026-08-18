@@ -21,7 +21,7 @@ npm install --save-dev fast-check
 
 Congratulations, everything is ready to start using Property-Based Tests with the Node.js test runner 🚀
 
-:::info Runner-agnostic patterns
+:::info[Runner-agnostic patterns]
 fast-check does not ship a dedicated connector for the Node.js test runner: you use it the same way you would with any other runner. For the generic sync and async patterns, along with tips on sharing configuration via `fc.configureGlobal`, refer to our [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/) page. The rest of this tutorial focuses on the Node-specific bits.
 :::
 
