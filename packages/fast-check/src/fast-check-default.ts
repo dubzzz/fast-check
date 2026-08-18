@@ -211,6 +211,10 @@ import type { RandomGenerator } from './random/generator/RandomGenerator.js';
 import type { Plugin, PluginInstance } from './check/plugin/Plugin.js';
 import { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
 import { beforeEach as beforeEachPlugin } from './check/plugin/LifeCyclePlugins.js';
+import {
+  skipAllAfterTimeLimit as skipAllAfterTimeLimitPlugin,
+  interruptAfterTimeLimit as interruptAfterTimeLimitPlugin,
+} from './check/plugin/TimeLimitPlugins.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**
@@ -456,6 +460,8 @@ export {
   resetConfigureGlobal,
   installGlobalPlugin,
   beforeEachPlugin,
+  skipAllAfterTimeLimitPlugin,
+  interruptAfterTimeLimitPlugin,
   ExecutionStatus,
   Random,
   Stream,
