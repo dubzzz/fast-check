@@ -143,24 +143,34 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   let run: typeof property.run = property.isAsync()
     ? async (v) => asyncPropertyExecution(property, v)
     : (v) => propertyExecution(property, v);
+  let decoratedGenerate: IRawProperty<Ts>['generate'] | undefined = undefined;
   const pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][] = [];
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateRun !== undefined) {
       run = pluginInstance.decorateRun(run);
     }
+    if (pluginInstance.decorateGenerate !== undefined) {
+      if (decoratedGenerate === undefined) {
+        decoratedGenerate = (mrng, runId) => property.generate(mrng, runId);
+      }
+      decoratedGenerate = pluginInstance.decorateGenerate(decoratedGenerate);
+    }
     if (pluginInstance.afterAll !== undefined) {
       pluginAfterAllCallbacks.push(pluginInstance.afterAll.bind(pluginInstance));
     }
   }
+  const generator: Pick<IRawProperty<Ts>, 'generate'> = decoratedGenerate === undefined
+    ? property
+    : { generate: decoratedGenerate };
 
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof property.shrink = (...args) => property.shrink(...args);
   const initialValues =
     qParams.path.length === 0
-      ? toss(property, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, stream(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples)), shrink);
+      ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)
+      : pathWalk(qParams.path, stream(lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   if (property.isAsync()) {
