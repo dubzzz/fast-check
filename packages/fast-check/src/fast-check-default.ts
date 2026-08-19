@@ -211,6 +211,7 @@ import type { RandomGenerator } from './random/generator/RandomGenerator.js';
 import type { Plugin, PluginInstance } from './check/plugin/Plugin.js';
 import { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
 import { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
+import { timeout } from './check/plugin/TimeoutPlugin.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**
@@ -457,6 +458,7 @@ export {
   installGlobalPlugin,
   beforeEach,
   afterEach,
+  timeout,
   ExecutionStatus,
   Random,
   Stream,
