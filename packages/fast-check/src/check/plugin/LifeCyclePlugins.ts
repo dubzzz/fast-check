@@ -131,7 +131,7 @@ export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
  * ```ts
  * fc.assert(
  *   fc.property(..., (...) => {...}),
- *   { plugins: [fc.afterEachPlugin(() => {...})] }
+ *   { plugins: [fc.afterEach(() => {...})] }
  * )
  * ```
  *
