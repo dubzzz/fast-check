@@ -6,12 +6,14 @@ let globalParameters: GlobalParameters = {};
 
 /**
  * Type of legal hook function that can be used in the global parameter `beforeEach` and/or `afterEach`
+ * Prefer `beforeEach` and/or `afterEach` plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
  * @remarks Since 2.3.0
  * @public
  */
 export type GlobalPropertyHookFunction = () => void;
 /**
  * Type of legal hook function that can be used in the global parameter `asyncBeforeEach` and/or `asyncAfterEach`
+ * Prefer `beforeEach` and/or `afterEach` plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
  * @remarks Since 2.3.0
  * @public
  */
@@ -33,6 +35,7 @@ export type GlobalParameters = Pick<
    * The function will be used for both {@link fast-check#property} and {@link fast-check#asyncProperty}.
    * This global override should never be used in conjunction with `asyncBeforeEach`.
    *
+   * @deprecated Prefer the life-cycle plugins: `fc.installGlobalPlugin(fc.beforeEach(fn))`
    * @remarks Since 2.3.0
    */
   beforeEach?: GlobalPropertyHookFunction;
@@ -43,6 +46,7 @@ export type GlobalParameters = Pick<
    * The function will be used for both {@link fast-check#property} and {@link fast-check#asyncProperty}.
    * This global override should never be used in conjunction with `asyncAfterEach`.
    *
+   * @deprecated Prefer the life-cycle plugins: `fc.installGlobalPlugin(fc.afterEach(fn))`
    * @remarks Since 2.3.0
    */
   afterEach?: GlobalPropertyHookFunction;
@@ -53,6 +57,7 @@ export type GlobalParameters = Pick<
    * The function will be used only for {@link fast-check#asyncProperty}. It makes synchronous properties created by {@link fast-check#property} unable to run.
    * This global override should never be used in conjunction with `beforeEach`.
    *
+   * @deprecated Prefer the life-cycle plugins: `fc.installGlobalPlugin(fc.beforeEach(fn))`
    * @remarks Since 2.3.0
    */
   asyncBeforeEach?: GlobalAsyncPropertyHookFunction;
@@ -63,6 +68,7 @@ export type GlobalParameters = Pick<
    * The function will be used only for {@link fast-check#asyncProperty}. It makes synchronous properties created by {@link fast-check#property} unable to run.
    * This global override should never be used in conjunction with `afterEach`.
    *
+   * @deprecated Prefer the life-cycle plugins: `fc.installGlobalPlugin(fc.afterEach(fn))`
    * @remarks Since 2.3.0
    */
   asyncAfterEach?: GlobalAsyncPropertyHookFunction;

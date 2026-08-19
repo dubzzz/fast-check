@@ -10,7 +10,7 @@ import type { Plugin, PluginInstance } from './Plugin.js';
  * ```ts
  * fc.assert(
  *   fc.property(..., (...) => {...}),
- *   { plugins: [fc.unbiasedPlugin()] }
+ *   { plugins: [fc.unbiased()] }
  * )
  * ```
  *

@@ -51,6 +51,10 @@ The predicate function should not change the inputs it received. If it needs to,
 
 ### Advanced
 
+:::warning[Deprecated]
+The `beforeEach` and `afterEach` methods are deprecated. Prefer the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/): `fc.assert(property, { plugins: [fc.beforeEach(fn), fc.afterEach(fn)] })`.
+:::
+
 The built-in property comes with two methods that can be leveraged whenever you need to run setup or teardown steps.
 
 ```js
@@ -66,7 +70,7 @@ No need to define both. You may only call `beforeEach` or `afterEach` without th
 :::
 
 :::tip[Share them]
-Consider using `fc.configureGlobal` to share your `beforeEach` and `afterEach` functions across multiple properties.
+Consider using `fc.installGlobalPlugin(fc.beforeEach(fn))` to share your hooks across multiple properties.
 :::
 
 ### Example
@@ -117,6 +121,10 @@ fc.asyncProperty(...arbitraries, async (...args) => {});
 ```
 
 ### Advanced
+
+:::warning[Deprecated]
+The `beforeEach` and `afterEach` methods are deprecated. Prefer the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/): `fc.assert(property, { plugins: [fc.beforeEach(fn), fc.afterEach(fn)] })`.
+:::
 
 They also accept `beforeEach` and `afterEach` functions to be provided: the passed functions can either be synchronous or asynchronous.
 

@@ -22,4 +22,4 @@ By default, generation is biased: some runs target smaller or more extreme value
 
 For plugin authors: the plugin relies on the `decorateGenerate` hook offered to plugins to drop the run identifier normally responsible for the bias.
 
-Resources: [API reference](/docs/api/functions/unbiasedPlugin).
+Resources: [API reference](/docs/api/functions/unbiased).
