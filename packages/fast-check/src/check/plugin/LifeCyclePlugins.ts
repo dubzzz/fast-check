@@ -91,7 +91,7 @@ function lifeCycleHooksRunner(
  * ```ts
  * fc.assert(
  *   fc.property(..., (...) => {...}),
- *   { plugins: [fc.beforeEachPlugin(() => {...})] }
+ *   { plugins: [fc.beforeEach(() => {...})] }
  * )
  * ```
  *
