@@ -97,6 +97,9 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
         plugins: [
           fc.beforeEach(() => {
             probes.push('beforeEach #1');
+            return () => {
+              probes.push('teardown for beforeEach #1');
+            };
           }),
           fc.afterEach(() => {
             probes.push('afterEach #2');
@@ -104,6 +107,9 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
           retryTwice(),
           fc.beforeEach(() => {
             probes.push('beforeEach #3');
+            return () => {
+              probes.push('teardown for beforeEach #3');
+            };
           }),
           fc.afterEach(() => {
             probes.push('afterEach #4');
@@ -121,26 +127,32 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
       'beforeEach #3',
       'predicate',
       'afterEach #4',
+      'teardown for beforeEach #3',
       // --1st try done
       // --2nd try started
       'beforeEach #3',
       'predicate',
       'afterEach #4',
+      'teardown for beforeEach #3',
       // --2nd try done
       'afterEach #2',
+      'teardown for beforeEach #1',
       // 2nd run
       'beforeEach #1',
       // --1st try started
       'beforeEach #3',
       'predicate',
       'afterEach #4',
+      'teardown for beforeEach #3',
       // --1st try done
       // --2nd try started
       'beforeEach #3',
       'predicate',
       'afterEach #4',
+      'teardown for beforeEach #3',
       // --2nd try done
       'afterEach #2',
+      'teardown for beforeEach #1',
     ]);
   });
 });
