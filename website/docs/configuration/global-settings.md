@@ -48,7 +48,7 @@ test('test #3', () => {
 `configureGlobal` fully resets the settings. In other words, it fully drops the previously defined global settings if any even if they applied on other keys.
 :::
 
-:::tip Enrich existing global settings
+:::tip[Enrich existing global settings]
 If you want to only add new options on top of the existing ones you may want to use `readConfigureGlobal` as follow:
 
 ```js
@@ -58,8 +58,12 @@ fc.configureGlobal({ ...fc.readConfigureGlobal(), ...myNewOptions });
 You can also fully reset all the global options by calling `resetConfigureGlobal`.
 :::
 
-:::info Plugins
+:::info[Plugins]
 [Plugins](/docs/core-blocks/plugins/) cannot be shared via `configureGlobal`, they have their own installer: `fc.installGlobalPlugin(myPlugin())`.
+:::
+
+:::warning[Deprecated hooks]
+The `beforeEach`, `afterEach`, `asyncBeforeEach` and `asyncAfterEach` settings have been deprecated in favor of their plugin equivalents. They can be set up via `fc.installGlobalPlugin(fc.beforeEach(fn))`, see [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/).
 :::
 
 Resources: [API reference](/docs/api/functions/configureGlobal).  

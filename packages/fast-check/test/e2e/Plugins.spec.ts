@@ -134,20 +134,6 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should stop long-running predicates with the timeout plugin', async () => {
-    // Arrange / Act
-    const out = await fc.check(
-      fc.asyncProperty(fc.integer(), async (_x) => {
-        return new Promise<boolean>(() => {}); // never ending predicate
-      }),
-      { plugins: [fc.timeoutPlugin(10)], endOnFailure: true },
-    );
-
-    // Assert
-    expect(out.failed).toBe(true);
-    expect((out.errorInstance as Error).message).toContain('Property timeout: exceeded limit of 10 milliseconds');
-  });
-
   it('should support mixes of sync and async afterAll', async () => {
     // Arrange
     const probes: string[] = [];

@@ -210,8 +210,8 @@ import { limitShrink } from './arbitrary/limitShrink.js';
 import type { RandomGenerator } from './random/generator/RandomGenerator.js';
 import type { Plugin, PluginInstance } from './check/plugin/Plugin.js';
 import { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
-import { beforeEach as beforeEachPlugin } from './check/plugin/LifeCyclePlugins.js';
-import { timeout as timeoutPlugin } from './check/plugin/TimeoutPlugin.js';
+import { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
+import { timeout } from './check/plugin/TimeoutPlugin.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**
@@ -456,8 +456,9 @@ export {
   readConfigureGlobal,
   resetConfigureGlobal,
   installGlobalPlugin,
-  beforeEachPlugin,
-  timeoutPlugin,
+  beforeEach,
+  afterEach,
+  timeout,
   ExecutionStatus,
   Random,
   Stream,

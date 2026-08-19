@@ -17,6 +17,7 @@ import { Error } from '../../utils/globals.js';
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
  * on a {@link IAsyncPropertyWithHooks}
  *
+ * @deprecated Prefer `beforeEach` and/or `afterEach` plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
  * @remarks Since 2.2.0
  * @public
  */
@@ -40,6 +41,7 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
    * @remarks Since 1.6.0
    */
   beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
@@ -47,6 +49,7 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.afterEach(fn)] })`
    * @remarks Since 1.6.0
    */
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
@@ -132,6 +135,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
    */
   beforeEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
     const previousBeforeEachHook = this.beforeEachHook;
@@ -141,6 +145,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.afterEach(fn)] })`
    */
   afterEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
     const previousAfterEachHook = this.afterEachHook;

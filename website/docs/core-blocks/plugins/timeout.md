@@ -20,4 +20,4 @@ The `timeout` plugin marks the current execution of your predicate as failed if 
 
 As predicates cannot be stopped, whenever a timeout occurs the underlying execution keeps running in the background but its outcome gets ignored. Note also that the plugin can only be useful for asynchronous properties: a synchronous predicate can never be observed timing out as it already came to an end when the runner gets its outcome back.
 
-Resources: [API reference](/docs/api/functions/timeoutPlugin).
+Resources: [API reference](/docs/api/functions/timeout).

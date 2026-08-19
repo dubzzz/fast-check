@@ -32,13 +32,13 @@ const ipV4Arbitrary = fc.stringMatching(
 
 By leveraging the `stringMatching`, users can now easily define string patterns that conform to specific rules or formats. It should reduce the learning curve associated with custom string value generation.
 
-:::info Don't forget `^` or `$`
+:::info[Don't forget `^` or `$`]
 By default, the `stringMatching` arbitrary generates strings that match the provided regular expression. It's important to note that if you don't include the `^` (start of string) or `$` (end of string) assertions in your regex, the generated string may contain more characters than expected.
 
 In the example above, we explicitly included the `^` and `$` assertions in our regex to ensure that the generated values strictly restrict to an IP v4. Without these assertions, the arbitrary could have produced strings like `a(g{{jzerj1.90.1.1dfiosr`. Therefore, when using `stringMatching`, remember to include `^` at the beginning and `$` at the end of your regex if you want to avoid generating values that start with unrelated characters.
 :::
 
-:::warning Partial support
+:::warning[Partial support]
 Please note that while JavaScript regular expressions allow for the definition of complex constraints on strings, our current implementation in fast-check has some limitations in handling certain regex features. Specifically, the following constructs are not supported: `\b`, `\B`, `(?=`, `(?!`, `(?<=`, `(?<!`…
 :::
 

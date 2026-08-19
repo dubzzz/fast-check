@@ -1,7 +1,7 @@
 import { record } from 'fast-check';
 import { buildTestWithPropRunner } from './TestWithPropRunnerBuilder.js';
 
-import type { Parameters as FcParameters, ExecutionTree, RunDetails, RunDetailsCommon } from 'fast-check';
+import type { Parameters as FcParameters, ExecutionTree, RunDetails, RunDetailsCommon, Plugin } from 'fast-check';
 import type { ArbitraryTuple, Prop, ArbitraryRecord, PropRecord, It, FcExtra } from './types.js';
 
 /**
@@ -31,7 +31,7 @@ function adaptParametersForRecord<Ts>(
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
     reporter: originalParamaters.reporter,
     asyncReporter: originalParamaters.asyncReporter,
-    plugins: undefined,
+    plugins: originalParamaters.plugins,
   };
   return enrichedParameters;
 }
@@ -56,6 +56,28 @@ function adaptRunDetailsForRecord<Ts>(
     runConfiguration: adaptParametersForRecord(runDetails.runConfiguration, originalParamaters),
   };
   return adaptedRunDetailsCommon as RunDetails<Ts>;
+}
+
+function adaptPluginForRecord<Ts>(plugin: Plugin<Ts>, originalParamaters: FcParameters<Ts>): Plugin<[Ts]> {
+  return (pluginIndex, sharedSessionContext) => {
+    const instance = plugin(pluginIndex, sharedSessionContext);
+    return {
+      ...instance,
+      decorateRun:
+        instance.decorateRun !== undefined
+          ? (nestedRun) => {
+              // oxlint-disable-next-line typescript/no-non-null-assertion
+              const decorated = instance.decorateRun!((value) => nestedRun([value]));
+              return (value) => decorated(value[0]);
+            }
+          : undefined,
+      afterAll:
+        instance.afterAll !== undefined
+          ? // oxlint-disable-next-line typescript/no-non-null-assertion
+            (runDetails) => instance.afterAll!(adaptRunDetailsForRecord(runDetails, originalParamaters))
+          : undefined,
+    };
+  };
 }
 
 /**
@@ -99,7 +121,10 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
                   ? // oxlint-disable-next-line typescript/no-non-null-assertion
                     (runDetails) => params.asyncReporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
-              plugins: undefined,
+              plugins:
+                params.plugins !== undefined
+                  ? params.plugins.map((plugin) => adaptPluginForRecord(plugin, params))
+                  : undefined,
             }
           : undefined;
       buildTestWithPropRunner(

@@ -21,7 +21,7 @@ Got error: AssertionError: expected 1000000000 to be less than or equal to 2
 
 While easily redeable, you may want to format it differently. Explaining how you can do that is the aim of this page.
 
-:::info How to read such reports?
+:::info[How to read such reports?]
 If you want to know more concerning how to read such reports, you may refer to the [Read Test Reports](/docs/tutorials/quick-start/read-test-reports/) section of our [Quick Start](/docs/tutorials/quick-start/basic-setup/) tutorial.
 :::
 
@@ -56,7 +56,7 @@ fc.assert(
 In case your reporter is relying on asynchronous code, you can specify it by setting `asyncReporter` instead of `reporter`.
 Contrary to `reporter` that will be used for both synchronous and asynchronous properties, `asyncReporter` is forbidden for synchronous properties and makes them throw.
 
-:::info Before `reporter` and `asyncReporter`
+:::info[Before `reporter` and `asyncReporter`]
 In the past, writing your own reporter would have been done as follow:
 
 ```js
@@ -124,7 +124,7 @@ fc.assert(
 )
 ```
 
-:::info CodeSandbox documentation
+:::info[CodeSandbox documentation]
 The official documentation explaining how to build CodeSandbox environments from an url is available here: https://codesandbox.io/docs/importing#get-request.
 :::
 
@@ -158,7 +158,7 @@ Object.defineProperties(myPromisePossiblyResolved, {
 });
 ```
 
-:::info Limitations of async variant
+:::info[Limitations of async variant]
 Note that:
 
 - `asyncToStringMethod` is only used for asynchronous properties.
@@ -166,6 +166,6 @@ Note that:
 
 :::
 
-:::tip Test your custom `toString`
+:::tip[Test your custom `toString`]
 One way to ensure that your instances will be properly stringified is to call the `stringify` function provided by fast-check. This will give you a preview of how your instances will be represented in the output.
 :::

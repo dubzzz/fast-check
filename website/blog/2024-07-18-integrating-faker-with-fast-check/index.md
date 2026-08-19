@@ -57,7 +57,7 @@ test('produce a string containing the first and the last name', () => {
 });
 ```
 
-:::info Shrink or no shrink?
+:::info[Shrink or no shrink?]
 
 As shrinking the seed does not provide any value in terms of the shrinker, we wrapped our seed generator within `fc.noShrink(...)`. Shrinking only makes sense if it simplifies the produced values. By shrinking the seed, we have no guarantee that we will reach a simpler value. As such, we dropped the shrinking capabilities for `fakerToArb`.
 :::
@@ -172,7 +172,7 @@ class FakerFirstNameBuilder extends fc.Arbitrary<string> {
 
 Shrinking capabilities primarily depend on the `shrink` method of `FakerFirstNameBuilder`.
 
-:::info What about others?
+:::info[What about others?]
 
 It's important to note that attributing shrinker capability solely to the `shrink` method is a simplification. All methods within an Arbitrary instance work together to provide effective shrinking.
 
@@ -236,7 +236,7 @@ class FakerFirstNameBuilder extends fc.Arbitrary<string> {
 }
 ```
 
-:::tip `fc.string()` might not be ideal
+:::tip[`fc.string()` might not be ideal]
 
 While the previous implementation is functional, users might have requirements to exclude certain characters from generated strings. Therefore, `fc.string()` might not be optimal since it could potentially shrink a first name to include non-alphabetic characters. An alternative approach could involve using `fc.stringOf(...)` to better control the character set allowed in generated strings.
 :::

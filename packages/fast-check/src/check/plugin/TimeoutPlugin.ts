@@ -45,7 +45,7 @@ function timeoutRunner(
  * ```ts
  * fc.assert(
  *   fc.asyncProperty(..., async (...) => {...}),
- *   { plugins: [fc.timeoutPlugin(1000)] }
+ *   { plugins: [fc.timeout(1000)] }
  * )
  * ```
  *
