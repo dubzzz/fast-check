@@ -15,7 +15,7 @@ Each page solves a different class of problem that cannot be expressed cleanly a
 - **Fuzzing** — when you want to keep hunting for counterexamples across runs or beyond the default budget, turning fast-check into a continuous fuzz loop rather than a CI gate.
 - **Fake data** — when you need large volumes of realistic-looking values outside the property-test context, for seeding environments or staging datasets.
 
-:::tip Want a hands-on walkthrough on race conditions?
+:::tip[Want a hands-on walkthrough on race conditions?]
 [Race conditions](/docs/advanced/race-conditions/) is the reference. If you would rather learn by writing a failing test step by step, the [Detect race conditions tutorial](/docs/tutorials/detect-race-conditions/) covers the same ground interactively.
 :::
 

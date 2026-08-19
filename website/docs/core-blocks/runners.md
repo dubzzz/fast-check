@@ -45,7 +45,7 @@ The structure `RunDetails` provides all the details needed to report what happen
 | execution took too long given `interruptAfterTimeLimit` |  `true`  |     `true`     |                    `null`                     |
 | successful run                                          | `false`  | `true`/`false` |                    `null`                     |
 
-:::tip Rewrite `assert` with `check`
+:::tip[Rewrite `assert` with `check`]
 
 ```js
 function assert(property, params) {
