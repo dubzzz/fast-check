@@ -105,12 +105,17 @@ When the predicate is asynchronous, you must use `fc.asyncProperty` instead of `
 
 ## Share configuration across your tests
 
-Property-based tests often benefit from shared configuration: aligning time limits with the runner's default timeout, registering `beforeEach`/`afterEach` hooks, or fixing a seed to reproduce a failure. fast-check exposes `fc.configureGlobal` for this exact purpose:
+Property-based tests often benefit from shared configuration: aligning time limits with the runner's default timeout, registering `beforeEach`/`afterEach` hooks, or fixing a seed to reproduce a failure. fast-check exposes `fc.configureGlobal` and `fc.installGlobalPlugin` for this exact purpose:
 
 ```js
 const fc = require('fast-check');
 
 fc.configureGlobal({ interruptAfterTimeLimit: 5_000 });
+fc.installGlobalPlugin(
+  fc.beforeEach(() => {
+    console.log('run before');
+  }),
+);
 ```
 
 With this setup, fast-check will interrupt any property-based test that exceeds the configured time limit — a useful knob to make sure property-based tests fit within your runner's default timeout.

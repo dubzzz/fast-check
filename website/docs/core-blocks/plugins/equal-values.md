@@ -36,4 +36,4 @@ The `skipEqualValues` plugin skips runs on already covered cases.
 
 Contrary to `ignoreEqualValues`, a run replaying a past success gets marked as skipped instead of successful: passed the maximal number of allowed skips the run will be marked as failed. It gives stronger guarantees on the number of distinct values covered by the run at the price of potentially failing on arbitraries unable to produce enough distinct values.
 
-Resources: [API reference for `ignoreEqualValues`](/docs/api/functions/ignoreEqualValuesPlugin), [API reference for `skipEqualValues`](/docs/api/functions/skipEqualValuesPlugin).
+Resources: [API reference for `ignoreEqualValues`](/docs/api/functions/ignoreEqualValues), [API reference for `skipEqualValues`](/docs/api/functions/skipEqualValues).

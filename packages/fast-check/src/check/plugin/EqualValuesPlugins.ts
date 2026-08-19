@@ -46,7 +46,7 @@ function buildEqualValuesPlugin(skipRuns: boolean): Plugin<unknown> {
  * ```ts
  * fc.assert(
  *   fc.property(..., (...) => {...}),
- *   { plugins: [fc.ignoreEqualValuesPlugin()] }
+ *   { plugins: [fc.ignoreEqualValues()] }
  * )
  * ```
  *
@@ -67,7 +67,7 @@ export function ignoreEqualValues(): Plugin<unknown> {
  * ```ts
  * fc.assert(
  *   fc.property(..., (...) => {...}),
- *   { plugins: [fc.skipEqualValuesPlugin()] }
+ *   { plugins: [fc.skipEqualValues()] }
  * )
  * ```
  *
