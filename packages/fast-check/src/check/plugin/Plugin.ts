@@ -1,3 +1,5 @@
+import type { Random } from '../../random/generator/Random.js';
+import type { Value } from '../arbitrary/definition/Value.js';
 import type { IRawProperty } from '../property/IRawProperty.js';
 import type { RunDetails } from '../runner/reporter/RunDetails.js';
 
@@ -23,6 +25,20 @@ export type PluginInstance<Ts> = {
    * @remarks Since 4.10.0
    */
   decorateRun?: (nestedRun: IRawProperty<Ts, boolean>['run']) => IRawProperty<Ts, boolean>['run'];
+  /**
+   * Enrich the generation of the values feeding the predicate with extra behaviors.
+   * Called once per generated value, not called when shrinking already generated ones.
+   *
+   * The hook is generic in the type of the generated values rather than bound to `Ts`:
+   * decorators can only forward values produced by `nestedGenerate`, never fabricate their own.
+   *
+   * WARNING: `nestedGenerate` never throws and neither should the function returned by `decorateGenerate`.
+   *
+   * @remarks Since 4.10.0
+   */
+  decorateGenerate?: <TValue>(
+    nestedGenerate: (mrng: Random, runId?: number) => Value<TValue>,
+  ) => (mrng: Random, runId?: number) => Value<TValue>;
   /**
    * Called once at the end of the full property assessment.
    * Gets called with the result of the execution.

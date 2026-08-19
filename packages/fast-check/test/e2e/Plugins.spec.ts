@@ -134,6 +134,28 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
+  it('should forward runIds to decorateGenerate hooks', () => {
+    // Arrange
+    const seenRunIds: (number | undefined)[] = [];
+    const observerPlugin: fc.Plugin<unknown> = () => {
+      return {
+        decorateGenerate: (nestedGenerate) => (mrng, runId) => {
+          seenRunIds.push(runId);
+          return nestedGenerate(mrng, runId);
+        },
+      };
+    };
+
+    // Act
+    fc.assert(
+      fc.property(fc.integer(), (_x) => true),
+      { plugins: [observerPlugin], numRuns: 3 },
+    );
+
+    // Assert
+    expect(seenRunIds).toEqual([0, 1, 2]);
+  });
+
   it('should support mixes of sync and async afterAll', async () => {
     // Arrange
     const probes: string[] = [];
