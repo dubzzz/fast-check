@@ -58,12 +58,9 @@ function adaptRunDetailsForRecord<Ts>(
   return adaptedRunDetailsCommon as RunDetails<Ts>;
 }
 
-function adaptPluginForRecord<Ts>(
-  plugin: Plugin<Ts, boolean>,
-  originalParamaters: FcParameters<Ts>,
-): Plugin<[Ts], boolean> {
-  return (sharedSessionContext) => {
-    const instance = plugin(sharedSessionContext);
+function adaptPluginForRecord<Ts>(plugin: Plugin<Ts>, originalParamaters: FcParameters<Ts>): Plugin<[Ts]> {
+  return (pluginIndex, sharedSessionContext) => {
+    const instance = plugin(pluginIndex, sharedSessionContext);
     return {
       ...instance,
       decorateRun:

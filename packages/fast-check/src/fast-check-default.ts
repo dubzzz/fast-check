@@ -208,6 +208,9 @@ import { noShrink } from './arbitrary/noShrink.js';
 import { noBias } from './arbitrary/noBias.js';
 import { limitShrink } from './arbitrary/limitShrink.js';
 import type { RandomGenerator } from './random/generator/RandomGenerator.js';
+import type { Plugin, PluginInstance } from './check/plugin/Plugin.js';
+import { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
+import { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**
@@ -237,6 +240,8 @@ const __commitHash = process.env.__COMMIT_HASH__ as string;
 // combination of others
 // complex combinations
 export type {
+  Plugin,
+  PluginInstance,
   IRawProperty,
   IProperty,
   IPropertyWithHooks,
@@ -449,6 +454,9 @@ export {
   configureGlobal,
   readConfigureGlobal,
   resetConfigureGlobal,
+  installGlobalPlugin,
+  beforeEach,
+  afterEach,
   ExecutionStatus,
   Random,
   Stream,
