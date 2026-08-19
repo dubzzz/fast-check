@@ -62,7 +62,8 @@ function lifeCycleHooksRunner(
         if (typeof out === 'object') {
           wrappedRunContinuation = out.then(
             () => wrappedRunOutput,
-            (error) => wrappedRunOutput ?? { error },
+            // TODO Switch to ?? when the node range defined by fast-check accepts it
+            (error) => wrappedRunOutput || { error },
           );
         }
       } catch (error) {
@@ -75,12 +76,14 @@ function lifeCycleHooksRunner(
           if (typeof out === 'object') {
             return out.then(
               () => previous,
-              (error) => previous ?? { error },
+              // TODO Switch to ?? when the node range defined by fast-check accepts it
+              (error) => previous || { error },
             );
           }
           return previous;
         } catch (error) {
-          return previous ?? { error };
+          // TODO Switch to ?? when the node range defined by fast-check accepts it
+          return previous || { error };
         }
       });
     }
