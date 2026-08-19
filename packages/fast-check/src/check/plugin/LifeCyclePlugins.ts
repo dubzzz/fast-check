@@ -13,7 +13,7 @@ function lifeCycleHooksRunner(
   value: unknown,
 ): ReturnType<typeof nestedRun> {
   let wrappedRunOutput: Awaited<ReturnType<typeof nestedRun>> = null; // null means success
-  let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
+  let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>> | void> | undefined = undefined;
 
   // Before hooks
   if (hooks.beforeHooks.length !== 0) {
@@ -22,10 +22,10 @@ function lifeCycleHooksRunner(
         if (wrappedRunContinuation === undefined) {
           const out = before();
           if (typeof out === 'object') {
-            wrappedRunContinuation = out.then(() => null);
+            wrappedRunContinuation = out;
           }
         } else {
-          wrappedRunContinuation = wrappedRunContinuation.then(() => before()).then(() => null);
+          wrappedRunContinuation = wrappedRunContinuation.then(() => before());
         }
       }
     } catch (error) {
@@ -68,7 +68,7 @@ function lifeCycleHooksRunner(
         wrappedRunOutput = { error };
       }
     } else {
-      wrappedRunContinuation = wrappedRunContinuation.then((previous): ReturnType<typeof nestedRun> => {
+      wrappedRunContinuation = wrappedRunContinuation.then((previous) => {
         try {
           const out = after();
           if (typeof out === 'object') {
@@ -85,7 +85,9 @@ function lifeCycleHooksRunner(
     }
   }
 
-  return wrappedRunContinuation === undefined ? wrappedRunOutput : wrappedRunContinuation;
+  return wrappedRunContinuation === undefined
+    ? wrappedRunOutput
+    : wrappedRunContinuation.then((output) => output ?? null);
 }
 
 /**
