@@ -17,6 +17,7 @@ import { Error } from '../../utils/globals.js';
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
  * on a {@link IPropertyWithHooks}
  *
+ * @deprecated Prefer `beforeEach` and/or `afterEach` plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
  * @remarks Since 2.2.0
  * @public
  */
@@ -38,6 +39,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param invalidHookFunction - Function to be called, please provide a valid hook function
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
    * @remarks Since 1.6.0
    */
   beforeEach(
@@ -47,6 +49,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
    * @remarks Since 1.6.0
    */
   beforeEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
@@ -54,6 +57,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   /**
    * Define a function that should be called after all calls to the predicate
    * @param invalidHookFunction - Function to be called, please provide a valid hook function
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.afterEach(fn)] })`
    * @remarks Since 1.6.0
    */
   afterEach(
@@ -62,6 +66,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.afterEach(fn)] })`
    * @remarks Since 1.6.0
    */
   afterEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;

@@ -429,7 +429,7 @@ function poisoningAfterEach() {
     throw err;
   }
 }
-fc.configureGlobal({ afterEach: poisoningAfterEach });
+fc.installGlobalPlugin(fc.afterEach(poisoningAfterEach));
 
 test('should detect the substring', () => {
   fc.assert(

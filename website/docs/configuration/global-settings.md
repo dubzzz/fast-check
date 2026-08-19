@@ -62,6 +62,10 @@ You can also fully reset all the global options by calling `resetConfigureGlobal
 [Plugins](/docs/core-blocks/plugins/) cannot be shared via `configureGlobal`, they have their own installer: `fc.installGlobalPlugin(myPlugin())`.
 :::
 
+:::warning[Deprecated hooks]
+The `beforeEach`, `afterEach`, `asyncBeforeEach` and `asyncAfterEach` settings have been deprecated in favor of their plugin equivalents. They can be set up via `fc.installGlobalPlugin(fc.beforeEach(fn))`, see [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/).
+:::
+
 Resources: [API reference](/docs/api/functions/configureGlobal).  
 Available since 1.18.0.
 
