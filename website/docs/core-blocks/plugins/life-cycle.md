@@ -69,7 +69,7 @@ Life-cycle plugins run in the same order as they got declared for before tasks a
 
 Would result, for each run, into:
 
-```ts
+```txt
 beforeEach #1
 beforeEach #2
 beforeEach #5
@@ -78,7 +78,7 @@ afterEach #4
 afterEach #3
 ```
 
-As any of our built-in plugins, they integrate themselves with other plugins. As such, in the hypothesis of a plugin named `retryOnFailure(count)`, declaring plugins as follows:
+Like any built-in plugin, life-cycle plugins compose with the plugins declared next to them. As such, in the hypothesis of a plugin named `retryOnFailure(count)`, declaring plugins as follows:
 
 ```ts
 {
@@ -94,12 +94,12 @@ As any of our built-in plugins, they integrate themselves with other plugins. As
 }
 ```
 
-We may see the following logs at execution time:
+May result in the following logs at execution time:
 
 ```txt
-beforeEach #1
+beforeEach #1 <-- runs once, it wraps all the attempts
 beforeEach #2 <-- the first attempt
-predicate
-beforeEach #2 <-- the retry attempt
+predicate     <-- considering it fails at first attempt...
+beforeEach #2 <-- ...`retryOnFailure` launches a second attempt
 predicate
 ```
