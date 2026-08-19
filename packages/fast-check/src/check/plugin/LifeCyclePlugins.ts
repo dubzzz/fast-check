@@ -3,8 +3,9 @@ import type { Plugin, PluginInstance } from './Plugin.js';
 
 const LifeCyclePluginSymbol = Symbol.for('fast-check/plugin/life-cycle');
 
+type TeardownFunction = () => Promise<void> | void;
 type AfterEachHook = () => Promise<void> | void;
-type BeforeEachHook = () => Promise<void> | void;
+type BeforeEachHook = () => Promise<void | TeardownFunction> | void | TeardownFunction;
 type LifeCycleHooks = { lastPluginIndex: number; beforeHooks: BeforeEachHook[]; afterHooks: AfterEachHook[] };
 
 function lifeCycleHooksRunner(
@@ -13,19 +14,43 @@ function lifeCycleHooksRunner(
   value: unknown,
 ): ReturnType<typeof nestedRun> {
   let wrappedRunOutput: Awaited<ReturnType<typeof nestedRun>> = null; // null means success
-  let beforeEachContinuation: Promise<void> | undefined = undefined;
+  let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
 
   // Before hooks
+  const teardownFunctions: TeardownFunction[] = [];
   if (hooks.beforeHooks.length !== 0) {
     try {
       for (const before of hooks.beforeHooks) {
-        if (beforeEachContinuation === undefined) {
+        if (wrappedRunContinuation === undefined) {
           const out = before();
+          if (typeof out === 'function') {
+            teardownFunctions.push(out);
+          }
           if (typeof out === 'object') {
-            beforeEachContinuation = out;
+            wrappedRunContinuation = out.then((beforeOut) => {
+              if (beforeOut !== undefined) {
+                teardownFunctions.push(beforeOut);
+              }
+              return null;
+            });
           }
         } else {
-          beforeEachContinuation = beforeEachContinuation.then(() => before());
+          wrappedRunContinuation = wrappedRunContinuation.then(() => {
+            const beforeOut = before();
+            if (beforeOut === undefined) {
+              return null;
+            }
+            if (typeof beforeOut === 'function') {
+              teardownFunctions.push(beforeOut);
+              return null;
+            }
+            return beforeOut.then((beforeOutNested) => {
+              if (beforeOutNested !== undefined) {
+                teardownFunctions.push(beforeOutNested);
+              }
+              return null;
+            });
+          });
         }
       }
     } catch (error) {
@@ -34,9 +59,9 @@ function lifeCycleHooksRunner(
   }
 
   // Predicate
-  let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
+
   if (wrappedRunOutput === null) {
-    if (beforeEachContinuation === undefined) {
+    if (wrappedRunContinuation === undefined) {
       // We are currently into a sync flow
       const out = nestedRun(value);
       if (out !== null && 'then' in out) {
@@ -46,7 +71,7 @@ function lifeCycleHooksRunner(
       }
     } else {
       // We switched to an async flow
-      wrappedRunContinuation = beforeEachContinuation.then(
+      wrappedRunContinuation = wrappedRunContinuation.then(
         () => nestedRun(value),
         (error) => ({ error }), // beforeEach flows do not catch anything, they always result into succes being null or throw
       );
@@ -54,39 +79,71 @@ function lifeCycleHooksRunner(
   }
 
   // After hooks
-  for (let index = hooks.afterHooks.length - 1; index >= 0; --index) {
-    const after = hooks.afterHooks[index];
-    if (wrappedRunContinuation === undefined) {
-      try {
-        const out = after();
-        if (typeof out === 'object') {
-          wrappedRunContinuation = out.then(
-            () => wrappedRunOutput,
-            // TODO Switch to ?? when the node range defined by fast-check accepts it
-            (error) => wrappedRunOutput || { error },
-          );
-        }
-      } catch (error) {
-        wrappedRunOutput = { error };
-      }
-    } else {
-      wrappedRunContinuation = wrappedRunContinuation.then((previous) => {
+  if (wrappedRunContinuation === undefined) {
+    const allSyncAfterHooks =
+      teardownFunctions.length === 0 ? hooks.afterHooks : [...teardownFunctions, ...hooks.afterHooks];
+    for (let index = allSyncAfterHooks.length - 1; index >= 0; --index) {
+      const after = allSyncAfterHooks[index];
+      if (wrappedRunContinuation === undefined) {
         try {
           const out = after();
           if (typeof out === 'object') {
-            return out.then(
-              () => previous,
+            wrappedRunContinuation = out.then(
+              () => wrappedRunOutput,
               // TODO Switch to ?? when the node range defined by fast-check accepts it
-              (error) => previous || { error },
+              (error) => wrappedRunOutput || { error },
             );
           }
-          return previous;
         } catch (error) {
-          // TODO Switch to ?? when the node range defined by fast-check accepts it
-          return previous || { error };
+          wrappedRunOutput = { error };
         }
-      });
+      } else {
+        wrappedRunContinuation = wrappedRunContinuation.then((previous) => {
+          try {
+            const out = after();
+            if (typeof out === 'object') {
+              return out.then(
+                () => previous,
+                // TODO Switch to ?? when the node range defined by fast-check accepts it
+                (error) => previous || { error },
+              );
+            }
+            return previous;
+          } catch (error) {
+            // TODO Switch to ?? when the node range defined by fast-check accepts it
+            return previous || { error };
+          }
+        });
+      }
     }
+  } else {
+    wrappedRunContinuation = wrappedRunContinuation.then((previousBeforeAfters) => {
+      const allSyncAfterHooks =
+        teardownFunctions.length === 0 ? hooks.afterHooks : [...teardownFunctions, ...hooks.afterHooks];
+      if (allSyncAfterHooks.length === 0) {
+        return previousBeforeAfters;
+      }
+      let afterContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> = Promise.resolve(previousBeforeAfters);
+      for (let index = allSyncAfterHooks.length - 1; index >= 0; --index) {
+        const after = allSyncAfterHooks[index];
+        afterContinuation = afterContinuation.then((previous) => {
+          try {
+            const out = after();
+            return out === undefined
+              ? previous
+              : out.then(
+                  () => previous,
+                  // TODO Switch to ?? when the node range defined by fast-check accepts it
+                  (error) => previous || { error },
+                );
+          } catch (error) {
+            // TODO Switch to ?? when the node range defined by fast-check accepts it
+            return previous || { error };
+          }
+        });
+      }
+      return afterContinuation;
+    });
   }
 
   return wrappedRunContinuation === undefined ? wrappedRunOutput : wrappedRunContinuation;
