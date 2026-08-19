@@ -4,7 +4,7 @@ slug: /core-blocks/plugins/life-cycle/
 
 # Life-cycle
 
-Life-cycle plugins provide hooks to prepare or clean up things for your predicates.
+Life-cycle plugins provide hooks to prepare or clean up things for your predicates. They wrap every execution of the predicate including the ones linked to shrinking.
 
 ## `beforeEach`
 
@@ -53,7 +53,7 @@ Resources: [API reference](/docs/api/functions/beforeEach).
 
 The `afterEach` plugin is the mirror of `beforeEach`. It lets you run code right after the execution of your predicate.
 
-Similarly to `beforeEach`, it expects to receive a function returning either `void` or `Promise<void>`. Any other returned value may lead to unexpected behaviors.
+Similarly to `beforeEach`, it expects to receive a function returning either `void` or `Promise<void>`. Any other returned value may lead to unexpected behavior.
 
 Contrary to `beforeEach`, `afterEach` will always be executed no matter the execution status of other hooks. As such if one `beforeEach` or one `afterEach` rejects other `afterEach` will still be executed.
 
