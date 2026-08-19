@@ -14,6 +14,8 @@ function lifeCycleHooksRunner(
 ): ReturnType<typeof nestedRun> {
   let wrappedRunOutput: Awaited<ReturnType<typeof nestedRun>> = null; // null means success
   let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
+
+  // Before hooks
   if (hooks.beforeHooks.length !== 0) {
     try {
       for (const before of hooks.beforeHooks) {
@@ -31,22 +33,26 @@ function lifeCycleHooksRunner(
     }
   }
 
+  // Predicate
   if (wrappedRunOutput === null) {
-    const out: ReturnType<typeof nestedRun> =
-      wrappedRunContinuation === undefined
-        ? // We are currently into a sync flow
-          nestedRun(value)
-        : wrappedRunContinuation.then(
-            () => nestedRun(value),
-            (error) => ({ error }),
-          );
-    if (out !== null && typeof out === 'object' && 'then' in out) {
-      wrappedRunContinuation = out;
+    if (wrappedRunContinuation === undefined) {
+      // We are currently into a sync flow
+      const out = nestedRun(value);
+      if (out !== null && 'then' in out) {
+        wrappedRunContinuation = out;
+      } else {
+        wrappedRunOutput = out;
+      }
     } else {
-      wrappedRunOutput = out;
+      // We switched to an async flow
+      wrappedRunContinuation = wrappedRunContinuation.then(
+        () => nestedRun(value),
+        (error) => ({ error }), // beforeEach flows do not catch anything, they always result into succes being null or throw
+      );
     }
   }
 
+  // After hooks
   for (let index = hooks.afterHooks.length - 1; index >= 0; --index) {
     const after = hooks.afterHooks[index];
     if (wrappedRunContinuation === undefined) {
@@ -79,11 +85,7 @@ function lifeCycleHooksRunner(
     }
   }
 
-  if (wrappedRunContinuation !== undefined) {
-    return wrappedRunContinuation;
-  }
-
-  return wrappedRunOutput;
+  return wrappedRunContinuation === undefined ? wrappedRunOutput : wrappedRunContinuation;
 }
 
 /**
