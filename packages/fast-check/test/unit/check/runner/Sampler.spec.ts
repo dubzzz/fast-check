@@ -187,5 +187,53 @@ describe('Sampler', () => {
           expect(arb.generatedValues).toHaveLength(num); // only call the arbitrary once per asked value
         }),
       ));
+    it('Should return StatisticsReport with classes and count', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.integer({ min: 1, max: MAX_NUM_RUNS }), (seed, runs) => {
+          const classify = (g: number) => g.toString();
+          const report = statistics(customGen(), classify, { seed: seed, numRuns: runs, logger: (_v: string) => {} });
+          expect(report.classes).toBeInstanceOf(Map);
+          expect(report.count).toEqual(runs);
+        }),
+      ));
+    it('Should return correct classification counts', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed) => {
+          const classify = (g: number) => g.toString();
+          const report = statistics(customGen(), classify, { seed: seed, logger: (_v: string) => {} });
+          const totalCounts = Array.from(report.classes.values()).reduce((sum, count) => sum + count, 0);
+          // For single classifications, total counts should equal count
+          expect(totalCounts).toEqual(report.count);
+        }),
+      ));
+    it('Should handle even/odd classifications', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed) => {
+          const classify = (g: number) => (g % 2 === 0 ? 'even' : 'odd');
+          const report = statistics(customGen(), classify, { seed: seed, numRuns: 100, logger: (_v: string) => {} });
+          // All values should be classified as either even or odd
+          const even = report.classes.get('even') || 0;
+          const odd = report.classes.get('odd') || 0;
+          expect(even + odd).toEqual(100);
+        }),
+      ));
+    it('Should handle multiple classifiers correctly in return value', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed) => {
+          const classify = (g: number) => (g % 2 === 0 ? [`a::${g}`, `b::${g}`] : [`a::${g}`]);
+          const report = statistics(customGen(), classify, { seed: seed, logger: (_v: string) => {} });
+          // Total classifications may exceed count as even values get classified twice
+          const totalCounts = Array.from(report.classes.values()).reduce((sum, count) => sum + count, 0);
+          expect(totalCounts).toBeGreaterThanOrEqual(report.count);
+        }),
+      ));
+    it('Should handle empty array classifications', () => {
+      const classify = (g: number) => (g < 5 ? [] : 'classified'); // Skip values < 5
+      const report = statistics(customGen(10), classify, { seed: 42, numRuns: 100, logger: (_v: string) => {} });
+      // Values < 5 won't be classified
+      const classified = report.classes.get('classified') || 0;
+      expect(classified).toBeGreaterThan(0);
+      expect(classified).toBeLessThan(100);
+    });
   });
 });
