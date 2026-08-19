@@ -13,19 +13,19 @@ function lifeCycleHooksRunner(
   value: unknown,
 ): ReturnType<typeof nestedRun> {
   let wrappedRunOutput: Awaited<ReturnType<typeof nestedRun>> = null; // null means success
-  let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>> | void> | undefined = undefined;
+  let beforeEachContinuation: Promise<void> | undefined = undefined;
 
   // Before hooks
   if (hooks.beforeHooks.length !== 0) {
     try {
       for (const before of hooks.beforeHooks) {
-        if (wrappedRunContinuation === undefined) {
+        if (beforeEachContinuation === undefined) {
           const out = before();
           if (typeof out === 'object') {
-            wrappedRunContinuation = out;
+            beforeEachContinuation = out;
           }
         } else {
-          wrappedRunContinuation = wrappedRunContinuation.then(() => before());
+          beforeEachContinuation = beforeEachContinuation.then(() => before());
         }
       }
     } catch (error) {
@@ -34,8 +34,9 @@ function lifeCycleHooksRunner(
   }
 
   // Predicate
+  let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
   if (wrappedRunOutput === null) {
-    if (wrappedRunContinuation === undefined) {
+    if (beforeEachContinuation === undefined) {
       // We are currently into a sync flow
       const out = nestedRun(value);
       if (out !== null && 'then' in out) {
@@ -45,7 +46,7 @@ function lifeCycleHooksRunner(
       }
     } else {
       // We switched to an async flow
-      wrappedRunContinuation = wrappedRunContinuation.then(
+      wrappedRunContinuation = beforeEachContinuation.then(
         () => nestedRun(value),
         (error) => ({ error }), // beforeEach flows do not catch anything, they always result into succes being null or throw
       );
@@ -85,9 +86,7 @@ function lifeCycleHooksRunner(
     }
   }
 
-  return wrappedRunContinuation === undefined
-    ? wrappedRunOutput
-    : wrappedRunContinuation.then((output) => output ?? null);
+  return wrappedRunContinuation === undefined ? wrappedRunOutput : wrappedRunContinuation;
 }
 
 /**
