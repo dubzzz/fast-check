@@ -61,7 +61,7 @@ function buildTimeLimitPlugin(timeLimitMs: number, interruptExecution: boolean):
  * ```ts
  * fc.assert(
  *   fc.property(..., (...) => {...}),
- *   { plugins: [fc.skipAllAfterTimeLimitPlugin(1000)] }
+ *   { plugins: [fc.skipAllAfterTimeLimit(1000)] }
  * )
  * ```
  *
@@ -84,7 +84,7 @@ export function skipAllAfterTimeLimit(timeLimitMs: number): Plugin<unknown> {
  * ```ts
  * fc.assert(
  *   fc.asyncProperty(..., async (...) => {...}),
- *   { plugins: [fc.interruptAfterTimeLimitPlugin(1000)] }
+ *   { plugins: [fc.interruptAfterTimeLimit(1000)] }
  * )
  * ```
  *

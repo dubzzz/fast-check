@@ -36,4 +36,4 @@ The `interruptAfterTimeLimit` plugin interrupts the run after the requested dela
 
 As predicates cannot be stopped, interrupted executions keep running in the background but their outcome gets ignored. Note also that only asynchronous executions can be interrupted while running: a synchronous predicate can never be observed running for too long as it already came to an end when the runner gets its outcome back.
 
-Resources: [API reference for `skipAllAfterTimeLimit`](/docs/api/functions/skipAllAfterTimeLimitPlugin), [API reference for `interruptAfterTimeLimit`](/docs/api/functions/interruptAfterTimeLimitPlugin).
+Resources: [API reference for `skipAllAfterTimeLimit`](/docs/api/functions/skipAllAfterTimeLimit), [API reference for `interruptAfterTimeLimit`](/docs/api/functions/interruptAfterTimeLimit).
