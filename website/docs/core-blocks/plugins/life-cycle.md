@@ -29,24 +29,6 @@ The hooks will execute in the order they get declared. As such if you declare:
 
 We will first run #1 then #2. If #1 fails, #2 will never get executed and neither will the predicate.
 
-Also note that `beforeEach` hooks integrate themselves with other plugins. As such, in the hypothesis of a plugin named `retryOnFailure(count)`, declaring plugins as follows:
-
-```ts
-{
-  plugins: [
-    beforeEach(() => {
-      // beforeEach hook #1
-    }),
-    retryOnFailure(2),
-    beforeEach(() => {
-      // beforeEach hook #2
-    }),
-  ];
-}
-```
-
-May result in hook #2 being executed more often than #1. Hook #2 will be re-executed for every retry, while #1 will wrap all the retries.
-
 Resources: [API reference](/docs/api/functions/beforeEach).
 
 ## `afterEach`
@@ -94,4 +76,30 @@ beforeEach #5
 predicate
 afterEach #4
 afterEach #3
+```
+
+As any of our built-in plugins, they integrate themselves with other plugins. As such, in the hypothesis of a plugin named `retryOnFailure(count)`, declaring plugins as follows:
+
+```ts
+{
+  plugins: [
+    beforeEach(() => {
+      console.log('beforeEach #1');
+    }),
+    retryOnFailure(2),
+    beforeEach(() => {
+      console.log('beforeEach #2');
+    }),
+  ];
+}
+```
+
+We may see the following logs at execution time:
+
+```txt
+beforeEach #1
+beforeEach #2 <-- the first attempt
+predicate
+beforeEach #2 <-- the retry attempt
+predicate
 ```
