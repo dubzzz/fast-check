@@ -1,5 +1,5 @@
 ---
-"fast-check": patch
+"fast-check": minor
 ---
 
 ✨ Create an `afterEach` plugin
