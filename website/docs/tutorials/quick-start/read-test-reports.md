@@ -17,7 +17,7 @@ npm test
 
 Tests should not pass.
 
-:::info What about the unit tests?
+:::info[What about the unit tests?]
 The unit tests we wrote in the previous section are fully green. They were not able to detect any issue. The values that have been hardcoded into them all contains the same number of digits and thus do not fall into all the corner cases.
 
 In JavaScript, `sort` orders elements based on their string representation: `[1, 10, 2].sort()` is `[1, 10, 2]`. In the past, `sort` suffered from other strange edges cases: it was stable when receiving less than 10 elements, unstable above 10. For all these reasons, property-based testing is a powerful ally.
@@ -48,7 +48,7 @@ We also see that given `data = [2,1000000000]`, the predicate fails with the fol
 AssertionError: expected 1000000000 to be less than or equal to 2
 ```
 
-:::info What is the predicate?
+:::info[What is the predicate?]
 In the property we wrote, the predicate is:
 
 ```js
@@ -91,7 +91,7 @@ The parameters `path` or `endOnFailure` can be dropped if needed:
 - `path` — start the execution directly on the reduced counterexample
 - `endOnFailure` — immediately stop the execution on failure and do not attempt to shrink the case
 
-:::info Case reduction _aka. shrink_
+:::info[Case reduction _aka. shrink_]
 By default, property-based testing frameworks try to reduce the counterexamples so that users get reported easier to troubleshoot errors. Instead of telling you: "_failed for `stringValue = "abc{...10k more letters}ert"`_", it will come to you with "_failed for `stringValue = "az"`_".
 :::
 
@@ -112,7 +112,7 @@ test('should sort numeric elements from the smallest to the largest one', () => 
 });
 ```
 
-:::info Verbosity values
+:::info[Verbosity values]
 By default, verbose is set to 0. But you can set it to 1 or 2 to get more details.
 :::
 

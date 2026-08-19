@@ -10,13 +10,13 @@ Turn fast-check into a crazy QA
 
 Model-based testing can also be referred to as [Monkey testing](https://en.wikipedia.org/wiki/Monkey_testing) to some extent. The basic concept is to put our system under stress by providing it with random inputs. With model-based testing, we compare our system to a highly simplified version of it: the model.
 
-:::info The model, an optional helper
+:::info[The model, an optional helper]
 While the model part can assist you in writing your tests by storing intermediate states, past actions, or even mimicking the system, it is entirely optional. Model-based testing can be performed without it as well.
 :::
 
 In the context of fast-check, model-based testing involves defining a set of commands that can be seen as potential actions to be executed on your system. Each command consists of two elements: a check to verify if the action can be executed in the current context, and the action itself, which also performs assertions. Typically, we rely on the model to verify if the action is suitable and apply the action to both the system and the model.
 
-:::warning The model, a simplified version of the system
+:::warning[The model, a simplified version of the system]
 Although the model can be a useful tool, it's important to use it carefully. Model's goal is to simplify the system, but there is a risk that it may mimic the system too closely, leading to errors. The model should not be a carbon copy of the system but a simplified representation of it. It's crucial to avoid testing the code by comparing it to itself.
 :::
 
@@ -30,7 +30,7 @@ In fast-check, the commands have to implement the interface [`ICommand`](/docs/a
 - `run(model, real)` — Execute the action
 - `toString()` — Serialize the command for error reports
 
-:::tip Example of commands
+:::tip[Example of commands]
 If your system is a music player, here are some commands you may have: play, pause, next track, add track…
 :::
 
@@ -38,7 +38,7 @@ If your system is a music player, here are some commands you may have: play, pau
 
 Then, to ingest your previously defined commands into fast-check as an arbitrary, you can use the [`commands`](/docs/api/functions/commands) arbitrary. This function takes an array of commands as input and compiles them to produce a scenario that can be applied to your system.
 
-:::info Isn't commands just an array builder?
+:::info[Isn't commands just an array builder?]
 Yes and no!
 
 - Yes, because `commands(myCommands)` could be mimicked by `array(oneof(...myCommands))`.
@@ -191,7 +191,7 @@ fc.assert(
 );
 ```
 
-:::info Why is there something specific to do for commands?
+:::info[Why is there something specific to do for commands?]
 In order to come with a more efficient shrinker, `commands` takes into account the commands that have really been executed.
 Basically if the framework generated the following commands `[A,B,C,A,A,C]` but only executed `[A,-,C,A,-,-]` it will shrink only `[A,C,A]`.
 The value stored into `replayPath` encodes the history of what was really executed in order not re-run any intermediate step on replay.

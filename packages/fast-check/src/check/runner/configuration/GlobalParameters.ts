@@ -22,7 +22,10 @@ export type GlobalAsyncPropertyHookFunction = (() => Promise<unknown>) | (() => 
  * @remarks Since 1.18.0
  * @public
  */
-export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>> & {
+export type GlobalParameters = Pick<
+  Parameters<unknown>,
+  Exclude<keyof Parameters<unknown>, 'path' | 'examples' | 'plugins'>
+> & {
   /**
    * Specify a function that will be called before each execution of a property.
    * It behaves as-if you manually called `beforeEach` method on all the properties you execute with fast-check.

@@ -70,11 +70,11 @@ In the context of race conditions, we want fast-check to provide us with a sched
 
 After pushing scheduled calls into the scheduler, we must execute and release them at some point. This is typically done using `waitAll` or `waitFor`. These APIs simply wait for `waitX` to resolve, indicating that what we were waiting for has been accomplished.
 
-:::info Which wait is the best?
+:::info[Which wait is the best?]
 For this first iteration, both of them will be ok, but we will see later that `waitFor` is probably a better fit in that specific example.
 :::
 
-:::tip More
+:::tip[More]
 For a comprehensive list of methods exposed on the scheduler, you can checkout the [official documentation for race conditions](/docs/advanced/race-conditions/).
 :::
 
@@ -82,7 +82,7 @@ For a comprehensive list of methods exposed on the scheduler, you can checkout t
 
 <YourFirstRace />
 
-:::info What to expect?
+:::info[What to expect?]
 Your test should help us to detect a bug in our current implementation of `queue`.
 :::
 

@@ -8,7 +8,7 @@ description: What's the plan for this tutorial?
 
 Learn how to detect race conditions in your code through clear and instructive examples
 
-:::tip Already familiar with race conditions?
+:::tip[Already familiar with race conditions?]
 This tutorial teaches techniques to detect race conditions in code testing, using specific algorithms and tools related to fast-check. It includes examples designed to initially pass the tests, and each section introduces new concepts.
 
 ➡️ You already know what are race conditions? **Let's start immediately with [the first section](/docs/tutorials/detect-race-conditions/your-first-race-condition-test/)!** 🚀
@@ -28,7 +28,7 @@ import DocCardList from '@theme/DocCardList';
 
 ## Definition of a race condition
 
-:::info Let's align our understanding of the concept
+:::info[Let's align our understanding of the concept]
 While this section is fully optional, it has the benefit to make sure that we all align on the definition of race condition throughout this tutorial.
 :::
 
@@ -59,6 +59,6 @@ In other words, the issue occurred as the user performed two searches subsequent
 
 As we have seen in this simple example, race conditions are easy to create, as they only require two concurrent events, and can cause significant problems from a user's perspective. It is worth noting that the example we took for this section was only a visual glitch, but race conditions can have much more critical impacts than just a wrong display.
 
-:::tip How to solve them?
+:::tip[How to solve them?]
 This tutorial is designed to guide you in adding tests to your codebase, ensuring the absence race condition issues in the future. It will not directly focus on giving you keys to solve them. For more in-depth information on solving race conditions and useful techniques for identifying them outsite of tests, refer to the article ["Handling API request race conditions in React" by Sébastien Lorber](https://sebastienlorber.com/handling-api-request-race-conditions-in-react).
 :::

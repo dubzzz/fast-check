@@ -15,7 +15,7 @@ This section is the why of fast-check, not the how. Four pages, each answering a
 - **Track record.** Real projects and bugs that property-based testing and fast-check specifically have caught.
 - **Getting started.** Installing fast-check and running your first property in your existing test runner.
 
-:::tip Prefer learning by doing?
+:::tip[Prefer learning by doing?]
 If you would rather skip the theory and open an editor, head straight to the [Quick Start tutorial](/docs/tutorials/quick-start/basic-setup/). It walks you through a runnable project step by step. Come back here whenever you want the background.
 :::
 
