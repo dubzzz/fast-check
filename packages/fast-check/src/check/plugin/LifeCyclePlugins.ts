@@ -1,4 +1,4 @@
-import type { IRawProperty, PropertyFailure } from '../property/IRawProperty.js';
+import type { IRawProperty } from '../property/IRawProperty.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
 const LifeCyclePluginSymbol = Symbol.for('fast-check/plugin/life-cycle');
@@ -12,54 +12,57 @@ function lifeCycleHooksRunner(
   nestedRun: IRawProperty<unknown, boolean>['run'],
   value: unknown,
 ): ReturnType<typeof nestedRun> {
-  let beforeContinuation: Promise<void> | undefined = undefined;
-  let beforeFailed: PropertyFailure | undefined = undefined;
+  let wrappedRunOutput: Awaited<ReturnType<typeof nestedRun>> = null; // null means success
+  let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
   if (hooks.beforeHooks.length !== 0) {
     try {
       for (const before of hooks.beforeHooks) {
-        if (beforeContinuation === undefined) {
+        if (wrappedRunContinuation === undefined) {
           const out = before();
           if (typeof out === 'object') {
-            beforeContinuation = out;
+            wrappedRunContinuation = out.then(() => null);
           }
         } else {
-          beforeContinuation = beforeContinuation.then(() => before());
+          wrappedRunContinuation = wrappedRunContinuation.then(() => before()).then(() => null);
         }
       }
     } catch (error) {
-      beforeFailed = { error };
+      wrappedRunOutput = { error };
     }
   }
 
-  const runOut: ReturnType<typeof nestedRun> =
-    beforeFailed === undefined
-      ? beforeContinuation === undefined
-        ? nestedRun(value)
-        : beforeContinuation.then(
+  if (wrappedRunOutput === null) {
+    const out: ReturnType<typeof nestedRun> =
+      wrappedRunContinuation === undefined
+        ? // We are currently into a sync flow
+          nestedRun(value)
+        : wrappedRunContinuation.then(
             () => nestedRun(value),
             (error) => ({ error }),
-          )
-      : beforeFailed;
+          );
+    if (out !== null && typeof out === 'object' && 'then' in out) {
+      wrappedRunContinuation = out;
+    } else {
+      wrappedRunOutput = out;
+    }
+  }
 
-  let afterFailed: PropertyFailure | undefined = undefined;
-  let finalContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined =
-    runOut !== null && 'then' in runOut ? runOut : undefined;
   for (let index = hooks.afterHooks.length - 1; index >= 0; --index) {
     const after = hooks.afterHooks[index];
-    if (finalContinuation === undefined) {
+    if (wrappedRunContinuation === undefined) {
       try {
         const out = after();
         if (typeof out === 'object') {
-          finalContinuation = out.then(
-            () => runOut ?? afterFailed ?? null,
-            (error) => runOut ?? afterFailed ?? { error },
+          wrappedRunContinuation = out.then(
+            () => wrappedRunOutput,
+            (error) => wrappedRunOutput ?? { error },
           );
         }
       } catch (error) {
-        afterFailed = { error };
+        wrappedRunOutput = { error };
       }
     } else {
-      finalContinuation = finalContinuation.then((previous): ReturnType<typeof nestedRun> => {
+      wrappedRunContinuation = wrappedRunContinuation.then((previous): ReturnType<typeof nestedRun> => {
         try {
           const out = after();
           if (typeof out === 'object') {
@@ -76,11 +79,11 @@ function lifeCycleHooksRunner(
     }
   }
 
-  if (finalContinuation !== undefined) {
-    return finalContinuation;
+  if (wrappedRunContinuation !== undefined) {
+    return wrappedRunContinuation;
   }
 
-  return beforeFailed ?? runOut ?? afterFailed ?? null;
+  return wrappedRunOutput;
 }
 
 /**
