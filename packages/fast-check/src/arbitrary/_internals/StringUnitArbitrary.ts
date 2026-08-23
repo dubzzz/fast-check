@@ -3,9 +3,9 @@ import { mapToConstant } from '../mapToConstant.js';
 import type { GraphemeRange } from './data/GraphemeRanges.js';
 import {
   asciiAlphabetRanges,
-  autonomousDecomposableGraphemeRanges,
-  autonomousGraphemeRanges,
   fullAlphabetRanges,
+  getAutonomousDecomposableGraphemeRanges,
+  getAutonomousGraphemeRanges,
 } from './data/GraphemeRanges.js';
 import type { GraphemeRangeEntry } from './helpers/GraphemeRangesHelpers.js';
 import { convertGraphemeRangeToMapToConstantEntry, intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers.js';
@@ -35,13 +35,14 @@ function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUni
     return registered;
   }
   const alphabetRanges = getAlphabetRanges(alphabet);
-  const ranges = type === 'binary' ? alphabetRanges : intersectGraphemeRanges(alphabetRanges, autonomousGraphemeRanges);
+  const ranges =
+    type === 'binary' ? alphabetRanges : intersectGraphemeRanges(alphabetRanges, getAutonomousGraphemeRanges());
   const entries: GraphemeRangeEntry[] = [];
   for (const range of ranges) {
     entries.push(convertGraphemeRangeToMapToConstantEntry(range));
   }
   if (type === 'grapheme') {
-    const decomposedRanges = intersectGraphemeRanges(alphabetRanges, autonomousDecomposableGraphemeRanges);
+    const decomposedRanges = intersectGraphemeRanges(alphabetRanges, getAutonomousDecomposableGraphemeRanges());
     for (const range of decomposedRanges) {
       const rawEntry = convertGraphemeRangeToMapToConstantEntry(range);
       entries.push({
