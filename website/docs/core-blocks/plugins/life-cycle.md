@@ -107,10 +107,10 @@ Life-cycle plugins run in the same order as they got declared for before tasks a
         console.log('teardown for beforeEach #2');
       };
     }),
-    fc.afterEach(() => {
+    afterEach(() => {
       console.log('afterEach #3');
     }),
-    fc.afterEach(() => {
+    afterEach(() => {
       console.log('afterEach #4');
     }),
     beforeEach(() => {
