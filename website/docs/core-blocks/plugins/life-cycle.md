@@ -10,9 +10,9 @@ Life-cycle plugins provide hooks to prepare or clean up things for your predicat
 
 The `beforeEach` plugin lets you run code right before the execution of your predicate.
 
-It expects to receive a function returning either nothing or a teardown function in a synchronous or asynchronous fashion. Any other returned value may lead to unexpected behavior and is subject to change between versions.
+It expects to receive a function returning either nothing or a teardown function, in a synchronous or asynchronous fashion. Any other returned value may lead to unexpected behavior and is subject to change between versions.
 
-When returning a teardown function, it will be used as a clean-up function running right after the execution of the predicate, no matter its status.
+When a teardown function gets returned, it will be used as a clean-up function running right after the execution of the predicate, no matter its status.
 
 Simple example involving two synchronous `beforeEach` without any teardown function being declared:
 
@@ -29,7 +29,7 @@ Simple example involving two synchronous `beforeEach` without any teardown funct
 }
 ```
 
-Example featuring all the possible variants with teardown or not and synchronous or not:
+Example featuring all the possible variants with or without teardown, synchronous or asynchronous:
 
 ```ts
 {
@@ -74,7 +74,7 @@ Example featuring all the possible variants with teardown or not and synchronous
 }
 ```
 
-All these variants could be used together. They have the same ordering priorities.
+All these variants can be used together. They have the same ordering priorities.
 
 Resources: [API reference](/docs/api/functions/beforeEach).
 
@@ -82,15 +82,15 @@ Resources: [API reference](/docs/api/functions/beforeEach).
 
 The `afterEach` plugin is the mirror of `beforeEach`. It lets you run code right after the execution of your predicate.
 
-Similarly to `beforeEach`, it expects to receive a function returning either `void` or `Promise<void>`. Any other returned value may lead to unexpected behavior.
+Similarly to `beforeEach`, it expects to receive a function returning either `void` or `Promise<void>`, but unlike `beforeEach` it cannot return a teardown function. Any other returned value may lead to unexpected behavior.
 
-Contrary to `beforeEach`, `afterEach` will always be executed no matter the execution status of other hooks. As such if one `beforeEach` or one `afterEach` rejects other `afterEach` will still be executed.
+Contrary to `beforeEach`, `afterEach` will always be executed no matter the execution status of other hooks. As such, if one `beforeEach` or one `afterEach` rejects, other `afterEach` will still be executed.
 
 Resources: [API reference](/docs/api/functions/afterEach).
 
 ## Execution flow
 
-Life-cycle plugins run in the same order as they got declared for before tasks and in reverse order for after tasks. As such the following ordering of plugins:
+Life-cycle plugins run in the same order as they got declared for before tasks and in reverse order for after tasks. As such, the following ordering of plugins:
 
 ```ts
 {
