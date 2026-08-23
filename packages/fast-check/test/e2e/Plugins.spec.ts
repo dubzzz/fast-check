@@ -134,6 +134,28 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
+  it('should provide the run details to afterAll on synchronous properties', () => {
+    // Arrange
+    const seenDetails: fc.RunDetails<[number]>[] = [];
+    const plugin: fc.Plugin<[number]> = () => {
+      return {
+        afterAll: (runDetails) => {
+          seenDetails.push(runDetails);
+        },
+      };
+    };
+
+    // Act
+    const out = fc.check(
+      fc.property(fc.integer(), (_x) => true),
+      { plugins: [plugin] },
+    );
+
+    // Assert
+    expect(seenDetails).toHaveLength(1);
+    expect(seenDetails[0]).toBe(out);
+  });
+
   it('should support mixes of sync and async afterAll', async () => {
     // Arrange
     const probes: string[] = [];

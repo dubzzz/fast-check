@@ -14,26 +14,59 @@ type LifeCycleHooks = {
   afterHooksIndices: number[];
 };
 
-function computeResultingAfterHooks(
-  teardownFunctions: { index: number; fn: TeardownFunction }[],
-  hooks: LifeCycleHooks,
-) {
-  if (teardownFunctions.length === 0) {
+type TeardownStore = {
+  fns: TeardownFunction[];
+  // Index within hooks.beforeHooks of the before hook that returned the teardown
+  hookIndices: number[];
+};
+
+function addTeardown(store: TeardownStore | null, hookIndex: number, fn: TeardownFunction): TeardownStore {
+  // Stores are allocated lazily: most of the runs do not register any teardown,
+  // they should not pay any extra allocation for them
+  if (store === null) {
+    store = { fns: [], hookIndices: [] };
+  }
+  store.fns.push(fn);
+  store.hookIndices.push(hookIndex);
+  return store;
+}
+
+function computeResultingAfterHooks(teardowns: TeardownStore | null, hooks: LifeCycleHooks) {
+  if (teardowns === null) {
     return hooks.afterHooks;
   }
-  if (hooks.afterHooks.length === 0) {
-    return teardownFunctions.map((details) => details.fn);
+  const teardownFns = teardowns.fns;
+  const afterHooks = hooks.afterHooks;
+  if (afterHooks.length === 0) {
+    return teardownFns;
   }
-  const afterAndPluginIndices: { index: number; fn: TeardownFunction | AfterEachHook }[] = [];
-  for (const value of teardownFunctions) {
-    const { index, fn } = value;
-    afterAndPluginIndices.push({ index: hooks.beforeHooksIndices[index], fn });
+  // Merge teardowns and after hooks in increasing order of plugin index.
+  // Both lists are already ordered by plugin index: teardowns are registered while running
+  // the before hooks in order and after hooks are registered at plugin instantiation.
+  const beforeHooksIndices = hooks.beforeHooksIndices;
+  const afterHooksIndices = hooks.afterHooksIndices;
+  const teardownHookIndices = teardowns.hookIndices;
+  const merged: (TeardownFunction | AfterEachHook)[] = [];
+  let teardownCursor = 0;
+  let afterCursor = 0;
+  while (teardownCursor !== teardownFns.length && afterCursor !== afterHooks.length) {
+    if (beforeHooksIndices[teardownHookIndices[teardownCursor]] < afterHooksIndices[afterCursor]) {
+      merged.push(teardownFns[teardownCursor]);
+      ++teardownCursor;
+    } else {
+      merged.push(afterHooks[afterCursor]);
+      ++afterCursor;
+    }
   }
-  for (let index = 0; index !== hooks.afterHooks.length; ++index) {
-    afterAndPluginIndices.push({ index: hooks.afterHooksIndices[index], fn: hooks.afterHooks[index] });
+  while (teardownCursor !== teardownFns.length) {
+    merged.push(teardownFns[teardownCursor]);
+    ++teardownCursor;
   }
-  afterAndPluginIndices.sort((a, b) => a.index - b.index);
-  return afterAndPluginIndices.map((details) => details.fn);
+  while (afterCursor !== afterHooks.length) {
+    merged.push(afterHooks[afterCursor]);
+    ++afterCursor;
+  }
+  return merged;
 }
 
 function lifeCycleHooksRunner(
@@ -45,20 +78,21 @@ function lifeCycleHooksRunner(
   let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
 
   // Before hooks
-  const teardownFunctions: { index: number; fn: TeardownFunction }[] = [];
-  if (hooks.beforeHooks.length !== 0) {
+  let teardowns: TeardownStore | null = null;
+  const beforeHooks = hooks.beforeHooks;
+  if (beforeHooks.length !== 0) {
     try {
-      for (let index = 0; index !== hooks.beforeHooks.length; ++index) {
-        const before = hooks.beforeHooks[index];
+      for (let index = 0; index !== beforeHooks.length; ++index) {
+        const before = beforeHooks[index];
         if (wrappedRunContinuation === undefined) {
           const out = before();
           if (typeof out === 'function') {
-            teardownFunctions.push({ index, fn: out });
+            teardowns = addTeardown(teardowns, index, out);
           }
           if (typeof out === 'object') {
             wrappedRunContinuation = out.then((beforeOut) => {
               if (beforeOut !== undefined) {
-                teardownFunctions.push({ index, fn: beforeOut });
+                teardowns = addTeardown(teardowns, index, beforeOut);
               }
               return null;
             });
@@ -70,12 +104,12 @@ function lifeCycleHooksRunner(
               return null;
             }
             if (typeof beforeOut === 'function') {
-              teardownFunctions.push({ index, fn: beforeOut });
+              teardowns = addTeardown(teardowns, index, beforeOut);
               return null;
             }
             return beforeOut.then((beforeOutNested) => {
               if (beforeOutNested !== undefined) {
-                teardownFunctions.push({ index, fn: beforeOutNested });
+                teardowns = addTeardown(teardowns, index, beforeOutNested);
               }
               return null;
             });
@@ -109,7 +143,7 @@ function lifeCycleHooksRunner(
 
   // After hooks
   if (wrappedRunContinuation === undefined) {
-    const resultingAfterHooks = computeResultingAfterHooks(teardownFunctions, hooks);
+    const resultingAfterHooks = computeResultingAfterHooks(teardowns, hooks);
     for (let index = resultingAfterHooks.length - 1; index >= 0; --index) {
       const after = resultingAfterHooks[index];
       if (wrappedRunContinuation === undefined) {
@@ -146,7 +180,7 @@ function lifeCycleHooksRunner(
     }
   } else {
     wrappedRunContinuation = wrappedRunContinuation.then((previousBeforeAfters) => {
-      const resultingAfterHooks = computeResultingAfterHooks(teardownFunctions, hooks);
+      const resultingAfterHooks = computeResultingAfterHooks(teardowns, hooks);
       if (resultingAfterHooks.length === 0) {
         return previousBeforeAfters;
       }

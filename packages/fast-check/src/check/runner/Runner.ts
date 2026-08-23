@@ -22,16 +22,26 @@ import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
 /** @internal */
 function runIt<Ts>(
-  run: IRawProperty<Ts>['run'],
+  property: IRawProperty<Ts>,
+  decoratedRun: IRawProperty<Ts>['run'] | null,
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean,
 ): RunExecution<Ts> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
-  for (const v of runner) {
-    const out = run(v) as PreconditionFailure | PropertyFailure | null;
-    runner.handleResult(out);
+  if (decoratedRun !== null) {
+    for (const v of runner) {
+      const out = decoratedRun(v) as PreconditionFailure | PropertyFailure | null;
+      runner.handleResult(out);
+    }
+  } else {
+    for (const v of runner) {
+      (property.runBeforeEach as () => void)();
+      const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
+      (property.runAfterEach as () => void)();
+      runner.handleResult(out);
+    }
   }
   return runner.runExecution;
 }
@@ -45,16 +55,26 @@ function propertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
 
 /** @internal */
 async function asyncRunIt<Ts>(
-  run: IRawProperty<Ts>['run'],
+  property: IRawProperty<Ts>,
+  decoratedRun: IRawProperty<Ts>['run'] | null,
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean,
 ): Promise<RunExecution<Ts>> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
-  for (const v of runner) {
-    const out = await run(v);
-    runner.handleResult(out);
+  if (decoratedRun !== null) {
+    for (const v of runner) {
+      const out = await decoratedRun(v);
+      runner.handleResult(out);
+    }
+  } else {
+    for (const v of runner) {
+      await property.runBeforeEach();
+      const out = await property.run(v);
+      await property.runAfterEach();
+      runner.handleResult(out);
+    }
   }
   return runner.runExecution;
 }
@@ -128,29 +148,37 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
 
   const globalPlugins = readInstalledGlobalPlugins();
   const localPlugins = qParams.plugins;
+  const numPlugins = globalPlugins.length + localPlugins.length;
 
-  // Instantiate plugins
-  const crossPluginContext: { [K in any]?: unknown } = {};
-  const pluginInstances: PluginInstance<Ts>[] = [];
-  for (let index = 0; index !== globalPlugins.length; ++index) {
-    pluginInstances.push(globalPlugins[index](index, crossPluginContext));
-  }
-  for (let index = 0; index !== localPlugins.length; ++index) {
-    pluginInstances.push(localPlugins[index](globalPlugins.length + index, crossPluginContext));
-  }
-
-  // Apply and decorate with plugins
-  let run: typeof property.run = property.isAsync()
-    ? async (v) => asyncPropertyExecution(property, v)
-    : (v) => propertyExecution(property, v);
-  const pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][] = [];
-  for (let index = pluginInstances.length - 1; index >= 0; --index) {
-    const pluginInstance = pluginInstances[index];
-    if (pluginInstance.decorateRun !== undefined) {
-      run = pluginInstance.decorateRun(run);
+  // Instantiate plugins, then apply and decorate with them.
+  // The most frequent case being "no plugin at all", it fully bypasses the plugins machinery:
+  // it keeps run being null so that runIt and asyncRunIt can directly deal with the property.
+  let run: typeof property.run | null = null;
+  let pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][] | null = null;
+  if (numPlugins !== 0) {
+    const crossPluginContext: { [K in any]?: unknown } = {};
+    const pluginInstances: PluginInstance<Ts>[] = [];
+    for (let index = 0; index !== globalPlugins.length; ++index) {
+      pluginInstances.push(globalPlugins[index](index, crossPluginContext));
     }
-    if (pluginInstance.afterAll !== undefined) {
-      pluginAfterAllCallbacks.push(pluginInstance.afterAll.bind(pluginInstance));
+    for (let index = 0; index !== localPlugins.length; ++index) {
+      pluginInstances.push(localPlugins[index](globalPlugins.length + index, crossPluginContext));
+    }
+    for (let index = numPlugins - 1; index >= 0; --index) {
+      const pluginInstance = pluginInstances[index];
+      if (pluginInstance.decorateRun !== undefined) {
+        if (run === null) {
+          // The innermost run is only materialized if a plugin really decorates it
+          run = property.isAsync() ? (v) => asyncPropertyExecution(property, v) : (v) => propertyExecution(property, v);
+        }
+        run = pluginInstance.decorateRun(run);
+      }
+      if (pluginInstance.afterAll !== undefined) {
+        if (pluginAfterAllCallbacks === null) {
+          pluginAfterAllCallbacks = [];
+        }
+        pluginAfterAllCallbacks.push(pluginInstance.afterAll.bind(pluginInstance));
+      }
     }
   }
 
@@ -164,29 +192,39 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   if (property.isAsync()) {
-    const out = asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-      e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-    );
-    if (pluginAfterAllCallbacks.length === 0) {
+    const out = asyncRunIt(
+      property,
+      run,
+      finalShrink,
+      sourceValues,
+      qParams.verbose,
+      qParams.markInterruptAsFailure,
+    ).then((e) => e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams));
+    if (pluginAfterAllCallbacks === null) {
       return out;
     }
+    const afterAllCallbacks = pluginAfterAllCallbacks;
     return out.then((details) => {
-      let queued = pluginAfterAllCallbacks[0](details);
-      for (let index = 1; index < pluginAfterAllCallbacks.length; ++index) {
-        const afterAll = pluginAfterAllCallbacks[index];
+      let queued = afterAllCallbacks[0](details);
+      for (let index = 1; index < afterAllCallbacks.length; ++index) {
+        const afterAll = afterAllCallbacks[index];
         queued = queued === undefined ? afterAll(details) : queued.then(() => afterAll(details));
       }
       return queued === undefined ? details : queued.then(() => details);
     });
   }
-  const out = runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
-    qParams.seed,
-    qParams.path,
-    maxSkips,
-    qParams,
-  );
-  for (let index = 0; index !== pluginAfterAllCallbacks.length; ++index) {
-    (pluginAfterAllCallbacks[index] as () => void)();
+  const out = runIt(
+    property,
+    run,
+    finalShrink,
+    sourceValues,
+    qParams.verbose,
+    qParams.markInterruptAsFailure,
+  ).toRunDetails(qParams.seed, qParams.path, maxSkips, qParams);
+  if (pluginAfterAllCallbacks !== null) {
+    for (let index = 0; index !== pluginAfterAllCallbacks.length; ++index) {
+      (pluginAfterAllCallbacks[index] as (details: RunDetails<Ts>) => void)(out);
+    }
   }
   return out;
 }
