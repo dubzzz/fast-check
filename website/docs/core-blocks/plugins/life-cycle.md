@@ -10,11 +10,11 @@ Life-cycle plugins provide hooks to prepare or clean up things for your predicat
 
 The `beforeEach` plugin lets you run code right before the execution of your predicate.
 
-It expects to receive a function returning either `void`, `Promise<void>`, `TeardownFunction` or `Promise<TeardownFunction>` with `TeardownFunction` being a function returning either `void` or `Promise<void>`. Any other returned value may lead to unexpected behavior and is subject to change between versions.
+It expects to receive a function returning either nothing or a teardown function in a synchronous or asynchronous fashion. Any other returned value may lead to unexpected behavior and is subject to change between versions.
 
-A teardown function acts as a clean-up for the `beforeEach`. It will be invoked once the `predicate` status is known either success or failure.
+When returning a teardown function, it will be used as a clean-up function running right after the execution of the predicate, no matter its status.
 
-The hooks will execute in the order they get declared. Teardown functions will interleave with `afterEach` functions and will be called in reverse order. As such if you declare:
+Simple example involving two synchronous `beforeEach` without any teardown function being declared:
 
 ```ts
 {
@@ -29,7 +29,52 @@ The hooks will execute in the order they get declared. Teardown functions will i
 }
 ```
 
-We will first run #1 then #2. If #1 fails, #2 will never get executed and neither will the predicate.
+Example featuring all the possible variants with teardown or not and synchronous or not:
+
+```ts
+{
+  plugins: [
+    // synchronous beforeEach
+    beforeEach(() => {
+      // ...
+    }),
+    // synchronous beforeEach with synchronous teardown
+    beforeEach(() => {
+      // ...
+      return () => {
+        // ...
+      };
+    }),
+    // synchronous beforeEach with asynchronous teardown
+    beforeEach(() => {
+      // ...
+      return async () => {
+        // ...
+      };
+    }),
+    // asynchronous beforeEach
+    beforeEach(async () => {
+      // ...
+    }),
+    // asynchronous beforeEach with synchronous teardown
+    beforeEach(async () => {
+      // ...
+      return () => {
+        // ...
+      };
+    }),
+    // asynchronous beforeEach with asynchronous teardown
+    beforeEach(async () => {
+      // ...
+      return async () => {
+        // ...
+      };
+    }),
+  ];
+}
+```
+
+All these variants could be used together. They have the same ordering priorities.
 
 Resources: [API reference](/docs/api/functions/beforeEach).
 
@@ -91,6 +136,12 @@ afterEach #3
 teardown for beforeEach #2
 teardown for beforeEach #1
 ```
+
+They run in an exclusive fashion. As such a beforeEach, a teardown or an afterEach will wait for the currently running one to end before starting. Same they don't run while the predicate is under way. They wait for it to come back with an execution status.
+
+:::warn[Predicate may run longer]
+While they are waiting for the predicate to come back with a status, note that whenever the predicate's execution gets stopped or interrupted due to timeout for example there is no certainty that the code of the predicate has really been stopped. In Node and more geenrally in JavaScript their is no way to stop a running script, such plugins will mostly return before the script ends but in many case will keep it running in background (as they can't stop it).
+:::
 
 Like any built-in plugin, life-cycle plugins compose with the plugins declared next to them. As such, in the hypothesis of a plugin named `retryOnFailure(count)`, declaring plugins as follows:
 
