@@ -90,7 +90,7 @@ describe('LifeCyclePlugins', () => {
             const currentChunk = out.hookType.includes('afterEach') || out.isTeardown ? 3 : 1;
             hasFailedStep ||= currentChunk < lastChunk;
             lastChunk = currentChunk;
-            seenSteps.push(`${out.type} ${out.hookType} ${index}`);
+            seenSteps.push(`${out.type} ${out.hookType}${out.isTeardown ? ' (teardown)' : ''} ${index}`);
           };
           let pluginIndex = 0;
           const sharedContext = {};
@@ -183,7 +183,7 @@ describe('LifeCyclePlugins', () => {
           // Arrange
           const seenStartsOfAfterEach: number[] = [];
           const probing = (out: ProbingOutput, index: number) => {
-            if (out.type === 'start' && out.hookType.includes('afterEach')) {
+            if (out.type === 'start' && (out.hookType.includes('afterEach') || out.isTeardown)) {
               seenStartsOfAfterEach.push(index);
             }
           };
@@ -203,9 +203,17 @@ describe('LifeCyclePlugins', () => {
           await finalRun(null);
 
           // Assert
-          const expectedAfterEachs = hookTypes.flatMap(({ hookType }, index) =>
-            hookType.includes('afterEach') ? [index] : [],
-          );
+          let beforeEachFailureSpotted = false;
+          const expectedAfterEachs = hookTypes.flatMap(({ hookType, fails }, index) => {
+            if (hookType.includes('afterEach')) {
+              return [index];
+            }
+            if (!beforeEachFailureSpotted && hookType.includes('teardown')) {
+              return [index];
+            }
+            beforeEachFailureSpotted ||= fails;
+            return [];
+          });
           const expectedAfterEachsButReversed = [...expectedAfterEachs].reverse();
           expect(seenStartsOfAfterEach).toEqual(expectedAfterEachsButReversed);
         },
@@ -311,7 +319,7 @@ describe('LifeCyclePlugins', () => {
         fc
           .tuple(
             fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() })),
-            hookTypeArbitrary('only', 'beforeEach'),
+            hookTypeArbitrary('only', 'beforeEach no teardown'), // we want a throw at beforeEach time so before any teardown
           )
           .chain(([potentiallySafeHooks, throwingBefore]) =>
             fc.shuffledSubarray([...potentiallySafeHooks, { hookType: throwingBefore, fails: true }], {
@@ -327,14 +335,10 @@ describe('LifeCyclePlugins', () => {
           const originalRun = vi.fn(() => null);
           let finalRun: IRawProperty<null, boolean>['run'] = originalRun;
           const probing = (out: ProbingOutput) => {
-            if (out.isTeardown) {
-              return;
+            if (out.hookType.includes('beforeEach') && !out.hookType.includes('teardown')) {
+              beforeEachCalledAfterFailure ||= beforeEachFailedStarted;
+              beforeEachFailedStarted ||= out.failingPlugin;
             }
-            if (!out.hookType.includes('beforeEach')) {
-              return;
-            }
-            beforeEachCalledAfterFailure ||= beforeEachFailedStarted;
-            beforeEachFailedStarted ||= out.failingPlugin;
           };
           const instances = hookTypes
             .map(({ hookType, fails }) =>
