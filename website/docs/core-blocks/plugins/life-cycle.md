@@ -10,9 +10,11 @@ Life-cycle plugins provide hooks to prepare or clean up things for your predicat
 
 The `beforeEach` plugin lets you run code right before the execution of your predicate.
 
-It expects to receive a function returning either `void` or `Promise<void>`. Any other returned value may lead to unexpected behavior and is subject to change between versions.
+It expects to receive a function returning either `void`, `Promise<void>`, `TeardownFunction` or `Promise<TeardownFunction>` with `TeardownFunction` being a function returning either `void` or `Promise<void>`. Any other returned value may lead to unexpected behavior and is subject to change between versions.
 
-The hooks will execute in the order they get declared. As such if you declare:
+A teardown function acts as a clean-up for the `beforeEach`. It will be invoked once the `predicate` status is known either success or failure.
+
+The hooks will execute in the order they get declared. Teardown functions will interleave with `afterEach` functions and will be called in reverse order. As such if you declare:
 
 ```ts
 {
@@ -48,20 +50,29 @@ Life-cycle plugins run in the same order as they got declared for before tasks a
 ```ts
 {
   plugins: [
-    beforeEach(() => {
-      console.log('beforeEach #1');
+    fc.beforeEach(() => {
+      probes.push('beforeEach #1');
+      return () => {
+        probes.push('teardown for beforeEach #1');
+      };
     }),
-    beforeEach(() => {
-      console.log('beforeEach #2');
+    fc.beforeEach(() => {
+      probes.push('beforeEach #2');
+      return () => {
+        probes.push('teardown for beforeEach #2');
+      };
     }),
-    afterEach(() => {
-      console.log('afterEach #3');
+    fc.afterEach(() => {
+      probes.push('afterEach #3');
     }),
-    afterEach(() => {
-      console.log('afterEach #4');
+    fc.afterEach(() => {
+      probes.push('afterEach #4');
     }),
-    beforeEach(() => {
-      console.log('beforeEach #5');
+    fc.beforeEach(() => {
+      probes.push('beforeEach #5');
+      return () => {
+        probes.push('teardown for beforeEach #5');
+      };
     }),
   ];
 }
@@ -74,8 +85,11 @@ beforeEach #1
 beforeEach #2
 beforeEach #5
 predicate
+teardown for beforeEach #5
 afterEach #4
 afterEach #3
+teardown for beforeEach #2
+teardown for beforeEach #1
 ```
 
 Like any built-in plugin, life-cycle plugins compose with the plugins declared next to them. As such, in the hypothesis of a plugin named `retryOnFailure(count)`, declaring plugins as follows:
@@ -85,10 +99,16 @@ Like any built-in plugin, life-cycle plugins compose with the plugins declared n
   plugins: [
     beforeEach(() => {
       console.log('beforeEach #1');
+      return () => {
+        probes.push('teardown for beforeEach #1');
+      };
     }),
     retryOnFailure(2),
     beforeEach(() => {
       console.log('beforeEach #2');
+      return () => {
+        probes.push('teardown for beforeEach #2');
+      };
     }),
   ];
 }
@@ -100,6 +120,9 @@ May result in the following logs at execution time:
 beforeEach #1 <-- runs once, it wraps all the attempts
 beforeEach #2 <-- the first attempt
 predicate     <-- considering it fails at first attempt...
+teardown for beforeEach #2
 beforeEach #2 <-- ...`retryOnFailure` launches a second attempt
 predicate
+teardown for beforeEach #2
+teardown for beforeEach #1
 ```
