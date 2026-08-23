@@ -18,9 +18,9 @@ describe('runner', () => {
     // oxlint-disable-next-line no-empty-function
     fc.check(fc.property(fc.constant(1), (_c) => {}));
   });
-  bench('check on async predicate not returning anything', () => {
+  bench('check on async predicate not returning anything', async () => {
     // oxlint-disable-next-line typescript/require-await no-empty-function
-    return fc.check(fc.asyncProperty(fc.constant(1), async (_c) => {}));
+    await fc.check(fc.asyncProperty(fc.constant(1), async (_c) => {}));
   });
   bench('check on sync predicate with beforeEach and afterEach plugins', () => {
     // oxlint-disable-next-line no-empty-function
@@ -42,9 +42,9 @@ describe('runner', () => {
       },
     );
   });
-  bench('check on async predicate with beforeEach plugin', () => {
+  bench('check on async predicate with beforeEach plugin', async () => {
     // oxlint-disable-next-line typescript/require-await no-empty-function
-    return fc.check(
+    await fc.check(
       fc.asyncProperty(fc.constant(1), async (_c) => {}),
       {
         // oxlint-disable-next-line no-empty-function
