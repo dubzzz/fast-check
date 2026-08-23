@@ -19,7 +19,7 @@ describe('LifeCyclePlugins', () => {
           let probingFailed: boolean = false;
           const probes: string[] = [];
           let lastProbe: { type: 'start' | 'end'; label: string } | undefined;
-          const probing = (type: 'start' | 'end', label: string) => {
+          const probe = (type: 'start' | 'end', label: string) => {
             if (lastProbe !== undefined) {
               if (lastProbe.type === type) {
                 probingFailed ||=
@@ -37,25 +37,28 @@ describe('LifeCyclePlugins', () => {
             lastProbe = { type, label };
             probes.push(`${type}>> ${label}`);
           };
+          const probing = (out: ProbingOutput) =>
+            probe(
+              out.type,
+              `${out.hookType}${out.isTeardown ? ' (teardown)' : ''}${out.failingPlugin && (out.isTeardown || !out.hookType.includes('teardown')) ? ' throw' : ''}`,
+            );
           let pluginIndex = 0;
           const sharedContext = {};
           let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
             ? async () => {
-                probing('start', 'predicate');
+                probe('start', 'predicate');
                 await delay0();
-                probing('end', 'predicate');
+                probe('end', 'predicate');
                 return runValue;
               }
             : () => {
-                probing('start', 'predicate');
-                probing('end', 'predicate');
+                probe('start', 'predicate');
+                probe('end', 'predicate');
                 return runValue;
               };
           const instances = hookTypes
-            .map(({ hookType, fails }, index) =>
-              fails
-                ? failingPluginFor(hookType, (type) => probing(type, `${hookType} #${index} throw`))
-                : successfulPluginFor(hookType, (type) => probing(type, `${hookType} #${index}`)),
+            .map(({ hookType, fails }) =>
+              fails ? failingPluginFor(hookType, probing) : successfulPluginFor(hookType, probing),
             )
             .map((plugin) => plugin(pluginIndex++, sharedContext));
           finalRun = produceFinalRun(finalRun, instances);
@@ -70,7 +73,7 @@ describe('LifeCyclePlugins', () => {
     );
   });
 
-  it('should apply proper relative order: beforeEach then predicate then afterEach', async () => {
+  it('should apply proper relative order: beforeEach then predicate then afterEach-and-teardown', async () => {
     await fc.assert(
       fc.asyncProperty(
         fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() }), { minLength: 1 }),
@@ -83,19 +86,30 @@ describe('LifeCyclePlugins', () => {
           let lastChunk = -1;
           let hasFailedStep = false;
           const seenSteps: string[] = [];
-          const probing = (type: 'start' | 'end', label: string, index: number) => {
-            const currentChunk = label.includes('afterEach') ? 3 : label === 'predicate' ? 2 : 1;
+          const probing = (out: ProbingOutput, index: number) => {
+            const currentChunk = out.hookType.includes('afterEach') || out.isTeardown ? 3 : 1;
             hasFailedStep ||= currentChunk < lastChunk;
-            seenSteps.push(`${type} ${label} ${index}`);
+            lastChunk = currentChunk;
+            seenSteps.push(`${out.type} ${out.hookType} ${index}`);
           };
           let pluginIndex = 0;
           const sharedContext = {};
-          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
+          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
+            ? async () => {
+                hasFailedStep ||= lastChunk > 2;
+                lastChunk = 2;
+                return runValue;
+              }
+            : () => {
+                hasFailedStep ||= lastChunk > 2;
+                lastChunk = 2;
+                return runValue;
+              };
           const instances = hookTypes
             .map(({ hookType, fails }, index) =>
               fails
-                ? failingPluginFor(hookType, (type) => probing(type, hookType, index))
-                : successfulPluginFor(hookType, (type) => probing(type, hookType, index)),
+                ? failingPluginFor(hookType, (out) => probing(out, index))
+                : successfulPluginFor(hookType, (out) => probing(out, index)),
             )
             .map((plugin) => plugin(pluginIndex++, sharedContext));
           finalRun = produceFinalRun(finalRun, instances);
@@ -127,8 +141,8 @@ describe('LifeCyclePlugins', () => {
         async (hookTypes, isAsyncRun, runValue) => {
           // Arrange
           const seenStartsOfBeforeEach: number[] = [];
-          const probing = (type: 'start' | 'end', label: string, index: number) => {
-            if (type === 'start' && label.includes('beforeEach')) {
+          const probing = (out: ProbingOutput, index: number) => {
+            if (out.type === 'start' && out.hookType.includes('beforeEach') && !out.isTeardown) {
               seenStartsOfBeforeEach.push(index);
             }
           };
@@ -138,8 +152,8 @@ describe('LifeCyclePlugins', () => {
           const instances = hookTypes
             .map(({ hookType, fails }, index) =>
               fails
-                ? failingPluginFor(hookType, (type) => probing(type, hookType, index))
-                : successfulPluginFor(hookType, (type) => probing(type, hookType, index)),
+                ? failingPluginFor(hookType, (out) => probing(out, index))
+                : successfulPluginFor(hookType, (out) => probing(out, index)),
             )
             .map((plugin) => plugin(pluginIndex++, sharedContext));
           finalRun = produceFinalRun(finalRun, instances);
@@ -157,7 +171,7 @@ describe('LifeCyclePlugins', () => {
     );
   });
 
-  it('should always trigger all afterEach hooks in reverse order no matter the status of other hooks or predicate', async () => {
+  it('should always trigger all afterEach-and-teardown hooks in reverse order no matter the status of other hooks or predicate', async () => {
     await fc.assert(
       fc.asyncProperty(
         fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() }), { minLength: 1 }),
@@ -168,8 +182,8 @@ describe('LifeCyclePlugins', () => {
         async (hookTypes, isAsyncRun, runValue) => {
           // Arrange
           const seenStartsOfAfterEach: number[] = [];
-          const probing = (type: 'start' | 'end', label: string, index: number) => {
-            if (type === 'start' && label.includes('afterEach')) {
+          const probing = (out: ProbingOutput, index: number) => {
+            if (out.type === 'start' && out.hookType.includes('afterEach')) {
               seenStartsOfAfterEach.push(index);
             }
           };
@@ -179,8 +193,8 @@ describe('LifeCyclePlugins', () => {
           const instances = hookTypes
             .map(({ hookType, fails }, index) =>
               fails
-                ? failingPluginFor(hookType, (type) => probing(type, hookType, index))
-                : successfulPluginFor(hookType, (type) => probing(type, hookType, index)),
+                ? failingPluginFor(hookType, (out) => probing(out, index))
+                : successfulPluginFor(hookType, (out) => probing(out, index)),
             )
             .map((plugin) => plugin(pluginIndex++, sharedContext));
           finalRun = produceFinalRun(finalRun, instances);
@@ -310,20 +324,21 @@ describe('LifeCyclePlugins', () => {
           let beforeEachFailedStarted = false;
           let pluginIndex = 0;
           const sharedContext = {};
-          const originalRun = vi.fn();
+          const originalRun = vi.fn(() => null);
           let finalRun: IRawProperty<null, boolean>['run'] = originalRun;
-          const probing = (hookType: string, fails: boolean) => {
-            if (!hookType.includes('beforeEach')) {
+          const probing = (out: ProbingOutput) => {
+            if (out.isTeardown) {
+              return;
+            }
+            if (!out.hookType.includes('beforeEach')) {
               return;
             }
             beforeEachCalledAfterFailure ||= beforeEachFailedStarted;
-            beforeEachFailedStarted ||= fails;
+            beforeEachFailedStarted ||= out.failingPlugin;
           };
           const instances = hookTypes
             .map(({ hookType, fails }) =>
-              fails
-                ? failingPluginFor(hookType, () => probing(hookType, true))
-                : successfulPluginFor(hookType, () => probing(hookType, false)),
+              fails ? failingPluginFor(hookType, probing) : successfulPluginFor(hookType, probing),
             )
             .map((plugin) => plugin(pluginIndex++, sharedContext));
           finalRun = produceFinalRun(finalRun, instances);
@@ -382,19 +397,40 @@ function delay0() {
   return new Promise((r) => setTimeout(r, 0));
 }
 
-function hookTypeArbitrary(
-  ...config: [] | ['only', 'beforeEach' | 'afterEach'] | ['except', 'beforeEach' | 'afterEach']
-) {
-  const beforeEach = ['sync beforeEach', 'async beforeEach'] as const;
+type HookTypeConfigTypes = 'beforeEach' | 'beforeEach no teardown' | 'beforeEach with teardown' | 'afterEach';
+type HookTypes =
+  | 'sync beforeEach'
+  | 'async beforeEach'
+  | 'sync beforeEach with sync teardown'
+  | 'sync beforeEach with async teardown'
+  | 'async beforeEach with sync teardown'
+  | 'async beforeEach with async teardown'
+  | 'sync afterEach'
+  | 'async afterEach';
+
+function hookTypeArbitrary(...config: [] | ['only', HookTypeConfigTypes] | ['except', HookTypeConfigTypes]) {
+  const beforeEachNoTeardown = ['sync beforeEach', 'async beforeEach'] as const;
+  const beforeEachWithTeardown = [
+    'sync beforeEach with sync teardown',
+    'sync beforeEach with async teardown',
+    'async beforeEach with sync teardown',
+    'async beforeEach with async teardown',
+  ] as const;
   const afterEach = ['sync afterEach', 'async afterEach'] as const;
-  const all = [...beforeEach, ...afterEach];
+  const all = [...beforeEachNoTeardown, ...beforeEachWithTeardown, ...afterEach];
   if (config.length === 0) {
     return fc.constantFrom(...all);
   }
   let selection: typeof all;
   switch (config[1]) {
     case 'beforeEach':
-      selection = [...beforeEach];
+      selection = [...beforeEachNoTeardown, ...beforeEachWithTeardown];
+      break;
+    case 'beforeEach no teardown':
+      selection = [...beforeEachNoTeardown];
+      break;
+    case 'beforeEach with teardown':
+      selection = [...beforeEachWithTeardown];
       break;
     case 'afterEach':
       selection = [...afterEach];
@@ -403,59 +439,138 @@ function hookTypeArbitrary(
   return fc.constantFrom(...(config[0] === 'only' ? selection : all.filter((value) => !selection.includes(value))));
 }
 
-function successfulPluginFor(
-  hookType: 'sync beforeEach' | 'async beforeEach' | 'sync afterEach' | 'async afterEach',
-  probing?: (type: 'start' | 'end') => void,
-): Plugin<unknown> {
+type ProbingOutput = {
+  type: 'start' | 'end';
+  hookType: HookTypes;
+  isTeardown: boolean;
+  failingPlugin: boolean;
+};
+
+function successfulPluginFor(hookType: HookTypes, probing?: (out: ProbingOutput) => void): Plugin<unknown> {
+  const shared = { hookType, failingPlugin: false };
   switch (hookType) {
     case 'sync beforeEach':
       return beforeEach(() => {
-        probing?.('start');
-        probing?.('end');
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+      });
+    case 'sync beforeEach with sync teardown':
+      return beforeEach(() => {
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+        return () => {
+          probing?.({ ...shared, type: 'start', isTeardown: true });
+          probing?.({ ...shared, type: 'end', isTeardown: true });
+        };
+      });
+    case 'sync beforeEach with async teardown':
+      return beforeEach(() => {
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+        return async () => {
+          probing?.({ ...shared, type: 'start', isTeardown: true });
+          await delay0();
+          probing?.({ ...shared, type: 'end', isTeardown: true });
+        };
       });
     case 'async beforeEach':
       return beforeEach(async () => {
-        probing?.('start');
+        probing?.({ ...shared, type: 'start', isTeardown: false });
         await delay0();
-        probing?.('end');
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+      });
+    case 'async beforeEach with sync teardown':
+      return beforeEach(async () => {
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        await delay0();
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+        return () => {
+          probing?.({ ...shared, type: 'start', isTeardown: true });
+          probing?.({ ...shared, type: 'end', isTeardown: true });
+        };
+      });
+    case 'async beforeEach with async teardown':
+      return beforeEach(async () => {
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        await delay0();
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+        return async () => {
+          probing?.({ ...shared, type: 'start', isTeardown: true });
+          await delay0();
+          probing?.({ ...shared, type: 'end', isTeardown: true });
+        };
       });
     case 'sync afterEach':
       return afterEach(() => {
-        probing?.('start');
-        probing?.('end');
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        probing?.({ ...shared, type: 'end', isTeardown: false });
       });
     case 'async afterEach':
       return afterEach(async () => {
-        probing?.('start');
+        probing?.({ ...shared, type: 'start', isTeardown: false });
         await delay0();
-        probing?.('end');
+        probing?.({ ...shared, type: 'end', isTeardown: false });
       });
   }
 }
 
-function failingPluginFor(
-  hookType: 'sync beforeEach' | 'async beforeEach' | 'sync afterEach' | 'async afterEach',
-  probing?: (type: 'start' | 'end') => void,
-): Plugin<unknown> {
+function failingPluginFor(hookType: HookTypes, probing?: (out: ProbingOutput) => void): Plugin<unknown> {
+  const shared = { hookType, failingPlugin: true };
   switch (hookType) {
     case 'sync beforeEach':
       return beforeEach(() => {
-        probing?.('start');
+        probing?.({ ...shared, type: 'start', isTeardown: false });
         throw new Error('sync throw');
+      });
+    case 'sync beforeEach with sync teardown':
+      return beforeEach(() => {
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+        return () => {
+          probing?.({ ...shared, type: 'start', isTeardown: true });
+          throw new Error('sync throw');
+        };
+      });
+    case 'sync beforeEach with async teardown':
+      return beforeEach(() => {
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+        return async () => {
+          probing?.({ ...shared, type: 'start', isTeardown: true });
+          throw new Error('async throw');
+        };
       });
     case 'async beforeEach':
       return beforeEach(async () => {
-        probing?.('start');
+        probing?.({ ...shared, type: 'start', isTeardown: false });
         throw new Error('async throw');
+      });
+    case 'async beforeEach with sync teardown':
+      return beforeEach(async () => {
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+        return () => {
+          probing?.({ ...shared, type: 'start', isTeardown: true });
+          throw new Error('sync throw');
+        };
+      });
+    case 'async beforeEach with async teardown':
+      return beforeEach(async () => {
+        probing?.({ ...shared, type: 'start', isTeardown: false });
+        probing?.({ ...shared, type: 'end', isTeardown: false });
+        return async () => {
+          probing?.({ ...shared, type: 'start', isTeardown: true });
+          throw new Error('async throw');
+        };
       });
     case 'sync afterEach':
       return afterEach(() => {
-        probing?.('start');
+        probing?.({ ...shared, type: 'start', isTeardown: false });
         throw new Error('sync throw');
       });
     case 'async afterEach':
       return afterEach(async () => {
-        probing?.('start');
+        probing?.({ ...shared, type: 'start', isTeardown: false });
         throw new Error('async throw');
       });
   }
