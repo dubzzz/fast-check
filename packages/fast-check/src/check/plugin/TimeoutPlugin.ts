@@ -23,15 +23,9 @@ function timeoutRunner(
   value: unknown,
 ): ReturnType<typeof nestedRun> {
   const t = timeoutAfter(timeMs);
-  const runOut = nestedRun(value);
-  if (runOut === null || !('then' in runOut)) {
-    // synchronous run: it already came to an end, no need to wait for any timeout
-    t.clear();
-    return runOut;
-  }
-  const raced = Promise.race([runOut, t.promise]);
-  raced.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
-  return raced;
+  const propRun = Promise.race([nestedRun(value), t.promise]);
+  propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
+  return propRun;
 }
 
 /**
