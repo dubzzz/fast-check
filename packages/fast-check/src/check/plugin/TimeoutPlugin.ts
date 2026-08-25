@@ -29,11 +29,12 @@ function timeoutRunner(
 }
 
 /**
- * Fail the run of your predicate if it takes more than `timeMs` milliseconds to complete.
- * As predicates cannot be stopped, the underlying execution keeps running but its outcome gets ignored.
+ * Mark the execution of a predicate as failed if it exceeds `timeMs` milliseconds to complete.
  *
- * Only useful for asynchronous properties: a synchronous predicate can never be observed timing out
- * as it already came to an end when we get its outcome.
+ * WARNING: It won't really stop a running predicate.
+ * It mostly returns earlier for the test runner to move forward.
+ *
+ * NOTE: Does not have any effect on a synchronously running predicate.
  *
  * @example
  * ```ts
