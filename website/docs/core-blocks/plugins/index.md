@@ -58,13 +58,9 @@ await fc.assert(
 );
 ```
 
-For each execution of the predicate:
+The plugins setup above makes use of two instances of the `timeout` plugin. The first instance of it is responsible to make sure that the time taken by the `beforeEach` cleanup plus the one taken by the predicate will never exceed 10 seconds. The second one, only wraps the predicate and makes sure that it won't take more than 5 seconds.
 
-1. the 10-second `timeout` starts first: it wraps everything declared after it — the database reset, the 5-second `timeout` and the predicate,
-2. the `beforeEach` hook then resets the database,
-3. the 5-second `timeout` starts last, right before the predicate: it only wraps the predicate.
-
-As a consequence, a run fails as soon as a single call to the search endpoint takes more than 5 seconds, or when the database reset and the call together take more than 10 seconds. Order matters: moving `timeout(5_000)` before the `beforeEach` would make the reset count against the 5-second budget too, and the 10-second limit could then never fire.
+This short example clearly highlights why the declaration order of plugins is crucial. Two different orders may result in totally different expectations. Correctly ordering them will make you capable of finely configure your flows to fit your needs.
 
 ## The plugins
 
