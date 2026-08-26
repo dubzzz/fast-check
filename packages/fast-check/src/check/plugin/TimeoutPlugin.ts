@@ -31,10 +31,10 @@ function timeoutRunner(
 /**
  * Mark the execution of a predicate as failed if it exceeds `timeMs` milliseconds to complete.
  *
- * WARNING: It won't really stop a running predicate.
- * It mostly returns earlier for the test runner to move forward.
+ * WARNING: It cannot stop a running predicate.
+ * It mainly returns earlier so the test runner can move forward.
  *
- * NOTE: Does not have any effect on a synchronously running predicate.
+ * NOTE: It has no effect on a synchronously running predicate.
  *
  * @example
  * ```ts

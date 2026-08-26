@@ -23,7 +23,7 @@ As predicates cannot be stopped, whenever a timeout occurs the underlying execut
 :::
 
 :::warning[Synchronous predicates can't be interrupted]
-The plugin has no impact on purely synchronous predicates. It can't stop them so timeout won't really be capable of interrupting them.
+The plugin has no impact on purely synchronous predicates. It cannot stop them, so timeout cannot interrupt them.
 :::
 
 Resources: [API reference](/docs/api/functions/timeout).
