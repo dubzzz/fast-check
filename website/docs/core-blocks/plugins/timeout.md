@@ -18,6 +18,12 @@ The `timeout` plugin marks the current execution of your predicate as failed if 
 }
 ```
 
-As predicates cannot be stopped, whenever a timeout occurs the underlying execution keeps running in the background but its outcome gets ignored. Note also that the plugin can only be useful for asynchronous properties: a synchronous predicate can never be observed timing out as it already came to an end when the runner gets its outcome back.
+:::warning[Predicates can't be stopped]
+As predicates cannot be stopped, whenever a timeout occurs the underlying execution keeps running in the background but its outcome gets ignored.
+:::
+
+:::warning[Synchronous predicates can't be interrupted]
+The plugin has no impact on purely synchronous predicates. It can't stop them so timeout won't really be capable of interrupting them.
+:::
 
 Resources: [API reference](/docs/api/functions/timeout).
