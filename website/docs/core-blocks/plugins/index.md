@@ -36,9 +36,9 @@ Installed plugins run before the ones passed to the runner, so the snippet above
 
 ## Combining plugins
 
-Plugins wrap every execution of the predicate and the declaration order defines the nesting: the first declared plugin is the outermost wrapper, each subsequent one sits a bit closer to the predicate.
+Plugins have been designed to be combined together. When multiple plugins get defined for the same assertion, they execute themselves in declaration order. The first plugin runs first and wraps the execution of the second one until we reach the main operation. Plugins can wrap various stages of the flows including the execution of the predicate function.
 
-Let's illustrate it on a property checking a search endpoint, with the database brought back to a clean state before each run:
+Let's illustrate how plugins get combined on a property checking a search endpoint. In this example the database gets bring back to a clean state before each run:
 
 ```ts
 await fc.assert(
