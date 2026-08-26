@@ -17,9 +17,15 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
         plugins: [
           fc.beforeEach(() => {
             probes.push('beforeEach #1');
+            return () => {
+              probes.push('teardown for beforeEach #1');
+            };
           }),
           fc.beforeEach(() => {
             probes.push('beforeEach #2');
+            return () => {
+              probes.push('teardown for beforeEach #2');
+            };
           }),
           fc.afterEach(() => {
             probes.push('afterEach #3');
@@ -29,6 +35,9 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
           }),
           fc.beforeEach(() => {
             probes.push('beforeEach #5');
+            return () => {
+              probes.push('teardown for beforeEach #5');
+            };
           }),
         ],
         numRuns: 2,
@@ -42,15 +51,21 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
       'beforeEach #2',
       'beforeEach #5',
       'predicate',
+      'teardown for beforeEach #5',
       'afterEach #4',
       'afterEach #3',
+      'teardown for beforeEach #2',
+      'teardown for beforeEach #1',
       // 2nd run
       'beforeEach #1',
       'beforeEach #2',
       'beforeEach #5',
       'predicate',
+      'teardown for beforeEach #5',
       'afterEach #4',
       'afterEach #3',
+      'teardown for beforeEach #2',
+      'teardown for beforeEach #1',
     ]);
   });
 
@@ -82,6 +97,9 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
         plugins: [
           fc.beforeEach(() => {
             probes.push('beforeEach #1');
+            return () => {
+              probes.push('teardown for beforeEach #1');
+            };
           }),
           fc.afterEach(() => {
             probes.push('afterEach #2');
@@ -89,6 +107,9 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
           retryTwice(),
           fc.beforeEach(() => {
             probes.push('beforeEach #3');
+            return () => {
+              probes.push('teardown for beforeEach #3');
+            };
           }),
           fc.afterEach(() => {
             probes.push('afterEach #4');
@@ -106,26 +127,32 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
       'beforeEach #3',
       'predicate',
       'afterEach #4',
+      'teardown for beforeEach #3',
       // --1st try done
       // --2nd try started
       'beforeEach #3',
       'predicate',
       'afterEach #4',
+      'teardown for beforeEach #3',
       // --2nd try done
       'afterEach #2',
+      'teardown for beforeEach #1',
       // 2nd run
       'beforeEach #1',
       // --1st try started
       'beforeEach #3',
       'predicate',
       'afterEach #4',
+      'teardown for beforeEach #3',
       // --1st try done
       // --2nd try started
       'beforeEach #3',
       'predicate',
       'afterEach #4',
+      'teardown for beforeEach #3',
       // --2nd try done
       'afterEach #2',
+      'teardown for beforeEach #1',
     ]);
   });
 });
