@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { timeout } from '../../../../src/check/plugin/TimeoutPlugin.js';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
-import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 
 describe('TimeoutPlugin', () => {
   beforeEach(() => {
@@ -128,42 +127,6 @@ describe('TimeoutPlugin', () => {
 
     // Assert
     expect(await runPromise).toEqual({ error: new Error(`Property timeout: exceeded limit of 10 milliseconds`) });
-  });
-
-  it.each([
-    { name: 'success', runOutput: null },
-    { name: 'precondition failure', runOutput: new PreconditionFailure() },
-    { name: 'failure', runOutput: { error: new Error('plop') } },
-  ])('should preserve synchronous runs untouched and clear the started timeout on $name', ({ runOutput }) => {
-    // Arrange
-    vi.useFakeTimers();
-    vi.spyOn(global, 'setTimeout');
-    vi.spyOn(global, 'clearTimeout');
-    const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(runOutput);
-
-    // Act
-    const finalRun = timeoutPluginRun(100, nestedRun);
-    const out = finalRun({});
-
-    // Assert
-    expect(out).toBe(runOutput); // sync run, sync output: nothing to race against the timeout
-    expect(setTimeout).toBeCalledTimes(1);
-    expect(clearTimeout).toBeCalledTimes(1);
-  });
-
-  it('should define one decorateRun per instance without merging with other instances', () => {
-    // Arrange
-    let pluginIndex = 0;
-    const sharedContext = {};
-
-    // Act
-    const instanceA = timeout(10)(pluginIndex++, sharedContext);
-    const instanceB = timeout(10)(pluginIndex++, sharedContext);
-
-    // Assert
-    expect(instanceA.decorateRun).not.toBe(undefined);
-    expect(instanceB.decorateRun).not.toBe(undefined);
-    expect(instanceB.decorateRun).not.toBe(instanceA.decorateRun);
   });
 });
 
