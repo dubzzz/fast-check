@@ -55,6 +55,7 @@ export interface Parameters<T = void> {
    *
    * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
    * @remarks Since 0.0.11
+   * @deprecated Prefer using the timeout plugin
    */
   timeout?: number;
   /**
