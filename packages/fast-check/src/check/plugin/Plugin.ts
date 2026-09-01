@@ -24,11 +24,12 @@ export type PluginInstance<Ts> = {
    */
   decorateRun?: (nestedRun: IRawProperty<Ts, boolean>['run']) => IRawProperty<Ts, boolean>['run'];
   /**
-   * Called once at the end of the full property assessment.
-   * Gets called with the result of the execution.
+   * Called once at the end of the full property assessment, with the result of the execution.
    *
    * Throwing allows you to override the default error reporting provided by {@link assert}.
-   * But it won't stop other `onAllRunsComplete` from running, their failures if any will just be ignored.
+   *
+   * Every `onAllRunsComplete` is guaranteed to run, even if another `onAllRunsComplete` threw.
+   * In case several of them throw, only the first failure is reported, the others will be swallowed.
    *
    * WARNING: Always return synchronously for synchronous properties.
    *
@@ -36,11 +37,11 @@ export type PluginInstance<Ts> = {
    */
   onAllRunsComplete?: (runDetails: RunDetails<Ts>) => Promise<void> | void;
   /**
-   * Called once at the end of the full property assessment and after all other life-cycle hooks.
-   * Allows you to clean-up and release resources that you needed during the execution of the plugin.
+   * Called once at the end of the full property assessment, after all other methods of the plugin.
+   * Use it to clean up and release resources acquired by the plugin.
    *
-   * No matter the throwing status of `onAllRunsComplete` or other `afterAll`, all `afterAll` will be called.
-   * At reporting time, if any of the provided `onAllRunsComplete` or `afterAll` failed the first having failed will be reported and all others will be swallowed.
+   * Every `afterAll` is guaranteed to run, even if an `onAllRunsComplete` or another `afterAll` threw.
+   * In case several `onAllRunsComplete` or `afterAll` throw, only the first failure is reported, the others will be swallowed.
    *
    * WARNING: Always return synchronously for synchronous properties.
    *
