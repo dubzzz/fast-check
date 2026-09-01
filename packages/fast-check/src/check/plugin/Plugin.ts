@@ -39,21 +39,36 @@ export type PluginInstance<Ts> = {
    * Called once per execution of the predicate.
    *
    * WARNING: `nestedRun` never throws and neither should the function returned by `decorateRun`.
-   * WARNING: Except in `asyncOnly: true` mode, if run returns synchronously, the decorated function must too.
+   * WARNING: If run returns synchronously, the decorated function must too.
    *
    * @remarks Since 4.10.0
    */
   decorateRun?: (nestedRun: IRawProperty<Ts, boolean>['run']) => IRawProperty<Ts, boolean>['run'];
   /**
-   * Called once at the end of the full property assessment.
-   * Gets called with the result of the execution.
+   * Called once at the end of the full property assessment, with the result of the execution.
    *
-   * WARNING: `afterAll` must not throw. Throwing would shadow the output of the property execution.
-   * WARNING: Make sure to always return synchronously except if you set `asyncOnly: true`.
+   * Throwing allows you to override the default error reporting provided by {@link assert}.
+   *
+   * Every `onAllRunsComplete` is guaranteed to run, even if another `onAllRunsComplete` threw.
+   * In case several of them throw, only the first failure is reported, the others will be swallowed.
+   *
+   * WARNING: Always return synchronously for synchronous properties.
    *
    * @remarks Since 4.10.0
    */
-  afterAll?: (runDetails: RunDetails<Ts>) => Promise<void> | void;
+  onAllRunsComplete?: (runDetails: RunDetails<Ts>) => Promise<void> | void;
+  /**
+   * Called once at the end of the full property assessment, after all other methods of the plugin.
+   * Use it to clean up and release resources acquired by the plugin.
+   *
+   * Every `afterAll` is guaranteed to run, even if an `onAllRunsComplete` or another `afterAll` threw.
+   * In case several `onAllRunsComplete` or `afterAll` throw, only the first failure is reported, the others will be swallowed.
+   *
+   * WARNING: Always return synchronously for synchronous properties.
+   *
+   * @remarks Since 4.10.0
+   */
+  afterAll?: () => Promise<void> | void;
 };
 
 /**
