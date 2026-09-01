@@ -95,6 +95,6 @@ describe('TimeoutPlugin', () => {
 // Helpers
 
 function timeoutPluginRun(timeMs: number, nestedRun: IRawProperty<unknown, boolean>['run']) {
-  const instance = timeout(timeMs)(0, {});
+  const instance = timeout(timeMs)(0, new Map<symbol, any>());
   return instance.decorateRun!(nestedRun);
 }

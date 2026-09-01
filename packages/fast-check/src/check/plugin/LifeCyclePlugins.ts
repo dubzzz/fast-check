@@ -194,8 +194,8 @@ function lifeCycleHooksRunner(
  * @public
  */
 export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
-  return (pluginIndex, crossPluginContext): PluginInstance<unknown> => {
-    let lifeCycleHooks = crossPluginContext[LifeCyclePluginSymbol] as LifeCycleHooks | undefined;
+  return (pluginIndex, pluginStore): PluginInstance<unknown> => {
+    let lifeCycleHooks = pluginStore.get<LifeCycleHooks>(LifeCyclePluginSymbol);
     if (lifeCycleHooks !== undefined && lifeCycleHooks.lastPluginIndex === pluginIndex - 1) {
       lifeCycleHooks.lastPluginIndex = pluginIndex;
       lifeCycleHooks.beforeHooks.push(fn);
@@ -209,7 +209,7 @@ export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
       afterHooks: [],
       afterHooksIndices: [],
     };
-    crossPluginContext[LifeCyclePluginSymbol] = lifeCycleHooks;
+    pluginStore.set(LifeCyclePluginSymbol, lifeCycleHooks);
     return { decorateRun: (nestedRun) => (value) => lifeCycleHooksRunner(lifeCycleHooks, nestedRun, value) };
   };
 }
@@ -232,8 +232,8 @@ export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
  * @public
  */
 export function afterEach(fn: AfterEachHook): Plugin<unknown> {
-  return (pluginIndex, crossPluginContext): PluginInstance<unknown> => {
-    let lifeCycleHooks = crossPluginContext[LifeCyclePluginSymbol] as LifeCycleHooks | undefined;
+  return (pluginIndex, pluginStore): PluginInstance<unknown> => {
+    let lifeCycleHooks = pluginStore.get<LifeCycleHooks>(LifeCyclePluginSymbol);
     if (lifeCycleHooks !== undefined && lifeCycleHooks.lastPluginIndex === pluginIndex - 1) {
       lifeCycleHooks.lastPluginIndex = pluginIndex;
       lifeCycleHooks.afterHooks.push(fn);
@@ -247,7 +247,7 @@ export function afterEach(fn: AfterEachHook): Plugin<unknown> {
       afterHooks: [fn],
       afterHooksIndices: [pluginIndex],
     };
-    crossPluginContext[LifeCyclePluginSymbol] = lifeCycleHooks;
+    pluginStore.set(LifeCyclePluginSymbol, lifeCycleHooks);
     return { decorateRun: (nestedRun) => (value) => lifeCycleHooksRunner(lifeCycleHooks, nestedRun, value) };
   };
 }
