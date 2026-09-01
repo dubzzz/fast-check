@@ -53,6 +53,96 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
+  it('should run every onAllRunsComplete and afterAll even when many throw and only forward the first error', async () => {
+    // Arrange
+    const probes: string[] = [];
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+      return () => {
+        return {
+          onAllRunsComplete: async () => {
+            probes.push(`${pluginName}::onAllRunsComplete`);
+            throw new Error(`error from ${pluginName}::onAllRunsComplete`);
+          },
+          afterAll: async () => {
+            probes.push(`${pluginName}::afterAll`);
+            throw new Error(`error from ${pluginName}::afterAll`);
+          },
+        };
+      };
+    };
+
+    // Act / Assert
+    await expect(
+      fc.assert(
+        fc.asyncProperty(fc.integer(), async (_x) => true),
+        { plugins: [buildPlugin('a'), buildPlugin('b'), buildPlugin('c')] },
+      ),
+    ).rejects.toThrow(/^error from a::onAllRunsComplete$/);
+    expect(probes).toEqual([
+      'a::onAllRunsComplete',
+      'b::onAllRunsComplete',
+      'c::onAllRunsComplete',
+      'c::afterAll',
+      'b::afterAll',
+      'a::afterAll',
+    ]);
+  });
+
+  it('should forward errors thrown within afterAll to the user even in case of predicate failure', () => {
+    // Arrange
+    const reporterPlugin: fc.Plugin<[number]> = () => ({
+      afterAll: () => {
+        throw new Error(`boom!`);
+      },
+    });
+
+    // Act / Assert
+    expect(() =>
+      fc.assert(
+        fc.property(fc.integer(), (x) => x < 42),
+        { plugins: [reporterPlugin], seed },
+      ),
+    ).toThrow(/^boom!$/);
+  });
+
+  it('should give plugins the ability to replace the default reporting of assert via onAllRunsComplete', () => {
+    // Arrange
+    const reporterPlugin: fc.Plugin<[number]> = () => ({
+      onAllRunsComplete: (runDetails) => {
+        if (runDetails.failed) {
+          throw new Error(`Custom report for counterexample ${JSON.stringify(runDetails.counterexample)}`);
+        }
+      },
+    });
+
+    // Act / Assert
+    expect(() =>
+      fc.assert(
+        fc.property(fc.integer(), (x) => x < 42),
+        { plugins: [reporterPlugin], seed },
+      ),
+    ).toThrow(/^Custom report for counterexample \[42\]$/);
+  });
+
+  it('should preserve the default reporting of assert when onAllRunsComplete does not throw', () => {
+    // Arrange
+    const seenFailures: boolean[] = [];
+    const reporterPlugin: fc.Plugin<[number]> = () => ({
+      onAllRunsComplete: (runDetails) => {
+        seenFailures.push(runDetails.failed);
+      },
+    });
+
+    // Act / Assert
+    expect(() =>
+      fc.assert(
+        fc.property(fc.integer(), (x) => x < 42),
+        { plugins: [reporterPlugin], seed },
+      ),
+    ).toThrow(/Property failed after/);
+    expect(seenFailures).toEqual([true]);
+  });
+
   it('should stack decorateRun with the first plugin being the closest to the predicate', () => {
     // Arrange
     const probes: string[] = [];
