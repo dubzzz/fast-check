@@ -20,6 +20,8 @@ import type { Value } from '../arbitrary/definition/Value.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
+const SMap = Map;
+
 /** @internal */
 function runIt<Ts>(
   run: IRawProperty<Ts>['run'],
@@ -130,13 +132,13 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const localPlugins = qParams.plugins;
 
   // Instantiate plugins
-  const crossPluginContext: { [K in any]?: unknown } = {};
+  const pluginStore = new SMap<symbol, any>();
   const pluginInstances: PluginInstance<Ts>[] = [];
   for (let index = 0; index !== globalPlugins.length; ++index) {
-    pluginInstances.push(globalPlugins[index](index, crossPluginContext));
+    pluginInstances.push(globalPlugins[index](index, pluginStore));
   }
   for (let index = 0; index !== localPlugins.length; ++index) {
-    pluginInstances.push(localPlugins[index](globalPlugins.length + index, crossPluginContext));
+    pluginInstances.push(localPlugins[index](globalPlugins.length + index, pluginStore));
   }
 
   // Apply and decorate with plugins

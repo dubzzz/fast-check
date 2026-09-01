@@ -43,7 +43,7 @@ describe('LifeCyclePlugins', () => {
               `${out.hookType}${out.isTeardown ? ' (teardown)' : ''}${out.failingPlugin && (out.isTeardown || !out.hookType.includes('teardown')) ? ' throw' : ''}`,
             );
           let pluginIndex = 0;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
           let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
             ? async () => {
                 probe('start', 'predicate');
@@ -60,7 +60,7 @@ describe('LifeCyclePlugins', () => {
             .map(({ hookType, fails }) =>
               fails ? failingPluginFor(hookType, probing) : successfulPluginFor(hookType, probing),
             )
-            .map((plugin) => plugin(pluginIndex++, sharedContext));
+            .map((plugin) => plugin(pluginIndex++, store));
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
@@ -93,7 +93,7 @@ describe('LifeCyclePlugins', () => {
             seenSteps.push(`${out.type} ${out.hookType}${out.isTeardown ? ' (teardown)' : ''} ${index}`);
           };
           let pluginIndex = 0;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
           let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
             ? async () => {
                 hasFailedStep ||= lastChunk > 2;
@@ -111,7 +111,7 @@ describe('LifeCyclePlugins', () => {
                 ? failingPluginFor(hookType, (out) => probing(out, index))
                 : successfulPluginFor(hookType, (out) => probing(out, index)),
             )
-            .map((plugin) => plugin(pluginIndex++, sharedContext));
+            .map((plugin) => plugin(pluginIndex++, store));
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
@@ -147,7 +147,7 @@ describe('LifeCyclePlugins', () => {
             }
           };
           let pluginIndex = 0;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
           let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
           const instances = hookTypes
             .map(({ hookType, fails }, index) =>
@@ -155,7 +155,7 @@ describe('LifeCyclePlugins', () => {
                 ? failingPluginFor(hookType, (out) => probing(out, index))
                 : successfulPluginFor(hookType, (out) => probing(out, index)),
             )
-            .map((plugin) => plugin(pluginIndex++, sharedContext));
+            .map((plugin) => plugin(pluginIndex++, store));
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
@@ -188,7 +188,7 @@ describe('LifeCyclePlugins', () => {
             }
           };
           let pluginIndex = 0;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
           let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
           const instances = hookTypes
             .map(({ hookType, fails }, index) =>
@@ -196,7 +196,7 @@ describe('LifeCyclePlugins', () => {
                 ? failingPluginFor(hookType, (out) => probing(out, index))
                 : successfulPluginFor(hookType, (out) => probing(out, index)),
             )
-            .map((plugin) => plugin(pluginIndex++, sharedContext));
+            .map((plugin) => plugin(pluginIndex++, store));
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
@@ -232,11 +232,11 @@ describe('LifeCyclePlugins', () => {
         (hookTypes, isAsyncRun, runValue) => {
           // Arrange
           let pluginIndex = 0;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
           let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
           const instances = hookTypes
             .map((hookType) => successfulPluginFor(hookType))
-            .map((plugin) => plugin(pluginIndex++, sharedContext));
+            .map((plugin) => plugin(pluginIndex++, store));
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
@@ -265,11 +265,11 @@ describe('LifeCyclePlugins', () => {
         async (hookTypes, isAsyncRun, runValue) => {
           // Arrange
           let pluginIndex = 0;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
           let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
           const instances = hookTypes
             .map((hookType) => successfulPluginFor(hookType))
-            .map((plugin) => plugin(pluginIndex++, sharedContext));
+            .map((plugin) => plugin(pluginIndex++, store));
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
@@ -292,7 +292,7 @@ describe('LifeCyclePlugins', () => {
         async (hookTypesBeforeFailure, hookTypeFailing, hookTypesAfterFailure, isAsyncRun) => {
           // Arrange
           let pluginIndex = 0;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
           let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
             ? async () => null // emulates successful async run
             : () => null; // emulates successful sync run
@@ -300,7 +300,7 @@ describe('LifeCyclePlugins', () => {
             ...hookTypesBeforeFailure.map((hookType) => successfulPluginFor(hookType)),
             failingPluginFor(hookTypeFailing),
             ...hookTypesAfterFailure.map((hookType) => successfulPluginFor(hookType)),
-          ].map((plugin) => plugin(pluginIndex++, sharedContext));
+          ].map((plugin) => plugin(pluginIndex++, store));
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
@@ -331,7 +331,7 @@ describe('LifeCyclePlugins', () => {
           let beforeEachCalledAfterFailure = false;
           let beforeEachFailedStarted = false;
           let pluginIndex = 0;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
           const originalRun = vi.fn(() => null);
           let finalRun: IRawProperty<null, boolean>['run'] = originalRun;
           const probing = (out: ProbingOutput) => {
@@ -344,7 +344,7 @@ describe('LifeCyclePlugins', () => {
             .map(({ hookType, fails }) =>
               fails ? failingPluginFor(hookType, probing) : successfulPluginFor(hookType, probing),
             )
-            .map((plugin) => plugin(pluginIndex++, sharedContext));
+            .map((plugin) => plugin(pluginIndex++, store));
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
@@ -372,14 +372,14 @@ describe('LifeCyclePlugins', () => {
         (startLifeCyclePluginsIndex, hookTypesAndGaps) => {
           // Arrange
           let pluginIndex = startLifeCyclePluginsIndex;
-          const sharedContext = {};
+          const store = new Map<symbol, any>();
 
           // Act / Assert
           for (let nth = 0; nth !== hookTypesAndGaps.length; ++nth) {
             const { hookTypes, gap } = hookTypesAndGaps[nth];
             for (let index = 0; index !== hookTypes.length; ++index) {
               const plugin = successfulPluginFor(hookTypes[index]);
-              const instance = plugin(pluginIndex++, sharedContext);
+              const instance = plugin(pluginIndex++, store);
               const expectHint = `at index ${index} of ${nth + 1}th chunk`;
               if (index === 0) {
                 expect(instance.decorateRun, expectHint).not.toBe(undefined);
