@@ -3,13 +3,20 @@ import * as fc from '../../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`Plugins (seed: ${seed})`, () => {
-  it('should wait and queue afterAll', async () => {
+  it('should wait and queue onAllRunsComplete and afterAll', async () => {
     // Arrange
     const probes: string[] = [];
     const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
+          onAllRunsComplete: async () => {
+            probes.push(`${pluginName}::onAllRunsComplete started`);
+            await Promise.resolve(`${pluginName}1`);
+            await Promise.resolve(`${pluginName}2`);
+            await Promise.resolve(`${pluginName}3`);
+            probes.push(`${pluginName}::onAllRunsComplete done`);
+          },
           afterAll: async () => {
             probes.push(`${pluginName}::afterAll started`);
             await Promise.resolve(`${pluginName}1`);
@@ -34,6 +41,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       'assert started',
       'a instantiated',
       'b instantiated',
+      'a::onAllRunsComplete started',
+      'a::onAllRunsComplete done',
+      'b::onAllRunsComplete started',
+      'b::onAllRunsComplete done',
       'b::afterAll started',
       'b::afterAll done',
       'a::afterAll started',
@@ -134,24 +145,27 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should support mixes of sync and async afterAll', async () => {
+  it.each([
+    { hook: 'afterAll' as const, expectReversed: true },
+    { hook: 'onAllRunsComplete' as const, expectReversed: false },
+  ])('should support mixes of sync and async $hook', async ({ hook, expectReversed }) => {
     // Arrange
     const probes: string[] = [];
     const buildPlugin = (pluginName: string, isAsync: boolean): fc.Plugin<[number]> => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
-          afterAll: isAsync
+          [hook]: isAsync
             ? async () => {
-                probes.push(`${pluginName}::afterAll started`);
+                probes.push(`${pluginName}::${hook} started`);
                 await Promise.resolve(`${pluginName}1`);
                 await Promise.resolve(`${pluginName}2`);
                 await Promise.resolve(`${pluginName}3`);
-                probes.push(`${pluginName}::afterAll done`);
+                probes.push(`${pluginName}::${hook} done`);
               }
             : () => {
-                probes.push(`${pluginName}::afterAll started`);
-                probes.push(`${pluginName}::afterAll done`);
+                probes.push(`${pluginName}::${hook} started`);
+                probes.push(`${pluginName}::${hook} done`);
               },
         };
       };
@@ -181,16 +195,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       'c instantiated',
       'd instantiated',
       'e instantiated',
-      'e::afterAll started',
-      'e::afterAll done',
-      'd::afterAll started',
-      'd::afterAll done',
-      'c::afterAll started',
-      'c::afterAll done',
-      'b::afterAll started',
-      'b::afterAll done',
-      'a::afterAll started',
-      'a::afterAll done',
+      ...(expectReversed ? ['e', 'd', 'c', 'b', 'a'] : ['a', 'b', 'c', 'd', 'e']).flatMap((id) => [
+        `${id}::${hook} started`,
+        `${id}::${hook} done`,
+      ]),
       'assert done',
     ]);
   });

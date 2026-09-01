@@ -208,10 +208,11 @@ import { noShrink } from './arbitrary/noShrink.js';
 import { noBias } from './arbitrary/noBias.js';
 import { limitShrink } from './arbitrary/limitShrink.js';
 import type { RandomGenerator } from './random/generator/RandomGenerator.js';
-import type { Plugin, PluginInstance } from './check/plugin/Plugin.js';
+import type { Plugin, PluginInstance, PluginStore } from './check/plugin/Plugin.js';
 import { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
 import { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
-import { skipAllAfterTimeLimit, interruptAfterTimeLimit } from './check/plugin/TimeLimitPlugins.js';
+import { interruptAfterTimeLimit } from './check/plugin/TimeLimitPlugins.js';
+import { timeout } from './check/plugin/TimeoutPlugin.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**
@@ -243,6 +244,7 @@ const __commitHash = process.env.__COMMIT_HASH__ as string;
 export type {
   Plugin,
   PluginInstance,
+  PluginStore,
   IRawProperty,
   IProperty,
   IPropertyWithHooks,
@@ -458,8 +460,8 @@ export {
   installGlobalPlugin,
   beforeEach,
   afterEach,
-  skipAllAfterTimeLimit,
   interruptAfterTimeLimit,
+  timeout,
   ExecutionStatus,
   Random,
   Stream,
