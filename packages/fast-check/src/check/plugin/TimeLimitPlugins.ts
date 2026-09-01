@@ -35,11 +35,10 @@ function timeLimitRunner(
 /**
  * Interrupt test execution after a given time limit.
  *
- * NOTE:  Useful to avoid having too long running processes in your CI while preserving replay capabilities if needed.
+ * NOTE: Useful to avoid having too long running processes in your CI while preserving replay capabilities if needed.
  *
- * WARNING: If the test got interrupted before any failure occured and before it reached
- * the requested number of runs specified by `numRuns` it will be marked as success.
- * Except if `markInterruptAsFailure` has been set to `true`.
+ * WARNING: A test interrupted before any failure counts as a success, even if it did not
+ * reach `numRuns` runs, unless `markInterruptAsFailure` is set to `true`.
  *
  * As predicates cannot be stopped, the underlying execution keeps running but its outcome gets ignored.
  *
