@@ -19,66 +19,29 @@ function interruptAfterDelay(timeMs: number) {
 /** @internal */
 function timeLimitRunner(
   limitTime: number,
-  interruptExecution: boolean,
   nestedRun: IRawProperty<unknown, boolean>['run'],
   value: unknown,
 ): ReturnType<typeof nestedRun> {
-  const remainingTime = limitTime - Date.now();
+  const remainingTime = limitTime - performance.now();
   if (remainingTime <= 0) {
-    return new PreconditionFailure(interruptExecution);
-  }
-  if (!interruptExecution) {
-    return nestedRun(value);
+    return new PreconditionFailure(true);
   }
   const t = interruptAfterDelay(remainingTime);
-  const runOut = nestedRun(value);
-  if (runOut === null || !('then' in runOut)) {
-    // synchronous run: it already came to an end, no need to wait for any interruption
-    t.clear();
-    return runOut;
-  }
-  const raced = Promise.race([runOut, t.promise]);
+  const raced = Promise.race([nestedRun(value), t.promise]);
   raced.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
   return raced;
 }
 
-/** @internal */
-function buildTimeLimitPlugin(timeLimitMs: number, interruptExecution: boolean): Plugin<unknown> {
-  return (): PluginInstance<unknown> => {
-    const limitTime = Date.now() + timeLimitMs;
-    return {
-      decorateRun: (nestedRun) => (value) => timeLimitRunner(limitTime, interruptExecution, nestedRun, value),
-    };
-  };
-}
-
 /**
- * Skip any execution of the predicate starting after `timeLimitMs` milliseconds.
- * The clock starts when the property begins to be assessed, executions already started are left running.
- * Skipped executions count as skips: passed the maximal number of skips the run will be marked as failed.
+ * Interrupt test execution after a given time limit.
  *
- * @example
- * ```ts
- * fc.assert(
- *   fc.property(..., (...) => {...}),
- *   { plugins: [fc.skipAllAfterTimeLimit(1000)] }
- * )
- * ```
+ * NOTE:  Useful to avoid having too long running processes in your CI while preserving replay capabilities if needed.
  *
- * @param timeLimitMs - Delay in milliseconds after which executions of the predicate get skipped
+ * WARNING: If the test got interrupted before any failure occured and before it reached
+ * the requested number of runs specified by `numRuns` it will be marked as success.
+ * Except if `markInterruptAsFailure` has been set to `true`.
  *
- * @remarks Since 4.10.0
- * @public
- */
-export function skipAllAfterTimeLimit(timeLimitMs: number): Plugin<unknown> {
-  return buildTimeLimitPlugin(timeLimitMs, false);
-}
-
-/**
- * Interrupt the run after `timeLimitMs` milliseconds: no more execution of the predicate will be started
- * and any execution still running at that time will be interrupted (as predicates cannot be stopped, the
- * underlying execution keeps running but its outcome gets ignored).
- * The clock starts when the property begins to be assessed.
+ * As predicates cannot be stopped, the underlying execution keeps running but its outcome gets ignored.
  *
  * @example
  * ```ts
@@ -88,11 +51,16 @@ export function skipAllAfterTimeLimit(timeLimitMs: number): Plugin<unknown> {
  * )
  * ```
  *
- * @param timeLimitMs - Delay in milliseconds after which the run gets interrupted
+ * @param timeLimitMs - Delay in milliseconds after which runs gets interrupted
  *
  * @remarks Since 4.10.0
  * @public
  */
 export function interruptAfterTimeLimit(timeLimitMs: number): Plugin<unknown> {
-  return buildTimeLimitPlugin(timeLimitMs, true);
+  return (): PluginInstance<unknown> => {
+    const limitTime = performance.now() + timeLimitMs;
+    return {
+      decorateRun: (nestedRun) => (value) => timeLimitRunner(limitTime, nestedRun, value),
+    };
+  };
 }
