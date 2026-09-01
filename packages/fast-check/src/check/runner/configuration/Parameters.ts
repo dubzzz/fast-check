@@ -177,7 +177,21 @@ export interface Parameters<T = void> {
    * Only used when calling {@link assert}
    * Cannot be defined in conjonction with `asyncReporter`
    *
+   * @example
+   * ```typescript
+   * // Prefer a plugin relying on the `onAllRunsComplete` hook.
+   * const reporterPlugin: fc.Plugin<unknown> = () => ({
+   *   onAllRunsComplete: (runDetails) => {
+   *     if (runDetails.failed) {
+   *       throw new Error(fc.defaultReportMessage(runDetails));
+   *     }
+   *   },
+   * });
+   * fc.assert(property, { plugins: [reporterPlugin] });
+   * ```
+   *
    * @remarks Since 1.25.0
+   * @deprecated Prefer a plugin relying on the `onAllRunsComplete` hook: `fc.assert(property, { plugins: [reporterPlugin] })`
    */
   reporter?: (runDetails: RunDetails<T>) => void;
   /**
@@ -190,7 +204,21 @@ export interface Parameters<T = void> {
    * Cannot be defined in conjonction with `reporter`
    * Not compatible with synchronous properties: runner will throw
    *
+   * @example
+   * ```typescript
+   * // Prefer a plugin relying on the `onAllRunsComplete` hook.
+   * const reporterPlugin: fc.Plugin<unknown> = () => ({
+   *   onAllRunsComplete: async (runDetails) => {
+   *     if (runDetails.failed) {
+   *       throw new Error(fc.asyncDefaultReportMessage(runDetails));
+   *     }
+   *   },
+   * });
+   * await fc.assert(asyncProperty, { plugins: [reporterPlugin] });
+   * ```
+   *
    * @remarks Since 1.25.0
+   * @deprecated Prefer a plugin relying on an asynchronous `onAllRunsComplete` hook: `fc.assert(asyncProperty, { plugins: [reporterPlugin] })`
    */
   asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
   /**
