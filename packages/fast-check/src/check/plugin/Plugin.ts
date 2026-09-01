@@ -18,7 +18,7 @@ export type PluginInstance<Ts> = {
    * Called once per execution of the predicate.
    *
    * WARNING: `nestedRun` never throws and neither should the function returned by `decorateRun`.
-   * WARNING: Except in `asyncOnly: true` mode, if run returns synchronously, the decorated function must too.
+   * WARNING: If run returns synchronously, the decorated function must too.
    *
    * @remarks Since 4.10.0
    */
@@ -27,12 +27,26 @@ export type PluginInstance<Ts> = {
    * Called once at the end of the full property assessment.
    * Gets called with the result of the execution.
    *
-   * WARNING: `afterAll` must not throw. Throwing would shadow the output of the property execution.
-   * WARNING: Make sure to always return synchronously except if you set `asyncOnly: true`.
+   * Throwing allows you to override the default error reporting provided by {@link assert}.
+   * But it won't stop other `onAllRunsComplete` from running, their failures if any will just be ignored.
+   *
+   * WARNING: Always return synchronously for synchronous properties.
    *
    * @remarks Since 4.10.0
    */
-  afterAll?: (runDetails: RunDetails<Ts>) => Promise<void> | void;
+  onAllRunsComplete?: (runDetails: RunDetails<Ts>) => Promise<void> | void;
+  /**
+   * Called once at the end of the full property assessment and after all other life-cycle hooks.
+   * Allows you to clean-up and release resources that you needed during the execution of the plugin.
+   *
+   * No matter the throwing status of `onAllRunsComplete` or other `afterAll`, all `afterAll` will be called.
+   * At reporting time, if any of the provided `onAllRunsComplete` or `afterAll` failed the first having failed will be reported and all others will be swallowed.
+   *
+   * WARNING: Always return synchronously for synchronous properties.
+   *
+   * @remarks Since 4.10.0
+   */
+  afterAll?: () => Promise<void> | void;
 };
 
 /**

@@ -66,6 +66,85 @@ async function asyncPropertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
   return out;
 }
 
+function runPluginCompletionHooksSync<Ts>(pluginInstances: PluginInstance<Ts>[], runDetails: RunDetails<Ts>) {
+  let interceptedOnce = false;
+  let interceptedError: unknown = undefined;
+  for (let index = 0; index !== pluginInstances.length; ++index) {
+    const instance = pluginInstances[index];
+    if (instance.onAllRunsComplete !== undefined) {
+      try {
+        void instance.onAllRunsComplete(runDetails);
+      } catch (error) {
+        if (!interceptedOnce) {
+          interceptedOnce = true;
+          interceptedError = error;
+        }
+      }
+    }
+  }
+  for (let index = pluginInstances.length - 1; index >= 0; --index) {
+    const instance = pluginInstances[index];
+    if (instance.afterAll !== undefined) {
+      try {
+        void instance.afterAll();
+      } catch (error) {
+        if (!interceptedOnce) {
+          interceptedOnce = true;
+          interceptedError = error;
+        }
+      }
+    }
+  }
+  if (interceptedOnce) {
+    throw interceptedError;
+  }
+}
+
+function runPluginCompletionHooks<Ts>(
+  pluginInstances: PluginInstance<Ts>[],
+  runDetailsPromise: Promise<RunDetails<Ts>>,
+): Promise<RunDetails<Ts>> {
+  const followUps: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] = [];
+  for (let index = 0; index !== pluginInstances.length; ++index) {
+    const instance = pluginInstances[index];
+    if (instance.onAllRunsComplete !== undefined) {
+      // oxlint-disable-next-line typescript/no-non-null-assertion
+      followUps.push((runDetails) => instance.onAllRunsComplete!(runDetails));
+    }
+  }
+  for (let index = pluginInstances.length - 1; index >= 0; --index) {
+    const instance = pluginInstances[index];
+    if (instance.afterAll !== undefined) {
+      // oxlint-disable-next-line typescript/no-non-null-assertion
+      followUps.push(() => instance.afterAll!());
+    }
+  }
+  if (followUps.length === 0) {
+    return runDetailsPromise;
+  }
+  return runDetailsPromise.then(async (details) => {
+    let interceptedOnce = false;
+    let interceptedError: unknown = undefined;
+    for (const followUp of followUps) {
+      try {
+        const out = followUp(details);
+        if (out !== undefined) {
+          await out;
+        }
+      } catch (error) {
+        if (!interceptedOnce) {
+          interceptedOnce = true;
+          interceptedError = error;
+        }
+      }
+    }
+    if (interceptedOnce) {
+      throw interceptedError;
+    }
+    return details;
+  });
+}
+
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
@@ -143,14 +222,10 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   let run: typeof property.run = property.isAsync()
     ? async (v) => asyncPropertyExecution(property, v)
     : (v) => propertyExecution(property, v);
-  const pluginAfterAllCallbacks: Required<PluginInstance<Ts>>['afterAll'][] = [];
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateRun !== undefined) {
       run = pluginInstance.decorateRun(run);
-    }
-    if (pluginInstance.afterAll !== undefined) {
-      pluginAfterAllCallbacks.push(pluginInstance.afterAll.bind(pluginInstance));
     }
   }
 
@@ -167,17 +242,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     const out = asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
       e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
     );
-    if (pluginAfterAllCallbacks.length === 0) {
-      return out;
-    }
-    return out.then((details) => {
-      let queued = pluginAfterAllCallbacks[0](details);
-      for (let index = 1; index < pluginAfterAllCallbacks.length; ++index) {
-        const afterAll = pluginAfterAllCallbacks[index];
-        queued = queued === undefined ? afterAll(details) : queued.then(() => afterAll(details));
-      }
-      return queued === undefined ? details : queued.then(() => details);
-    });
+    return runPluginCompletionHooks(pluginInstances, out);
   }
   const out = runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
     qParams.seed,
@@ -185,9 +250,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     maxSkips,
     qParams,
   );
-  for (let index = 0; index !== pluginAfterAllCallbacks.length; ++index) {
-    (pluginAfterAllCallbacks[index] as () => void)();
-  }
+  runPluginCompletionHooksSync(pluginInstances, out);
   return out;
 }
 
