@@ -358,6 +358,117 @@ describe('LifeCyclePlugins', () => {
     );
   });
 
+  it('should chain synchronous beforeEach hooks within the same tick when following an asynchronous one', async () => {
+    // Arrange
+    const probes: string[] = [];
+    let pluginIndex = 0;
+    const store = new Map<symbol, any>();
+    const instances = [
+      beforeEach(async () => {
+        probes.push('a::beforeEach');
+      }),
+      beforeEach(() => {
+        probes.push('b::beforeEach');
+        // Anything requeued between b and c would run before this one
+        void Promise.resolve().then(() => probes.push('tick queued by b'));
+      }),
+      beforeEach(() => {
+        probes.push('c::beforeEach');
+      }),
+    ].map((plugin) => plugin(pluginIndex++, store));
+    const finalRun = produceFinalRun(() => {
+      probes.push('predicate');
+      return null;
+    }, instances);
+
+    // Act
+    await finalRun(null);
+
+    // Assert
+    // Once the asynchronous hook resolved, b and c run back-to-back within the same tick
+    expect(probes).toEqual(['a::beforeEach', 'b::beforeEach', 'c::beforeEach', 'tick queued by b', 'predicate']);
+  });
+
+  it('should chain synchronous afterEach hooks within the same tick when following an asynchronous one', async () => {
+    // Arrange
+    const probes: string[] = [];
+    let pluginIndex = 0;
+    const store = new Map<symbol, any>();
+    // afterEach hooks run in reverse declaration order: z then y then x
+    const instances = [
+      afterEach(() => {
+        probes.push('x::afterEach');
+      }),
+      afterEach(() => {
+        probes.push('y::afterEach');
+        // Anything requeued between y and x would run before this one
+        void Promise.resolve().then(() => probes.push('tick queued by y'));
+      }),
+      afterEach(async () => {
+        probes.push('z::afterEach');
+      }),
+    ].map((plugin) => plugin(pluginIndex++, store));
+    const finalRun = produceFinalRun(() => {
+      probes.push('predicate');
+      return null;
+    }, instances);
+
+    // Act
+    await finalRun(null);
+
+    // Assert
+    // Once the asynchronous hook resolved, y and x run back-to-back within the same tick
+    expect(probes).toEqual(['predicate', 'z::afterEach', 'y::afterEach', 'x::afterEach', 'tick queued by y']);
+  });
+
+  it('should not delay the output of an asynchronous run with extra ticks when hooks are synchronous', async () => {
+    // Arrange
+    const probes: string[] = [];
+    let pluginIndex = 0;
+    const store = new Map<symbol, any>();
+    // afterEach-and-teardown hooks run in reverse declaration order: afterEach then teardown
+    const instances = [
+      beforeEach(() => {
+        probes.push('beforeEach');
+        return () => {
+          probes.push('teardown');
+          // teardown runs last: from there, count how many microtask ticks elapse before finalRun resolves
+          void Promise.resolve()
+            .then(() => probes.push('tick1'))
+            .then(() => probes.push('tick2'))
+            .then(() => probes.push('tick3'))
+            .then(() => probes.push('tick4'));
+        };
+      }),
+      afterEach(() => {
+        probes.push('afterEach');
+      }),
+    ].map((plugin) => plugin(pluginIndex++, store));
+    const finalRun = produceFinalRun(async () => {
+      probes.push('predicate');
+      return null;
+    }, instances);
+
+    // Act
+    await finalRun(null);
+    probes.push('resolved');
+    await new Promise((resolve) => setTimeout(resolve)); // flush pending ticks
+
+    // Assert
+    // Fully synchronous hooks must not requeue anything: finalRun resolves on the very next tick
+    expect(probes).toEqual([
+      'beforeEach',
+      'predicate',
+      'afterEach',
+      'teardown',
+      'tick1',
+      'resolved',
+      'tick2',
+      'tick3',
+      'tick4',
+    ]);
+  });
+
   it('should merge consecutive instances of the plugin into a single instance but create a new instance at each index gap', async () => {
     await fc.assert(
       fc.property(
