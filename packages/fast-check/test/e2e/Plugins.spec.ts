@@ -236,6 +236,43 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
+  it('should not accumulate extra ticks per asynchronous hook in a chain of asynchronous hooks', async () => {
+    // Arrange
+    const probes: string[] = [];
+    const asyncPlugin = (): fc.Plugin<[number]> => () => ({
+      onAllRunsComplete: async () => undefined,
+      afterAll: async () => undefined,
+    });
+    const lastPlugin: fc.Plugin<[number]> = () => ({
+      onAllRunsComplete: async () => undefined,
+      afterAll: () => {
+        // afterAll of the first plugin runs last: when its promise settles, count how many
+        // microtask ticks elapse before check resolves
+        const out = Promise.resolve();
+        void out.then(() => {
+          let chain = Promise.resolve();
+          for (let tick = 1; tick <= 8; ++tick) {
+            chain = chain.then(() => void probes.push(`tick${tick}`));
+          }
+        });
+        return out;
+      },
+    });
+
+    // Act
+    await fc.check(
+      fc.asyncProperty(fc.integer(), async (_x) => true),
+      { plugins: [lastPlugin, asyncPlugin(), asyncPlugin()] },
+    );
+    probes.push('check resolved');
+    await new Promise((resolve) => setTimeout(resolve)); // flush pending ticks
+
+    // Assert
+    // The tick count separating the last hook from the resolution of check must not depend
+    // on how many asynchronous hooks ran before it
+    expect(probes).toEqual(['tick1', 'tick2', 'check resolved', 'tick3', 'tick4', 'tick5', 'tick6', 'tick7', 'tick8']);
+  });
+
   it('should forward errors thrown within afterAll to the user even in case of predicate failure', () => {
     // Arrange
     const reporterPlugin: fc.Plugin<[number]> = () => ({

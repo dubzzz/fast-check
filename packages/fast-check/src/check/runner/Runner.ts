@@ -133,21 +133,14 @@ function runPluginCompletionHooks<Ts>(
         interceptedError = error;
       }
     };
-    // Stays synchronous as long as every hook returns synchronously: promises only get
-    // involved when a hook returns one, and once it settles the loop resumes synchronously
-    // over the next hooks from within the settlement callback.
-    const runFollowUpsFrom = (startIndex: number): Promise<void> | undefined => {
+    // Runs every hook from startIndex until one of them returns a promise: hooks running
+    // synchronously never delay their successors to another microtask tick.
+    const runFollowUpsFrom = (startIndex: number): { index: number; out: Promise<void> } | undefined => {
       for (let index = startIndex; index !== followUps.length; ++index) {
         try {
           const out = followUps[index](details);
           if (out !== undefined) {
-            return out.then(
-              () => runFollowUpsFrom(index + 1),
-              (error) => {
-                interceptError(error);
-                return runFollowUpsFrom(index + 1);
-              },
-            );
+            return { index, out };
           }
         } catch (error) {
           interceptError(error);
@@ -155,18 +148,34 @@ function runPluginCompletionHooks<Ts>(
       }
       return undefined;
     };
-    const continuation = runFollowUpsFrom(0);
-    if (continuation === undefined) {
+    const firstAsync = runFollowUpsFrom(0);
+    if (firstAsync === undefined) {
+      // Fully synchronous flow: no promise ever got involved
       if (interceptedOnce) {
         throw interceptedError;
       }
       return details;
     }
-    return continuation.then(() => {
-      if (interceptedOnce) {
-        throw interceptedError;
-      }
-      return details;
+    // A hook returned a promise: from now on the traversal is driven by settlement
+    // callbacks resolving one single deferred promise, no nested promises involved.
+    return new Promise<RunDetails<Ts>>((resolve, reject) => {
+      const resumeAfter = (pending: { index: number; out: Promise<void> }): void => {
+        const resume = () => {
+          const nextAsync = runFollowUpsFrom(pending.index + 1);
+          if (nextAsync !== undefined) {
+            resumeAfter(nextAsync);
+          } else if (interceptedOnce) {
+            reject(interceptedError);
+          } else {
+            resolve(details);
+          }
+        };
+        pending.out.then(resume, (error) => {
+          interceptError(error);
+          resume();
+        });
+      };
+      resumeAfter(firstAsync);
     });
   });
 }
