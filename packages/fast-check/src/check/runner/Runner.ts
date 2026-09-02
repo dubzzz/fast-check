@@ -133,32 +133,29 @@ function runPluginCompletionHooks<Ts>(
         interceptedError = error;
       }
     };
-    // As long as every hook returns synchronously we stay synchronous, we only chain
-    // promises from the first hook returning one.
-    let continuation: Promise<void> | undefined = undefined;
-    for (const followUp of followUps) {
-      if (continuation === undefined) {
+    // Stays synchronous as long as every hook returns synchronously: promises only get
+    // involved when a hook returns one, and once it settles the loop resumes synchronously
+    // over the next hooks from within the settlement callback.
+    const runFollowUpsFrom = (startIndex: number): Promise<void> | undefined => {
+      for (let index = startIndex; index !== followUps.length; ++index) {
         try {
-          const out = followUp(details);
+          const out = followUps[index](details);
           if (out !== undefined) {
-            continuation = out.then(undefined, interceptError);
+            return out.then(
+              () => runFollowUpsFrom(index + 1),
+              (error) => {
+                interceptError(error);
+                return runFollowUpsFrom(index + 1);
+              },
+            );
           }
         } catch (error) {
           interceptError(error);
         }
-      } else {
-        continuation = continuation.then(() => {
-          try {
-            const out = followUp(details);
-            if (out !== undefined) {
-              return out.then(undefined, interceptError);
-            }
-          } catch (error) {
-            interceptError(error);
-          }
-        });
       }
-    }
+      return undefined;
+    };
+    const continuation = runFollowUpsFrom(0);
     if (continuation === undefined) {
       if (interceptedOnce) {
         throw interceptedError;

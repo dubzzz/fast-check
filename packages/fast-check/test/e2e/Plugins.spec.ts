@@ -88,10 +88,10 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should support purely synchronous onAllRunsComplete and afterAll on asynchronous properties', async () => {
+  it('should not delay the resolution of check when every onAllRunsComplete and afterAll is synchronous', async () => {
     // Arrange
     const probes: string[] = [];
-    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+    const buildPlugin = (pluginName: string, onLast?: () => void): fc.Plugin<[number]> => {
       return () => {
         return {
           onAllRunsComplete: () => {
@@ -99,25 +99,49 @@ describe(`Plugins (seed: ${seed})`, () => {
           },
           afterAll: () => {
             probes.push(`${pluginName}::afterAll`);
+            if (onLast !== undefined) {
+              onLast();
+            }
           },
         };
       };
     };
+    const queueTicksProbes = () => {
+      // a::afterAll runs last: from there, count how many microtask ticks elapse before check resolves
+      Promise.resolve()
+        .then(() => probes.push('tick1'))
+        .then(() => probes.push('tick2'))
+        .then(() => probes.push('tick3'))
+        .then(() => probes.push('tick4'));
+    };
 
     // Act
-    await fc.assert(
+    await fc.check(
       fc.asyncProperty(fc.integer(), async (_x) => true),
-      { plugins: [buildPlugin('a'), buildPlugin('b')] },
+      { plugins: [buildPlugin('a', queueTicksProbes), buildPlugin('b')] },
     );
+    probes.push('check resolved');
+    await new Promise((resolve) => setTimeout(resolve)); // flush pending ticks
 
     // Assert
-    expect(probes).toEqual(['a::onAllRunsComplete', 'b::onAllRunsComplete', 'b::afterAll', 'a::afterAll']);
+    // Fully synchronous hooks must not requeue anything: check resolves on the very next tick
+    expect(probes).toEqual([
+      'a::onAllRunsComplete',
+      'b::onAllRunsComplete',
+      'b::afterAll',
+      'a::afterAll',
+      'tick1',
+      'check resolved',
+      'tick2',
+      'tick3',
+      'tick4',
+    ]);
   });
 
-  it('should run every synchronous onAllRunsComplete and afterAll even when many throw and only forward the first error', async () => {
+  it('should not delay the rejection of check when synchronous hooks throw and only forward the first error', async () => {
     // Arrange
     const probes: string[] = [];
-    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+    const buildPlugin = (pluginName: string, onLast?: () => void): fc.Plugin<[number]> => {
       return () => {
         return {
           onAllRunsComplete: () => {
@@ -126,19 +150,39 @@ describe(`Plugins (seed: ${seed})`, () => {
           },
           afterAll: () => {
             probes.push(`${pluginName}::afterAll`);
+            if (onLast !== undefined) {
+              onLast();
+            }
             throw new Error(`error from ${pluginName}::afterAll`);
           },
         };
       };
     };
+    const queueTicksProbes = () => {
+      // a::afterAll runs last: from there, count how many microtask ticks elapse before check rejects
+      Promise.resolve()
+        .then(() => probes.push('tick1'))
+        .then(() => probes.push('tick2'))
+        .then(() => probes.push('tick3'))
+        .then(() => probes.push('tick4'));
+    };
 
-    // Act / Assert
-    await expect(
-      fc.assert(
+    // Act
+    let intercepted: unknown = undefined;
+    try {
+      await fc.check(
         fc.asyncProperty(fc.integer(), async (_x) => true),
-        { plugins: [buildPlugin('a'), buildPlugin('b'), buildPlugin('c')] },
-      ),
-    ).rejects.toThrow(/^error from a::onAllRunsComplete$/);
+        { plugins: [buildPlugin('a', queueTicksProbes), buildPlugin('b'), buildPlugin('c')] },
+      );
+    } catch (error) {
+      intercepted = error;
+      probes.push('check rejected');
+    }
+    await new Promise((resolve) => setTimeout(resolve)); // flush pending ticks
+
+    // Assert
+    expect(intercepted).toEqual(new Error('error from a::onAllRunsComplete'));
+    // Fully synchronous hooks must not requeue anything: check rejects on the very next tick
     expect(probes).toEqual([
       'a::onAllRunsComplete',
       'b::onAllRunsComplete',
@@ -146,6 +190,49 @@ describe(`Plugins (seed: ${seed})`, () => {
       'c::afterAll',
       'b::afterAll',
       'a::afterAll',
+      'tick1',
+      'check rejected',
+      'tick2',
+      'tick3',
+      'tick4',
+    ]);
+  });
+
+  it('should chain synchronous hooks within the same tick when following an asynchronous one', async () => {
+    // Arrange
+    const probes: string[] = [];
+    const asyncPlugin: fc.Plugin<[number]> = () => ({
+      onAllRunsComplete: async () => {
+        probes.push('a::onAllRunsComplete');
+      },
+    });
+    const buildSyncPlugin = (pluginName: string): fc.Plugin<[number]> => {
+      return () => {
+        return {
+          onAllRunsComplete: () => {
+            probes.push(`${pluginName}::onAllRunsComplete`);
+            if (pluginName === 'b') {
+              // Anything requeued between b and c would run before this one
+              void Promise.resolve().then(() => probes.push('tick queued by b'));
+            }
+          },
+        };
+      };
+    };
+
+    // Act
+    await fc.check(
+      fc.asyncProperty(fc.integer(), async (_x) => true),
+      { plugins: [asyncPlugin, buildSyncPlugin('b'), buildSyncPlugin('c')] },
+    );
+
+    // Assert
+    // Once the asynchronous hook resolved, b and c run back-to-back within the same tick
+    expect(probes).toEqual([
+      'a::onAllRunsComplete',
+      'b::onAllRunsComplete',
+      'c::onAllRunsComplete',
+      'tick queued by b',
     ]);
   });
 
