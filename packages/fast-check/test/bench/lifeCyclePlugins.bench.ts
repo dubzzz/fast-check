@@ -26,6 +26,7 @@ function syncOnlyPlugins() {
 
 function asyncThenSyncOnlyPlugins() {
   return [
+    // oxlint-disable-next-line typescript/require-await
     fc.beforeEach(async () => {
       counter += 1;
     }),
@@ -35,12 +36,15 @@ function asyncThenSyncOnlyPlugins() {
 
 function asyncOnlyPlugins() {
   return [
+    // oxlint-disable-next-line typescript/require-await
     fc.beforeEach(async () => {
       counter += 1;
+      // oxlint-disable-next-line typescript/require-await
       return async () => {
         counter += 1;
       };
     }),
+    // oxlint-disable-next-line typescript/require-await
     fc.afterEach(async () => {
       counter += 1;
     }),
@@ -55,6 +59,7 @@ describe('life-cycle plugins', () => {
   bench(
     'async property without any hook',
     () => {
+      // oxlint-disable-next-line typescript/require-await
       return fc.assert(fc.asyncProperty(fc.constant(1), async (_c) => true));
     },
     benchOptions,
@@ -73,6 +78,7 @@ describe('life-cycle plugins', () => {
     'async property with sync-only hooks',
     () => {
       return fc.assert(
+        // oxlint-disable-next-line typescript/require-await
         fc.asyncProperty(fc.constant(1), async (_c) => true),
         { plugins: syncOnlyPlugins() },
       );
@@ -83,6 +89,7 @@ describe('life-cycle plugins', () => {
     'async property with an async beforeEach followed by sync-only hooks',
     () => {
       return fc.assert(
+        // oxlint-disable-next-line typescript/require-await
         fc.asyncProperty(fc.constant(1), async (_c) => true),
         { plugins: asyncThenSyncOnlyPlugins() },
       );
@@ -93,6 +100,7 @@ describe('life-cycle plugins', () => {
     'async property with async-only hooks',
     () => {
       return fc.assert(
+        // oxlint-disable-next-line typescript/require-await
         fc.asyncProperty(fc.constant(1), async (_c) => true),
         { plugins: asyncOnlyPlugins() },
       );
