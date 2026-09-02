@@ -88,6 +88,67 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
+  it('should support purely synchronous onAllRunsComplete and afterAll on asynchronous properties', async () => {
+    // Arrange
+    const probes: string[] = [];
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+      return () => {
+        return {
+          onAllRunsComplete: () => {
+            probes.push(`${pluginName}::onAllRunsComplete`);
+          },
+          afterAll: () => {
+            probes.push(`${pluginName}::afterAll`);
+          },
+        };
+      };
+    };
+
+    // Act
+    await fc.assert(
+      fc.asyncProperty(fc.integer(), async (_x) => true),
+      { plugins: [buildPlugin('a'), buildPlugin('b')] },
+    );
+
+    // Assert
+    expect(probes).toEqual(['a::onAllRunsComplete', 'b::onAllRunsComplete', 'b::afterAll', 'a::afterAll']);
+  });
+
+  it('should run every synchronous onAllRunsComplete and afterAll even when many throw and only forward the first error', async () => {
+    // Arrange
+    const probes: string[] = [];
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+      return () => {
+        return {
+          onAllRunsComplete: () => {
+            probes.push(`${pluginName}::onAllRunsComplete`);
+            throw new Error(`error from ${pluginName}::onAllRunsComplete`);
+          },
+          afterAll: () => {
+            probes.push(`${pluginName}::afterAll`);
+            throw new Error(`error from ${pluginName}::afterAll`);
+          },
+        };
+      };
+    };
+
+    // Act / Assert
+    await expect(
+      fc.assert(
+        fc.asyncProperty(fc.integer(), async (_x) => true),
+        { plugins: [buildPlugin('a'), buildPlugin('b'), buildPlugin('c')] },
+      ),
+    ).rejects.toThrow(/^error from a::onAllRunsComplete$/);
+    expect(probes).toEqual([
+      'a::onAllRunsComplete',
+      'b::onAllRunsComplete',
+      'c::onAllRunsComplete',
+      'c::afterAll',
+      'b::afterAll',
+      'a::afterAll',
+    ]);
+  });
+
   it('should forward errors thrown within afterAll to the user even in case of predicate failure', () => {
     // Arrange
     const reporterPlugin: fc.Plugin<[number]> = () => ({

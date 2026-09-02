@@ -124,26 +124,53 @@ function runPluginCompletionHooks<Ts>(
   if (followUps.length === 0) {
     return runDetailsPromise;
   }
-  return runDetailsPromise.then(async (details) => {
+  return runDetailsPromise.then((details) => {
     let interceptedOnce = false;
     let interceptedError: unknown = undefined;
+    const interceptError = (error: unknown): void => {
+      if (!interceptedOnce) {
+        interceptedOnce = true;
+        interceptedError = error;
+      }
+    };
+    // As long as every hook returns synchronously we stay synchronous, we only chain
+    // promises from the first hook returning one.
+    let continuation: Promise<void> | undefined = undefined;
     for (const followUp of followUps) {
-      try {
-        const out = followUp(details);
-        if (out !== undefined) {
-          await out;
+      if (continuation === undefined) {
+        try {
+          const out = followUp(details);
+          if (out !== undefined) {
+            continuation = out.then(undefined, interceptError);
+          }
+        } catch (error) {
+          interceptError(error);
         }
-      } catch (error) {
-        if (!interceptedOnce) {
-          interceptedOnce = true;
-          interceptedError = error;
-        }
+      } else {
+        continuation = continuation.then(() => {
+          try {
+            const out = followUp(details);
+            if (out !== undefined) {
+              return out.then(undefined, interceptError);
+            }
+          } catch (error) {
+            interceptError(error);
+          }
+        });
       }
     }
-    if (interceptedOnce) {
-      throw interceptedError;
+    if (continuation === undefined) {
+      if (interceptedOnce) {
+        throw interceptedError;
+      }
+      return details;
     }
-    return details;
+    return continuation.then(() => {
+      if (interceptedOnce) {
+        throw interceptedError;
+      }
+      return details;
+    });
   });
 }
 
