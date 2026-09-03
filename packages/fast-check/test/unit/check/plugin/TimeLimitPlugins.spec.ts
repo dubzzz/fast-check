@@ -1,26 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { interruptAfterTimeLimit, skipAllAfterTimeLimit } from '../../../../src/check/plugin/TimeLimitPlugins.js';
+import { interruptAfterTimeLimit } from '../../../../src/check/plugin/TimeLimitPlugins.js';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
-import type { Plugin } from '../../../../src/check/plugin/Plugin.js';
 
 describe('TimeLimitPlugins', () => {
   beforeEach(() => {
     vi.clearAllTimers();
   });
 
-  describe.each([
-    { pluginName: 'skipAllAfterTimeLimit', factory: skipAllAfterTimeLimit, interrupts: false },
-    { pluginName: 'interruptAfterTimeLimit', factory: interruptAfterTimeLimit, interrupts: true },
-  ])('$pluginName', ({ factory, interrupts }) => {
-    it('should forward inputs to run when started within the time limit', async () => {
+  describe('interruptAfterTimeLimit', () => {
+    it('should forward inputs to run when started within the time limit', () => {
       // Arrange
       vi.useFakeTimers();
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(null);
       const expectedRunInput = { anything: Symbol('something') };
 
       // Act
-      const finalRun = timeLimitPluginRun(factory, 100, nestedRun);
+      const finalRun = timeLimitPluginRun(100, nestedRun);
       const out = finalRun(expectedRunInput);
 
       // Assert
@@ -29,62 +25,44 @@ describe('TimeLimitPlugins', () => {
       expect(nestedRun).toHaveBeenCalledWith(expectedRunInput);
     });
 
-    it('should skip executions started after the time limit without calling run', () => {
+    it('should interrupt executions started after the time limit without calling run', () => {
       // Arrange
       vi.useFakeTimers();
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>();
 
       // Act
-      const finalRun = timeLimitPluginRun(factory, 100, nestedRun);
+      const finalRun = timeLimitPluginRun(100, nestedRun);
       vi.advanceTimersByTime(100);
       const out = finalRun({});
 
       // Assert
       expect(nestedRun).not.toHaveBeenCalled();
       expect(PreconditionFailure.isFailure(out)).toBe(true);
-      expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(interrupts);
+      expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
     });
 
     it('should define one decorateRun per instance without merging with other instances', () => {
       // Arrange
       let pluginIndex = 0;
-      const sharedContext = {};
+      const store = new Map<symbol, any>();
 
       // Act
-      const instanceA = factory(10)(pluginIndex++, sharedContext);
-      const instanceB = factory(10)(pluginIndex++, sharedContext);
+      const instanceA = interruptAfterTimeLimit(10)(pluginIndex++, store);
+      const instanceB = interruptAfterTimeLimit(10)(pluginIndex++, store);
 
       // Assert
       expect(instanceA.decorateRun).not.toBe(undefined);
       expect(instanceB.decorateRun).not.toBe(undefined);
       expect(instanceB.decorateRun).not.toBe(instanceA.decorateRun);
     });
-  });
 
-  describe('skipAllAfterTimeLimit', () => {
-    it('should never start any timer', async () => {
-      // Arrange
-      vi.useFakeTimers();
-      vi.spyOn(global, 'setTimeout');
-      const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockResolvedValueOnce(null);
-
-      // Act
-      const finalRun = timeLimitPluginRun(skipAllAfterTimeLimit, 100, nestedRun);
-      await finalRun({});
-
-      // Assert
-      expect(setTimeout).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('interruptAfterTimeLimit', () => {
     it('should interrupt long-running executions started within the time limit', async () => {
       // Arrange
       vi.useFakeTimers();
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(new Promise(() => {}));
 
       // Act
-      const finalRun = timeLimitPluginRun(interruptAfterTimeLimit, 10, nestedRun);
+      const finalRun = timeLimitPluginRun(10, nestedRun);
       const runPromise = finalRun({});
       vi.advanceTimersByTime(10);
 
@@ -103,7 +81,7 @@ describe('TimeLimitPlugins', () => {
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockResolvedValueOnce(null);
 
       // Act
-      const finalRun = timeLimitPluginRun(interruptAfterTimeLimit, 100, nestedRun);
+      const finalRun = timeLimitPluginRun(100, nestedRun);
       await finalRun({});
 
       // Assert
@@ -120,7 +98,7 @@ describe('TimeLimitPlugins', () => {
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockResolvedValueOnce(errorFromUnderlying);
 
       // Act
-      const finalRun = timeLimitPluginRun(interruptAfterTimeLimit, 100, nestedRun);
+      const finalRun = timeLimitPluginRun(100, nestedRun);
       await finalRun({});
 
       // Assert
@@ -140,7 +118,7 @@ describe('TimeLimitPlugins', () => {
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(runOutput);
 
       // Act
-      const finalRun = timeLimitPluginRun(interruptAfterTimeLimit, 100, nestedRun);
+      const finalRun = timeLimitPluginRun(100, nestedRun);
       const out = finalRun({});
 
       // Assert
@@ -153,11 +131,7 @@ describe('TimeLimitPlugins', () => {
 
 // Helpers
 
-function timeLimitPluginRun(
-  factory: (timeLimitMs: number) => Plugin<unknown>,
-  timeLimitMs: number,
-  nestedRun: IRawProperty<unknown, boolean>['run'],
-) {
-  const instance = factory(timeLimitMs)(0, {});
+function timeLimitPluginRun(timeLimitMs: number, nestedRun: IRawProperty<unknown, boolean>['run']) {
+  const instance = interruptAfterTimeLimit(timeLimitMs)(0, new Map<symbol, any>());
   return instance.decorateRun!(nestedRun);
 }
