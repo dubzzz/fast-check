@@ -41,3 +41,24 @@ The countdown starts when the runner starts executing the property.
 An interrupted property is not necessarily considered to be a failure. By default, it gets marked as successful as long as at least one execution succeeded before the interruption and if no failure got reported. To change that default and report interrupted proerties as failure, one can set `markInterruptAsFailure: true` on the runner.
 
 Resources: [API reference](/docs/api/functions/interruptAfterTimeLimit).
+
+## Limitations
+
+Both plugins share the same limitations.
+
+### Synchronous code can't be cut
+
+There is no way to pause or kill a running synchronous script in JavaScript. A synchronous predicate will always runs to its end before the any of these plugins get the flow back.
+
+As such, `timeout` has no effect on purely synchronous predicates and `interruptAfterTimeLimit` can only prevent new executions from starting once the limit gets reached.
+
+### Asynchronous code can't be canceled
+
+Whenever the limit gets reached during an asynchronous execution, the plugins give the control back to the runner without waiting for the predicate. But the underlying execution keeps running in the background and its outcome gets ignored.
+
+Plugins declared before the time-limit one, may thus run while the predicate is still under way.
+
+### Stopping the code
+
+If you need the code under test to be really stopped, have a look at [`@fast-check/worker`](https://www.npmx.dev/package/@fast-check/worker). It runs predicates in dedicated worker threads that can be terminated, synchronous ones included.
+
