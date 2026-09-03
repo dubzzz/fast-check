@@ -4,23 +4,25 @@ slug: /core-blocks/plugins/time-limits/
 
 # Time limits
 
-Time-limit plugins bound the total time spent assessing your properties.
+Time-limit plugins bound the time spent assessing your properties. They can enter into action at various places from an isolated execution of a predicate to the full run of the assertion.
 
-For both plugins, the clock starts when the property begins to be assessed and the limit applies to the whole run, shrinking phase included.
+They make the runner stop its on-going task when the limit gets reached. As such they cannot really stop the code they wrap but mostly ignore its results.
 
-## `skipAllAfterTimeLimit`
+## `timeout`
 
-The `skipAllAfterTimeLimit` plugin skips any execution of the predicate starting after the requested delay expressed in milliseconds.
+The `timeout` plugin marks the current execution of your predicate as failed if it did not complete within the requested delay expressed in milliseconds.
 
 ```ts
 {
   plugins: [
-    skipAllAfterTimeLimit(1000), // skip any execution starting after 1 second
+    timeout(1000), // fail any execution of the predicate taking more than 1 second
   ];
 }
 ```
 
-Executions already started when the limit gets reached are left running. Skipped executions count as skips: passed the maximal number of allowed skips the run will be marked as failed.
+The countdown restarts for every execution of the predicate, shrinking phase included. A timeout-ed execution gets reported as any other failure, it's just a failure.
+
+Resources: [API reference](/docs/api/functions/timeout).
 
 ## `interruptAfterTimeLimit`
 
