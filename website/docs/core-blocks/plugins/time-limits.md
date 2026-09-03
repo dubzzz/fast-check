@@ -26,16 +26,18 @@ Resources: [API reference](/docs/api/functions/timeout).
 
 ## `interruptAfterTimeLimit`
 
-The `interruptAfterTimeLimit` plugin interrupts the run after the requested delay expressed in milliseconds: no more execution of the predicate will be started and any execution still running at that time will be interrupted.
+The `interruptAfterTimeLimit` plugin interrupts all runs once the requested delay expires. Passing this delay, no more execution of the predicate will be started and any execution still running at that time will be interrupted.
 
 ```ts
 {
   plugins: [
-    interruptAfterTimeLimit(1000), // interrupt the run after 1 second
+    interruptAfterTimeLimit(1000), // interrupt the execution of the property after 1 second
   ];
 }
 ```
 
-As predicates cannot be stopped, interrupted executions keep running in the background but their outcome gets ignored. Note also that only asynchronous executions can be interrupted while running: a synchronous predicate can never be observed running for too long as it already came to an end when the runner gets its outcome back.
+The countdown starts when the runner starts executing the property.
 
-Resources: [API reference for `skipAllAfterTimeLimit`](/docs/api/functions/skipAllAfterTimeLimit), [API reference for `interruptAfterTimeLimit`](/docs/api/functions/interruptAfterTimeLimit).
+An interrupted property is not necessarily considered to be a failure. By default, it gets marked as successful as long as at least one execution succeeded before the interruption and if no failure got reported. To change that default and report interrupted proerties as failure, one can set `markInterruptAsFailure: true` on the runner.
+
+Resources: [API reference](/docs/api/functions/interruptAfterTimeLimit).
