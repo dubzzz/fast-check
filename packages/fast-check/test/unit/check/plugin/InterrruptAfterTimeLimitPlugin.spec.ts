@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { interruptAfterTimeLimit } from '../../../../src/check/plugin/TimeLimitPlugins.js';
+import { interruptAfterTimeLimit } from '../../../../src/check/plugin/InterrruptAfterTimeLimitPlugin.js';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 

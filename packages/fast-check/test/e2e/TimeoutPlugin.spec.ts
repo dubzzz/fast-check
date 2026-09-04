@@ -52,4 +52,23 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
       }
     },
   );
+
+  it('should have no effect on synchronous properties', () => {
+    // Arrange
+    let numRuns = 0;
+
+    // Act
+    const out = fc.check(
+      fc.property(fc.integer(), (_x) => {
+        ++numRuns;
+      }),
+      { plugins: [fc.timeout(10)] },
+    );
+
+    // Assert
+    expect(out.failed).toBe(false);
+    expect(out.interrupted).toBe(false);
+    expect(out.numRuns).toBe(100);
+    expect(numRuns).toBe(100);
+  });
 });

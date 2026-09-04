@@ -27,7 +27,13 @@ function timeLimitRunner(
     return new PreconditionFailure(true);
   }
   const t = interruptAfterDelay(remainingTime);
-  const raced = Promise.race([nestedRun(value), t.promise]);
+  const runOut = nestedRun(value);
+  if (runOut === null || !('then' in runOut)) {
+    // synchronous run: it already came to an end, nothing to race against the interruption
+    t.clear();
+    return runOut;
+  }
+  const raced = Promise.race([runOut, t.promise]);
   raced.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
   return raced;
 }

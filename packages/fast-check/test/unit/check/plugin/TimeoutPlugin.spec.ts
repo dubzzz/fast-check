@@ -90,6 +90,27 @@ describe('TimeoutPlugin', () => {
     // Assert
     expect(await runPromise).toEqual({ error: new Error(`Property timeout: exceeded limit of 10 milliseconds`) });
   });
+
+  it.each([
+    { outcome: 'success', output: null },
+    { outcome: 'failure', output: { error: new Error('plop') } },
+    { outcome: 'precondition failure', output: new PreconditionFailure() },
+  ])('should preserve synchronous runs untouched and clear the started timeout on $outcome', ({ output }) => {
+    // Arrange
+    vi.useFakeTimers();
+    vi.spyOn(global, 'setTimeout');
+    vi.spyOn(global, 'clearTimeout');
+    const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(output);
+
+    // Act
+    const finalRun = timeoutPluginRun(100, nestedRun);
+    const out = finalRun({});
+
+    // Assert
+    expect(out).toBe(output); // sync run, sync output: nothing to race against the timeout
+    expect(setTimeout).toBeCalledTimes(1);
+    expect(clearTimeout).toBeCalledTimes(1);
+  });
 });
 
 // Helpers
