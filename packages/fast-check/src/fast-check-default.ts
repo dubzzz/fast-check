@@ -211,7 +211,8 @@ import type { RandomGenerator } from './random/generator/RandomGenerator.js';
 import type { Plugin, PluginInstance, PluginStore } from './check/plugin/Plugin.js';
 import { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
 import { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
-import { interruptAfterTimeLimit } from './check/plugin/InterrruptAfterTimeLimitPlugin.js';
+import { interruptAfterTimeLimit } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
+import type { InterruptAfterTimeLimitOptions } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
 import { timeout } from './check/plugin/TimeoutPlugin.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
@@ -347,6 +348,7 @@ export type {
   RunDetailsSuccess,
   RunDetailsCommon,
   DepthIdentifier,
+  InterruptAfterTimeLimitOptions,
 };
 export {
   __type,
