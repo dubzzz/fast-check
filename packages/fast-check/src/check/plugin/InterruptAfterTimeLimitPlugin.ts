@@ -45,6 +45,7 @@ function timeLimitRunner(
 /**
  * Options for {@link interruptAfterTimeLimit}
  * @remarks Since 4.10.0
+ * @public
  */
 export type InterruptAfterTimeLimitOptions = {
   /**
