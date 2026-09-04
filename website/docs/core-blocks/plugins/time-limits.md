@@ -38,7 +38,15 @@ The `interruptAfterTimeLimit` plugin interrupts all runs once the requested dela
 
 The countdown starts when the runner starts executing the property.
 
-An interrupted property is not necessarily considered to be a failure. By default, it gets marked as successful as long as at least one execution succeeded before the interruption and no failure got reported. To change that default and report interrupted properties as failures, one can set `markInterruptAsFailure: true` on the runner.
+An interrupted property is not necessarily considered to be a failure. By default, it gets marked as successful as long as at least one execution succeeded before the interruption and no failure got reported. To change that default and report interrupted properties as failures, one can set `failOnInterrupt: true` on the plugin.
+
+```ts
+{
+  plugins: [
+    interruptAfterTimeLimit(1000, { failOnInterrupt: true }), // mark an interrupted property as a failed one
+  ];
+}
+```
 
 Resources: [API reference](/docs/api/functions/interruptAfterTimeLimit).
 
