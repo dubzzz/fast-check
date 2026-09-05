@@ -553,6 +553,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/25589715?v=4",
       "profile": "https://jneidel.com/",
       "contributions": ["doc"]
+    },
+    {
+      "login": "jkomyno",
+      "name": "Alberto Schiabel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12381818?v=4",
+      "profile": "https://jkomyno.dev/",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7
