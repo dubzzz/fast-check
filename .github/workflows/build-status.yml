@@ -558,7 +558,8 @@ jobs:
   comment_bench:
     name: 'Comment bench results'
     needs: bench
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    # Fork pull requests have a read-only token and cannot post comments.
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
