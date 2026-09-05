@@ -15,7 +15,7 @@
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "fast-check": "workspace:*",
-    "happy-dom": "^20.10.6",
+    "happy-dom": "^20.14.0",
     "lodash": "^4.18.1",
     "pure-rand": "^8.4.2",
     "react": "^19.2.8",
