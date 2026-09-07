@@ -20,22 +20,20 @@ function fromCached(cachedValue: RunOutput): RunOutput {
 }
 
 /** @internal */
-function buildEqualValuesPlugin(skipRuns: boolean): Plugin<unknown> {
-  return (): PluginInstance<unknown> => {
-    const coveredCases = new Map<string, RunOutput>();
-    return {
-      decorateRun: (nestedRun) => (value) => {
-        const stringifiedValue = stringify(value);
-        if (coveredCases.has(stringifiedValue)) {
-          const lastOutput = coveredCases.get(stringifiedValue) as RunOutput;
-          return skipRuns ? fromCached(lastOutput) : lastOutput;
-        }
-        const out = nestedRun(value);
-        coveredCases.set(stringifiedValue, out);
-        return out;
-      },
-    };
-  };
+function equalValuesRunner(
+  coveredCases: Map<string, RunOutput>,
+  nestedRun: IRawProperty<unknown, boolean>['run'],
+  value: unknown,
+  skipRuns: boolean,
+): ReturnType<typeof nestedRun> {
+  const stringifiedValue = stringify(value);
+  if (coveredCases.has(stringifiedValue)) {
+    const lastOutput = coveredCases.get(stringifiedValue) as RunOutput;
+    return skipRuns ? fromCached(lastOutput) : lastOutput;
+  }
+  const out = nestedRun(value);
+  coveredCases.set(stringifiedValue, out);
+  return out;
 }
 
 /**
@@ -54,7 +52,12 @@ function buildEqualValuesPlugin(skipRuns: boolean): Plugin<unknown> {
  * @public
  */
 export function ignoreEqualValues(): Plugin<unknown> {
-  return buildEqualValuesPlugin(false);
+  return (): PluginInstance<unknown> => {
+    const coveredCases = new Map<string, RunOutput>();
+    return {
+      decorateRun: (nestedRun) => (value) => equalValuesRunner(coveredCases, nestedRun, value, false),
+    };
+  };
 }
 
 /**
@@ -75,5 +78,10 @@ export function ignoreEqualValues(): Plugin<unknown> {
  * @public
  */
 export function skipEqualValues(): Plugin<unknown> {
-  return buildEqualValuesPlugin(true);
+  return (): PluginInstance<unknown> => {
+    const coveredCases = new Map<string, RunOutput>();
+    return {
+      decorateRun: (nestedRun) => (value) => equalValuesRunner(coveredCases, nestedRun, value, true),
+    };
+  };
 }
