@@ -30,6 +30,7 @@ function equalValuesRunner(
   value: unknown,
   skipRuns: boolean,
 ): ReturnType<typeof nestedRun> {
+  // TODO(v5) - Switch to possiblyAsyncStringify and await to support asynchronous values as inputs
   const stringifiedValue = stringify(value);
   if (coveredCases.has(stringifiedValue)) {
     const lastOutput = coveredCases.get(stringifiedValue) as RunOutput;
