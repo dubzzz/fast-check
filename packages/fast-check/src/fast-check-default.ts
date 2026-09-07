@@ -211,6 +211,7 @@ import type { RandomGenerator } from './random/generator/RandomGenerator.js';
 import type { Plugin, PluginInstance, PluginStore } from './check/plugin/Plugin.js';
 import { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
 import { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
+import { ignoreEqualValues, skipEqualValues } from './check/plugin/EqualValuesPlugins.js';
 import { interruptAfterTimeLimit } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
 import type { InterruptAfterTimeLimitOptions } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
 import { timeout } from './check/plugin/TimeoutPlugin.js';
@@ -462,6 +463,8 @@ export {
   installGlobalPlugin,
   beforeEach,
   afterEach,
+  ignoreEqualValues,
+  skipEqualValues,
   interruptAfterTimeLimit,
   timeout,
   ExecutionStatus,
