@@ -1,5 +1,5 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { IRawProperty } from '../property/IRawProperty.js';
+import type { IRawProperty, PropertyFailure } from '../property/IRawProperty.js';
 import { stringify } from '../../utils/stringify.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
@@ -7,16 +7,20 @@ import type { Plugin, PluginInstance } from './Plugin.js';
 type RunOutput = ReturnType<IRawProperty<unknown, boolean>['run']>;
 
 /** @internal */
-function fromSyncCached(cachedValue: Awaited<RunOutput>): Awaited<RunOutput> {
+function fromSyncCachedForAsyncPath(cachedValue: Awaited<RunOutput>): Awaited<RunOutput> {
   return cachedValue === null ? new PreconditionFailure() : cachedValue;
 }
 
 /** @internal */
 function fromCached(cachedValue: RunOutput): RunOutput {
-  if (cachedValue !== null && 'then' in cachedValue) {
-    return cachedValue.then(fromSyncCached);
+  if (cachedValue !== null) {
+    if ('then' in cachedValue) {
+      return cachedValue.then(fromSyncCachedForAsyncPath);
+    } else {
+      return cachedValue satisfies PreconditionFailure | PropertyFailure;
+    }
   }
-  return fromSyncCached(cachedValue);
+  return new PreconditionFailure(); // already encountered with sync success, so skip it
 }
 
 /** @internal */
