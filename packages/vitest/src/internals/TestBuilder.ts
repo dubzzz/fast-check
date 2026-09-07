@@ -71,10 +71,10 @@ function adaptPluginForRecord<Ts>(plugin: Plugin<Ts>, originalParamaters: FcPara
               return (value) => decorated(value[0]);
             }
           : undefined,
-      afterAll:
-        instance.afterAll !== undefined
+      onAllRunsComplete:
+        instance.onAllRunsComplete !== undefined
           ? // oxlint-disable-next-line typescript/no-non-null-assertion
-            (runDetails) => instance.afterAll!(adaptRunDetailsForRecord(runDetails, originalParamaters))
+            (runDetails) => instance.onAllRunsComplete!(adaptRunDetailsForRecord(runDetails, originalParamaters))
           : undefined,
     };
   };

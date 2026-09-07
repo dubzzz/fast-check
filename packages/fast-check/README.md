@@ -242,6 +242,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://jneidel.com/"><img src="https://avatars.githubusercontent.com/u/25589715?v=4?s=100" width="100px;" alt="Jonathan Neidel"/><br /><sub><b>Jonathan Neidel</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=jneidel" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://jkomyno.dev/"><img src="https://avatars.githubusercontent.com/u/12381818?v=4?s=100" width="100px;" alt="Alberto Schiabel"/><br /><sub><b>Alberto Schiabel</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=jkomyno" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
