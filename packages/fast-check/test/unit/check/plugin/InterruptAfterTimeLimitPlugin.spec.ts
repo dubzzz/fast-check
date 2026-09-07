@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { interruptAfterTimeLimit } from '../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
+import type { RunDetails } from '../../../../src/check/runner/reporter/RunDetails.js';
 
 describe('TimeLimitPlugins', () => {
   beforeEach(() => {
@@ -16,7 +17,8 @@ describe('TimeLimitPlugins', () => {
       const expectedRunInput = Symbol('something');
 
       // Act
-      const finalRun = timeLimitPluginRun(100, nestedRun);
+      const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
+      const finalRun = instance.decorateRun!(nestedRun);
       const out = finalRun(expectedRunInput);
 
       // Assert
@@ -31,7 +33,8 @@ describe('TimeLimitPlugins', () => {
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => null);
 
       // Act
-      const finalRun = timeLimitPluginRun(100, nestedRun);
+      const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
+      const finalRun = instance.decorateRun!(nestedRun);
       vi.advanceTimersByTime(100);
       const out = finalRun({});
 
@@ -47,7 +50,8 @@ describe('TimeLimitPlugins', () => {
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => new Promise(() => {}));
 
       // Act
-      const finalRun = timeLimitPluginRun(10, nestedRun);
+      const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
+      const finalRun = instance.decorateRun!(nestedRun);
       const runPromise = finalRun({});
       vi.advanceTimersByTime(10);
 
@@ -59,33 +63,33 @@ describe('TimeLimitPlugins', () => {
     });
 
     it.each([
-      { name: 'success', runOutput: null },
-      { name: 'precondition failure', runOutput: new PreconditionFailure() },
-      { name: 'failure', runOutput: { error: new Error('plop') } },
-      { name: 'async success', runOutput: Promise.resolve(null) },
-      { name: 'async precondition failure', runOutput: Promise.resolve(new PreconditionFailure()) },
-      { name: 'async failure', runOutput: Promise.resolve({ error: new Error('plop') }) },
-    ])('should clear all started timeouts on $name', async ({ runOutput }) => {
-      // Arrange
-      vi.useFakeTimers();
-      vi.spyOn(global, 'setTimeout');
-      vi.spyOn(global, 'clearTimeout');
-      const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => runOutput);
+      { name: 'success', runOutput: null, numRuns: 10 },
+      { name: 'precondition failure', runOutput: new PreconditionFailure(), numRuns: 10 },
+      { name: 'failure', runOutput: { error: new Error('plop') }, numRuns: 10 },
+      { name: 'async success', runOutput: Promise.resolve(null), numRuns: 10 },
+      { name: 'async precondition failure', runOutput: Promise.resolve(new PreconditionFailure()), numRuns: 10 },
+      { name: 'async failure', runOutput: Promise.resolve({ error: new Error('plop') }), numRuns: 10 },
+    ])(
+      'should clear the single timeout once done with all runs on $name (numRuns: $numRuns)',
+      async ({ runOutput, numRuns }) => {
+        // Arrange
+        vi.useFakeTimers();
+        vi.spyOn(global, 'setTimeout');
+        vi.spyOn(global, 'clearTimeout');
+        const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => runOutput);
 
-      // Act
-      const finalRun = timeLimitPluginRun(100, nestedRun);
-      await finalRun({});
+        // Act
+        const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
+        const finalRun = instance.decorateRun!(nestedRun);
+        for (let i = 0; i !== numRuns; ++i) {
+          await finalRun({});
+        }
+        await instance.onAllRunsComplete!({} as RunDetails<unknown>);
 
-      // Assert
-      expect(setTimeout).toBeCalledTimes(1);
-      expect(clearTimeout).toBeCalledTimes(1);
-    });
+        // Assert
+        expect(setTimeout).toBeCalledTimes(1); // only one timer for al runs
+        expect(clearTimeout).toBeCalledTimes(1);
+      },
+    );
   });
 });
-
-// Helpers
-
-function timeLimitPluginRun(timeLimitMs: number, nestedRun: IRawProperty<unknown, boolean>['run']) {
-  const instance = interruptAfterTimeLimit(timeLimitMs)(0, new Map<symbol, any>());
-  return instance.decorateRun!(nestedRun);
-}

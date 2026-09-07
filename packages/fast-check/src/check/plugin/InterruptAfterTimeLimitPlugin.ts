@@ -3,16 +3,31 @@ import type { IRawProperty } from '../property/IRawProperty.js';
 import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
+type Probe = {
+  interruptedWhileRunning: boolean;
+  running: boolean;
+};
+
+type Interrupt = {
+  expired: () => boolean;
+  clear: () => void;
+  promise: Promise<PreconditionFailure>;
+};
+
 /** @internal */
-function interruptAfterDelay(timeMs: number, interruptedRef: { current: boolean }) {
+function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
+  const limitTime = performance.now() + timeMs;
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
   const promise = new Promise<PreconditionFailure>((resolve) => {
     timeoutHandle = setTimeout(() => {
-      interruptedRef.current = true;
+      if (probe.running) {
+        probe.interruptedWhileRunning = true;
+      }
       resolve(new PreconditionFailure(true));
     }, timeMs);
   });
   return {
+    expired: () => performance.now() >= limitTime,
     clear: () => clearTimeout(timeoutHandle),
     promise,
   };
@@ -20,26 +35,24 @@ function interruptAfterDelay(timeMs: number, interruptedRef: { current: boolean 
 
 /** @internal */
 function timeLimitRunner(
-  limitTime: number,
+  interrupt: Interrupt,
   nestedRun: IRawProperty<unknown, boolean>['run'],
   value: unknown,
-  interruptedRef: { current: boolean },
+  probe: Probe,
 ): ReturnType<typeof nestedRun> {
-  const remainingTime = limitTime - performance.now();
-  if (remainingTime <= 0) {
-    interruptedRef.current = true;
+  probe.running = true;
+  if (interrupt.expired()) {
+    probe.interruptedWhileRunning = true;
+    probe.running = false;
     return new PreconditionFailure(true);
   }
-  const t = interruptAfterDelay(remainingTime, interruptedRef);
   const runOut = nestedRun(value);
   if (runOut === null || !('then' in runOut)) {
-    // synchronous run: it already came to an end, nothing to race against the interruption
-    t.clear();
+    probe.running = false;
     return runOut;
   }
-  const raced = Promise.race([runOut, t.promise]);
-  raced.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
-  return raced;
+  void runOut.finally(() => (probe.running = false));
+  return Promise.race([runOut, interrupt.promise]);
 }
 
 /**
@@ -86,18 +99,17 @@ export function interruptAfterTimeLimit(
   options: InterruptAfterTimeLimitOptions = {},
 ): Plugin<unknown> {
   return (): PluginInstance<unknown> => {
-    const limitTime = performance.now() + timeLimitMs;
-    const interruptedRef = { current: false };
+    const probe: Probe = { interruptedWhileRunning: false, running: false };
+    const interrupt = interruptAfterDelay(timeLimitMs, probe);
     return {
-      decorateRun: (nestedRun) => (value) => timeLimitRunner(limitTime, nestedRun, value, interruptedRef),
-      onAllRunsComplete: options.failOnInterrupt
-        ? (runDetails) => {
-            if (!runDetails.failed && runDetails.interrupted && interruptedRef.current) {
-              // TODO(v5) - Move to the async version instead
-              return reportRunDetails({ ...runDetails, failed: true });
-            }
-          }
-        : undefined,
+      decorateRun: (nestedRun) => (value) => timeLimitRunner(interrupt, nestedRun, value, probe),
+      onAllRunsComplete: (runDetails) => {
+        interrupt.clear();
+        if (options.failOnInterrupt && !runDetails.failed && runDetails.interrupted && probe.interruptedWhileRunning) {
+          // TODO(v5) - Move to the async version instead
+          return reportRunDetails({ ...runDetails, failed: true });
+        }
+      },
     };
   };
 }
