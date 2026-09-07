@@ -41,8 +41,12 @@ function equalValuesRunner(
 }
 
 /**
- * Discard runs on already covered cases: never execute the predicate twice on the same value
- * and replay the outcome of the first execution instead. Discarded runs still count as runs.
+ * Never execute the predicate twice on the same value and replay the outcome of the first execution instead.
+ * Discarded runs still count as runs.
+ *
+ * Close to {@link skipEqualValues} except we replay the output of the first passing, meaning the replay counts as a run.
+ *
+ * WARNING: Detecting equal values is based on stringifying them. It may result in false positives and false negatives.
  *
  * @example
  * ```ts
@@ -65,10 +69,14 @@ export function ignoreEqualValues(): Plugin<unknown> {
 }
 
 /**
- * Skip runs on already covered cases: never execute the predicate twice on the same value.
- * Contrary to {@link ignoreEqualValues}, a duplicated run whose first execution succeeded is
- * marked as skipped instead of successful: passed the maximal number of skips the run will be
- * marked as failed.
+ * Never execute the predicate twice on the same value.
+ *
+ * A duplicated run whose first execution succeeded is marked as skipped instead of successful.
+ * If too many runs get skipped the run will be marked as failed.
+ *
+ * Close to {@link ignoreEqualValues} except we skip runs having the same value.
+ *
+ * WARNING: Detecting equal values is based on stringifying them. It may result in false positives and false negatives.
  *
  * @example
  * ```ts
