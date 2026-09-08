@@ -187,6 +187,8 @@ import { uint8Array } from './arbitrary/uint8Array.js';
 import { uint8ClampedArray } from './arbitrary/uint8ClampedArray.js';
 import { uint16Array } from './arbitrary/uint16Array.js';
 import { uint32Array } from './arbitrary/uint32Array.js';
+import type { Float16ArrayConstraints } from './arbitrary/float16Array.js';
+import { float16Array } from './arbitrary/float16Array.js';
 import type { Float32ArrayConstraints } from './arbitrary/float32Array.js';
 import { float32Array } from './arbitrary/float32Array.js';
 import type { Float64ArrayConstraints } from './arbitrary/float64Array.js';
@@ -280,6 +282,7 @@ export type {
   EntityGraphConstraints,
   EntityGraphContraints,
   FalsyContraints,
+  Float16ArrayConstraints,
   Float32ArrayConstraints,
   Float64ArrayConstraints,
   FloatConstraints,
@@ -431,6 +434,7 @@ export {
   uint16Array,
   int32Array,
   uint32Array,
+  float16Array,
   float32Array,
   float64Array,
   bigInt64Array,

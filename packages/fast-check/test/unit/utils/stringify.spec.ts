@@ -374,6 +374,15 @@ describe('stringify', () => {
     );
     assertStringifyTypedArraysProperly(fc.integer({ min: 0, max: 4294967295 }), Uint32Array.from.bind(Uint32Array));
   });
+  it.skipIf(typeof Float16Array === 'undefined')('Should be able to stringify Float16Array', () => {
+    expect(stringify(Float16Array.from([-0, 0.5, 65504, Infinity, -Infinity, NaN]))).toEqual(
+      'Float16Array.from([-0,0.5,65504,Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY,Number.NaN])',
+    );
+    assertStringifyTypedArraysProperly(
+      fc.integer({ min: 0, max: 0xffff }).map((bits) => new Float16Array(Uint16Array.of(bits).buffer)[0]),
+      Float16Array.from.bind(Float16Array),
+    );
+  });
   it('Should be able to stringify Float32Array', () => {
     expect(stringify(Float32Array.from([0, 0.5, 30, -1]))).toEqual('Float32Array.from([0,0.5,30,-1])');
     assertStringifyTypedArraysProperly(fc.float(), Float32Array.from.bind(Float32Array));

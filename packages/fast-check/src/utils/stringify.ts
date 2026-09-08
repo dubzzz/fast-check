@@ -285,6 +285,7 @@ export function stringifyInternal<Ts>(
     case '[object Uint16Array]':
     case '[object Int32Array]':
     case '[object Uint32Array]':
+    case '[object Float16Array]':
     case '[object Float32Array]':
     case '[object Float64Array]':
     case '[object BigInt64Array]':

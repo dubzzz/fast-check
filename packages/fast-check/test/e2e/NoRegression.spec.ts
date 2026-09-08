@@ -478,6 +478,16 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+  it.skipIf(typeof Float16Array === 'undefined')('float16Array', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.float16Array(), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('float32Array', () => {
     expect(
       runWithSanitizedStack(() =>
