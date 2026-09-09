@@ -1,0 +1,57 @@
+---
+slug: /core-blocks/plugins/values/
+---
+
+# Values
+
+Value plugins customize which values get forwarded to your predicates. Bias plugins customize how generation targets values, while equal-values plugins avoid executing your predicates twice on the same value.
+
+Equal-values plugins keep track of the values already covered during the run and replay the outcome of the first execution whenever a value gets generated again. Values are compared based on their stringified representation.
+
+## `unbiased`
+
+The `unbiased` plugin generates the values feeding your predicates without any bias.
+
+```ts
+{
+  plugins: [
+    unbiased(), // draw all values from the full range of the arbitraries
+  ];
+}
+```
+
+By default, without that plugin in place, generation would be biased. Bias implies that runs targeting smaller or more extreme values will be more likely than they should with an uniform distribution to uncover common issues earlier. With this plugin enabled, all the runs draw from the full range of the arbitraries with no special treatment.
+
+Resources: [API reference](/docs/api/functions/unbiased).
+
+## `ignoreEqualValues`
+
+The `ignoreEqualValues` plugin discards runs on already covered cases.
+
+```ts
+{
+  plugins: [
+    ignoreEqualValues(), // never execute the predicate twice on the same value
+  ];
+}
+```
+
+Discarded runs still count as runs: a run replaying a past success stays a success.
+
+Resources: [API reference](/docs/api/functions/ignoreEqualValues).
+
+## `skipEqualValues`
+
+The `skipEqualValues` plugin skips runs on already covered cases.
+
+```ts
+{
+  plugins: [
+    skipEqualValues(), // never execute the predicate twice on the same value
+  ];
+}
+```
+
+Contrary to `ignoreEqualValues`, a run replaying a past success gets marked as skipped instead of successful: passed the maximal number of allowed skips the run will be marked as failed. It gives stronger guarantees on the number of distinct values covered by the run at the price of potentially failing on arbitraries unable to produce enough distinct values.
+
+Resources: [API reference](/docs/api/functions/skipEqualValues).
