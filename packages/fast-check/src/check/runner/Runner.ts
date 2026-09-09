@@ -221,23 +221,31 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   }
 
   // Apply and decorate with plugins
+  let surchargedGenerate: typeof property.generate | undefined = undefined;
   let run: typeof property.run = property.isAsync()
     ? async (v) => asyncPropertyExecution(property, v)
     : (v) => propertyExecution(property, v);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
+    if (pluginInstance.decorateGenerate !== undefined) {
+      if (surchargedGenerate === undefined) {
+        surchargedGenerate = (mrng, runId) => property.generate(mrng, runId);
+      }
+      surchargedGenerate = pluginInstance.decorateGenerate(surchargedGenerate);
+    }
     if (pluginInstance.decorateRun !== undefined) {
       run = pluginInstance.decorateRun(run);
     }
   }
 
+  const generator = surchargedGenerate === undefined ? property : { generate: surchargedGenerate };
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof property.shrink = (...args) => property.shrink(...args);
   const initialValues =
     qParams.path.length === 0
-      ? toss(property, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, stream(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples)), shrink);
+      ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)
+      : pathWalk(qParams.path, stream(lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   if (property.isAsync()) {
