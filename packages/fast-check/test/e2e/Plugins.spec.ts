@@ -143,6 +143,55 @@ describe(`Plugins (seed: ${seed})`, () => {
     expect(seenFailures).toEqual([true]);
   });
 
+  it('should stack decorateGenerate in declaration order then run the predicate', () => {
+    // Arrange
+    const probes: string[] = [];
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+      return () => {
+        probes.push(`${pluginName} instantiated`);
+        return {
+          decorateGenerate:
+            (nestedGenerate) =>
+            (...args) => {
+              probes.push(`${pluginName}::generate started`);
+              const out = nestedGenerate(...args);
+              probes.push(`${pluginName}::generate done`);
+              return out;
+            },
+        };
+      };
+    };
+
+    // Act
+    probes.push('assert started');
+    fc.assert(
+      fc.property(fc.integer(), (_x) => {
+        probes.push('predicate called');
+        return true;
+      }),
+      { plugins: [buildPlugin('a'), buildPlugin('b')], numRuns: 2 },
+    );
+    probes.push('assert done');
+
+    // Assert
+    expect(probes).toEqual([
+      'assert started',
+      'a instantiated',
+      'b instantiated',
+      'a::generate started',
+      'b::generate started',
+      'b::generate done',
+      'a::generate done',
+      'predicate called',
+      'a::generate started',
+      'b::generate started',
+      'b::generate done',
+      'a::generate done',
+      'predicate called',
+      'assert done',
+    ]);
+  });
+
   it('should stack decorateRun with the first plugin being the closest to the predicate', () => {
     // Arrange
     const probes: string[] = [];
@@ -289,6 +338,66 @@ describe(`Plugins (seed: ${seed})`, () => {
         `${id}::${hook} started`,
         `${id}::${hook} done`,
       ]),
+      'assert done',
+    ]);
+  });
+
+  it('should apply plugins functions in precise order', () => {
+    // Arrange
+    const probes: string[] = [];
+    const buildPlugin = (): fc.Plugin<[number]> => {
+      return () => {
+        probes.push(`plugin: instantiated`);
+        return {
+          decorateGenerate: (nested) => {
+            probes.push(`plugin: decorateGenerate`);
+            return (...args) => {
+              probes.push(`plugin: generate`);
+              return nested(...args);
+            };
+          },
+          decorateRun: (nested) => {
+            probes.push(`plugin: decorateRun`);
+            return (...args) => {
+              probes.push(`plugin: run`);
+              return nested(...args);
+            };
+          },
+          onAllRunsComplete: () => {
+            probes.push(`plugin: onAllRunsComplete`);
+          },
+          afterAll: () => {
+            probes.push(`plugin: afterAll`);
+          },
+        };
+      };
+    };
+
+    // Act
+    probes.push('assert started');
+    fc.assert(
+      fc.property(fc.integer(), (_x) => {
+        probes.push('predicate');
+        return true;
+      }),
+      { plugins: [buildPlugin()], numRuns: 2 },
+    );
+    probes.push('assert done');
+
+    // Assert
+    expect(probes).toEqual([
+      'assert started',
+      'plugin: instantiated', // prepare phase
+      'plugin: decorateGenerate',
+      'plugin: decorateRun',
+      'plugin: generate', // 1st run
+      'plugin: run',
+      'predicate',
+      'plugin: generate', // 2nd run
+      'plugin: run',
+      'predicate',
+      'plugin: onAllRunsComplete', // clean-up
+      'plugin: afterAll',
       'assert done',
     ]);
   });
