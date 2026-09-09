@@ -20,7 +20,9 @@ The `unbiased` plugin generates the values feeding your predicates without any b
 }
 ```
 
-By default, without that plugin in place, generation would be biased. Bias implies that runs targeting smaller or more extreme values will be more likely than they should with an uniform distribution to uncover common issues earlier. With this plugin enabled, all the runs draw from the full range of the arbitraries with no special treatment.
+Without this plugin, generation is biased by default. Compared with a uniform distribution, smaller or more extreme values are more likely to be generated, helping uncover common issues earlier.
+
+With this plugin enabled, every run draws from the full range of the arbitraries with no special treatment.
 
 Resources: [API reference](/docs/api/functions/unbiased).
 
