@@ -31,16 +31,16 @@
     "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.0 || ^5.0.0"
   },
   "devDependencies": {
     "@fast-check/vitest": "workspace:*",
     "@types/node": "^24.13.3",
     "fast-check": "workspace:*",
-    "rolldown": "^1.2.4",
+    "rolldown": "^1.2.7",
     "typescript": "~6.0.3",
-    "vite": "^8.2.1",
-    "vitest": "^4.1.10"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
   },
   "keywords": [
     "vitest",

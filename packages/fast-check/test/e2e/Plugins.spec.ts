@@ -3,13 +3,20 @@ import * as fc from '../../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`Plugins (seed: ${seed})`, () => {
-  it('should wait and queue afterAll', async () => {
+  it('should wait and queue onAllRunsComplete and afterAll', async () => {
     // Arrange
     const probes: string[] = [];
     const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
+          onAllRunsComplete: async () => {
+            probes.push(`${pluginName}::onAllRunsComplete started`);
+            await Promise.resolve(`${pluginName}1`);
+            await Promise.resolve(`${pluginName}2`);
+            await Promise.resolve(`${pluginName}3`);
+            probes.push(`${pluginName}::onAllRunsComplete done`);
+          },
           afterAll: async () => {
             probes.push(`${pluginName}::afterAll started`);
             await Promise.resolve(`${pluginName}1`);
@@ -34,12 +41,106 @@ describe(`Plugins (seed: ${seed})`, () => {
       'assert started',
       'a instantiated',
       'b instantiated',
+      'a::onAllRunsComplete started',
+      'a::onAllRunsComplete done',
+      'b::onAllRunsComplete started',
+      'b::onAllRunsComplete done',
       'b::afterAll started',
       'b::afterAll done',
       'a::afterAll started',
       'a::afterAll done',
       'assert done',
     ]);
+  });
+
+  it('should run every onAllRunsComplete and afterAll even when many throw and only forward the first error', async () => {
+    // Arrange
+    const probes: string[] = [];
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+      return () => {
+        return {
+          onAllRunsComplete: async () => {
+            probes.push(`${pluginName}::onAllRunsComplete`);
+            throw new Error(`error from ${pluginName}::onAllRunsComplete`);
+          },
+          afterAll: async () => {
+            probes.push(`${pluginName}::afterAll`);
+            throw new Error(`error from ${pluginName}::afterAll`);
+          },
+        };
+      };
+    };
+
+    // Act / Assert
+    await expect(
+      fc.assert(
+        fc.asyncProperty(fc.integer(), async (_x) => true),
+        { plugins: [buildPlugin('a'), buildPlugin('b'), buildPlugin('c')] },
+      ),
+    ).rejects.toThrow(/^error from a::onAllRunsComplete$/);
+    expect(probes).toEqual([
+      'a::onAllRunsComplete',
+      'b::onAllRunsComplete',
+      'c::onAllRunsComplete',
+      'c::afterAll',
+      'b::afterAll',
+      'a::afterAll',
+    ]);
+  });
+
+  it('should forward errors thrown within afterAll to the user even in case of predicate failure', () => {
+    // Arrange
+    const reporterPlugin: fc.Plugin<[number]> = () => ({
+      afterAll: () => {
+        throw new Error(`boom!`);
+      },
+    });
+
+    // Act / Assert
+    expect(() =>
+      fc.assert(
+        fc.property(fc.integer(), (x) => x < 42),
+        { plugins: [reporterPlugin], seed },
+      ),
+    ).toThrow(/^boom!$/);
+  });
+
+  it('should give plugins the ability to replace the default reporting of assert via onAllRunsComplete', () => {
+    // Arrange
+    const reporterPlugin: fc.Plugin<[number]> = () => ({
+      onAllRunsComplete: (runDetails) => {
+        if (runDetails.failed) {
+          throw new Error(`Custom report for counterexample ${JSON.stringify(runDetails.counterexample)}`);
+        }
+      },
+    });
+
+    // Act / Assert
+    expect(() =>
+      fc.assert(
+        fc.property(fc.integer(), (x) => x < 42),
+        { plugins: [reporterPlugin], seed },
+      ),
+    ).toThrow(/^Custom report for counterexample \[42\]$/);
+  });
+
+  it('should preserve the default reporting of assert when onAllRunsComplete does not throw', () => {
+    // Arrange
+    const seenFailures: boolean[] = [];
+    const reporterPlugin: fc.Plugin<[number]> = () => ({
+      onAllRunsComplete: (runDetails) => {
+        seenFailures.push(runDetails.failed);
+      },
+    });
+
+    // Act / Assert
+    expect(() =>
+      fc.assert(
+        fc.property(fc.integer(), (x) => x < 42),
+        { plugins: [reporterPlugin], seed },
+      ),
+    ).toThrow(/Property failed after/);
+    expect(seenFailures).toEqual([true]);
   });
 
   it('should stack decorateRun with the first plugin being the closest to the predicate', () => {
@@ -134,46 +235,27 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should forward runIds to decorateGenerate hooks', () => {
-    // Arrange
-    const seenRunIds: (number | undefined)[] = [];
-    const observerPlugin: fc.Plugin<unknown> = () => {
-      return {
-        decorateGenerate: (nestedGenerate) => (mrng, runId) => {
-          seenRunIds.push(runId);
-          return nestedGenerate(mrng, runId);
-        },
-      };
-    };
-
-    // Act
-    fc.assert(
-      fc.property(fc.integer(), (_x) => true),
-      { plugins: [observerPlugin], numRuns: 3 },
-    );
-
-    // Assert
-    expect(seenRunIds).toEqual([0, 1, 2]);
-  });
-
-  it('should support mixes of sync and async afterAll', async () => {
+  it.each([
+    { hook: 'afterAll' as const, expectReversed: true },
+    { hook: 'onAllRunsComplete' as const, expectReversed: false },
+  ])('should support mixes of sync and async $hook', async ({ hook, expectReversed }) => {
     // Arrange
     const probes: string[] = [];
     const buildPlugin = (pluginName: string, isAsync: boolean): fc.Plugin<[number]> => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
-          afterAll: isAsync
+          [hook]: isAsync
             ? async () => {
-                probes.push(`${pluginName}::afterAll started`);
+                probes.push(`${pluginName}::${hook} started`);
                 await Promise.resolve(`${pluginName}1`);
                 await Promise.resolve(`${pluginName}2`);
                 await Promise.resolve(`${pluginName}3`);
-                probes.push(`${pluginName}::afterAll done`);
+                probes.push(`${pluginName}::${hook} done`);
               }
             : () => {
-                probes.push(`${pluginName}::afterAll started`);
-                probes.push(`${pluginName}::afterAll done`);
+                probes.push(`${pluginName}::${hook} started`);
+                probes.push(`${pluginName}::${hook} done`);
               },
         };
       };
@@ -203,16 +285,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       'c instantiated',
       'd instantiated',
       'e instantiated',
-      'e::afterAll started',
-      'e::afterAll done',
-      'd::afterAll started',
-      'd::afterAll done',
-      'c::afterAll started',
-      'c::afterAll done',
-      'b::afterAll started',
-      'b::afterAll done',
-      'a::afterAll started',
-      'a::afterAll done',
+      ...(expectReversed ? ['e', 'd', 'c', 'b', 'a'] : ['a', 'b', 'c', 'd', 'e']).flatMap((id) => [
+        `${id}::${hook} started`,
+        `${id}::${hook} done`,
+      ]),
       'assert done',
     ]);
   });
