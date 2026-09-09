@@ -20,9 +20,9 @@ The `unbiased` plugin generates the values feeding your predicates without any b
 }
 ```
 
-Without this plugin, generation is biased by default. Compared with a uniform distribution, smaller or more extreme values are more likely to be generated, helping uncover common issues earlier.
+Without this plugin, generation is biased by default. Compared with a uniform distribution, smaller or more extreme values are more likely to be generated, helping uncover common issues earlier. For example, with `fc.integer()`, small values such as `1` and `2` are more likely to be generated than `171414468`.
 
-With this plugin enabled, every run draws from the full range of the arbitraries with no special treatment.
+With this plugin enabled, every run draws from the full range of the arbitraries with no special treatment. For `fc.integer()`, `171414468` is then just as likely to be generated as `1` or `2`.
 
 Resources: [API reference](/docs/api/functions/unbiased).
 
