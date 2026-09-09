@@ -143,6 +143,55 @@ describe(`Plugins (seed: ${seed})`, () => {
     expect(seenFailures).toEqual([true]);
   });
 
+  it('should stack decorateGenerate in declaration order then run the predicate', () => {
+    // Arrange
+    const probes: string[] = [];
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+      return () => {
+        probes.push(`${pluginName} instantiated`);
+        return {
+          decorateGenerate:
+            (nestedGenerate) =>
+            (...args) => {
+              probes.push(`${pluginName}::generate started`);
+              const out = nestedGenerate(...args);
+              probes.push(`${pluginName}::generate done`);
+              return out;
+            },
+        };
+      };
+    };
+
+    // Act
+    probes.push('assert started');
+    fc.assert(
+      fc.property(fc.integer(), (_x) => {
+        probes.push('predicate called');
+        return true;
+      }),
+      { plugins: [buildPlugin('a'), buildPlugin('b')], numRuns: 2 },
+    );
+    probes.push('assert done');
+
+    // Assert
+    expect(probes).toEqual([
+      'assert started',
+      'a instantiated',
+      'b instantiated',
+      'a::generate started',
+      'b::generate started',
+      'b::generate done',
+      'a::generate done',
+      'predicate called',
+      'a::generate started',
+      'b::generate started',
+      'b::generate done',
+      'a::generate done',
+      'predicate called',
+      'assert done',
+    ]);
+  });
+
   it('should stack decorateRun with the first plugin being the closest to the predicate', () => {
     // Arrange
     const probes: string[] = [];
