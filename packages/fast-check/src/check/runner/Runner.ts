@@ -19,7 +19,6 @@ import type { IProperty } from '../property/Property.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
-import type { Random } from '../../random/generator/Random.js';
 
 const SMap = Map;
 
@@ -230,7 +229,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateGenerate !== undefined) {
       if (surchargedGenerate === undefined) {
-        surchargedGenerate = (mrng: Random, runId?: number) => property.generate(mrng, runId);
+        surchargedGenerate = (mrng, runId) => property.generate(mrng, runId);
       }
       surchargedGenerate = pluginInstance.decorateGenerate(surchargedGenerate);
     }
