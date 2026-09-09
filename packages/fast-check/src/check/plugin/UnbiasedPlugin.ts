@@ -1,8 +1,8 @@
 import type { Plugin, PluginInstance } from './Plugin.js';
 
 /**
- * Force the generation of values for the predicate to provide us with unbiased values.
- * By default, without anything forcing the drop of bias, arbitraries will be asked to bias their generated values.
+ * Forces values passed to the predicate to be generated without bias.
+ * By default, arbitraries tasked to generate biased values.
  *
  * @example
  * ```ts
