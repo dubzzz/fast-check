@@ -35,6 +35,13 @@ export type PluginStore = {
  */
 export type PluginInstance<Ts> = {
   /**
+   * Surcharge the original `generate` coming with the property with extra capabilities.
+   *
+   * @remarks Since 4.10.0
+   */
+  decorateGenerate?: (nestedGenerate: IRawProperty<Ts, boolean>['generate']) => IRawProperty<Ts, boolean>['generate'];
+
+  /**
    * Enrich the execution of the predicate linked to the property with extra behaviors.
    * Called once per execution of the predicate.
    *
