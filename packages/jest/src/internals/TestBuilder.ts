@@ -1,4 +1,4 @@
-import fc, { record } from 'fast-check';
+import { record, Value } from 'fast-check';
 import { buildTestWithPropRunner } from './TestWithPropRunnerBuilder.js';
 
 import type { Parameters as FcParameters, ExecutionTree, RunDetails, RunDetailsCommon, Plugin } from 'fast-check';
@@ -67,16 +67,16 @@ function adaptPluginForRecord<Ts>(plugin: Plugin<Ts>, originalParamaters: FcPara
               const decorated = instance.decorateGenerate!((mrng, runId) => {
                 const out = nestedGenerate(mrng, runId);
                 if (out.hasToBeCloned) {
-                  return new fc.Value(out.value[0], out.context, () => out.value[0]);
+                  return new Value(out.value[0], out.context, () => out.value[0]);
                 }
-                return new fc.Value(out.value_[0], out.context);
+                return new Value(out.value_[0], out.context);
               });
               return (mrng, runId) => {
                 const out = decorated(mrng, runId);
                 if (out.hasToBeCloned) {
-                  return new fc.Value([out.value], out.context, () => [out.value]);
+                  return new Value([out.value], out.context, () => [out.value]);
                 }
-                return new fc.Value([out.value_], out.context);
+                return new Value([out.value_], out.context);
               };
             }
           : undefined,
