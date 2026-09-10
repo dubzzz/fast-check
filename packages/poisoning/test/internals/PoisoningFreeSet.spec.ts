@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { AddSymbol, HasSymbol, PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
+import { AddSymbol, HasSymbol, toPoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 
-describe('PoisoningFreeSet', () => {
+describe('toPoisoningFreeSet', () => {
   it.each`
     originalName | symbol
     ${'add'}     | ${AddSymbol}
@@ -13,7 +13,7 @@ describe('PoisoningFreeSet', () => {
     try {
       // Act
       delete (Set as any).prototype[originalName]; // deleting original before calling toPoisoningFree*
-      const newSet = PoisoningFreeSet.from();
+      const newSet = toPoisoningFreeSet();
 
       // Assert
       expect(symbol in newSet).toBe(true); // check symbol exists on output...
