@@ -44,8 +44,8 @@ export class Random {
 
   /**
    * Generate a random boolean
+   * @deprecated Prefer {@link nextInt} with explicit bounds: `nextInt(0, 1) === 1`
    */
-
   nextBoolean(): boolean {
     return uniformInt(this.internalRng, 0, 1) === 1;
   }
@@ -77,6 +77,7 @@ export class Random {
 
   /**
    * Generate a random floating point number between 0.0 (included) and 1.0 (excluded)
+   * @deprecated Prefer {@link nextInt} with explicit bounds
    */
   nextDouble(): number {
     const a = this.next(26);

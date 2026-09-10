@@ -55,7 +55,7 @@ export interface Parameters<T = void> {
    *
    * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
    * @remarks Since 0.0.11
-   * @deprecated Prefer using the timeout plugin
+   * @deprecated Prefer the `timeout` plugin: `fc.assert(property, { plugins: [fc.timeout(timeMs)] })`
    */
   timeout?: number;
   /**
@@ -89,12 +89,14 @@ export interface Parameters<T = void> {
    * it will be marked as success. Except if `markInterruptAsFailure` has been set to `true`
    *
    * @remarks Since 1.19.0
+   * @deprecated Prefer the `interruptAfterTimeLimit` plugin: `fc.assert(property, { plugins: [fc.interruptAfterTimeLimit(timeMs)] })`
    */
   interruptAfterTimeLimit?: number;
   /**
    * Mark interrupted runs as failed runs if preceded by one success or more: disabled by default
    * Interrupted with no success at all always defaults to failure whatever the value of this flag.
    * @remarks Since 1.19.0
+   * @deprecated Prefer the `failOnInterrupt` option of the `interruptAfterTimeLimit` plugin: `fc.interruptAfterTimeLimit(timeMs, { failOnInterrupt: true })`
    */
   markInterruptAsFailure?: boolean;
   /**
@@ -108,6 +110,7 @@ export interface Parameters<T = void> {
    * NOTE: Relies on `fc.stringify` to check the equality.
    *
    * @remarks Since 2.14.0
+   * @deprecated Prefer the `skipEqualValues` plugin: `fc.assert(property, { plugins: [fc.skipEqualValues()] })`
    */
   skipEqualValues?: boolean;
   /**
@@ -120,6 +123,7 @@ export interface Parameters<T = void> {
    * NOTE: Relies on `fc.stringify` to check the equality.
    *
    * @remarks Since 2.14.0
+   * @deprecated Prefer the `ignoreEqualValues` plugin: `fc.assert(property, { plugins: [fc.ignoreEqualValues()] })`
    */
   ignoreEqualValues?: boolean;
   /**
@@ -136,6 +140,7 @@ export interface Parameters<T = void> {
   /**
    * Force the use of unbiased arbitraries: biased by default
    * @remarks Since 1.1.0
+   * @deprecated Prefer the `unbiased` plugin: `fc.assert(property, { plugins: [fc.unbiased()] })`
    */
   unbiased?: boolean;
   /**
