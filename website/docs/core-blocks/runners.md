@@ -87,7 +87,7 @@ function statistics<Ts>(
   generator: IRawProperty<Ts, boolean> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: number | Parameters<Ts>,
-): void;
+): StatisticsReport;
 ```
 
 Example of usage:
@@ -111,6 +111,8 @@ fc.statistics(
 // >  4 characters...8.79%
 // >  5 characters...8.68%
 ```
+
+In addition to logging the distribution, `statistics` returns a `StatisticsReport` giving programmatic access to the classification counts: its `classes` field maps each label to its count and its `count` field is the number of considered values. It can be used to assert on the distribution of an arbitrary within a test.
 
 Resources: [API reference](/docs/api/functions/statistics).  
 Available since 0.0.6.
