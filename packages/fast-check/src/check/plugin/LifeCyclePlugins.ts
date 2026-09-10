@@ -1,4 +1,5 @@
-import type { IRawProperty } from '../property/IRawProperty.js';
+import type { IRawProperty, PropertyFailure } from '../property/IRawProperty.js';
+import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
 const LifeCyclePluginSymbol = Symbol.for('fast-check/plugin/life-cycle');
@@ -36,144 +37,106 @@ function computeResultingAfterHooks(
   return afterAndPluginIndices.map((details) => details.fn);
 }
 
+type PredicateOutput = PreconditionFailure | PropertyFailure | null; // null means success
+
+/**
+ * Run all the before hooks starting at startIndex, in declaration order.
+ * Stays fully synchronous while hooks are synchronous: a Promise is only allocated when one of the
+ * hooks returns one, in which case the remaining hooks get executed by re-entering this very same
+ * loop from within the resolution of the Promise.
+ * Returns null when everything ran synchronously. A before hook throwing synchronously propagates
+ * to the caller (or rejects the returned Promise when already in an asynchronous flow).
+ */
+function runBeforeHooks(
+  hooks: LifeCycleHooks,
+  teardownFunctions: { index: number; fn: TeardownFunction }[],
+  startIndex: number,
+): Promise<null> | null {
+  const beforeHooks = hooks.beforeHooks;
+  for (let index = startIndex; index !== beforeHooks.length; ++index) {
+    const out = beforeHooks[index]();
+    if (typeof out === 'function') {
+      teardownFunctions.push({ index, fn: out });
+    } else if (typeof out === 'object') {
+      const asyncIndex = index;
+      return out.then((beforeOut) => {
+        if (beforeOut !== undefined) {
+          teardownFunctions.push({ index: asyncIndex, fn: beforeOut });
+        }
+        return runBeforeHooks(hooks, teardownFunctions, asyncIndex + 1);
+      });
+    }
+  }
+  return null;
+}
+
+/**
+ * Run all the after hooks and teardowns from startIndex down to 0 (they run in reverse order).
+ * Stays fully synchronous while hooks are synchronous: a Promise is only allocated when one of the
+ * hooks returns one, in which case the remaining hooks get executed by re-entering this very same
+ * loop from within the settlement of the Promise.
+ * All the hooks always run: a failing one never stops the others. The first failure encountered
+ * only becomes the output when previous was a success.
+ */
+function runAfterHooks(
+  resultingAfterHooks: (TeardownFunction | AfterEachHook)[],
+  startIndex: number,
+  previous: PredicateOutput,
+): Promise<PredicateOutput> | PredicateOutput {
+  for (let index = startIndex; index >= 0; --index) {
+    let out: Promise<void> | void = undefined;
+    try {
+      out = resultingAfterHooks[index]();
+    } catch (error) {
+      // TODO Switch to ?? when the node range defined by fast-check accepts it
+      previous = previous || { error };
+    }
+    if (typeof out === 'object') {
+      const asyncIndex = index;
+      const previousSoFar = previous;
+      return out.then(
+        () => runAfterHooks(resultingAfterHooks, asyncIndex - 1, previousSoFar),
+        // TODO Switch to ?? when the node range defined by fast-check accepts it
+        (error) => runAfterHooks(resultingAfterHooks, asyncIndex - 1, previousSoFar || { error }),
+      );
+    }
+  }
+  return previous;
+}
+
 function lifeCycleHooksRunner(
   hooks: LifeCycleHooks,
   nestedRun: IRawProperty<unknown, boolean>['run'],
   value: unknown,
 ): ReturnType<typeof nestedRun> {
-  let wrappedRunOutput: Awaited<ReturnType<typeof nestedRun>> = null; // null means success
-  let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
-
-  // Before hooks
   const teardownFunctions: { index: number; fn: TeardownFunction }[] = [];
-  if (hooks.beforeHooks.length !== 0) {
-    try {
-      for (let index = 0; index !== hooks.beforeHooks.length; ++index) {
-        const before = hooks.beforeHooks[index];
-        if (wrappedRunContinuation === undefined) {
-          const out = before();
-          if (typeof out === 'function') {
-            teardownFunctions.push({ index, fn: out });
-          }
-          if (typeof out === 'object') {
-            wrappedRunContinuation = out.then((beforeOut) => {
-              if (beforeOut !== undefined) {
-                teardownFunctions.push({ index, fn: beforeOut });
-              }
-              return null;
-            });
-          }
-        } else {
-          wrappedRunContinuation = wrappedRunContinuation.then(() => {
-            const beforeOut = before();
-            if (beforeOut === undefined) {
-              return null;
-            }
-            if (typeof beforeOut === 'function') {
-              teardownFunctions.push({ index, fn: beforeOut });
-              return null;
-            }
-            return beforeOut.then((beforeOutNested) => {
-              if (beforeOutNested !== undefined) {
-                teardownFunctions.push({ index, fn: beforeOutNested });
-              }
-              return null;
-            });
-          });
-        }
-      }
-    } catch (error) {
-      wrappedRunOutput = { error };
-    }
-  }
 
-  // Predicate
-
-  if (wrappedRunOutput === null) {
-    if (wrappedRunContinuation === undefined) {
-      // We are currently into a sync flow
-      const out = nestedRun(value);
-      if (out !== null && 'then' in out) {
-        wrappedRunContinuation = out;
-      } else {
-        wrappedRunOutput = out;
-      }
-    } else {
-      // We switched to an async flow
-      wrappedRunContinuation = wrappedRunContinuation.then(
-        () => nestedRun(value),
-        (error) => ({ error }), // beforeEach flows do not catch anything, they always result into succes being null or throw
-      );
-    }
-  }
-
-  // After hooks
-  if (wrappedRunContinuation === undefined) {
+  function runAfterPart(previous: PredicateOutput): Promise<PredicateOutput> | PredicateOutput {
     const resultingAfterHooks = computeResultingAfterHooks(teardownFunctions, hooks);
-    for (let index = resultingAfterHooks.length - 1; index >= 0; --index) {
-      const after = resultingAfterHooks[index];
-      if (wrappedRunContinuation === undefined) {
-        try {
-          const out = after();
-          if (typeof out === 'object') {
-            wrappedRunContinuation = out.then(
-              () => wrappedRunOutput,
-              // TODO Switch to ?? when the node range defined by fast-check accepts it
-              (error) => wrappedRunOutput || { error },
-            );
-          }
-        } catch (error) {
-          wrappedRunOutput = { error };
-        }
-      } else {
-        wrappedRunContinuation = wrappedRunContinuation.then((previous) => {
-          try {
-            const out = after();
-            if (typeof out === 'object') {
-              return out.then(
-                () => previous,
-                // TODO Switch to ?? when the node range defined by fast-check accepts it
-                (error) => previous || { error },
-              );
-            }
-            return previous;
-          } catch (error) {
-            // TODO Switch to ?? when the node range defined by fast-check accepts it
-            return previous || { error };
-          }
-        });
-      }
-    }
-  } else {
-    wrappedRunContinuation = wrappedRunContinuation.then((previousBeforeAfters) => {
-      const resultingAfterHooks = computeResultingAfterHooks(teardownFunctions, hooks);
-      if (resultingAfterHooks.length === 0) {
-        return previousBeforeAfters;
-      }
-      let afterContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> = Promise.resolve(previousBeforeAfters);
-      for (let index = resultingAfterHooks.length - 1; index >= 0; --index) {
-        const after = resultingAfterHooks[index];
-        afterContinuation = afterContinuation.then((previous) => {
-          try {
-            const out = after();
-            return out === undefined
-              ? previous
-              : out.then(
-                  () => previous,
-                  // TODO Switch to ?? when the node range defined by fast-check accepts it
-                  (error) => previous || { error },
-                );
-          } catch (error) {
-            // TODO Switch to ?? when the node range defined by fast-check accepts it
-            return previous || { error };
-          }
-        });
-      }
-      return afterContinuation;
-    });
+    return runAfterHooks(resultingAfterHooks, resultingAfterHooks.length - 1, previous);
   }
 
-  return wrappedRunContinuation === undefined ? wrappedRunOutput : wrappedRunContinuation;
+  function runPredicateAndAfterPart(): Promise<PredicateOutput> | PredicateOutput {
+    const out = nestedRun(value);
+    if (out !== null && 'then' in out) {
+      return out.then(runAfterPart);
+    }
+    return runAfterPart(out);
+  }
+
+  let beforeContinuation: Promise<null> | null = null;
+  try {
+    beforeContinuation = runBeforeHooks(hooks, teardownFunctions, 0);
+  } catch (error) {
+    return runAfterPart({ error });
+  }
+  if (beforeContinuation === null) {
+    return runPredicateAndAfterPart();
+  }
+  return beforeContinuation.then(
+    runPredicateAndAfterPart,
+    (error) => runAfterPart({ error }), // beforeEach flows do not catch anything, they always result into success being null or throw
+  );
 }
 
 /**
