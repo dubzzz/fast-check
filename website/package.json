@@ -37,7 +37,7 @@
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "docusaurus-plugin-llms": "^0.6.0",
-    "docusaurus-plugin-typedoc": "^1.4.2",
+    "docusaurus-plugin-typedoc": "^1.4.3",
     "fast-check": "workspace:*",
     "jimp": "^1.6.1",
     "typedoc": "^0.28.20",

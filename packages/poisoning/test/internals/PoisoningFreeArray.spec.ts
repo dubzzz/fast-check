@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { MapSymbol, PushSymbol, SortSymbol, PoisoningFreeArray } from '../../src/internals/PoisoningFreeArray.js';
+import { MapSymbol, PushSymbol, SortSymbol, toPoisoningFreeArray } from '../../src/internals/PoisoningFreeArray.js';
 
-describe('PoisoningFreeArray', () => {
+describe('toPoisoningFreeArray', () => {
   it.each`
     originalName | symbol
     ${'map'}     | ${MapSymbol}
@@ -15,7 +15,7 @@ describe('PoisoningFreeArray', () => {
     try {
       // Act
       delete Array.prototype[originalName]; // deleting original before calling toPoisoningFree*
-      const newArray = PoisoningFreeArray.from(sourceArray);
+      const newArray = toPoisoningFreeArray(sourceArray);
 
       // Assert
       expect(symbol in newArray).toBe(true); // check symbol exists on output...
