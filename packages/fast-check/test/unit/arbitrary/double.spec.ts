@@ -252,6 +252,10 @@ describe('double', () => {
 
             // Assert
             expect(f).toBe(Number.NaN);
+            // Regression test for #6532: the bit pattern backing that NaN must not be the canonical one so that
+            // it can be told apart from Number.NaN once written into a Float64Array. NaN values are otherwise
+            // indistinguishable from each other at the language level (Number.isNaN, ===, Object.is...).
+            expect(isCanonicalNaN64(f)).toBe(false);
           },
         ),
       );
@@ -395,4 +399,17 @@ function spyBigIntWithValue(value: () => bigint) {
   const bigInt = vi.spyOn(BigIntMock, 'bigInt');
   bigInt.mockReturnValue(instance);
   return bigInt;
+}
+
+// Important: we deliberately assign into a re-used Float64Array (a direct bit-level re-interpretation) instead of
+// going through `new Float64Array([value])`. The later goes through a generic, per-element ToNumber-based
+// conversion path that some engines are allowed to (and, under JIT optimization, actually do) normalize NaN
+// payloads on, making it an unreliable way to observe the underlying bit pattern of a NaN.
+const nan64Scratch = new Float64Array(1);
+const nan64ScratchBytes = new Uint8Array(nan64Scratch.buffer);
+nan64Scratch[0] = Number.NaN;
+const canonicalNaN64Bytes = Uint8Array.from(nan64ScratchBytes);
+function isCanonicalNaN64(value: number): boolean {
+  nan64Scratch[0] = value;
+  return nan64ScratchBytes.every((byte, index) => byte === canonicalNaN64Bytes[index]);
 }
