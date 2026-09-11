@@ -1,6 +1,6 @@
 # 2.3.0
 
-_TODO Description_
+_Support for plugins_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.2.0...jest%2Fv2.3.0)]
 
 ## Features
