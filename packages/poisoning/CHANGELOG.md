@@ -1,15 +1,9 @@
 # 0.3.1
 
-_TODO Description_
+_Fixing linter complaints_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.3.0...poisoning%2Fv0.3.1)]
 
-## Features
-
-
-
-## Fixes
-
-
+- ([PR#7262](https://github.com/dubzzz/fast-check/pull/7262)) Refactor: Fix no-redeclare errors
 
 # 0.3.0
 
