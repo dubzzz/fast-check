@@ -8,10 +8,6 @@ _Support for plugins and for Vitest v5_
 - ([PR#7219](https://github.com/dubzzz/fast-check/pull/7219)) Support plugin API of fast-check
 - ([PR#7244](https://github.com/dubzzz/fast-check/pull/7244)) Support Vitest 5
 
-## Fixes
-
-
-
 ---
 
 # 0.4.1
