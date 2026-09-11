@@ -1,6 +1,6 @@
 # 4.10.0
 
-_TODO Description_
+_New plugin API and deprecations ahead of v5_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.10.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.9.0...v4.10.0)]
 
 ## Features
