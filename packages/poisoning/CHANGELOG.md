@@ -1,3 +1,16 @@
+# 0.3.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.3.0...poisoning%2Fv0.3.1)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.3.0
 
 _Only publish ESM bundle_

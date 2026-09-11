@@ -1,3 +1,42 @@
+# 4.10.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.10.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.9.0...v4.10.0)]
+
+## Features
+
+- ([PR#7216](https://github.com/dubzzz/fast-check/pull/7216)) Introduce a plugin API
+- ([PR#7221](https://github.com/dubzzz/fast-check/pull/7221)) Refine plugin API
+- ([PR#7222](https://github.com/dubzzz/fast-check/pull/7222)) Add ability to configure plugins globally
+- ([PR#7224](https://github.com/dubzzz/fast-check/pull/7224)) Add the `beforeEach` plugin to hook in life-cycle
+- ([PR#7227](https://github.com/dubzzz/fast-check/pull/7227)) Create an `afterEach` plugin
+- ([PR#7232](https://github.com/dubzzz/fast-check/pull/7232)) Deprecate life-cycle methods
+- ([PR#7235](https://github.com/dubzzz/fast-check/pull/7235)) Support teardown of `beforeEach` plugin
+- ([PR#7228](https://github.com/dubzzz/fast-check/pull/7228)) Add `timeout` plugin to stop long running predicates
+- ([PR#7237](https://github.com/dubzzz/fast-check/pull/7237)) Deprecate timeout from parameters
+- ([PR#7238](https://github.com/dubzzz/fast-check/pull/7238)) Pass a store to plugins
+- ([PR#7239](https://github.com/dubzzz/fast-check/pull/7239)) Add extra plugin's method called `onAllRunsComplete`
+- ([PR#7240](https://github.com/dubzzz/fast-check/pull/7240)) Deprecate `reporter` and `asyncReporter` from parameters
+- ([PR#7229](https://github.com/dubzzz/fast-check/pull/7229)) Add plugin to interrupt after time limit
+- ([PR#7245](https://github.com/dubzzz/fast-check/pull/7245)) Support `failOnInterrupt` on the plugin
+- ([PR#7230](https://github.com/dubzzz/fast-check/pull/7230)) Add plugins to drop runs on already covered cases
+- ([PR#7259](https://github.com/dubzzz/fast-check/pull/7259)) Add ability to decorate `generate` via Plugins
+- ([PR#7231](https://github.com/dubzzz/fast-check/pull/7231)) Add the `unbiased` plugin to generate without bias
+- ([PR#7260](https://github.com/dubzzz/fast-check/pull/7260)) Deprecate parameters superseded by plugins
+- ([PR#7261](https://github.com/dubzzz/fast-check/pull/7261)) Deprecate v5 removals
+
+## Fixes
+
+- ([PR#7225](https://github.com/dubzzz/fast-check/pull/7225)) Bug: Proper ordering between plugins
+- ([PR#7127](https://github.com/dubzzz/fast-check/pull/7127)) CI: Announce on Bluesky when drafting the release
+- ([PR#7217](https://github.com/dubzzz/fast-check/pull/7217)) CI: Dedupe packages for pnpm
+- ([PR#7137](https://github.com/dubzzz/fast-check/pull/7137)) Doc: Release note for 4.9.0
+- ([PR#7226](https://github.com/dubzzz/fast-check/pull/7226)) Doc: Fix admonition titles on the website
+- ([PR#7246](https://github.com/dubzzz/fast-check/pull/7246)) Doc: Add jkomyno as code contributor
+- ([PR#7251](https://github.com/dubzzz/fast-check/pull/7251)) Performance: Single timer for `interruptAfterTimeLimit`
+
+---
+
 # 4.9.0
 
 _Shrinkable `entityGraph` and few performance chips_

@@ -1,3 +1,19 @@
+# 2.3.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.2.0...jest%2Fv2.3.0)]
+
+## Features
+
+- ([PR#7218](https://github.com/dubzzz/fast-check/pull/7218)) Support plugin API of fast-check
+
+## Fixes
+
+- ([PR#6864](https://github.com/dubzzz/fast-check/pull/6864)) Test: Strip AI env vars in child processes
+- ([PR#6958](https://github.com/dubzzz/fast-check/pull/6958)) Test: Drop `babel-jest` from cjs test-bundle
+
+---
+
 # 2.2.0
 
 _Add support for `@fast-check/worker` version 0.6.0_

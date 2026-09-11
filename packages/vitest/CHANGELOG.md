@@ -1,3 +1,19 @@
+# 0.5.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.4.1...vitest%2Fv0.5.0)]
+
+## Features
+
+- ([PR#7219](https://github.com/dubzzz/fast-check/pull/7219)) Support plugin API of fast-check
+- ([PR#7244](https://github.com/dubzzz/fast-check/pull/7244)) Support Vitest 5
+
+## Fixes
+
+
+
+---
+
 # 0.4.1
 
 _Support `test.each`_
