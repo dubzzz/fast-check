@@ -1,8 +1,14 @@
+---
+title: What's new in fast-check 4.10.0?
+authors: [dubzzz]
+tags: [release, plugins]
+---
+
 Let's pave the way for the upcoming v5. fast-check 4.10.0 comes with the idea of easing the migration path to v5. As such, it should be seen as an intermediate version easing the move to v5. It introduces a reduced and simplified version of our plugin API and moves several existing built-in behaviors into plugins before we drop their previous entry points in v5. It also marks APIs planned for removal as deprecated when replacements are already available in v4.10.0, with notices explaining how to switch.
 
-Read on to explore what this release brings.
+Continue reading to explore the detailed updates it brings.
 
----
+{/* truncate */}
 
 ## Plugins
 
