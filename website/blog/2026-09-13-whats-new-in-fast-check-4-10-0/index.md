@@ -24,6 +24,18 @@ The reason why we introduced our plugin API directly in v4 was that we wanted to
 
 In v4.10.0, we introduce seven built-in plugins to replace several of those parameters as well as the existing property hooks:
 
+| Plugin | Previous API |
+| --- | --- |
+| `fc.timeout(timeMs)` | `timeout` parameter |
+| `fc.interruptAfterTimeLimit(timeMs)` | `interruptAfterTimeLimit` parameter |
+| `fc.skipEqualValues()` | `skipEqualValues` parameter |
+| `fc.ignoreEqualValues()` | `ignoreEqualValues` parameter |
+| `fc.unbiased()` | `unbiased` parameter |
+| `fc.beforeEach(fn)` | Property's `.beforeEach(fn)` method |
+| `fc.afterEach(fn)` | Property's `.afterEach(fn)` method |
+
+These replacements are also documented in the deprecation notices accessible via the JSDoc shipped with the package.
+
 ## Deprecation notices
 
 Thanks to all the hard work above, we are happy (and sad at the same time) to announce the deprecation of several of our APIs. Our aim is, and has always been, to ease the use of the library by making it easier to understand and use. These deprecations fit well with that goal.
