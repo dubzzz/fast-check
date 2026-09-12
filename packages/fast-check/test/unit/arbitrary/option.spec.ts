@@ -95,6 +95,19 @@ describe('option', () => {
     );
     expect(out).toBe(expectedArb);
   });
+
+  it('should not call FrequencyArbitrary.from when freq is +Infinity', () => {
+    // Arrange
+    const from = vi.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+    const { instance: arb } = fakeArbitrary();
+
+    // Act
+    const out = option(arb, { freq: Number.POSITIVE_INFINITY });
+
+    // Assert
+    expect(from).not.toHaveBeenCalled();
+    expect(out).toBe(arb);
+  });
 });
 
 describe('option (integration)', () => {
@@ -127,6 +140,15 @@ describe('option (integration)', () => {
       () => option(constant(true), { freq: 1 }),
       (o) => {
         expect(o).toBe(null);
+      },
+    );
+  });
+
+  it('should never return nil when freq = +Infinity', () => {
+    assertProduceCorrectValues(
+      () => option(constant(true), { freq: Number.POSITIVE_INFINITY }),
+      (o) => {
+        expect(o).toBe(true);
       },
     );
   });
