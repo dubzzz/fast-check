@@ -23,3 +23,9 @@ As such, the `afterAll` and `onAllRunsComplete` hooks are likely to stay as they
 The reason why we introduced our plugin API directly in v4 was that we wanted to take the opportunity to deprecate various parameters accessible directly when invoking `assert`.
 
 In v4.10.0, we introduce seven built-in plugins to replace several of those parameters as well as the existing property hooks:
+
+## Deprecation notices
+
+Thanks to all the hard work above, we are happy (and sad at the same time) to announce the deprecation of several of our APIs. Our aim is, and has always been, to ease the use of the library by making it easier to understand and use. These deprecations fit well with that goal.
+
+The deprecated APIs remain available in v4.10.0, so you can migrate progressively ahead of v5. Their deprecation notices point to replacements you can use today.
