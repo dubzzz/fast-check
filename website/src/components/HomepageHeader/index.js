@@ -40,7 +40,7 @@ export default function HomepageHeader() {
             </Link>
             {/*<Link
               className={clsx('button', 'button--secondary', 'button--lg', styles.adventButton)}
-              to="/blog/tags/advent-of-pbt-2024/"
+              to="https://fast-check.dev/blog/tags/advent-of-pbt-2024/"
             >
               Save Christmas – Play! 🎄
             </Link>*/}

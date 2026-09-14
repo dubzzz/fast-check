@@ -57,6 +57,6 @@ You've written and executed your first Property-Based Test using the Deno test r
 
 ## Going further
 
-Property-based testing can be leveraged to test complex systems. This snippet was just a simple Hello-World example to give you a basic starting point. Our documentation provides advanced tricks to push the technique further, including [detecting race conditions](/docs/tutorials/detect-race-conditions/) and [finding vulnerabilities](/blog/2023/09/21/detect-prototype-pollution-automatically/).
+Property-based testing can be leveraged to test complex systems. This snippet was just a simple Hello-World example to give you a basic starting point. Our documentation provides advanced tricks to push the technique further, including [detecting race conditions](/docs/tutorials/detect-race-conditions/) and [finding vulnerabilities](https://fast-check.dev/blog/2023/09/21/detect-prototype-pollution-automatically/).
 
 FizzBuzz alone can also be extended with more properties. You may want to refer to [this article](https://dev.to/dubzzz/advent-of-pbt-2021-day-3-solution-366l) for more ideas.

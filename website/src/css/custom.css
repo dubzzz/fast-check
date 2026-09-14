@@ -32,6 +32,22 @@
   --fc-banner-background-color: rgb(52, 61, 220);
 }
 
+/* Keep the archived-version warning prominent above the main navigation. */
+.theme-announcement-bar {
+  height: auto;
+  min-height: 3.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-bottom-color: #d6aa00;
+}
+
+.theme-announcement-bar a {
+  color: #1727a7;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .header-bluesky-link:hover {
   opacity: 0.6;
 }

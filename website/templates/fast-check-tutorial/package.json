@@ -3,7 +3,7 @@
   "name": "fast-check-tutorial",
   "version": "0.0.0",
   "devDependencies": {
-    "fast-check": "*",
+    "fast-check": "^4.0.0",
     "vitest": "*"
   },
   "scripts": {

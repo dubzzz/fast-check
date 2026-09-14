@@ -142,7 +142,7 @@ const customArb = fakerToArb(() => faker.fake('{{name.lastName}}, {{name.firstNa
 
 :::tip[Recommended integration for Faker]
 
-Our recommended integration for Faker has changed since the release of the version 8.2.0 of Faker. We recommend you to have a look to [our article](/blog/2024/07/18/integrating-faker-with-fast-check/) on the subject.
+Our recommended integration for Faker has changed since the release of the version 8.2.0 of Faker. We recommend you to have a look to [our article](https://fast-check.dev/blog/2024/07/18/integrating-faker-with-fast-check/) on the subject.
 :::
 
 ### Random-based (eg.: lorem-ipsum)

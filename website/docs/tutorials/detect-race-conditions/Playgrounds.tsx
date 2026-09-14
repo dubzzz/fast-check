@@ -11,7 +11,7 @@ const defaultPackageJson = JSON.stringify(
       test: 'vitest',
     },
     devDependencies: {
-      'fast-check': 'latest',
+      'fast-check': '^4.0.0',
       vitest: 'latest',
     },
     stackblitz: {
