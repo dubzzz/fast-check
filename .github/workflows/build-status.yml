@@ -618,7 +618,7 @@ jobs:
   # Publication jobs
   publish_documentation_netlify:
     name: 'Publish documentation on Netlify'
-    if: github.event_name == 'push'
+    if: false #github.event_name == 'push'
     needs: documentation
     runs-on: ubuntu-latest
     env:
