@@ -67,6 +67,9 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'uint16Array', arbitraryBuilder: () => fc.uint16Array() },
     { name: 'int32Array', arbitraryBuilder: () => fc.int32Array() },
     { name: 'uint32Array', arbitraryBuilder: () => fc.uint32Array() },
+    ...(typeof Float16Array === 'undefined'
+      ? []
+      : [{ name: 'float16Array', arbitraryBuilder: () => fc.float16Array() }]),
     { name: 'float32Array', arbitraryBuilder: () => fc.float32Array() },
     { name: 'float64Array', arbitraryBuilder: () => fc.float64Array() },
     { name: 'bigInt64Array', arbitraryBuilder: () => fc.bigInt64Array() },

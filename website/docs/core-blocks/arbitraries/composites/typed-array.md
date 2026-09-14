@@ -300,6 +300,43 @@ fc.uint32Array({ max: 42, minLength: 1 });
 Resources: [API reference](/docs/api/functions/uint32Array).  
 Available since 2.9.0.
 
+## float16Array
+
+Generate _Float16Array_. Requires a runtime with `Float16Array` support, such as Node.js 24. Importing fast-check remains supported in older runtimes; calling this arbitrary without `Float16Array` throws a compatibility error.
+
+For a precise TypeScript result type, include global `Float16Array` constructor declarations, for example through `ESNext.Float16` in `lib` when supported by your TypeScript version. Without those declarations, this arbitrary's value type is `unknown`; existing arbitraries keep their usual types.
+
+**Signatures:**
+
+- `fc.float16Array()`
+- `fc.float16Array({min?, max?, minExcluded?, maxExcluded?, noDefaultInfinity?, noNaN?, noInteger?, minLength?, maxLength?, size?})`
+
+**with:**
+
+- `min?` — default: `-∞` and `-65504` when `noDefaultInfinity:true` — _lower bound for the generated 16-bit floats (included)_
+- `max?` — default: `+∞` and `65504` when `noDefaultInfinity:true` — _upper bound for the generated 16-bit floats (included)_
+- `minExcluded?` — default: `false` — _exclude the lower bound_
+- `maxExcluded?` — default: `false` — _exclude the upper bound_
+- `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
+- `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
+
+Bounds must be exactly representable in binary16. The smallest positive value is `2 ** -24`; the largest finite value is `65504`. Both signed zeros can be generated.
+
+**Usages:**
+
+```js
+fc.float16Array();
+fc.float16Array({ minLength: 1, noNaN: true });
+```
+
+Resources: [API reference](/docs/api/functions/float16Array).
+
+Available since 4.10.0.
+
 ## float32Array
 
 Generate _Float32Array_

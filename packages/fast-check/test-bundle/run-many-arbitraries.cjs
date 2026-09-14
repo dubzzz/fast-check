@@ -75,6 +75,11 @@ testArbitrary(fc.webUrl());
 testArbitrary(fc.int8Array());
 testArbitrary(fc.int16Array());
 testArbitrary(fc.int32Array());
+if (typeof Float16Array !== 'undefined') {
+  testArbitrary(fc.float16Array());
+} else {
+  assert.throws(() => fc.float16Array(), /requires Float16Array support/);
+}
 testArbitrary(fc.float32Array());
 testArbitrary(fc.float64Array());
 testArbitrary(
