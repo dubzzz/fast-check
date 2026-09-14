@@ -166,12 +166,6 @@ const config: Config = {
       // Optional: path for search page that enabled by default (`false` to disable it)
       searchPagePath: 'search',
       //... other Algolia params
-      askAi: {
-        assistantId: 'oXlQHyhfOwgY',
-        indexName: 'llms',
-        apiKey: 'e4f0293eb2e2c09903abbd32fe972a3c',
-        appId: 'XIUK9DGBYC',
-      },
     },
   } satisfies Preset.ThemeConfig,
 
