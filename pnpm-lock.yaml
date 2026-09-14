@@ -576,7 +576,7 @@ importers:
         specifier: ^1.4.3
         version: 1.4.3(typedoc-plugin-markdown@4.13.0(typedoc@0.28.20(typescript@6.0.3)))(typedoc@0.28.20(typescript@6.0.3))
       fast-check:
-        specifier: workspace:*
+        specifier: ^4.0.0
         version: link:../packages/fast-check
       jimp:
         specifier: ^1.6.1

@@ -1,4 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /
 
-Sitemap: https://fast-check.dev/sitemap.xml
+Sitemap: https://v4.fast-check.dev/sitemap.xml

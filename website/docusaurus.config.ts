@@ -14,11 +14,18 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://fast-check.dev/',
+  url: 'https://v4.fast-check.dev/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
   trailingSlash: true,
+
+  headTags: [
+    {
+      tagName: 'meta',
+      attributes: { name: 'robots', content: 'noindex, nofollow' },
+    },
+  ],
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -52,7 +59,7 @@ const config: Config = {
           sidebarPath: require.resolve('./sidebars.js'),
           remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
         },
-        blog: { showReadingTime: true },
+        blog: false,
         sitemap: { lastmod: 'date' },
         theme: { customCss: require.resolve('./src/css/custom.css') },
       } satisfies Preset.Options,
@@ -60,6 +67,12 @@ const config: Config = {
   ],
 
   themeConfig: {
+    announcementBar: {
+      id: 'archived-major-version',
+      content:
+        'This documentation is a snapshot of fast-check 4.x and its package ecosystem at the time. <span title="Install commands are preserved as originally documented and may now resolve newer packages.">ⓘ</span> <a href="https://fast-check.dev/">Go to fast-check.dev for the latest major version.</a>',
+      isCloseable: false,
+    },
     // Replace with your project's social card
     image: 'img/social.png',
     navbar: {
@@ -70,7 +83,7 @@ const config: Config = {
         { to: '/docs/tutorials/quick-start/basic-setup/', label: 'Quick Start' },
         { to: '/docs/tutorials/', label: 'All Tutorials' },
         { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
-        { to: '/blog', label: 'Blog', position: 'right' },
+        { href: 'https://fast-check.dev/blog/', label: 'Blog', position: 'right' },
         { to: '/docs/api/', label: 'API', position: 'right' },
         {
           href: 'https://bsky.app/profile/fast-check.dev',
@@ -119,7 +132,7 @@ const config: Config = {
         {
           title: 'More',
           items: [
-            { label: 'Blog', to: '/blog' },
+            { label: 'Blog', href: 'https://fast-check.dev/blog/' },
             { label: 'API Reference', to: '/docs/api/' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             { label: 'Tangled', href: 'https://tangled.org/fast-check.dev/fast-check' },
@@ -243,7 +256,7 @@ const config: Config = {
         title: 'fast-check Documentation',
         description:
           'Complete documentation for fast-check - Property-based testing framework for JavaScript/TypeScript',
-        includeBlog: true,
+        includeBlog: false,
         excludeImports: true,
         removeDuplicateHeadings: true,
         generateMarkdownFiles: true,
