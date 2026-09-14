@@ -11,6 +11,7 @@ overrides:
   dompurify@<3.4.0: ~3.4.0
 
 allowBuilds:
+  '@parcel/watcher': false
   '@swc/core': false
   core-js: false
   core-js-pure: false
