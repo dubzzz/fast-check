@@ -69,6 +69,11 @@ expectTypeOf(
     .beforeEach(() => 123)
     .afterEach(() => 'anything'),
 ).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
+// Asynchronous raw properties may expose synchronous beforeEach hooks
+const asyncRawPropertyWithSynchronousBeforeEach: Pick<fc.IAsyncProperty<unknown>, 'runBeforeEach'> = {
+  runBeforeEach: () => {},
+};
+void asyncRawPropertyWithSynchronousBeforeEach;
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
