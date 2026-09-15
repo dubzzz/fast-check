@@ -3,12 +3,6 @@
 _Fix fake-timer compatibility in timeout and interrupt plugins_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.10.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.10.0...v4.10.1)]
 
-## Features
-
-
-
-## Fixes
-
 ## Fixes
 
 - ([PR#7293](https://github.com/dubzzz/fast-check/pull/7293)) Bug: Capture timers for `interruptAfterTimeLimit` plugin
