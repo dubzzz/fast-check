@@ -13,7 +13,10 @@ import { safeForEach, safeMap, safeSlice } from '../../utils/globals.js';
  * @public
  */
 function asyncProperty<Ts extends [unknown, ...unknown[]]>(
-  ...args: [...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> }, predicate: (...args: Ts) => Promise<boolean | void>]
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    predicate: (...args: Ts) => Promise<boolean | void> | boolean | void,
+  ]
 ): IAsyncPropertyWithHooks<Ts> {
   if (args.length < 2) {
     throw new Error('asyncProperty expects at least two parameters');
