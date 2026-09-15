@@ -1,9 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import * as fc from '../../src/fast-check.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { seed } from './seed.js';
 
 describe(`TimeoutPlugin (seed: ${seed})`, () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    vi.resetModules();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
     vi.clearAllTimers();
   });
 
@@ -14,7 +18,7 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
     'should always run hooks not wrapped by the timeout even in case of timeout (plugins: $ordering)',
     async ({ timeoutFirst }) => {
       // Arrange
-      vi.useFakeTimers();
+      const fc = await import('../../src/fast-check.js');
       let numRuns = 0;
       const beforeEach = vi.fn();
       const afterEach = vi.fn();
@@ -53,8 +57,9 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
     },
   );
 
-  it('should have no effect on synchronous properties', () => {
+  it('should have no effect on synchronous properties', async () => {
     // Arrange
+    const fc = await import('../../src/fast-check.js');
     let numRuns = 0;
 
     // Act
