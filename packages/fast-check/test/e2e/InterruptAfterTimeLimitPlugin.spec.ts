@@ -1,16 +1,19 @@
-import { describe, expect, it, vi } from 'vitest';
-import * as fc from '../../src/fast-check.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { seed } from './seed.js';
-import { beforeEach } from 'node:test';
 
 describe(`TimeLimitPlugins (seed: ${seed})`, () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    vi.resetModules();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
     vi.clearAllTimers();
   });
 
   it('should not fail on interrupt when not flagged with failOnInterrupt', async () => {
     // Arrange
-    vi.useFakeTimers();
+    const fc = await import('../../src/fast-check.js');
 
     // Act / Assert
     await expect(
@@ -26,7 +29,7 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
 
   it('should fail on interrupt when flagged with failOnInterrupt', async () => {
     // Arrange
-    vi.useFakeTimers();
+    const fc = await import('../../src/fast-check.js');
 
     // Act / Assert
     await expect(
@@ -42,7 +45,7 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
 
   it('should not fail on an interrupt from another plugin even when flagged with failOnInterrupt', async () => {
     // Arrange
-    vi.useFakeTimers();
+    const fc = await import('../../src/fast-check.js');
 
     // Act / Assert
     await expect(

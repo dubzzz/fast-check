@@ -3,6 +3,10 @@ import type { IRawProperty } from '../property/IRawProperty.js';
 import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
+const safeSetTimeout = setTimeout;
+const safeClearTimeout = clearTimeout;
+const safePerformanceNow = typeof performance !== 'undefined' ? performance.now : Date.now;
+
 type Probe = {
   interruptedWhileRunning: boolean;
   running: boolean;
@@ -16,10 +20,10 @@ type Interrupt = {
 
 /** @internal */
 function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
-  const limitTime = performance.now() + timeMs;
+  const limitTime = safePerformanceNow() + timeMs;
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
   const promise = new Promise<PreconditionFailure>((resolve) => {
-    timeoutHandle = setTimeout(() => {
+    timeoutHandle = safeSetTimeout(() => {
       if (probe.running) {
         probe.interruptedWhileRunning = true;
       }
@@ -27,8 +31,8 @@ function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
     }, timeMs);
   });
   return {
-    expired: () => performance.now() >= limitTime,
-    clear: () => clearTimeout(timeoutHandle),
+    expired: () => safePerformanceNow() >= limitTime,
+    clear: () => safeClearTimeout(timeoutHandle),
     promise,
   };
 }

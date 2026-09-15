@@ -1,18 +1,22 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { interruptAfterTimeLimit } from '../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 import type { RunDetails } from '../../../../src/check/runner/reporter/RunDetails.js';
 
 describe('TimeLimitPlugins', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    vi.resetModules();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
     vi.clearAllTimers();
   });
 
   describe('interruptAfterTimeLimit', () => {
-    it('should forward inputs to run when started within the time limit', () => {
+    it('should forward inputs to run when started within the time limit', async () => {
       // Arrange
-      vi.useFakeTimers();
+      const { interruptAfterTimeLimit } = await import('../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js');
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => null);
       const expectedRunInput = Symbol('something');
 
@@ -27,9 +31,9 @@ describe('TimeLimitPlugins', () => {
       expect(nestedRun).toHaveBeenCalledWith(expectedRunInput);
     });
 
-    it('should interrupt executions started after the time limit without calling run', () => {
+    it('should interrupt executions started after the time limit without calling run', async () => {
       // Arrange
-      vi.useFakeTimers();
+      const { interruptAfterTimeLimit } = await import('../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js');
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => null);
 
       // Act
@@ -46,7 +50,7 @@ describe('TimeLimitPlugins', () => {
 
     it('should interrupt long-running executions started within the time limit', async () => {
       // Arrange
-      vi.useFakeTimers();
+      const { interruptAfterTimeLimit } = await import('../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js');
       const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => new Promise(() => {}));
 
       // Act
@@ -73,9 +77,10 @@ describe('TimeLimitPlugins', () => {
       'should clear the single timeout once done with all runs on $name (numRuns: $numRuns)',
       async ({ runOutput, numRuns }) => {
         // Arrange
-        vi.useFakeTimers();
         vi.spyOn(global, 'setTimeout');
         vi.spyOn(global, 'clearTimeout');
+        const { interruptAfterTimeLimit } =
+          await import('../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js');
         const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => runOutput);
 
         // Act
