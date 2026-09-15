@@ -1,21 +1,24 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { timeout } from '../../../../src/check/plugin/TimeoutPlugin.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
 
 describe('TimeoutPlugin', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    vi.resetModules();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
     vi.clearAllTimers();
   });
 
   it('should forward inputs to run', async () => {
     // Arrange
-    vi.useFakeTimers();
     const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockResolvedValueOnce(null);
     const expectedRunInput = { anything: Symbol('something') };
 
     // Act
-    const finalRun = timeoutPluginRun(10, nestedRun);
+    const finalRun = await timeoutPluginRun(10, nestedRun);
     const runPromise = finalRun(expectedRunInput);
     vi.advanceTimersByTime(10);
     await runPromise;
@@ -31,7 +34,6 @@ describe('TimeoutPlugin', () => {
     { outcome: 'skips on precondition', output: new PreconditionFailure() },
   ])('should not timeout if it $outcome in time', async ({ output }) => {
     // Arrange
-    vi.useFakeTimers();
     const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(output), 10);
@@ -39,7 +41,7 @@ describe('TimeoutPlugin', () => {
     );
 
     // Act
-    const finalRun = timeoutPluginRun(100, nestedRun);
+    const finalRun = await timeoutPluginRun(100, nestedRun);
     const runPromise = finalRun({});
     vi.advanceTimersByTime(10);
     await runPromise;
@@ -54,13 +56,12 @@ describe('TimeoutPlugin', () => {
     { outcome: 'precondition failure', output: new PreconditionFailure() },
   ])('should clear all started timeouts on $outcome', async ({ output }) => {
     // Arrange
-    vi.useFakeTimers();
     vi.spyOn(global, 'setTimeout');
     vi.spyOn(global, 'clearTimeout');
     const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockResolvedValueOnce(output);
 
     // Act
-    const finalRun = timeoutPluginRun(100, nestedRun);
+    const finalRun = await timeoutPluginRun(100, nestedRun);
     await finalRun({});
 
     // Assert
@@ -79,11 +80,10 @@ describe('TimeoutPlugin', () => {
     },
   ])('should timeout if it $behavior', async ({ buildNestedRunPromise }) => {
     // Arrange
-    vi.useFakeTimers();
     const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(buildNestedRunPromise());
 
     // Act
-    const finalRun = timeoutPluginRun(10, nestedRun);
+    const finalRun = await timeoutPluginRun(10, nestedRun);
     const runPromise = finalRun({});
     vi.advanceTimersByTime(10);
 
@@ -95,15 +95,14 @@ describe('TimeoutPlugin', () => {
     { outcome: 'success', output: null },
     { outcome: 'failure', output: { error: new Error('plop') } },
     { outcome: 'precondition failure', output: new PreconditionFailure() },
-  ])('should preserve synchronous runs untouched and clear the started timeout on $outcome', ({ output }) => {
+  ])('should preserve synchronous runs untouched and clear the started timeout on $outcome', async ({ output }) => {
     // Arrange
-    vi.useFakeTimers();
     vi.spyOn(global, 'setTimeout');
     vi.spyOn(global, 'clearTimeout');
     const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(output);
 
     // Act
-    const finalRun = timeoutPluginRun(100, nestedRun);
+    const finalRun = await timeoutPluginRun(100, nestedRun);
     const out = finalRun({});
 
     // Assert
@@ -115,7 +114,8 @@ describe('TimeoutPlugin', () => {
 
 // Helpers
 
-function timeoutPluginRun(timeMs: number, nestedRun: IRawProperty<unknown, boolean>['run']) {
+async function timeoutPluginRun(timeMs: number, nestedRun: IRawProperty<unknown, boolean>['run']) {
+  const { timeout } = await import('../../../../src/check/plugin/TimeoutPlugin.js');
   const instance = timeout(timeMs)(0, new Map<symbol, any>());
   return instance.decorateRun!(nestedRun);
 }

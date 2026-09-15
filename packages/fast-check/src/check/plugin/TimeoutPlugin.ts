@@ -2,16 +2,19 @@ import type { IRawProperty, PropertyFailure } from '../property/IRawProperty.js'
 import { Error } from '../../utils/globals.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
+const safeSetTimeout = setTimeout;
+const safeClearTimeout = clearTimeout;
+
 /** @internal */
 function timeoutAfter(timeMs: number) {
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
   const promise = new Promise<PropertyFailure>((resolve) => {
-    timeoutHandle = setTimeout(() => {
+    timeoutHandle = safeSetTimeout(() => {
       resolve({ error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`) });
     }, timeMs);
   });
   return {
-    clear: () => clearTimeout(timeoutHandle),
+    clear: () => safeClearTimeout(timeoutHandle),
     promise,
   };
 }
