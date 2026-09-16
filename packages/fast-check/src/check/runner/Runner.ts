@@ -139,13 +139,13 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
   }
 
   // Apply and decorate with plugins
-  let surchargedGenerate: typeof property.generate | undefined = undefined;
-  let run: typeof property.run = (v) => asyncPropertyExecution(property, v);
+  let surchargedGenerate: typeof decoratedProperty.generate | undefined = undefined;
+  let run = (v) => asyncPropertyExecution(decoratedProperty, v);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateGenerate !== undefined) {
       if (surchargedGenerate === undefined) {
-        surchargedGenerate = (mrng, runId) => property.generate(mrng, runId);
+        surchargedGenerate = (mrng, runId) => decoratedProperty.generate(mrng, runId);
       }
       surchargedGenerate = pluginInstance.decorateGenerate(surchargedGenerate);
     }
@@ -154,7 +154,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
     }
   }
 
-  const generator = surchargedGenerate === undefined ? property : { generate: surchargedGenerate };
+  const generator = surchargedGenerate === undefined ? decoratedProperty : { generate: surchargedGenerate };
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof decoratedProperty.shrink = (...args) => decoratedProperty.shrink(...args);
