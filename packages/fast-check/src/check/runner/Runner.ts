@@ -55,11 +55,8 @@ async function asyncRunIt<Ts>(
 ): Promise<RunExecution<Ts>> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    const syncOut = run(v);
-    // Awaiting on an already resolved value brings a performance drop.
-    // As such we try to only await on Promises. Given the shape of the values produced by run
-    // we do a best effort check and drop unwanted await calls only on synchronous success cases.
-    const out = syncOut !== null ? await syncOut : syncOut;
+    // TODO(v5) - Still awaiting for now, ideally we should avoid as much as possible awaiting (but here we have a Promise by construct)
+    const out = await run(v);
     runner.handleResult(out);
   }
   return runner.runExecution;
