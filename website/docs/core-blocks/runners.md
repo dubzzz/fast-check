@@ -14,7 +14,6 @@ Probably the most useful of all the runners provided within fast-check. This run
 Its signature can be summarized by:
 
 ```ts
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
 function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
 ```
 
@@ -32,7 +31,6 @@ Similar to `assert` except that caller is responsible to handle the output.
 In terms of signatures, `check` provides the following:
 
 ```ts
-function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
 function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 ```
 
@@ -48,12 +46,11 @@ The structure `RunDetails` provides all the details needed to report what happen
 :::tip[Rewrite `assert` with `check`]
 
 ```js
-function assert(property, params) {
-  // In this example we only support synchronous properties.
-  // To support both of them, you could use `property.isAsync()` and `asyncDefaultReportMessage`.
-  const out = fc.check(property, params);
+async function assert(property, params) {
+  const out = await fc.check(property, params);
   if (out.failed) {
-    throw new Error(fc.defaultReportMessage(out), { cause: out.errorInstance });
+    const message = await fc.asyncDefaultReportMessage(out);
+    throw new Error(message, { cause: out.errorInstance });
   }
 }
 ```
