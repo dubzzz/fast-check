@@ -33,7 +33,7 @@
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "@npmcli/arborist": "^9.0.0",
+    "@npmcli/arborist": "^10.0.0",
     "npm-packlist": "^10.0.0 || ^11.0.0"
   },
   "devDependencies": {
