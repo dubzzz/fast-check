@@ -140,7 +140,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
 
   // Apply and decorate with plugins
   let surchargedGenerate: typeof decoratedProperty.generate | undefined = undefined;
-  let run = (v) => asyncPropertyExecution(decoratedProperty, v);
+  let run: typeof decoratedProperty.run = (v) => asyncPropertyExecution(decoratedProperty, v);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateGenerate !== undefined) {
