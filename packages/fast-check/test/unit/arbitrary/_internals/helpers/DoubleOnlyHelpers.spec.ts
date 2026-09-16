@@ -100,9 +100,9 @@ describe('refineConstraintsForDoubleOnly', () => {
       });
     });
 
-    it('should properly refine when constraints ask for onlyIntegersAfterThisValue or above (excluding infinite)', () => {
-      fc.assert(
-        fc.property(
+    it('should properly refine when constraints ask for onlyIntegersAfterThisValue or above (excluding infinite)', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.double({ noDefaultInfinity: true, noNaN: true, min: onlyIntegersAfterThisValue }),
           (boundary) => {
             // Arrange / Act / Assert
@@ -119,9 +119,9 @@ describe('refineConstraintsForDoubleOnly', () => {
       );
     });
 
-    it('should properly refine when constraints ask for maxNonIntegerValue or below', () => {
-      fc.assert(
-        fc.property(fc.double({ noNaN: true, min: 1, max: maxNonIntegerValue }), (boundary) => {
+    it('should properly refine when constraints ask for maxNonIntegerValue or below', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.double({ noNaN: true, min: 1, max: maxNonIntegerValue }), (boundary) => {
           // Arrange / Act / Assert
           expect(refineConstraintsForDoubleOnly({ min: -boundary, max: boundary })).toStrictEqual({
             minExcluded: Number.isInteger(-boundary),
@@ -163,9 +163,9 @@ describe('refineConstraintsForDoubleOnly', () => {
       });
     });
 
-    it('should properly refine when constraints ask for onlyIntegersAfterThisValue or above (excluding infinite)', () => {
-      fc.assert(
-        fc.property(
+    it('should properly refine when constraints ask for onlyIntegersAfterThisValue or above (excluding infinite)', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.double({ noDefaultInfinity: true, noNaN: true, min: onlyIntegersAfterThisValue }),
           (boundary) => {
             // Arrange / Act / Assert
@@ -182,9 +182,9 @@ describe('refineConstraintsForDoubleOnly', () => {
       );
     });
 
-    it('should properly refine when constraints ask for maxNonIntegerValue or below', () => {
-      fc.assert(
-        fc.property(fc.double({ noNaN: true, min: 1, max: maxNonIntegerValue }), (boundary) => {
+    it('should properly refine when constraints ask for maxNonIntegerValue or below', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.double({ noNaN: true, min: 1, max: maxNonIntegerValue }), (boundary) => {
           // Arrange / Act / Assert
           expect(refineConstraintsForDoubleOnly({ ...excluded, min: -boundary, max: boundary })).toStrictEqual({
             minExcluded: true,

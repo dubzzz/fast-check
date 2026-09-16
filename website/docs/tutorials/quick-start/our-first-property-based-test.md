@@ -76,9 +76,9 @@ import fc from 'fast-check';
 Now that we have our property in mind, let's translate it into a running test:
 
 ```js title="sort.test.mjs"
-test('should sort numeric elements from the smallest to the largest one', () => {
-  fc.assert(
-    fc.property(fc.array(fc.integer()), (data) => {
+test('should sort numeric elements from the smallest to the largest one', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.array(fc.integer()), (data) => {
       const sortedData = sortNumbersAscending(data);
       for (let i = 1; i < data.length; ++i) {
         expect(sortedData[i - 1]).toBeLessThanOrEqual(sortedData[i]);

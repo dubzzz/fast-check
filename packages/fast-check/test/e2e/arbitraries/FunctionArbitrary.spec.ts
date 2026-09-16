@@ -4,32 +4,32 @@ import { seed } from '../seed.js';
 
 describe(`FunctionArbitrary (seed: ${seed})`, () => {
   describe('func', () => {
-    it('Should be able to generate multiple values', () => {
-      const out = fc.check(
-        fc.property(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)),
+    it('Should be able to generate multiple values', async () => {
+      const out = await fc.check(
+        fc.asyncProperty(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)),
         {
           seed: seed,
         },
       );
       expect(out.failed).toBe(true);
     });
-    it('Should print the values and corresponding outputs', () => {
-      expect(() =>
+    it('Should print the values and corresponding outputs', async () => {
+      await expect(
         fc.assert(
-          fc.property(fc.func(fc.nat()), (f) => {
+          fc.asyncProperty(fc.func(fc.nat()), (f) => {
             f(0, 8);
             f(42, 1);
             return false;
           }),
           { seed: seed },
         ),
-      ).toThrowError(/\[0,8\] => 0.*\[42,1\] => 0/s);
+      ).rejects.toThrowError(/\[0,8\] => 0.*\[42,1\] => 0/s);
     });
   });
   describe('compareFunc', () => {
-    it('Should be able to find equivalence between distinct values', () => {
-      const out = fc.check(
-        fc.property(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
+    it('Should be able to find equivalence between distinct values', async () => {
+      const out = await fc.check(
+        fc.asyncProperty(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
           fc.pre(a !== b);
           return f(a, b) !== 0;
         }),

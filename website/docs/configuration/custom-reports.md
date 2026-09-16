@@ -48,10 +48,8 @@ const reporterPlugin = () => ({
   },
 });
 
-fc.assert(
-  // You can either use it with `fc.property`
-  // or `fc.asyncProperty`
-  fc.property(...),
+await fc.assert(
+  fc.asyncProperty(...),
   { plugins: [reporterPlugin] },
 )
 ```
@@ -60,7 +58,7 @@ fc.assert(
 Before the introduction of plugins, custom reporting used to be achieved by passing a custom `reporter` to `assert`:
 
 ```js
-fc.assert(fc.property(...), {
+await fc.assert(fc.asyncProperty(...), {
   reporter(out) {
     if (out.failed) {
       throw new Error(fc.defaultReportMessage(out));
@@ -133,8 +131,8 @@ const buildCodeSandboxReporterPlugin = (createFiles) => {
   });
 }
 
-fc.assert(
-  fc.property(...),
+await fc.assert(
+  fc.asyncProperty(...),
   {
     plugins: [
       buildCodeSandboxReporterPlugin(counterexample => ({
@@ -184,7 +182,7 @@ Object.defineProperties(myPromisePossiblyResolved, {
 :::info[Limitations of async variant]
 Note that:
 
-- `asyncToStringMethod` is only used for asynchronous properties.
+- `asyncToStringMethod` is only used in asynchronous contexts.
 - Although `asyncToStringMethod` is marked as asynchronous, it should resolve almost instantly.
 
 :::

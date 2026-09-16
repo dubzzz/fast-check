@@ -6,8 +6,8 @@ import type { Plugin, PluginInstance } from './Plugin.js';
  *
  * @example
  * ```ts
- * fc.assert(
- *   fc.property(..., (...) => {...}),
+ * await fc.assert(
+ *   fc.asyncProperty(..., (...) => {...}),
  *   { plugins: [fc.unbiased()] }
  * )
  * ```

@@ -13,14 +13,14 @@ By default, the [runners](/docs/core-blocks/runners/) take an [optional argument
 Example:
 
 ```js
-test('test #1', () => {
-  fc.assert(myProp1, { numRuns: 10 });
+test('test #1', async () => {
+  await fc.assert(myProp1, { numRuns: 10 });
 });
-test('test #2', () => {
-  fc.assert(myProp2, { numRuns: 10 });
+test('test #2', async () => {
+  await fc.assert(myProp2, { numRuns: 10 });
 });
-test('test #3', () => {
-  fc.assert(myProp3, { numRuns: 10 });
+test('test #3', async () => {
+  await fc.assert(myProp3, { numRuns: 10 });
 });
 ```
 
@@ -33,14 +33,14 @@ Here is how to update the snippet above to share the settings:
 ```js
 fc.configureGlobal({ numRuns: 10 });
 
-test('test #1', () => {
-  fc.assert(myProp1);
+test('test #1', async () => {
+  await fc.assert(myProp1);
 });
-test('test #2', () => {
-  fc.assert(myProp2);
+test('test #2', async () => {
+  await fc.assert(myProp2);
 });
-test('test #3', () => {
-  fc.assert(myProp3);
+test('test #3', async () => {
+  await fc.assert(myProp3);
 });
 ```
 

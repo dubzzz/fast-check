@@ -79,9 +79,9 @@ export default function HomepageFeatures() {
         </div>
         <div className={styles.codeBlock}>
           <CodeBlock language="js">
-            {`test('validates substring presence in concatenated string', () => {
-  fc.assert(
-    fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+            {`test('validates substring presence in concatenated string', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.string(), fc.string(), fc.string(), (a, b, c) => {
       expect(isSubstring(\`\${a}\${b}\${c}\`, b)).toBe(true);
     })
   );

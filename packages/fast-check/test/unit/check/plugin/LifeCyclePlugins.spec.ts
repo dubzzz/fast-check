@@ -223,7 +223,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should produce a sync value if and only if all hooks and run were returning a sync value', async () => {
     await fc.assert(
-      fc.property(
+      fc.asyncProperty(
         fc.array(hookTypeArbitrary(), { minLength: 1 }),
         fc.boolean(),
         fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
@@ -360,7 +360,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should merge consecutive instances of the plugin into a single instance but create a new instance at each index gap', async () => {
     await fc.assert(
-      fc.property(
+      fc.asyncProperty(
         fc.nat(),
         fc.array(
           fc.record({

@@ -71,9 +71,9 @@ const frequencyConstraintsArbFor = (keys: {
 
 describe('FrequencyArbitrary', () => {
   describe('generate', () => {
-    it('should call Random generator to generate values between 0 and total weight (not included)', () =>
-      fc.assert(
-        fc.property(
+    it('should call Random generator to generate values between 0 and total weight (not included)', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -97,9 +97,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should call the right arbitrary to generate the value', () =>
-      fc.assert(
-        fc.property(
+    it('should call the right arbitrary to generate the value', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -129,9 +129,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should always call the first arbitrary to generate the value when maxDepth has been reached', () =>
-      fc.assert(
-        fc.property(
+    it('should always call the first arbitrary to generate the value when maxDepth has been reached', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ required: ['maxDepth'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -155,9 +155,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should increment received depth context when going deeper in the generate-tree then reset it', () =>
-      fc.assert(
-        fc.property(
+    it('should increment received depth context when going deeper in the generate-tree then reset it', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -192,9 +192,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should ask ranges containing negative values as we go deeper in the structure if depthSize and first arbitrary has weight >0', () =>
-      fc.assert(
-        fc.property(
+    it('should ask ranges containing negative values as we go deeper in the structure if depthSize and first arbitrary has weight >0', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ forbidden: ['maxDepth'], required: ['depthSize'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -232,9 +232,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should never ask ranges containing negative values as we go deeper in the structure if first arbitrary has weight of zero', () =>
-      fc.assert(
-        fc.property(
+    it('should never ask ranges containing negative values as we go deeper in the structure if first arbitrary has weight of zero', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ forbidden: ['maxDepth'], required: ['depthSize'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -264,9 +264,9 @@ describe('FrequencyArbitrary', () => {
   });
 
   describe('canShrinkWithoutContext', () => {
-    it('should tell it cannot generate the value if no sub-arbitrary can generate the value', () =>
-      fc.assert(
-        fc.property(frequencyValidInputsArb, frequencyConstraintsArbFor({}), (validInputs, constraints) => {
+    it('should tell it cannot generate the value if no sub-arbitrary can generate the value', async () =>
+      await fc.assert(
+        fc.asyncProperty(frequencyValidInputsArb, frequencyConstraintsArbFor({}), (validInputs, constraints) => {
           // Arrange
           const warbs = fromValidInputs(validInputs);
           const depthContext = { depth: 0 };
@@ -285,9 +285,9 @@ describe('FrequencyArbitrary', () => {
         }),
       ));
 
-    it('should ignore arbitraries with weight of zero when maxDepth not reached', () =>
-      fc.assert(
-        fc.property(
+    it('should ignore arbitraries with weight of zero when maxDepth not reached', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.nat(),
@@ -317,9 +317,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should tell it can generate the value if one of the sub-arbitraries can generate the value (maxDepth not reached)', () =>
-      fc.assert(
-        fc.property(
+    it('should tell it can generate the value if one of the sub-arbitraries can generate the value (maxDepth not reached)', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.nat(),
@@ -348,9 +348,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should only consider the first arbitrary when maxDepth has been reached', () =>
-      fc.assert(
-        fc.property(
+    it('should only consider the first arbitrary when maxDepth has been reached', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ required: ['maxDepth'] }),
           fc.nat(),
@@ -385,9 +385,9 @@ describe('FrequencyArbitrary', () => {
   });
 
   describe('shrink', () => {
-    it('should call the right arbitrary to shrink a value generated by itself', () =>
-      fc.assert(
-        fc.property(
+    it('should call the right arbitrary to shrink a value generated by itself', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ forbidden: ['withCrossShrink'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -424,9 +424,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should generate a new value using first arbitrary when cross-shrink enabled', () =>
-      fc.assert(
-        fc.property(
+    it('should generate a new value using first arbitrary when cross-shrink enabled', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ forbidden: ['withCrossShrink'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -468,9 +468,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should not call generate on first arbitrary when cross-shrink enabled and first generate already used it', () =>
-      fc.assert(
-        fc.property(
+    it('should not call generate on first arbitrary when cross-shrink enabled and first generate already used it', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({ forbidden: ['withCrossShrink'] }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -497,9 +497,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should be able to shrink without context if one of the sub-arbitrary can generate the value', () =>
-      fc.assert(
-        fc.property(
+    it('should be able to shrink without context if one of the sub-arbitrary can generate the value', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.nat(),
@@ -534,9 +534,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should be able to shrink without context if one of the sub-arbitrary can generate the value plus prepend fallback of first (whenever possible)', () =>
-      fc.assert(
-        fc.property(
+    it('should be able to shrink without context if one of the sub-arbitrary can generate the value plus prepend fallback of first (whenever possible)', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.nat(),
@@ -634,19 +634,19 @@ describe('FrequencyArbitrary (integration)', () => {
       'test',
     );
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(frequencyBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(frequencyBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(frequencyBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(frequencyBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(frequencyBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(frequencyBuilder, { extraParameters });
   });
 
-  it('should shrink towards strictly smaller values (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(frequencyBuilder, isStrictlySmaller, { extraParameters });
+  it('should shrink towards strictly smaller values (if underlyings do)', async () => {
+    await assertShrinkProducesStrictlySmallerValue(frequencyBuilder, isStrictlySmaller, { extraParameters });
   });
 });

@@ -8,9 +8,9 @@ import {
 } from '../../../../../src/arbitrary/_internals/mappers/TimeToDate.js';
 
 describe('timeToDateUnmapper', () => {
-  it('should be able to revert any mapped date correctly even invalid ones', () => {
-    fc.assert(
-      fc.property(fc.date(), (d) => {
+  it('should be able to revert any mapped date correctly even invalid ones', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.date(), (d) => {
         // Arrange / Act
         const rev = timeToDateUnmapper(d);
         const revRev = timeToDateMapper(rev);
@@ -23,9 +23,9 @@ describe('timeToDateUnmapper', () => {
 });
 
 describe('timeToDateUnmapperWithNaN', () => {
-  it('should be able to revert any mapped date correctly even invalid once', () => {
-    fc.assert(
-      fc.property(fc.date(), fc.integer({ min: -8640000000000000, max: 8640000000000001 }), (d, nanValue) => {
+  it('should be able to revert any mapped date correctly even invalid once', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.date(), fc.integer({ min: -8640000000000000, max: 8640000000000001 }), (d, nanValue) => {
         // Arrange / Act
         const rev = timeToDateUnmapperWithNaN(nanValue)(d);
         const revRev = timeToDateMapperWithNaN(nanValue)(rev);

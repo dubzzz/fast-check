@@ -74,9 +74,9 @@ Whenever it reports a failure, fast-check provides to properly re-run the test. 
 Given that line, the simplest option to re-run your predicate on the reported counterexample is to edit your test as follow:
 
 ```js title="sort.test.mjs"
-test('should sort numeric elements from the smallest to the largest one', () => {
-  fc.assert(
-    fc.property(fc.array(fc.integer()), (data) => {
+test('should sort numeric elements from the smallest to the largest one', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.array(fc.integer()), (data) => {
       /* code of the predicate */
     }),
     { seed: -1819918769, path: '0:...:3', endOnFailure: true }, // <-- added
@@ -102,9 +102,9 @@ By default, the framework limits the reported data to the bare minimal: the case
 But in some cases, it might be interesting to have much more details concerning what failed and what did not. To do so you can pass a verbosity flag to `fc.assert` as follow:
 
 ```js title="sort.test.mjs"
-test('should sort numeric elements from the smallest to the largest one', () => {
-  fc.assert(
-    fc.property(fc.array(fc.integer()), (data) => {
+test('should sort numeric elements from the smallest to the largest one', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.array(fc.integer()), (data) => {
       /* code of the predicate */
     }),
     { verbose: 2 }, // <-- added

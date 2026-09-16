@@ -51,8 +51,8 @@ function equalValuesRunner(
  *
  * @example
  * ```ts
- * fc.assert(
- *   fc.property(..., (...) => {...}),
+ * await fc.assert(
+ *   fc.asyncProperty(..., (...) => {...}),
  *   { plugins: [fc.ignoreEqualValues()] }
  * )
  * ```
@@ -81,8 +81,8 @@ export function ignoreEqualValues(): Plugin<unknown> {
  *
  * @example
  * ```ts
- * fc.assert(
- *   fc.property(..., (...) => {...}),
+ * await fc.assert(
+ *   fc.asyncProperty(..., (...) => {...}),
  *   { plugins: [fc.skipEqualValues()] }
  * )
  * ```

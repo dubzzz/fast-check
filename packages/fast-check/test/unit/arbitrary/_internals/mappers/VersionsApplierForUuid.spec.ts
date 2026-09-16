@@ -73,9 +73,9 @@ describe('versionsApplierUnmapper', () => {
     expect(() => versionsApplierUnmapper(source)).toThrowError();
   });
 
-  it('should be able to unmap any mapped value', () =>
-    fc.assert(
-      fc.property(
+  it('should be able to unmap any mapped value', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.uniqueArray(fc.nat({ max: 15 }), { minLength: 1 }),
         fc.nat(),
         fc.string({ unit: hexa() }),

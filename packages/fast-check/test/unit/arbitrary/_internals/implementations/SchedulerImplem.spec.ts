@@ -260,7 +260,7 @@ describe('SchedulerImplem', () => {
     });
 
     it('should wrap waitAll call using act whenever specified', async () =>
-      fc.assert(
+      await fc.assert(
         fc.asyncProperty(fc.infiniteStream(fc.nat()), async (seeds) => {
           // Arrange
           let actCount = 0;
@@ -289,7 +289,7 @@ describe('SchedulerImplem', () => {
       ));
 
     it('should wait the end of act before moving to the next task', async () =>
-      fc.assert(
+      await fc.assert(
         fc.asyncProperty(fc.infiniteStream(fc.nat()), async (seeds) => {
           // Arrange
           let locked = false;
@@ -1545,7 +1545,7 @@ describe('SchedulerImplem', () => {
     });
 
     it('should be able to waitAll promises scheduling others', async () =>
-      fc.assert(
+      await fc.assert(
         fc.asyncProperty(fc.infiniteStream(fc.nat()), async (seeds) => {
           // Arrange
           const status = { done: false };
@@ -1789,7 +1789,7 @@ describe('SchedulerImplem', () => {
 
     type ExecutionPlan = { name: string; children: ExecutionPlan[] };
     it('should be able to schedule new tasks from other tasks and wait them all with waitAll', async () =>
-      fc.assert(
+      await fc.assert(
         fc.asyncProperty(
           fc.array(
             fc.letrec((tie) => ({

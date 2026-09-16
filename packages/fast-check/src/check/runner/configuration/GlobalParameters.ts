@@ -102,8 +102,8 @@ export type GlobalParameters = Pick<
  * ```typescript
  * fc.configureGlobal({ numRuns: 10 });
  * //...
- * fc.assert(
- *   fc.property(
+ * await fc.assert(
+ *   fc.asyncProperty(
  *     fc.nat(), fc.nat(),
  *     (a, b) => a + b === b + a
  *   ), { seed: 42 }
