@@ -117,7 +117,7 @@ Here are the minimal requirements to use fast-check properly without any polyfil
 
 | fast-check | node                   | ECMAScript version | _TypeScript (optional)_ |
 | ---------- | ---------------------- | ------------------ | ----------------------- |
-| **5.x**    | ≥22.11.0               | ES2025             | ≥5.7                    |
+| **5.x**    | ≥22.12.0               | ES2025             | ≥5.8                    |
 | **4.x**    | ≥12.17.0<sup>(1)</sup> | ES2020             | ≥5.0                    |
 | **3.x**    | ≥8<sup>(2)</sup>       | ES2017             | ≥4.1<sup>(3)</sup>      |
 | **2.x**    | ≥8<sup>(2)</sup>       | ES2017             | ≥3.2<sup>(4)</sup>      |
