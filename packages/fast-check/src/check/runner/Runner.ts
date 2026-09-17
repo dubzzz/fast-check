@@ -114,8 +114,6 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  if (qParams.reporter !== undefined && qParams.asyncReporter !== undefined)
-    throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
   const decoratedProperty = decorateProperty(property, qParams);
 
   const globalPlugins = readInstalledGlobalPlugins();

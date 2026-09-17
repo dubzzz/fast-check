@@ -54,7 +54,7 @@ await fc.assert(
 )
 ```
 
-:::info[Deprecated `reporter` and `asyncReporter`]
+:::info[Deprecated `reporter`]
 Before the introduction of plugins, custom reporting used to be achieved by passing a custom `reporter` to `assert`:
 
 ```js
@@ -67,12 +67,10 @@ await fc.assert(fc.asyncProperty(...), {
 });
 ```
 
-In case of a reporter relying on asynchronous code, `asyncReporter` had to be used instead of `reporter`. Contrary to `reporter` that was used for both synchronous and asynchronous properties, `asyncReporter` was forbidden for synchronous properties and made them throw.
-
-Both `reporter` and `asyncReporter` are now deprecated: prefer a plugin relying on the `onAllRunsComplete` hook.
+`reporter` is now deprecated: prefer a plugin relying on the `onAllRunsComplete` hook.
 :::
 
-:::info[Before `reporter` and `asyncReporter`]
+:::info[Before `reporter`]
 In the past, writing your own reporter would have been done as follow:
 
 ```js
