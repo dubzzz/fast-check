@@ -2,7 +2,7 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod } from '../../check/symbols.js';
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import { nil } from '../../utils/iterator.js';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
 /** @internal */
@@ -12,7 +12,7 @@ function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
 }
 
 /** @internal */
-export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
+export class StreamArbitrary<T> extends Arbitrary<IteratorObject<T, never>> {
   constructor(
     readonly arb: Arbitrary<T>,
     readonly history: boolean,
@@ -20,12 +20,12 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
     super();
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): Value<Stream<T>> {
+  generate(mrng: Random, biasFactor: number | undefined): Value<IteratorObject<T, never>> {
     const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
     const enrichedProducer = () => {
       const seenValues: T[] | null = this.history ? [] : null;
       let numSeenValues = 0;
-      const g = function* (arb: Arbitrary<T>, clonedMrng: Random) {
+      const g = function* (arb: Arbitrary<T>, clonedMrng: Random): IteratorObject<T, never> {
         while (true) {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
           numSeenValues++;
@@ -35,7 +35,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
           yield value;
         }
       };
-      const s = new Stream(g(this.arb, mrng.clone()));
+      const s = g(this.arb, mrng.clone());
       return Object.defineProperties(s, {
         toString: {
           value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
@@ -57,14 +57,14 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
     return new Value(enrichedProducer(), undefined);
   }
 
-  canShrinkWithoutContext(_value: unknown): _value is Stream<T> {
+  canShrinkWithoutContext(_value: unknown): _value is IteratorObject<T, never> {
     // Knowing if we can generate or not an infinite stream would require to iterate over it
     // (until its "end")
     return false;
   }
 
-  shrink(_value: Stream<T>, _context?: unknown): Stream<Value<Stream<T>>> {
+  shrink(_value: IteratorObject<T, never>, _context?: unknown): IteratorObject<Value<IteratorObject<T, never>>> {
     // Not supported yet, even if context was provided
-    return Stream.nil();
+    return nil;
   }
 }

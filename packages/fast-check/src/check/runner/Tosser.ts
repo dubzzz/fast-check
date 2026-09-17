@@ -25,7 +25,7 @@ export function* toss<Ts>(
   seed: number,
   random: (seed: number) => QualifiedRandomGenerator,
   examples: Ts[],
-): IterableIterator<Value<Ts>> {
+): IteratorObject<Value<Ts>> {
   for (let idx = 0; idx !== examples.length; ++idx) {
     yield new Value(examples[idx], undefined);
   }
@@ -49,7 +49,7 @@ export function* lazyToss<Ts>(
   seed: number,
   random: (seed: number) => RandomGenerator,
   examples: Ts[],
-): IterableIterator<() => Value<Ts>> {
+): IteratorObject<() => Value<Ts>> {
   yield* examples.map((e) => () => new Value(e, undefined));
   let idx = 0;
   const rng = adaptRandomGenerator(random(seed));

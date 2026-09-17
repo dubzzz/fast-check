@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import type { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import { nil } from '../../utils/iterator.js';
 import type { GeneratorContext, GeneratorValue, PreBuiltValue } from './builders/GeneratorValueBuilder.js';
 import { buildGeneratorValue } from './builders/GeneratorValueBuilder.js';
 import { buildStableArbitraryGeneratorCache, naiveIsEqual } from './builders/StableArbitraryGeneratorCache.js';
@@ -24,10 +24,10 @@ export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
     return false;
   }
 
-  shrink(_value: GeneratorValue, context: unknown): Stream<Value<GeneratorValue>> {
+  shrink(_value: GeneratorValue, context: unknown): IteratorObject<Value<GeneratorValue>> {
     if (context === undefined) {
       // Auto can NEVER shrink without any context as there is no way to find back what to call to apply the shrink
-      return Stream.nil();
+      return nil;
     }
     const safeContext = context as GeneratorContext;
     const mrng = safeContext.mrng;

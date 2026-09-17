@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
+import { getNthOrLast } from '../../../../../src/utils/iterator.js';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
-import { Stream } from '../../../../../src/stream/Stream.js';
 import * as stubRng from '../../../stubs/generators.js';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols.js';
 import { Random } from '../../../../../src/random/generator/Random.js';
@@ -52,7 +52,7 @@ describe('NextArbitrary', () => {
       const choice3 = new Value(3, Symbol());
       const choice4 = new Value(4, Symbol());
       const choice5 = new Value(6, Symbol());
-      shrink.mockReturnValueOnce(Stream.of(choice1, choice2, choice3, choice4, choice5));
+      shrink.mockReturnValueOnce(Iterator.from([choice1, choice2, choice3, choice4, choice5]));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
@@ -197,7 +197,7 @@ describe('NextArbitrary', () => {
       const choice1 = new Value(1, Symbol());
       const choice2 = new Value(2, Symbol());
       const choice3 = new Value(3, Symbol());
-      shrink.mockReturnValueOnce(Stream.of(choice1, choice2, choice3));
+      shrink.mockReturnValueOnce(Iterator.from([choice1, choice2, choice3]));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
@@ -225,10 +225,10 @@ describe('NextArbitrary', () => {
       const choice1 = new Value(1, Symbol());
       const choice2 = new Value(2, Symbol());
       const choice3 = new Value(3, Symbol());
-      shrink.mockReturnValueOnce(Stream.of(choice1, choice2, choice3));
+      shrink.mockReturnValueOnce(Iterator.from([choice1, choice2, choice3]));
       const choice21 = new Value(21, Symbol());
       const choice22 = new Value(22, Symbol());
-      shrink.mockReturnValueOnce(Stream.of(choice21, choice22));
+      shrink.mockReturnValueOnce(Iterator.from([choice21, choice22]));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
@@ -239,7 +239,7 @@ describe('NextArbitrary', () => {
       const arb = new MyNextArbitrary().map((v) => String(v));
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
       const shrinksGen1 = arb.shrink(g.value, g.context);
-      const mappedChoice2 = shrinksGen1.getNthOrLast(1)!;
+      const mappedChoice2 = getNthOrLast(shrinksGen1, 1)!;
       const shrinksGen2 = arb.shrink(mappedChoice2.value, mappedChoice2.context);
 
       // Assert
@@ -258,7 +258,7 @@ describe('NextArbitrary', () => {
       generate.mockReturnValueOnce(source);
       const choice1 = new Value({ source: 2, [cloneMethod]: () => choice1.value_ }, Symbol());
       const choice2 = new Value({ source: 2, [cloneMethod]: () => choice2.value_ }, Symbol());
-      shrink.mockReturnValueOnce(Stream.of(choice1, choice2));
+      shrink.mockReturnValueOnce(Iterator.from([choice1, choice2]));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
@@ -381,11 +381,11 @@ describe('NextArbitrary', () => {
 
     it('should return a mapped version of the stream produced by the source arbitrary for the unmapped value when provided an unmapper function', () => {
       // Arrange
-      const expectedStreamValuesFromSource = Stream.of(
+      const expectedStreamValuesFromSource = Iterator.from([
         new Value('titi', undefined),
         new Value('toto', undefined),
         new Value('tutu', undefined),
-      );
+      ]);
       const generate = vi.fn();
       const canShrinkWithoutContext = vi.fn();
       const shrink = vi.fn().mockReturnValueOnce(expectedStreamValuesFromSource);
@@ -460,7 +460,7 @@ describe('NextArbitrary', () => {
       const shrinkRoot1 = new Value(10, Symbol());
       const shrinkRoot2 = new Value(11, Symbol());
       const shrinkRoot3 = new Value(15, Symbol());
-      shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2, shrinkRoot3));
+      shrink.mockReturnValueOnce(Iterator.from([shrinkRoot1, shrinkRoot2, shrinkRoot3]));
       const generateChained = vi.fn();
       const canShrinkWithoutContextChained = vi.fn() as any as (value: unknown) => value is any;
       const shrinkChained = vi.fn();
@@ -475,7 +475,7 @@ describe('NextArbitrary', () => {
         .mockReturnValueOnce(choiceShrink3Chained);
       const shrinkChained1 = new Value(25, Symbol());
       const shrinkChained2 = new Value(51, Symbol());
-      shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained1, shrinkChained2));
+      shrinkChained.mockReturnValueOnce(Iterator.from([shrinkChained1, shrinkChained2]));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
@@ -520,9 +520,9 @@ describe('NextArbitrary', () => {
       const shrinkRoot1 = new Value(10, Symbol());
       const shrinkRoot2 = new Value(11, Symbol()); // will not be iterated (getNthOrLast(0))
       const shrinkRoot3 = new Value(15, Symbol()); // will not be iterated (getNthOrLast(0))
-      shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2, shrinkRoot3));
+      shrink.mockReturnValueOnce(Iterator.from([shrinkRoot1, shrinkRoot2, shrinkRoot3]));
       const shrinkRoot11 = new Value(310, Symbol());
-      shrink.mockReturnValueOnce(Stream.of(shrinkRoot11));
+      shrink.mockReturnValueOnce(Iterator.from([shrinkRoot11]));
       const generateChained = vi.fn();
       const canShrinkWithoutContextChained = vi.fn() as any as (value: unknown) => value is any;
       const shrinkChained = vi.fn();
@@ -535,10 +535,10 @@ describe('NextArbitrary', () => {
         .mockReturnValueOnce(choiceShrink2Chained);
       const shrinkChained1 = new Value(25, Symbol());
       const shrinkChained2 = new Value(51, Symbol());
-      shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained1, shrinkChained2));
+      shrinkChained.mockReturnValueOnce(Iterator.from([shrinkChained1, shrinkChained2]));
       const shrinkChained11 = new Value(125, Symbol());
       const shrinkChained12 = new Value(151, Symbol());
-      shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained11, shrinkChained12));
+      shrinkChained.mockReturnValueOnce(Iterator.from([shrinkChained11, shrinkChained12]));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
@@ -555,7 +555,7 @@ describe('NextArbitrary', () => {
       // Act
       const arb = new MyNextArbitrary().chain(chainer);
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
-      const firstShrunkValue = arb.shrink(g.value, g.context).getNthOrLast(0)!;
+      const firstShrunkValue = getNthOrLast(arb.shrink(g.value, g.context), 0)!;
       const shrinks = arb.shrink(firstShrunkValue.value, firstShrunkValue.context);
 
       // Assert
@@ -582,7 +582,7 @@ describe('NextArbitrary', () => {
       generate.mockReturnValueOnce(choiceRoot);
       const shrinkRoot1 = new Value(10, Symbol());
       const shrinkRoot2 = new Value(11, Symbol());
-      shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2));
+      shrink.mockReturnValueOnce(Iterator.from([shrinkRoot1, shrinkRoot2]));
       const generateChained = vi.fn();
       const canShrinkWithoutContextChained = vi.fn() as any as (value: unknown) => value is any;
       const shrinkChained = vi.fn();
@@ -595,10 +595,10 @@ describe('NextArbitrary', () => {
         .mockReturnValueOnce(choiceShrink2Chained);
       const shrinkChained1 = new Value(25, Symbol());
       const shrinkChained2 = new Value(51, Symbol());
-      shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained1, shrinkChained2));
+      shrinkChained.mockReturnValueOnce(Iterator.from([shrinkChained1, shrinkChained2]));
       const shrinkChained11 = new Value(125, Symbol());
       const shrinkChained12 = new Value(151, Symbol());
-      shrinkChained.mockReturnValueOnce(Stream.of(shrinkChained11, shrinkChained12));
+      shrinkChained.mockReturnValueOnce(Iterator.from([shrinkChained11, shrinkChained12]));
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext;
@@ -615,7 +615,7 @@ describe('NextArbitrary', () => {
       // Act
       const arb = new MyNextArbitrary().chain(chainer);
       const g = arb.generate(mrngNoCall, expectedBiasFactor);
-      const shrunkValue = arb.shrink(g.value, g.context).getNthOrLast(2)!; // source will be exhausted it only declares two shrunk values
+      const shrunkValue = getNthOrLast(arb.shrink(g.value, g.context), 2)!; // source will be exhausted it only declares two shrunk values
       const shrinks = arb.shrink(shrunkValue.value, shrunkValue.context);
 
       // Assert

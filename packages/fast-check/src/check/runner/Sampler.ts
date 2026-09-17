@@ -1,4 +1,3 @@
-import { stream } from '../../stream/Stream.js';
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
 import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
@@ -32,12 +31,8 @@ function streamSample<Ts>(
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues =
     qParams.path.length === 0
-      ? stream(toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples))
-      : pathWalk(
-          qParams.path,
-          stream(lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)),
-          shrink,
-        );
+      ? toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
+      : pathWalk(qParams.path, lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples), shrink);
   return tossedValues.take(qParams.numRuns).map((s) => s.value_);
 }
 

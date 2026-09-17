@@ -3,7 +3,6 @@ import { WithShrinkFromOtherArbitrary } from '../../../../src/arbitrary/_interna
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import * as fc from 'fast-check';
 
 describe('WithShrinkFromOtherArbitrary', () => {
@@ -115,7 +114,7 @@ describe('WithShrinkFromOtherArbitrary', () => {
               canShrinkWithoutContext: canShrinkWithoutContextB,
             } = fakeArbitrary();
             generateA.mockReturnValueOnce(new Value(vA, cA));
-            shrinkA.mockReturnValueOnce(Stream.of(new Value(vAA, cAA), new Value(vAB, cAB)));
+            shrinkA.mockReturnValueOnce(Iterator.from([new Value(vAA, cAA), new Value(vAB, cAB)]));
             const { instance: mrng } = fakeRandom();
 
             // Act
@@ -167,8 +166,8 @@ describe('WithShrinkFromOtherArbitrary', () => {
               canShrinkWithoutContext: canShrinkWithoutContextB,
             } = fakeArbitrary();
             generateA.mockReturnValueOnce(new Value(vA, cA));
-            shrinkA.mockReturnValueOnce(Stream.of(new Value(vAA, cAA), new Value(vAB, cAB), new Value(vAC, cAC)));
-            shrinkA.mockReturnValueOnce(Stream.of(new Value(vABA, cABA)));
+            shrinkA.mockReturnValueOnce(Iterator.from([new Value(vAA, cAA), new Value(vAB, cAB), new Value(vAC, cAC)]));
+            shrinkA.mockReturnValueOnce(Iterator.from([new Value(vABA, cABA)]));
             const { instance: mrng } = fakeRandom();
 
             // Act
@@ -214,7 +213,7 @@ describe('WithShrinkFromOtherArbitrary', () => {
               shrink: shrinkB,
               canShrinkWithoutContext: canShrinkWithoutContextB,
             } = fakeArbitrary();
-            shrinkB.mockReturnValueOnce(Stream.of(new Value(vAA, cAA), new Value(vAB, cAB)));
+            shrinkB.mockReturnValueOnce(Iterator.from([new Value(vAA, cAA), new Value(vAB, cAB)]));
 
             // Act
             const arb = new WithShrinkFromOtherArbitrary(generatorArbitrary, shrinkerArbitrary);
@@ -262,8 +261,8 @@ describe('WithShrinkFromOtherArbitrary', () => {
               shrink: shrinkB,
               canShrinkWithoutContext: canShrinkWithoutContextB,
             } = fakeArbitrary();
-            shrinkB.mockReturnValueOnce(Stream.of(new Value(vAA, cAA), new Value(vAB, cAB), new Value(vAC, cAC)));
-            shrinkB.mockReturnValueOnce(Stream.of(new Value(vABA, cABA)));
+            shrinkB.mockReturnValueOnce(Iterator.from([new Value(vAA, cAA), new Value(vAB, cAB), new Value(vAC, cAC)]));
+            shrinkB.mockReturnValueOnce(Iterator.from([new Value(vABA, cABA)]));
 
             // Act
             const arb = new WithShrinkFromOtherArbitrary(generatorArbitrary, shrinkerArbitrary);

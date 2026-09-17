@@ -3,7 +3,6 @@ import type { MaybeMocked, MockWithArgs } from '../../__test-helpers__/Mocked.js
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import type { Random } from '../../../../src/random/generator/Random.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 
 /**
  * Generate a fake Class inheriting from Arbitrary with all methods being mocked
@@ -81,12 +80,12 @@ export class FakeIntegerArbitrary extends Arbitrary<number> {
       Number.isInteger(value)
     );
   }
-  shrink(value: number, context?: unknown): Stream<Value<number>> {
+  shrink(value: number, context?: unknown): IteratorObject<Value<number>> {
     const currentStep = context !== undefined ? (context as { step: number }).step : 2;
     const nextStep = currentStep + 1;
-    return Stream.of(
+    return Iterator.from([
       ...(value - currentStep >= this.offset ? [new Value(value - currentStep, { step: nextStep })] : []),
       ...(value - currentStep + 1 >= this.offset ? [new Value(value - currentStep + 1, { step: nextStep })] : []),
-    );
+    ]);
   }
 }

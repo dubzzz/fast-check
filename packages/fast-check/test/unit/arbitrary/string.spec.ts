@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { nil } from '../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { string } from '../../../src/arbitrary/string.js';
 import type { StringConstraints } from '../../../src/arbitrary/string.js';
@@ -13,7 +14,6 @@ import {
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
 import type { Random } from '../../../src/random/generator/Random.js';
-import { Stream } from '../../../src/stream/Stream.js';
 
 describe('string (integration)', () => {
   type Extra = StringConstraints;
@@ -48,7 +48,6 @@ describe('string (integration)', () => {
       case 'grapheme-composite':
       case 'grapheme-ascii':
       case undefined: {
-        // @ts-expect-error Not available with our current preset for TypeScript
         const segmenter = new Intl.Segmenter();
         return [...segmenter.segment(value)].length;
       }
@@ -67,7 +66,6 @@ describe('string (integration)', () => {
       case 'grapheme':
         return;
       case 'grapheme-composite': {
-        // @ts-expect-error Not available with our current preset for TypeScript
         const segmenter = new Intl.Segmenter();
         expect([...segmenter.segment(value)].map((s) => s.segment)).toEqual([...value]); // assert: grapheme equivalent to code-point
         return;
@@ -228,11 +226,11 @@ class PatternsArbitrary extends Arbitrary<string> {
     if (typeof value !== 'string') return false;
     return this.patterns.includes(value);
   }
-  shrink(value: string): Stream<Value<string>> {
+  shrink(value: string): IteratorObject<Value<string>> {
     const patternIndex = this.patterns.indexOf(value);
     if (patternIndex <= 0) {
-      return Stream.nil();
+      return nil;
     }
-    return Stream.of(new Value(this.patterns[0], undefined));
+    return Iterator.from([new Value(this.patterns[0], undefined)]);
   }
 }
