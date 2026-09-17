@@ -5,7 +5,7 @@ export function integerLogLike(v: number): number {
 
 /** @internal */
 export function bigIntLogLike(v: bigint): bigint {
-  if (v === BigInt(0)) return BigInt(0);
+  if (v === 0n) return 0n;
   return BigInt(String(v).length);
 }
 

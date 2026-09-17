@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { BigInt, BigUint64Array as SBigUint64Array } from '../utils/globals.js';
 import { bigInt } from './bigInt.js';
 import type { BigIntArrayConstraints } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
 import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
@@ -12,9 +11,9 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
 export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigUint64Array<ArrayBuffer>> {
   return typedIntArrayArbitraryArbitraryBuilder<BigUint64Array<ArrayBuffer>, bigint>(
     constraints,
-    BigInt(0),
-    BigInt('18446744073709551615'),
-    SBigUint64Array,
+    0n,
+    18446744073709551615n,
+    BigUint64Array,
     bigInt,
   );
 }

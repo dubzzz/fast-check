@@ -179,7 +179,7 @@ describe('stringify', () => {
     expect(stringify(Number.NEGATIVE_INFINITY)).toEqual('Number.NEGATIVE_INFINITY');
     expect(stringify(Number.NaN)).toEqual('Number.NaN');
     expect(stringify('Hello')).toEqual('"Hello"');
-    expect(stringify(BigInt(42))).toEqual('42n');
+    expect(stringify(42n)).toEqual('42n');
   });
   it('Should be able to stringify boxed values', () => {
     expect(stringify(new Boolean(false))).toEqual('new Boolean(false)');
@@ -383,23 +383,21 @@ describe('stringify', () => {
     assertStringifyTypedArraysProperly(fc.double(), Float64Array.from.bind(Float64Array));
   });
   it('Should be able to stringify BigInt64Array', () => {
-    expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
+    expect(stringify(BigInt64Array.from([-2147483648n, 5n, 2147483647n]))).toEqual(
       'BigInt64Array.from([-2147483648n,5n,2147483647n])',
     );
     assertStringifyTypedArraysProperly<bigint>(
       fc.bigInt({
-        min: -BigInt(1) << BigInt(63), // -2**63
-        max: (BigInt(1) << BigInt(63)) - BigInt(1), // 2**63 -1
+        min: -1n << 63n, // -2**63
+        max: (1n << 63n) - 1n, // 2**63 -1
       }),
       BigInt64Array.from.bind(BigInt64Array),
     );
   });
   it('Should be able to stringify BigUint64Array', () => {
-    expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
-      'BigUint64Array.from([0n,5n,2147483647n])',
-    );
+    expect(stringify(BigUint64Array.from([0n, 5n, 2147483647n]))).toEqual('BigUint64Array.from([0n,5n,2147483647n])');
     assertStringifyTypedArraysProperly<bigint>(
-      fc.bigInt({ min: BigInt(0), max: (BigInt(1) << BigInt(64)) - BigInt(1) }),
+      fc.bigInt({ min: 0n, max: (1n << 64n) - 1n }),
       BigUint64Array.from.bind(BigUint64Array),
     );
   });

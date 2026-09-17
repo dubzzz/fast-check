@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { BigInt } from '../utils/globals.js';
 import { constantFrom } from './constantFrom.js';
 
 /**
@@ -44,5 +43,5 @@ export function falsy<TConstraints extends FalsyContraints>(
   if (!constraints || !constraints.withBigInt) {
     return constantFrom<FalsyValue[]>(false, null, undefined, 0, '', NaN);
   }
-  return constantFrom<FalsyValue<TConstraints>[]>(false, null, undefined, 0, '', NaN, BigInt(0) as any);
+  return constantFrom<FalsyValue<TConstraints>[]>(false, null, undefined, 0, '', NaN, 0n as any);
 }

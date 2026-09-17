@@ -36,8 +36,8 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     biasIts(
       'bigint',
       fc.bigInt({
-        min: BigInt(0),
-        max: (BigInt(1) << BigInt(64)) - BigInt(1),
+        min: 0n,
+        max: (1n << 64n) - 1n,
       }),
     );
   });

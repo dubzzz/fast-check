@@ -111,7 +111,7 @@ function constraintsInternal(
           const maxIndex = doubleToIndex(max);
           const distance = maxIndex - minIndex;
           // Illegal range, no value in range if min and max are too close from each others and both excluded
-          if (distance === BigInt(1)) return false;
+          if (distance === 1n) return false;
         }
       }
       return true;
@@ -143,7 +143,7 @@ function constraintsInternal(
         // >  {float, -0, 0}      with distance 2 such as from -MIN_VALUE (excl.) to 0
         // >  {-0, 0, float}      with distance 2 such as from 0 to MIN_VALUE (excl.)
         // -> for >= 3 it's safe, we will always have a non-integer value within the range
-        if (distance < BigInt(3)) return false;
+        if (distance < 3n) return false;
       }
       return true;
     });

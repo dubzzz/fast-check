@@ -6,8 +6,8 @@ declare function BigInt(n: number | bigint | string): bigint;
 
 function bigInt1030() {
   const n = 1030;
-  const min = BigInt(-1) << BigInt(n - 1);
-  const max = (BigInt(1) << BigInt(n - 1)) - BigInt(1);
+  const min = -1n << BigInt(n - 1);
+  const max = (1n << BigInt(n - 1)) - 1n;
   return fc.bigInt({ min, max });
 }
 
@@ -22,7 +22,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
 
       const bInt = out.counterexample![0];
       expect(Number(bInt)).toBe(Number.POSITIVE_INFINITY);
-      expect(Number(bInt - BigInt(1))).not.toBe(Number.POSITIVE_INFINITY);
+      expect(Number(bInt - 1n)).not.toBe(Number.POSITIVE_INFINITY);
     });
     it('Should be able to generate bigint below the smallest negative double', async () => {
       const out = await fc.check(
@@ -33,7 +33,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
 
       const bInt = out.counterexample![0];
       expect(Number(bInt)).toBe(Number.NEGATIVE_INFINITY);
-      expect(Number(bInt + BigInt(1))).not.toBe(Number.NEGATIVE_INFINITY);
+      expect(Number(bInt + 1n)).not.toBe(Number.NEGATIVE_INFINITY);
     });
     it('Should be able to generate small bigint (relatively to maximal bigint asked)', async () => {
       const out = await fc.check(
@@ -44,7 +44,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
         { seed: seed },
       );
       expect(out.failed).toBe(true);
-      expect(out.counterexample![0]).toEqual(BigInt(0));
+      expect(out.counterexample![0]).toEqual(0n);
       // Remark: Values, v, satisfying: v >= Number.MIN_SAFE_INTEGER && v <= Number.MAX_SAFE_INTEGER are pretty improbable in theory
       //         as they have only ~2**54 chances over 2**1030 to be generated (around 2e-292 % of the generated values).
       //         With bias enabled (default), they could be generated more often than expected leading to a better
@@ -54,8 +54,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
       const out = await fc.check(
         fc.asyncProperty(
           bigInt1030(),
-          (v) =>
-            v >= (BigInt(-1) << BigInt(1030 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(1030 - 1)) - BigInt(500),
+          (v) => v >= (-1n << BigInt(1030 - 1)) + 500n && v <= (1n << BigInt(1030 - 1)) - 500n,
         ),
         { seed: seed },
       );
@@ -79,8 +78,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
       const out = await fc.check(
         fc.asyncProperty(
           fc.noBias(bigInt1030()),
-          (v) =>
-            v >= (BigInt(-1) << BigInt(1030 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(1030 - 1)) - BigInt(500),
+          (v) => v >= (-1n << BigInt(1030 - 1)) + 500n && v <= (1n << BigInt(1030 - 1)) - 500n,
         ),
         { seed: seed },
       );

@@ -434,17 +434,17 @@ describe(`NoRegression`, () => {
   });
   it('bigInt({min})', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.bigInt({ min: BigInt(1) << BigInt(16) }), (v) => testFunc(v)),
+      fc.asyncProperty(fc.bigInt({ min: 1n << 16n }), (v) => testFunc(v)),
     );
   });
   it('bigInt({max})', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.bigInt({ max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
+      fc.asyncProperty(fc.bigInt({ max: 1n << 64n }), (v) => testFunc(v)),
     );
   });
   it('bigInt({min, max})', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.bigInt({ min: BigInt(1) << BigInt(16), max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
+      fc.asyncProperty(fc.bigInt({ min: 1n << 16n, max: 1n << 64n }), (v) => testFunc(v)),
     );
   });
   it('bigInt64Array', async () => {
