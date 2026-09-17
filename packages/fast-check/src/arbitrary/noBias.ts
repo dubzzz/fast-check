@@ -1,7 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import type { Value } from '../check/arbitrary/definition/Value.js';
 import type { Random } from '../random/generator/Random.js';
-import type { Stream } from '../stream/Stream.js';
 
 /** @internal */
 class NoBiasArbitrary<T> extends Arbitrary<T> {
@@ -14,7 +13,7 @@ class NoBiasArbitrary<T> extends Arbitrary<T> {
   canShrinkWithoutContext(value: unknown): value is T {
     return this.arb.canShrinkWithoutContext(value);
   }
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
+  shrink(value: T, context?: unknown): IteratorObject<Value<T>> {
     return this.arb.shrink(value, context);
   }
 }

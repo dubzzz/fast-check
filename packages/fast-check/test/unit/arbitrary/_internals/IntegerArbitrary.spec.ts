@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import { nil } from '../../../../src/utils/iterator.js';
 import type { MockInstance } from 'vitest';
 import * as fc from 'fast-check';
 import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary.js';
@@ -15,7 +16,6 @@ import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/Shrin
 
 import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange.js';
 import * as ShrinkIntegerMock from '../../../../src/arbitrary/_internals/helpers/ShrinkInteger.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('IntegerArbitrary', () => {
@@ -194,7 +194,7 @@ describe('IntegerArbitrary', () => {
         fc.asyncProperty(fc.maxSafeNat(), fc.maxSafeNat(), fc.maxSafeNat(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
-          const expectedShrinks = Stream.nil<Value<number>>();
+          const expectedShrinks = nil;
           const shrinkInteger = vi.spyOn(ShrinkIntegerMock, 'shrinkInteger');
           shrinkInteger.mockReturnValueOnce(expectedShrinks);
 

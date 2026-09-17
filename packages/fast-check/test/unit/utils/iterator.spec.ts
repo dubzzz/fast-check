@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { makeLazy } from '../../../src/stream/LazyIterableIterator.js';
+import { makeLazy } from '../../../src/utils/iterator.js';
 
 describe('makeLazy', () => {
   it('Should not call producer on create', () => {

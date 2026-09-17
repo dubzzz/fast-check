@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { getNthOrLast } from '../../../../../src/utils/iterator.js';
 import * as fc from 'fast-check';
 import { shrinkBigInt } from '../../../../../src/arbitrary/_internals/helpers/ShrinkBigInt.js';
 
@@ -91,7 +92,7 @@ describe('shrinkBigInt', () => {
         const expectedFirstContext = tryAsap ? undefined : target;
 
         // Act
-        const first = shrinkBigInt(current, target, tryAsap).getNthOrLast(0);
+        const first = getNthOrLast(shrinkBigInt(current, target, tryAsap), 0);
 
         // Assert
         if (first !== null) {

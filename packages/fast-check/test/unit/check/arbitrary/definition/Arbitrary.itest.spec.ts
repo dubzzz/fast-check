@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
+import { nil } from '../../../../../src/utils/iterator.js';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary.js';
 
 import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols.js';
 import type { Random } from '../../../../../src/random/generator/Random.js';
-import { Stream } from '../../../../../src/stream/Stream.js';
 
 import * as stubRng from '../../../stubs/generators.js';
 import { buildShrinkTree, renderTree, walkTree } from '../../../arbitrary/__test-helpers__/ShrinkTree.js';
@@ -22,16 +22,16 @@ describe('Arbitrary', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           throw new Error('No call expected in current scenario');
         }
-        shrink(value: number, context?: unknown): Stream<Value<number>> {
+        shrink(value: number, context?: unknown): IteratorObject<Value<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {
             throw new Error('Invalid context for MyArbitrary');
           }
           const currentStep = (context as { step: number }).step;
           const nextStep = currentStep + 1;
-          return Stream.of(
+          return Iterator.from([
             ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
             ...(value - 1 >= 0 ? [new Value(value - 1, { step: nextStep })] : []),
-          );
+          ]);
         }
       }
       const arb = new MyArbitrary().map((n) => String(n));
@@ -113,12 +113,12 @@ describe('Arbitrary', () => {
         canShrinkWithoutContext(_value: unknown): _value is MyArbitraryOutput {
           throw new Error('No call expected in current scenario');
         }
-        shrink(v: MyArbitraryOutput, _context?: unknown): Stream<Value<MyArbitraryOutput>> {
+        shrink(v: MyArbitraryOutput, _context?: unknown): IteratorObject<Value<MyArbitraryOutput>> {
           const value = v.value;
-          return Stream.of(
+          return Iterator.from([
             ...(value - 2 >= 0 ? [new Value(this.create(value - 2), undefined)] : []),
             ...(value - 1 >= 0 ? [new Value(this.create(value - 1), undefined)] : []),
-          );
+          ]);
         }
       }
       const seenInstances = new Set<unknown>();
@@ -155,12 +155,12 @@ describe('Arbitrary', () => {
         canShrinkWithoutContext(_value: unknown): _value is MyArbitraryOutput {
           throw new Error('No call expected in current scenario');
         }
-        shrink(v: MyArbitraryOutput, _context?: unknown): Stream<Value<MyArbitraryOutput>> {
+        shrink(v: MyArbitraryOutput, _context?: unknown): IteratorObject<Value<MyArbitraryOutput>> {
           const value = v.value;
-          return Stream.of(
+          return Iterator.from([
             ...(value - 2 >= 0 ? [new Value(this.create(value - 2), undefined)] : []),
             ...(value - 1 >= 0 ? [new Value(this.create(value - 1), undefined)] : []),
-          );
+          ]);
         }
       }
       const seenInstances = new Set<unknown>();
@@ -194,16 +194,16 @@ describe('Arbitrary', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           throw new Error('No call expected in current scenario');
         }
-        shrink(value: number, context?: unknown): Stream<Value<number>> {
+        shrink(value: number, context?: unknown): IteratorObject<Value<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {
             throw new Error('Invalid context for MyArbitrary');
           }
           const currentStep = (context as { step: number }).step;
           if (value - currentStep < 0) {
-            return Stream.nil();
+            return nil;
           }
           const nextStep = currentStep + 1;
-          return Stream.of(new Value(value - currentStep, { step: nextStep }));
+          return Iterator.from([new Value(value - currentStep, { step: nextStep })]);
         }
       }
       class MyChainedArbitrary extends Arbitrary<number[]> {
@@ -222,20 +222,20 @@ describe('Arbitrary', () => {
         canShrinkWithoutContext(_value: unknown): _value is number[] {
           throw new Error('No call expected in current scenario');
         }
-        shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
+        shrink(value: number[], context?: unknown): IteratorObject<Value<number[]>> {
           if (typeof context !== 'object' || context === null || !('size' in context) || !('value' in context)) {
             throw new Error('Invalid context for MyChainedArbitrary');
           }
           const currentContext = context as { size: number; value: number };
           if (currentContext.size === 0) {
-            return Stream.nil();
+            return nil;
           }
-          return Stream.of(
+          return Iterator.from([
             ...(currentContext.value === value[0]
               ? [new Value(Array(currentContext.size).fill(0), currentContext)]
               : []),
             ...(value.length > 1 ? [new Value([value[0]], currentContext)] : []),
-          );
+          ]);
         }
       }
       const arb = new MyArbitrary().chain((n) => new MyChainedArbitrary(n, n));
@@ -273,17 +273,17 @@ describe('Arbitrary', () => {
         canShrinkWithoutContext(_value: unknown): _value is number {
           throw new Error('No call expected in current scenario');
         }
-        shrink(value: number, context?: unknown): Stream<Value<number>> {
+        shrink(value: number, context?: unknown): IteratorObject<Value<number>> {
           if (typeof context !== 'object' || context === null || !('step' in context)) {
             throw new Error('Invalid context for MyArbitrary');
           }
           const currentStep = (context as { step: number }).step;
           const nextStep = currentStep + 1;
-          return Stream.of(
+          return Iterator.from([
             ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
             ...(value - 2 >= 0 ? [new Value(value - 2, { step: nextStep })] : []),
             ...(value - 1 >= 0 ? [new Value(value - 1, { step: nextStep })] : []),
-          );
+          ]);
         }
       }
       const arb = new MyArbitrary().filter((n) => n % 2 === 0);

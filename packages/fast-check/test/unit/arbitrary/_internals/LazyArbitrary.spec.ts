@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { LazyArbitrary } from '../../../../src/arbitrary/_internals/LazyArbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
@@ -73,7 +72,7 @@ describe('LazyArbitrary', () => {
       // Arrange
       const value = Symbol();
       const context = Symbol();
-      const streamOutput = Stream.of(new Value(1, undefined));
+      const streamOutput = Iterator.from([new Value(1, undefined)]);
       const { instance: underlying, shrink } = fakeArbitrary();
       shrink.mockReturnValue(streamOutput);
       const lazy = new LazyArbitrary('id007');

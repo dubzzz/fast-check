@@ -12,7 +12,6 @@ import {
   assertShrinkProducesStrictlySmallerValue,
 } from '../__test-helpers__/ArbitraryAssertions.js';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 import { sizeArb } from '../__test-helpers__/SizeHelpers.js';
 
 function beforeEachHook() {
@@ -402,7 +401,7 @@ describe('FrequencyArbitrary', () => {
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
             selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
-              Stream.of(new Value(1, undefined), new Value(42, undefined)),
+              Iterator.from([new Value(1, undefined), new Value(42, undefined)]),
             );
 
             // Act
@@ -445,7 +444,7 @@ describe('FrequencyArbitrary', () => {
             clone.mockReturnValue(anotherMrng);
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
             selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
-              Stream.of(new Value(1, undefined), new Value(42, undefined)),
+              Iterator.from([new Value(1, undefined), new Value(42, undefined)]),
             );
 
             // Act
@@ -479,7 +478,9 @@ describe('FrequencyArbitrary', () => {
 
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockReturnValue(0);
-            warbs[0].arbitraryMeta.shrink.mockReturnValue(Stream.of(new Value(1, undefined), new Value(42, undefined)));
+            warbs[0].arbitraryMeta.shrink.mockReturnValue(
+              Iterator.from([new Value(1, undefined), new Value(42, undefined)]),
+            );
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, { ...constraints, withCrossShrink: true }, 'test');
@@ -515,7 +516,7 @@ describe('FrequencyArbitrary', () => {
               const can = index === selectedIndex;
               input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(
-                Stream.of(new Value(42, undefined), new Value(index, undefined)),
+                Iterator.from([new Value(42, undefined), new Value(index, undefined)]),
               );
             }
 
@@ -552,7 +553,7 @@ describe('FrequencyArbitrary', () => {
               const can = index === selectedIndex;
               input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(
-                Stream.of(new Value(42, undefined), new Value(index, undefined)),
+                Iterator.from([new Value(42, undefined), new Value(index, undefined)]),
               );
             }
             warbs[0].fallbackValue = { default: 48 };

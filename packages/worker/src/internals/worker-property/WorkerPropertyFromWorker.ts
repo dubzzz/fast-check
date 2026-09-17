@@ -1,4 +1,4 @@
-import type { PropertyHookFunction, PropertyWithHooks, Property, Random, Stream, Value } from 'fast-check';
+import type { PropertyHookFunction, PropertyWithHooks, Property, Random, Value } from 'fast-check';
 import type { PropertyArbitraries } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
@@ -70,9 +70,9 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return new fc.Value(inputs, undefined);
   }
 
-  shrink(_value: Value<Ts>): Stream<Value<Ts>> {
+  shrink(_value: Value<Ts>): IteratorObject<Value<Ts>> {
     // No shrink on worker-based generations
-    return fc.Stream.nil();
+    return Iterator.from([]);
   }
 
   run(v: Ts): ReturnType<PropertyWithHooks<Ts>['run']> {

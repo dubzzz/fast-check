@@ -1,8 +1,8 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { nil } from '../../../../src/utils/iterator.js';
 import { decorateProperty } from '../../../../src/check/runner/DecorateProperty.js';
 import type { Property } from '../../../../src/check/property/types/Property.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
-import { Stream } from '../../../../src/stream/Stream.js';
 
 // Mocks
 import { SkipAfterProperty } from '../../../../src/check/property/plugins/SkipAfterProperty.js';
@@ -17,7 +17,7 @@ vi.mock('../../../../src/check/property/plugins/IgnoreEqualValuesProperty');
 function buildProperty() {
   return {
     generate: () => new Value({}, undefined),
-    shrink: () => Stream.nil(),
+    shrink: () => nil,
     runBeforeEach: () => {},
     run: () => null,
     runAfterEach: () => {},

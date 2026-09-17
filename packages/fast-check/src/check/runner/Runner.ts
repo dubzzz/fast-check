@@ -1,4 +1,4 @@
-import { Stream, stream } from '../../stream/Stream.js';
+import { nil } from '../../utils/iterator.js';
 import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
@@ -154,9 +154,9 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
   const initialValues =
     qParams.path.length === 0
       ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, stream(lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples)), shrink);
+      : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
-  const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
+  const finalShrink = !qParams.endOnFailure ? shrink : () => nil;
   const out = runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
     e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
   );

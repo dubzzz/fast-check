@@ -1,5 +1,4 @@
 import type { Random } from '../../../random/generator/Random.js';
-import type { Stream } from '../../../stream/Stream.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 import type { Property } from '../types/Property.js';
 
@@ -11,7 +10,7 @@ export class UnbiasedProperty<Ts> implements Property<Ts> {
     return this.property.generate(mrng, undefined);
   }
 
-  shrink(value: Value<Ts>): Stream<Value<Ts>> {
+  shrink(value: Value<Ts>): IteratorObject<Value<Ts>> {
     return this.property.shrink(value);
   }
 

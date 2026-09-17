@@ -113,7 +113,7 @@ class TrackedArbitrary extends fc.Arbitrary<unknown> {
   canShrinkWithoutContext(_value: unknown): _value is unknown {
     throw new Error('Method not implemented.');
   }
-  shrink(_value: unknown, _context: unknown): fc.Stream<fc.Value<unknown>> {
+  shrink(_value: unknown, _context: unknown): IteratorObject<fc.Value<unknown>> {
     throw new Error('Method not implemented.');
   }
 }
