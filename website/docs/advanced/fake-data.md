@@ -155,7 +155,7 @@ import { loremIpsum } from 'lorem-ipsum';
 
 const loremArb = fc
   .noShrink(
-    fc.infiniteStream(
+    fc.iterator(
       // Arbitrary generating 32-bit floating point numbers
       // between 0 (included) and 1 (excluded) (uniform distribution)
       fc.noBias(fc.integer({ min: 0, max: (1 << 24) - 1 }).map((v) => v / (1 << 24))),
