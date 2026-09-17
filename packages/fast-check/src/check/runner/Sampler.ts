@@ -50,7 +50,7 @@ function streamSample<Ts>(
  * fc.sample(fc.nat(), {seed: 42}); // extract values from fc.nat() as if we were running fc.assert with seed=42
  * ```
  *
- * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
+ * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
  *
  * @remarks Since 0.0.6
@@ -82,7 +82,7 @@ function round2(n: number): string {
  * // The output will be sent line by line to the logger
  * ```
  *
- * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
+ * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
  *
