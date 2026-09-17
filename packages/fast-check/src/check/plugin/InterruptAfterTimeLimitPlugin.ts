@@ -1,6 +1,6 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { Property } from '../property/types/Property.js';
-import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
+import { asyncReportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
 const safeSetTimeout = setTimeout;
@@ -111,7 +111,7 @@ export function interruptAfterTimeLimit(
         interrupt.clear();
         if (options.failOnInterrupt && !runDetails.failed && runDetails.interrupted && probe.interruptedWhileRunning) {
           // TODO(v5) - Move to the async version instead
-          return reportRunDetails({ ...runDetails, failed: true });
+          return asyncReportRunDetails({ ...runDetails, failed: true });
         }
       },
     };
