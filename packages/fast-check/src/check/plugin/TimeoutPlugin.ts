@@ -1,6 +1,5 @@
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
-import { Error } from '../../utils/globals.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
 const safeSetTimeout = setTimeout;
