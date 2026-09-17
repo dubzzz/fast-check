@@ -278,7 +278,8 @@ export function stringifyInternal<Ts>(
     case '[object Float64Array]':
     case '[object BigInt64Array]':
     case '[object BigUint64Array]': {
-      if (Buffer.isBuffer(value)) {
+      // Buffer is not defined in browsers environments
+      if (typeof Buffer !== 'undefined' && Buffer.isBuffer(value)) {
         // Warning: value.values() may crash at runtime if Buffer got poisoned
         return `Buffer.from(${
           // This cast is necessary because `detached` only exists in ES2024,

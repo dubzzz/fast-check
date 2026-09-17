@@ -3,8 +3,6 @@ import type { Random } from '../random/generator/Random.js';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { Stream } from '../stream/Stream.js';
 
-const stableObjectGetPrototypeOf = Object.getPrototypeOf;
-
 /** @internal */
 class NoShrinkArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arb: Arbitrary<T>) {
@@ -36,7 +34,7 @@ class NoShrinkArbitrary<T> extends Arbitrary<T> {
  */
 export function noShrink<T>(arb: Arbitrary<T>): Arbitrary<T> {
   if (
-    stableObjectGetPrototypeOf(arb) === NoShrinkArbitrary.prototype &&
+    Object.getPrototypeOf(arb) === NoShrinkArbitrary.prototype &&
     arb.generate === NoShrinkArbitrary.prototype.generate &&
     arb.canShrinkWithoutContext === NoShrinkArbitrary.prototype.canShrinkWithoutContext &&
     arb.shrink === NoShrinkArbitrary.prototype.shrink
