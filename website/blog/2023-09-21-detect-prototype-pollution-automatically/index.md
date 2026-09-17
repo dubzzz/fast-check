@@ -47,7 +47,7 @@ So we launched a new helper package: [@fast-check/poisoning](https://www.npmjs.c
 Let's take back the [CVE-2018-3721](https://github.com/advisories/GHSA-fvqr-27wr-82fm) and see how we could have found it with a test:
 
 ```ts
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 import _ from 'lodash';
 

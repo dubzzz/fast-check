@@ -118,7 +118,7 @@ Here are some examples of how external fake data libraries can be wrapped within
 With [@faker-js/faker](https://www.npmjs.com/package/@faker-js/faker):
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { faker } from '@faker-js/faker';
 
 const fakerToArb = (fakerGen) => {
@@ -150,7 +150,7 @@ Our recommended integration for Faker has changed since the release of the versi
 With [lorem-ipsum](https://www.npmjs.com/package/lorem-ipsum):
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { loremIpsum } from 'lorem-ipsum';
 
 const loremArb = fc

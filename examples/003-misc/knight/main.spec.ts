@@ -1,5 +1,5 @@
 import { describe, it } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { SpaceArbitrary } from './arbitraries/SpaceArbitrary.js';
 import { knight } from './src/knight.js';
 

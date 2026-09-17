@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import fc from '../../../src/fast-check.js';
+import * as fc from '../../../src/fast-check.js';
 
 const TargetNumExamples = 5;
 const JsBlockStart = '```js';

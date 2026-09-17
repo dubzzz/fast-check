@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
 /**

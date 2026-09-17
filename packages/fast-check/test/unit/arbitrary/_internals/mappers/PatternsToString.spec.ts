@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { patternsToStringUnmapperFor } from '../../../../../src/arbitrary/_internals/mappers/PatternsToString.js';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
 

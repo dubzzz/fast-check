@@ -1,5 +1,5 @@
 import { describe, it } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { MusicPlayerModel } from './model-based/MusicPlayerModel.js';
 import { MusicPlayerCommands, TrackNameArb } from './model-based/MusicPlayerCommands.js';
 import { MusicPlayerImplem } from './src/MusicPlayer.js';
