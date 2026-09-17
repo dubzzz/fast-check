@@ -9,7 +9,17 @@ import {
   CheckLessThanCommand,
 } from './model/CounterCommands.js';
 
+const TargetNumPulledItems = 3;
+
 const testFunc = (value: unknown) => {
+  if (typeof value === 'object' && value !== null && typeof (value as Iterator<unknown>).next === 'function') {
+    const iterator = value as Iterator<unknown>;
+    for (let index = 0; index !== TargetNumPulledItems; ++index) {
+      if (iterator.next().done) {
+        break;
+      }
+    }
+  }
   const repr = fc
     .stringify(value)
     .replace(/^(|Big)(Int|Uint|Float)(8|16|32|64)(|Clamped)Array\.from\((.*)\)$/, '$5')
@@ -196,13 +206,11 @@ describe(`NoRegression`, () => {
     );
   });
   it('iterator', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.iterator(fc.nat()), (s) => testFunc([...s.take(10)])),
-    );
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.iterator(fc.nat()), (s) => testFunc(s)));
   });
   it('iterator (noHistory)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.iterator(fc.nat(), { noHistory: true }), (s) => testFunc([...s.take(10)])),
+      fc.asyncProperty(fc.iterator(fc.nat(), { noHistory: true }), (s) => testFunc(s)),
     );
   });
   it('uniqueArray', async () => {
