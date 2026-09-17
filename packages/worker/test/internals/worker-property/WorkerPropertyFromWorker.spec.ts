@@ -79,15 +79,15 @@ describe('WorkerPropertyFromWorker', () => {
 
     mrngStates.push(mrng.getState());
     const value1 = property.generate(mrng, 0);
-    mrng.nextInt();
+    mrng.nextInt(-0x80000000, 0x7fffffff);
 
     mrngStates.push(mrng.getState());
     const value2 = property.generate(mrng, 0);
-    mrng.nextInt();
+    mrng.nextInt(-0x80000000, 0x7fffffff);
 
     mrngStates.push(mrng.getState());
     const value3 = property.generate(mrng, 0);
-    mrng.nextInt();
+    mrng.nextInt(-0x80000000, 0x7fffffff);
 
     const stringified2 = fc.stringify(value2.value_);
     const stringified3 = fc.stringify(value3.value_);

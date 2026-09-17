@@ -103,7 +103,9 @@ describe('func (integration)', () => {
         return Object.defineProperty([value, 1], cloneMethod, { value: () => this.instance(value, cloneable) });
       }
       generate(mrng: Random): Value<number[]> {
-        return new Value(this.instance(mrng.nextInt(), mrng.nextBoolean()), { shrunkOnce: false });
+        return new Value(this.instance(mrng.nextInt(-0x80000000, 0x7fffffff), mrng.nextInt(0, 1) === 1), {
+          shrunkOnce: false,
+        });
       }
       canShrinkWithoutContext(_value: unknown): _value is number[] {
         throw new Error('No call expected in that scenario');
