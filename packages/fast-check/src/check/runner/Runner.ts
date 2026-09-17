@@ -18,8 +18,6 @@ import type { Value } from '../arbitrary/definition/Value.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
-const SMap = Map;
-
 /** @internal */
 async function asyncRunIt<Ts>(
   run: IRawProperty<Ts>['run'],
@@ -129,7 +127,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
   const localPlugins = qParams.plugins;
 
   // Instantiate plugins
-  const pluginStore = new SMap<symbol, any>();
+  const pluginStore = new Map<symbol, any>();
   const pluginInstances: PluginInstance<Ts>[] = [];
   for (let index = 0; index !== globalPlugins.length; ++index) {
     pluginInstances.push(globalPlugins[index](index, pluginStore));

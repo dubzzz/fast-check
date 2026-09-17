@@ -6,9 +6,6 @@ import { convertGraphemeRangeToMapToConstantEntry } from './GraphemeRangesHelper
 import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
 
 /** @internal */
-const safeStringFromCodePoint = String.fromCodePoint;
-
-/** @internal */
 function getPropertySpec(astNode: ResolvedUnicodeProperty): string {
   if (astNode.binary || astNode.shorthand) {
     return astNode.canonicalValue;
@@ -20,7 +17,7 @@ function getPropertySpec(astNode: ResolvedUnicodeProperty): string {
 export function appendRangesForRegex(regex: RegExp, from: number, to: number, ranges: GraphemeRange[]): void {
   let currentRangeStart = -1;
   for (let cp = from; cp <= to; ++cp) {
-    if (regex.test(safeStringFromCodePoint(cp))) {
+    if (regex.test(String.fromCodePoint(cp))) {
       if (currentRangeStart === -1) {
         currentRangeStart = cp;
       }

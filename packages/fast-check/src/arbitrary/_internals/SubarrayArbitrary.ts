@@ -7,10 +7,6 @@ import { safeMap, safePush, safeSlice, safeSort, safeSplice } from '../../utils/
 import { isSubarrayOf } from './helpers/IsSubarrayOf.js';
 import { IntegerArbitrary } from './IntegerArbitrary.js';
 
-const safeMathFloor = Math.floor;
-const safeMathLog = Math.log;
-const safeArrayIsArray = Array.isArray;
-
 /** @internal */
 export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
@@ -36,10 +32,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     this.lengthArb = new IntegerArbitrary(minLength, maxLength);
     this.biasedLengthArb =
       minLength !== maxLength
-        ? new IntegerArbitrary(
-            minLength,
-            minLength + safeMathFloor(safeMathLog(maxLength - minLength) / safeMathLog(2)),
-          )
+        ? new IntegerArbitrary(minLength, minLength + Math.floor(Math.log(maxLength - minLength) / Math.log(2)))
         : this.lengthArb;
   }
 
@@ -67,7 +60,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
   }
 
   canShrinkWithoutContext(value: unknown): value is T[] {
-    if (!safeArrayIsArray(value)) {
+    if (!Array.isArray(value)) {
       return false;
     }
     if (!this.lengthArb.canShrinkWithoutContext(value.length)) {

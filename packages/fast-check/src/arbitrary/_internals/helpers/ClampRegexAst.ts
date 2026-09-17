@@ -2,9 +2,6 @@ import { safePush } from '../../../utils/globals.js';
 import { noSuchValue } from '../../../utils/noSuchValue.js';
 import type { RegexToken } from './TokenizeRegex.js';
 
-const safeMathFloor = Math.floor;
-const safeMathMin = Math.min;
-
 /** @internal */
 function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNode: RegexToken; minLength: number } {
   switch (astNode.type) {
@@ -34,7 +31,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
                 ...astNode.quantifier,
                 kind: 'Range',
                 from: 1,
-                to: safeMathFloor(maxLength / scaledClampedMinLength),
+                to: Math.floor(maxLength / scaledClampedMinLength),
               },
               expression: clamped.astNode,
             },
@@ -57,7 +54,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
         }
         case 'Range': {
           const scaledMaxLength =
-            astNode.quantifier.from > 1 ? safeMathFloor(maxLength / astNode.quantifier.from) : maxLength;
+            astNode.quantifier.from > 1 ? Math.floor(maxLength / astNode.quantifier.from) : maxLength;
           const clamped = clampRegexAstInternal(astNode.expression, scaledMaxLength);
           const scaledClampedMinLength = clamped.minLength > 1 ? clamped.minLength : 1;
           if (astNode.quantifier.to === undefined || astNode.quantifier.to * scaledClampedMinLength > maxLength) {
@@ -69,7 +66,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
                 quantifier: {
                   ...astNode.quantifier,
                   kind: 'Range',
-                  to: safeMathFloor(maxLength / scaledClampedMinLength),
+                  to: Math.floor(maxLength / scaledClampedMinLength),
                 },
                 expression: clamped.astNode,
               },
@@ -149,7 +146,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
       }
       return {
         astNode: { ...astNode, left: clampedLeft.astNode, right: clampedRight.astNode },
-        minLength: safeMathMin(clampedLeft.minLength, clampedRight.minLength),
+        minLength: Math.min(clampedLeft.minLength, clampedRight.minLength),
       };
     }
     case 'Assertion': {

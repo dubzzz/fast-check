@@ -11,10 +11,6 @@ import { getDepthContextFor } from './helpers/DepthContext.js';
 import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator.js';
 import { safeMap, safePush, safeSlice } from '../../utils/globals.js';
 
-const safeMathFloor = Math.floor;
-const safeMathLog = Math.log;
-const safeArrayIsArray = Array.isArray;
-
 /** @internal */
 type ArrayArbitraryContext = {
   shrunkOnce: boolean;
@@ -28,7 +24,7 @@ function biasedMaxLength(minLength: number, maxLength: number): number {
   if (minLength === maxLength) {
     return minLength;
   }
-  return minLength + safeMathFloor(safeMathLog(maxLength - minLength) / safeMathLog(2));
+  return minLength + Math.floor(Math.log(maxLength - minLength) / Math.log(2));
 }
 
 /** @internal */
@@ -216,7 +212,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
 
   canShrinkWithoutContext(value: unknown): value is T[] {
-    if (!safeArrayIsArray(value) || this.minLength > value.length || value.length > this.maxLength) {
+    if (!Array.isArray(value) || this.minLength > value.length || value.length > this.maxLength) {
       return false;
     }
     for (let index = 0; index !== value.length; ++index) {

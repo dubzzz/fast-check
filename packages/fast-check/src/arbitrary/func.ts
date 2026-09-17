@@ -9,9 +9,6 @@ import { tuple } from './tuple.js';
 import { escapeForMultilineComments } from './_internals/helpers/TextEscaper.js';
 import { safeMap, safeSort } from '../utils/globals.js';
 
-const safeObjectDefineProperties = Object.defineProperties;
-const safeObjectKeys = Object.keys;
-
 /**
  * For pure functions
  *
@@ -32,7 +29,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
       };
       function prettyPrint(stringifiedOuts: string): string {
         const seenValues = safeMap(
-          safeMap(safeSort(safeObjectKeys(recorded)), (k) => `${k} => ${stringify(recorded[k])}`),
+          safeMap(safeSort(Object.keys(recorded)), (k) => `${k} => ${stringify(recorded[k])}`),
           (line) => `/* ${escapeForMultilineComments(line)} */`,
         );
         return `function(...args) {
@@ -41,7 +38,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
   return outs[hash('${seed}' + stringify(args)) % outs.length];
 }`;
       }
-      return safeObjectDefineProperties(f, {
+      return Object.defineProperties(f, {
         toString: { value: () => prettyPrint(stringify(outs)) },
         [toStringMethod]: { value: () => prettyPrint(stringify(outs)) },
         [asyncToStringMethod]: { value: async () => prettyPrint(await asyncStringify(outs)) },

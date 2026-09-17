@@ -19,8 +19,6 @@ import type {
   RunDetailsFailureTooManySkips,
 } from '../reporter/RunDetails.js';
 
-const safeObjectAssign = Object.assign;
-
 /** @internal */
 function formatHints(hints: string[]): string {
   if (hints.length === 1) {
@@ -293,7 +291,7 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & 
   }
   const error = new Error(errorMessage, { cause: out.errorInstance });
   if (!('cause' in error)) {
-    safeObjectAssign(error, { cause: out.errorInstance });
+    Object.assign(error, { cause: out.errorInstance });
   }
   return error;
 }

@@ -8,8 +8,6 @@ import {
   takeWhileHelper,
 } from './StreamHelpers.js';
 
-const safeSymbolIterator: typeof Symbol.iterator = Symbol.iterator;
-
 /**
  * Wrapper around `IterableIterator` interface
  * offering a set of helpers to deal with iterations in a simple way
@@ -33,7 +31,7 @@ export class Stream<T> implements IterableIterator<T> {
    * @remarks Since 2.12.0
    */
   static of<T>(...elements: T[]): Stream<T> {
-    return new Stream(elements[safeSymbolIterator]());
+    return new Stream(elements[Symbol.iterator]());
   }
 
   // /*DEBUG*/ // no double iteration

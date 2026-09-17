@@ -10,9 +10,8 @@ import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.
 import type { RandomGenerator, RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
 import type { Plugin } from '../../plugin/Plugin.js';
 
+// This helper MUST capture the following globals to avoid test runners to mock our internals and defeat us
 const safeDateNow = Date.now;
-const safeMathMin = Math.min;
-const safeMathRandom = Math.random;
 
 /** @internal */
 export type QualifiedRandomGenerator = RandomGeneratorInternal;
@@ -116,7 +115,7 @@ function createQualifiedRandomGenerator(
 /** @internal */
 function readSeed<T>(p: Parameters<T>): number {
   // No seed specified
-  if (p.seed === undefined) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
+  if (p.seed === undefined) return safeDateNow() ^ (Math.random() * 0x100000000);
 
   // Seed is a 32 bits signed integer
   const seed32 = p.seed | 0;
@@ -179,7 +178,7 @@ function safeTimeout(value: number | undefined): number | undefined {
   if (value === undefined) {
     return undefined;
   }
-  return safeMathMin(value, 0x7fffffff);
+  return Math.min(value, 0x7fffffff);
 }
 
 /**
