@@ -1,6 +1,5 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary.js';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { Map as SMap, safeMapSet, safeMapGet } from '../utils/globals.js';
 
 /**
  * Type of the value produced by {@link letrec}
@@ -50,14 +49,14 @@ export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => Letre
 
 /** @internal */
 function createLazyArbsPool<T>() {
-  const lazyArbsPool = new SMap<keyof T, LazyArbitrary<unknown>>();
+  const lazyArbsPool = new Map<keyof T, LazyArbitrary<unknown>>();
   const getLazyFromPool = (key: keyof T): LazyArbitrary<unknown> => {
-    let lazyArb = safeMapGet(lazyArbsPool, key);
+    let lazyArb = lazyArbsPool.get(key);
     if (lazyArb !== undefined) {
       return lazyArb;
     }
     lazyArb = new LazyArbitrary(String(key));
-    safeMapSet(lazyArbsPool, key, lazyArb);
+    lazyArbsPool.set(key, lazyArb);
     return lazyArb;
   };
   return getLazyFromPool;
