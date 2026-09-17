@@ -1,15 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import {
-  safeCharCodeAt,
-  safeEvery,
-  safeJoin,
-  safeSubstring,
-  Error,
-  safeMap,
-  Set,
-  safeHas,
-  safePush,
-} from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
@@ -87,20 +76,20 @@ function toMatchingArbitrary(
             return constantFrom(...wordChars);
           }
           case '\\W': {
-            return defaultChar().filter((c) => !safeHas(wordCharsSet, c));
+            return defaultChar().filter((c) => !wordCharsSet.has(c));
           }
           case '\\d': {
             return constantFrom(...digitChars);
           }
           case '\\D': {
-            return defaultChar().filter((c) => !safeHas(digitCharsSet, c));
+            return defaultChar().filter((c) => !digitCharsSet.has(c));
           }
           case '\\s': {
             return constantFrom(...spaceChars);
           }
 
           case '\\S': {
-            return defaultChar().filter((c) => !safeHas(spaceCharsSet, c));
+            return defaultChar().filter((c) => !spaceCharsSet.has(c));
           }
           case '\\b':
           case '\\B': {
@@ -108,7 +97,7 @@ function toMatchingArbitrary(
           }
           case '.': {
             const forbiddenChars = flags.dotAll ? terminatorCharsSet : newLineAndTerminatorCharsSet;
-            return defaultChar().filter((c) => !safeHas(forbiddenChars, c));
+            return defaultChar().filter((c) => !forbiddenChars.has(c));
           }
         }
       }
@@ -156,14 +145,14 @@ function toMatchingArbitrary(
         } else if (flags.multiline || n.type !== 'Assertion' || (n.kind !== '^' && n.kind !== '$')) {
           // Any other node, except ^/$ assertions when in no-multiline mode
           if (pendingAggregatedValue !== '') {
-            safePush(childrenArbitraries, constant(pendingAggregatedValue));
+            childrenArbitraries.push(constant(pendingAggregatedValue));
             pendingAggregatedValue = '';
           }
-          safePush(childrenArbitraries, toMatchingArbitrary(n, constraints, flags));
+          childrenArbitraries.push(toMatchingArbitrary(n, constraints, flags));
         }
       }
       if (pendingAggregatedValue !== '') {
-        safePush(childrenArbitraries, constant(pendingAggregatedValue));
+        childrenArbitraries.push(constant(pendingAggregatedValue));
       }
       // With 0 or 1 child we skip the tuple to avoid extra post-generate work
       if (childrenArbitraries.length === 0) {
@@ -174,14 +163,14 @@ function toMatchingArbitrary(
       }
       // Otherwise join their results
       // TODO - No unmap implemented yet!
-      return tuple(...childrenArbitraries).map((vs) => safeJoin(vs, ''));
+      return tuple(...childrenArbitraries).map((vs) => vs.join(''));
     }
     case 'CharacterClass':
       if (astNode.negative) {
-        const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
-        return defaultChar().filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
+        const childrenArbitraries = astNode.expressions.map((n) => toMatchingArbitrary(n, constraints, flags));
+        return defaultChar().filter((c) => childrenArbitraries.every((arb) => !arb.canShrinkWithoutContext(c)));
       }
-      return oneof(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags)));
+      return oneof(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints, flags)));
     case 'ClassRange': {
       const min = astNode.from.codePoint;
       const max = astNode.to.codePoint;
@@ -191,7 +180,7 @@ function toMatchingArbitrary(
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');
           // oxlint-disable-next-line typescript/no-non-null-assertion
-          return safeCharCodeAt(c, 0)!;
+          return c.charCodeAt(0)!;
         },
       );
     }
@@ -204,12 +193,12 @@ function toMatchingArbitrary(
       for (let i = 0; i !== stack.length; ++i) {
         const node = stack[i];
         if (node === null) {
-          safePush(branches, constant(''));
+          branches.push(constant(''));
         } else if (node.type === 'Disjunction') {
-          safePush(stack, node.left);
-          safePush(stack, node.right);
+          stack.push(node.left);
+          stack.push(node.right);
         } else {
-          safePush(branches, toMatchingArbitrary(node, constraints, flags));
+          branches.push(toMatchingArbitrary(node, constraints, flags));
         }
       }
       return oneof(...branches);
@@ -224,7 +213,7 @@ function toMatchingArbitrary(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
-                  return [safeSubstring(value, 0, value.length - 1), value[value.length - 1]];
+                  return [value.substring(0, value.length - 1), value[value.length - 1]];
                 },
               ),
             );
@@ -235,7 +224,7 @@ function toMatchingArbitrary(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
-                  return [value[0], safeSubstring(value, 1)];
+                  return [value[0], value.substring(1)];
                 },
               ),
             );
