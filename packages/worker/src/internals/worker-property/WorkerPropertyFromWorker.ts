@@ -1,11 +1,4 @@
-import type {
-  AsyncPropertyHookFunction,
-  IAsyncPropertyWithHooks,
-  IRawProperty,
-  Random,
-  Stream,
-  Value,
-} from 'fast-check';
+import type { PropertyHookFunction, PropertyWithHooks, Property, Random, Stream, Value } from 'fast-check';
 import type { PropertyArbitraries } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
@@ -21,7 +14,7 @@ class WorkerPropertyFromWorkerError extends Error {
   }
 }
 
-function lazyGenerateValueFromState<Ts>(property: IRawProperty<Ts>, state: ValueState): () => Ts {
+function lazyGenerateValueFromState<Ts>(property: Property<Ts>, state: ValueState): () => Ts {
   let value: Ts | undefined = undefined;
   return function getValue(): Ts {
     if (value === undefined) {
@@ -36,7 +29,7 @@ function extractCacheKey(inputs: [unknown, ...unknown[]]): object {
 }
 
 function buildInputsAndRegister<Ts extends [unknown, ...unknown[]]>(
-  property: IRawProperty<Ts>,
+  property: Property<Ts>,
   valueState: ValueState,
   numArbitraries: number,
 ): Ts {
@@ -57,17 +50,13 @@ function buildInputsAndRegister<Ts extends [unknown, ...unknown[]]>(
  * A WorkerProperty delegating generating the values to the Worker thread
  * instead of running it into the main thread
  */
-export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
+export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements PropertyWithHooks<Ts> {
   private readonly numArbitraries: number;
-  private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
+  private readonly internalProperty: PropertyWithHooks<Ts>;
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.numArbitraries = arbitraries.length;
     this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
-  }
-
-  isAsync(): true {
-    return this.internalProperty.isAsync();
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
@@ -86,15 +75,15 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return fc.Stream.nil();
   }
 
-  run(v: Ts): ReturnType<IAsyncPropertyWithHooks<Ts>['run']> {
+  run(v: Ts): ReturnType<PropertyWithHooks<Ts>['run']> {
     return this.internalProperty.run(v);
   }
 
-  beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
+  beforeEach(hookFunction: PropertyHookFunction): PropertyWithHooks<Ts> {
     return this.internalProperty.beforeEach(hookFunction);
   }
 
-  afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
+  afterEach(hookFunction: PropertyHookFunction): PropertyWithHooks<Ts> {
     return this.internalProperty.afterEach(hookFunction);
   }
 

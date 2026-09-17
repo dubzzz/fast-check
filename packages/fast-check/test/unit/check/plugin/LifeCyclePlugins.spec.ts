@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { afterEach, beforeEach } from '../../../../src/check/plugin/LifeCyclePlugins.js';
-import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
+import type { Property } from '../../../../src/check/property/types/Property.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 import type { Plugin, PluginInstance } from '../../../../src/check/plugin/Plugin.js';
 
@@ -11,7 +11,7 @@ describe('LifeCyclePlugins', () => {
       fc.asyncProperty(
         fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() }), { minLength: 1 }),
         fc.boolean(),
-        fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
+        fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
           error: new Error('abc'),
         }),
         async (hookTypes, isAsyncRun, runValue) => {
@@ -44,7 +44,7 @@ describe('LifeCyclePlugins', () => {
             );
           let pluginIndex = 0;
           const store = new Map<symbol, any>();
-          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
+          let finalRun: Property<null>['run'] = isAsyncRun
             ? async () => {
                 probe('start', 'predicate');
                 await delay0();
@@ -78,7 +78,7 @@ describe('LifeCyclePlugins', () => {
       fc.asyncProperty(
         fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() }), { minLength: 1 }),
         fc.boolean(),
-        fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
+        fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
           error: new Error('abc'),
         }),
         async (hookTypes, isAsyncRun, runValue) => {
@@ -94,7 +94,7 @@ describe('LifeCyclePlugins', () => {
           };
           let pluginIndex = 0;
           const store = new Map<symbol, any>();
-          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
+          let finalRun: Property<null>['run'] = isAsyncRun
             ? async () => {
                 hasFailedStep ||= lastChunk > 2;
                 lastChunk = 2;
@@ -135,7 +135,7 @@ describe('LifeCyclePlugins', () => {
           { minLength: 1 },
         ),
         fc.boolean(),
-        fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
+        fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
           error: new Error('abc'),
         }),
         async (hookTypes, isAsyncRun, runValue) => {
@@ -148,7 +148,7 @@ describe('LifeCyclePlugins', () => {
           };
           let pluginIndex = 0;
           const store = new Map<symbol, any>();
-          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
+          let finalRun: Property<null>['run'] = isAsyncRun ? async () => runValue : () => runValue;
           const instances = hookTypes
             .map(({ hookType, fails }, index) =>
               fails
@@ -176,7 +176,7 @@ describe('LifeCyclePlugins', () => {
       fc.asyncProperty(
         fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() }), { minLength: 1 }),
         fc.boolean(),
-        fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
+        fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
           error: new Error('abc'),
         }),
         async (hookTypes, isAsyncRun, runValue) => {
@@ -189,7 +189,7 @@ describe('LifeCyclePlugins', () => {
           };
           let pluginIndex = 0;
           const store = new Map<symbol, any>();
-          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
+          let finalRun: Property<null>['run'] = isAsyncRun ? async () => runValue : () => runValue;
           const instances = hookTypes
             .map(({ hookType, fails }, index) =>
               fails
@@ -226,14 +226,14 @@ describe('LifeCyclePlugins', () => {
       fc.asyncProperty(
         fc.array(hookTypeArbitrary(), { minLength: 1 }),
         fc.boolean(),
-        fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
+        fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
           error: new Error('abc'),
         }),
         (hookTypes, isAsyncRun, runValue) => {
           // Arrange
           let pluginIndex = 0;
           const store = new Map<symbol, any>();
-          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
+          let finalRun: Property<null>['run'] = isAsyncRun ? async () => runValue : () => runValue;
           const instances = hookTypes
             .map((hookType) => successfulPluginFor(hookType))
             .map((plugin) => plugin(pluginIndex++, store));
@@ -259,14 +259,14 @@ describe('LifeCyclePlugins', () => {
       fc.asyncProperty(
         fc.array(hookTypeArbitrary(), { minLength: 1 }),
         fc.boolean(),
-        fc.constantFrom<ReturnType<IRawProperty<unknown, boolean>['run']>>(null, new PreconditionFailure(), {
+        fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
           error: new Error('abc'),
         }),
         async (hookTypes, isAsyncRun, runValue) => {
           // Arrange
           let pluginIndex = 0;
           const store = new Map<symbol, any>();
-          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun ? async () => runValue : () => runValue;
+          let finalRun: Property<null>['run'] = isAsyncRun ? async () => runValue : () => runValue;
           const instances = hookTypes
             .map((hookType) => successfulPluginFor(hookType))
             .map((plugin) => plugin(pluginIndex++, store));
@@ -293,7 +293,7 @@ describe('LifeCyclePlugins', () => {
           // Arrange
           let pluginIndex = 0;
           const store = new Map<symbol, any>();
-          let finalRun: IRawProperty<null, boolean>['run'] = isAsyncRun
+          let finalRun: Property<null>['run'] = isAsyncRun
             ? async () => null // emulates successful async run
             : () => null; // emulates successful sync run
           const instances = [
@@ -333,7 +333,7 @@ describe('LifeCyclePlugins', () => {
           let pluginIndex = 0;
           const store = new Map<symbol, any>();
           const originalRun = vi.fn(() => null);
-          let finalRun: IRawProperty<null, boolean>['run'] = originalRun;
+          let finalRun: Property<null>['run'] = originalRun;
           const probing = (out: ProbingOutput) => {
             if (out.hookType.includes('beforeEach') && !out.hookType.includes('teardown')) {
               beforeEachCalledAfterFailure ||= beforeEachFailedStarted;
@@ -580,7 +580,7 @@ function failingPluginFor(hookType: HookTypes, probing?: (out: ProbingOutput) =>
   }
 }
 
-function produceFinalRun(sourceRun: IRawProperty<null, boolean>['run'], instances: PluginInstance<unknown>[]) {
+function produceFinalRun(sourceRun: Property<null>['run'], instances: PluginInstance<unknown>[]) {
   let finalRun = sourceRun;
   for (let index = instances.length - 1; index >= 0; --index) {
     const instance = instances[index];

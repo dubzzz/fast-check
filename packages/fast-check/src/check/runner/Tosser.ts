@@ -1,7 +1,7 @@
 import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 
 import { Random } from '../../random/generator/Random.js';
-import type { IRawProperty } from '../property/IRawProperty.js';
+import type { Property } from '../property/types/Property.js';
 import { Value } from '../arbitrary/definition/Value.js';
 import { safeMap } from '../../utils/globals.js';
 import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters.js';
@@ -12,7 +12,7 @@ import { adaptRandomGenerator } from '../../random/generator/RandomGenerator.js'
  * @internal
  */
 function tossNext<Ts>(
-  generator: Pick<IRawProperty<Ts>, 'generate'>,
+  generator: Pick<Property<Ts>, 'generate'>,
   rng: QualifiedRandomGenerator,
   index: number,
 ): Value<Ts> {
@@ -22,7 +22,7 @@ function tossNext<Ts>(
 
 /** @internal */
 export function* toss<Ts>(
-  generator: Pick<IRawProperty<Ts>, 'generate'>,
+  generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
   random: (seed: number) => QualifiedRandomGenerator,
   examples: Ts[],
@@ -37,7 +37,7 @@ export function* toss<Ts>(
 
 /** @internal */
 function lazyGenerate<Ts>(
-  generator: Pick<IRawProperty<Ts>, 'generate'>,
+  generator: Pick<Property<Ts>, 'generate'>,
   rng: RandomGenerator,
   idx: number,
 ): () => Value<Ts> {
@@ -46,7 +46,7 @@ function lazyGenerate<Ts>(
 
 /** @internal */
 export function* lazyToss<Ts>(
-  generator: Pick<IRawProperty<Ts>, 'generate'>,
+  generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
   random: (seed: number) => RandomGenerator,
   examples: Ts[],

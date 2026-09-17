@@ -1,4 +1,5 @@
-import type { IRawProperty, PropertyFailure } from '../property/IRawProperty.js';
+import type { Property } from '../property/types/Property.js';
+import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import { Error } from '../../utils/globals.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
@@ -22,7 +23,7 @@ function timeoutAfter(timeMs: number) {
 /** @internal */
 function timeoutRunner(
   timeMs: number,
-  nestedRun: IRawProperty<unknown, boolean>['run'],
+  nestedRun: Property<unknown>['run'],
   value: unknown,
 ): ReturnType<typeof nestedRun> {
   const t = timeoutAfter(timeMs);

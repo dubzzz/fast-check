@@ -1,10 +1,11 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { IRawProperty, PropertyFailure } from '../property/IRawProperty.js';
+import type { Property } from '../property/types/Property.js';
+import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import { stringify } from '../../utils/stringify.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
 /** @internal */
-type RunOutput = ReturnType<IRawProperty<unknown, boolean>['run']>;
+type RunOutput = ReturnType<Property<unknown>['run']>;
 
 /** @internal */
 function fromSyncCachedForAsyncPath(cachedValue: Awaited<RunOutput>): Awaited<RunOutput> {
@@ -26,7 +27,7 @@ function fromCached(cachedValue: RunOutput): RunOutput {
 /** @internal */
 function equalValuesRunner(
   coveredCases: Map<string, RunOutput>,
-  nestedRun: IRawProperty<unknown, boolean>['run'],
+  nestedRun: Property<unknown>['run'],
   value: unknown,
   skipRuns: boolean,
 ): ReturnType<typeof nestedRun> {

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ignoreEqualValues, skipEqualValues } from '../../../../src/check/plugin/EqualValuesPlugins.js';
-import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
+import type { Property } from '../../../../src/check/property/types/Property.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 import type { Plugin, PluginStore } from '../../../../src/check/plugin/Plugin.js';
 
@@ -11,7 +11,7 @@ describe('EqualValuesPlugins', () => {
   ])('$pluginName', ({ factory }) => {
     it('should not call run twice when run on the same value', () => {
       // Arrange
-      const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValue(null);
+      const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
 
       // Act
       const finalRun = equalValuesPluginRun(factory, nestedRun);
@@ -24,7 +24,7 @@ describe('EqualValuesPlugins', () => {
 
     it('should call run again when run on another value', () => {
       // Arrange
-      const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValue(null);
+      const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
 
       // Act
       const finalRun = equalValuesPluginRun(factory, nestedRun);
@@ -41,8 +41,8 @@ describe('EqualValuesPlugins', () => {
       // Arrange
       let pluginIndex = 0;
       const store: PluginStore = new Map<symbol, any>();
-      const nestedRunA = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValue(null);
-      const nestedRunB = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValue(null);
+      const nestedRunA = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
+      const nestedRunB = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
 
       // Act
       const instanceA = factory()(pluginIndex++, store);
@@ -64,7 +64,7 @@ describe('EqualValuesPlugins', () => {
       'should preserve synchronous runs synchronous on first occurence for $originalValuePretty',
       ({ originalValue }) => {
         // Arrange
-        const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValue(originalValue);
+        const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(originalValue);
 
         // Act
         const finalRun = equalValuesPluginRun(factory, nestedRun);
@@ -81,7 +81,7 @@ describe('EqualValuesPlugins', () => {
       { originalValuePretty: 'new PreconditionFailure()', originalValue: new PreconditionFailure() },
     ])('should preserve synchronous runs synchronous on duplicates for $originalValuePretty', ({ originalValue }) => {
       // Arrange
-      const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValue(originalValue);
+      const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(originalValue);
 
       // Act
       const finalRun = equalValuesPluginRun(factory, nestedRun);
@@ -108,7 +108,7 @@ describe('EqualValuesPlugins', () => {
       // failure -> failure
       // skip    -> skip
       const nestedRun = vi
-        .fn<IRawProperty<unknown, boolean>['run']>()
+        .fn<Property<unknown>['run']>()
         .mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
 
       // Act
@@ -136,7 +136,7 @@ describe('EqualValuesPlugins', () => {
       // failure -> failure
       // skip    -> skip
       const nestedRun = vi
-        .fn<IRawProperty<unknown, boolean>['run']>()
+        .fn<Property<unknown>['run']>()
         .mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
 
       // Act
@@ -159,7 +159,7 @@ describe('EqualValuesPlugins', () => {
 
 // Helpers
 
-function equalValuesPluginRun(factory: () => Plugin<unknown>, nestedRun: IRawProperty<unknown, boolean>['run']) {
+function equalValuesPluginRun(factory: () => Plugin<unknown>, nestedRun: Property<unknown>['run']) {
   const store: PluginStore = new Map<symbol, any>();
   const instance = factory()(0, store);
   return instance.decorateRun!(nestedRun);

@@ -1,5 +1,5 @@
 import { Stream, stream } from '../../stream/Stream.js';
-import type { IRawProperty } from '../property/IRawProperty.js';
+import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
@@ -13,14 +13,13 @@ import { SourceValuesIterator } from './SourceValuesIterator.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { asyncReportRunDetails } from './utils/RunDetailsFormatter.js';
-import type { IAsyncProperty } from '../property/AsyncProperty.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
 /** @internal */
-async function asyncRunIt<Ts>(
-  run: IRawProperty<Ts>['run'],
+async function runIt<Ts>(
+  run: Property<Ts>['run'],
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
@@ -35,7 +34,7 @@ async function asyncRunIt<Ts>(
   return runner.runExecution;
 }
 
-async function asyncPropertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
+async function propertyExecution<Ts>(property: Property<Ts>, v: Ts) {
   const beforeEachOut = property.runBeforeEach();
   if (beforeEachOut !== undefined) {
     await beforeEachOut;
@@ -110,7 +109,7 @@ function runPluginCompletionHooks<Ts>(
  * @remarks Since 0.0.7
  * @public
  */
-function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
+function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
   if (property === null || property === undefined || property.generate === null || property.generate === undefined)
     throw new Error('Invalid property encountered, please use a valid property');
   if (property.run === null || property.run === undefined)
@@ -138,7 +137,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
 
   // Apply and decorate with plugins
   let surchargedGenerate: typeof decoratedProperty.generate | undefined = undefined;
-  let run: typeof decoratedProperty.run = (v) => asyncPropertyExecution(decoratedProperty, v);
+  let run: typeof decoratedProperty.run = (v) => propertyExecution(decoratedProperty, v);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateGenerate !== undefined) {
@@ -162,7 +161,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
       : pathWalk(qParams.path, stream(lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
-  const out = asyncRunIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
+  const out = runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
     e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
   );
   return runPluginCompletionHooks(pluginInstances, out);
@@ -182,7 +181,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  * @remarks Since 0.0.7
  * @public
  */
-function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void> {
+function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
   const out = check(property, params);
   return out.then(asyncReportRunDetails);
 }

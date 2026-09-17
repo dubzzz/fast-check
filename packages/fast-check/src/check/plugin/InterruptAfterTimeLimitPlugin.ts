@@ -1,5 +1,5 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { IRawProperty } from '../property/IRawProperty.js';
+import type { Property } from '../property/types/Property.js';
 import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
@@ -40,7 +40,7 @@ function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
 /** @internal */
 function timeLimitRunner(
   interrupt: Interrupt,
-  nestedRun: IRawProperty<unknown, boolean>['run'],
+  nestedRun: Property<unknown>['run'],
   value: unknown,
   probe: Probe,
 ): ReturnType<typeof nestedRun> {

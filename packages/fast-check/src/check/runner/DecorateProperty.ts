@@ -1,9 +1,9 @@
-import type { IRawProperty } from '../property/IRawProperty.js';
-import { SkipAfterProperty } from '../property/SkipAfterProperty.js';
-import { TimeoutProperty } from '../property/TimeoutProperty.js';
-import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
+import type { Property } from '../property/types/Property.js';
+import { SkipAfterProperty } from '../property/plugins/SkipAfterProperty.js';
+import { TimeoutProperty } from '../property/plugins/TimeoutProperty.js';
+import { UnbiasedProperty } from '../property/plugins/UnbiasedProperty.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty.js';
+import { IgnoreEqualValuesProperty } from '../property/plugins/IgnoreEqualValuesProperty.js';
 
 // This helper MUST capture the following globals to avoid test runners to mock our internals and defeat us
 const safeDateNow = Date.now;
@@ -17,12 +17,9 @@ type MinimalQualifiedParameters<Ts> = Pick<
 >;
 
 /** @internal */
-export function decorateProperty<Ts>(
-  rawProperty: IRawProperty<Ts>,
-  qParams: MinimalQualifiedParameters<Ts>,
-): IRawProperty<Ts> {
+export function decorateProperty<Ts>(rawProperty: Property<Ts>, qParams: MinimalQualifiedParameters<Ts>): Property<Ts> {
   let prop = rawProperty;
-  if (rawProperty.isAsync() && qParams.timeout !== undefined) {
+  if (qParams.timeout !== undefined) {
     prop = new TimeoutProperty(prop, qParams.timeout, safeSetTimeout, safeClearTimeout);
   }
   if (qParams.unbiased) {

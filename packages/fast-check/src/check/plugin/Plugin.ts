@@ -1,4 +1,4 @@
-import type { IRawProperty } from '../property/IRawProperty.js';
+import type { Property } from '../property/types/Property.js';
 import type { RunDetails } from '../runner/reporter/RunDetails.js';
 
 /**
@@ -39,7 +39,7 @@ export type PluginInstance<Ts> = {
    *
    * @remarks Since 4.10.0
    */
-  decorateGenerate?: (nestedGenerate: IRawProperty<Ts, boolean>['generate']) => IRawProperty<Ts, boolean>['generate'];
+  decorateGenerate?: (nestedGenerate: Property<Ts>['generate']) => Property<Ts>['generate'];
 
   /**
    * Enrich the execution of the predicate linked to the property with extra behaviors.
@@ -50,7 +50,7 @@ export type PluginInstance<Ts> = {
    *
    * @remarks Since 4.10.0
    */
-  decorateRun?: (nestedRun: IRawProperty<Ts, boolean>['run']) => IRawProperty<Ts, boolean>['run'];
+  decorateRun?: (nestedRun: Property<Ts>['run']) => Property<Ts>['run'];
   /**
    * Called once at the end of the full property assessment, with the result of the execution.
    *

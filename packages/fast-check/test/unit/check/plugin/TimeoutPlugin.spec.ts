@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
-import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
+import type { Property } from '../../../../src/check/property/types/Property.js';
 
 describe('TimeoutPlugin', () => {
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('TimeoutPlugin', () => {
 
   it('should forward inputs to run', async () => {
     // Arrange
-    const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockResolvedValueOnce(null);
+    const nestedRun = vi.fn<Property<unknown>['run']>().mockResolvedValueOnce(null);
     const expectedRunInput = { anything: Symbol('something') };
 
     // Act
@@ -34,7 +34,7 @@ describe('TimeoutPlugin', () => {
     { outcome: 'skips on precondition', output: new PreconditionFailure() },
   ])('should not timeout if it $outcome in time', async ({ output }) => {
     // Arrange
-    const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(
+    const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(output), 10);
       }),
@@ -58,7 +58,7 @@ describe('TimeoutPlugin', () => {
     // Arrange
     vi.spyOn(global, 'setTimeout');
     vi.spyOn(global, 'clearTimeout');
-    const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockResolvedValueOnce(output);
+    const nestedRun = vi.fn<Property<unknown>['run']>().mockResolvedValueOnce(output);
 
     // Act
     const finalRun = await timeoutPluginRun(100, nestedRun);
@@ -80,7 +80,7 @@ describe('TimeoutPlugin', () => {
     },
   ])('should timeout if it $behavior', async ({ buildNestedRunPromise }) => {
     // Arrange
-    const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(buildNestedRunPromise());
+    const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValueOnce(buildNestedRunPromise());
 
     // Act
     const finalRun = await timeoutPluginRun(10, nestedRun);
@@ -99,7 +99,7 @@ describe('TimeoutPlugin', () => {
     // Arrange
     vi.spyOn(global, 'setTimeout');
     vi.spyOn(global, 'clearTimeout');
-    const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>().mockReturnValueOnce(output);
+    const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValueOnce(output);
 
     // Act
     const finalRun = await timeoutPluginRun(100, nestedRun);
@@ -114,7 +114,7 @@ describe('TimeoutPlugin', () => {
 
 // Helpers
 
-async function timeoutPluginRun(timeMs: number, nestedRun: IRawProperty<unknown, boolean>['run']) {
+async function timeoutPluginRun(timeMs: number, nestedRun: Property<unknown>['run']) {
   const { timeout } = await import('../../../../src/check/plugin/TimeoutPlugin.js');
   const instance = timeout(timeMs)(0, new Map<symbol, any>());
   return instance.decorateRun!(nestedRun);
