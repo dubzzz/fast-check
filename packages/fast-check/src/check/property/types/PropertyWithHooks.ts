@@ -21,6 +21,7 @@ export interface PropertyWithHooks<Ts> extends Property<Ts> {
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
    * @remarks Since 1.6.0
    */
   beforeEach(hookFunction: PropertyHookFunction): PropertyWithHooks<Ts>;
@@ -28,6 +29,7 @@ export interface PropertyWithHooks<Ts> extends Property<Ts> {
   /**
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
+   * @deprecated Prefer the life-cycle plugins: `fc.assert(property, { plugins: [fc.afterEach(fn)] })`
    * @remarks Since 1.6.0
    */
   afterEach(hookFunction: PropertyHookFunction): PropertyWithHooks<Ts>;
