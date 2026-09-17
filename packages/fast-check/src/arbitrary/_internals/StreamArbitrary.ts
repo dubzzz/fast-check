@@ -3,12 +3,11 @@ import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod } from '../../check/symbols.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
-import { safeJoin, safePush } from '../../utils/globals.js';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
 /** @internal */
 function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
-  const seenSegment = seenValuesStrings !== undefined ? `${safeJoin(seenValuesStrings, ',')}…` : `${numSeen} emitted`;
+  const seenSegment = seenValuesStrings !== undefined ? `${seenValuesStrings.join(',')}…` : `${numSeen} emitted`;
   return `Stream(${seenSegment})`;
 }
 
@@ -31,7 +30,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
           numSeenValues++;
           if (seenValues !== null) {
-            safePush(seenValues, value);
+            seenValues.push(value);
           }
           yield value;
         }
