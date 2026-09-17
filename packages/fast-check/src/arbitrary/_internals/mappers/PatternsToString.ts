@@ -1,12 +1,11 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 import { MaxLengthUpperBound } from '../helpers/MaxLengthFromMinLength.js';
 import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints.js';
-import { safeJoin, Error } from '../../../utils/globals.js';
 import { tokenizeString } from '../helpers/TokenizeString.js';
 
 /** @internal - tab is supposed to be composed of valid entries extracted from the source arbitrary */
 export function patternsToStringMapper(tab: string[]): string {
-  return safeJoin(tab, '');
+  return tab.join('');
 }
 
 /** @internal */

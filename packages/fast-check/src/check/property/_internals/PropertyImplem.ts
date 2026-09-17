@@ -10,7 +10,6 @@ import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
 } from '../../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
-import { Error } from '../../../utils/globals.js';
 import type { PropertyFailure } from '../types/PropertyFailure.js';
 import type { PropertyWithHooks, PropertyHookFunction } from '../types/PropertyWithHooks.js';
 

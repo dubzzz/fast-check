@@ -1,5 +1,3 @@
-import { Error, safeEvery, safeMap } from '../../../utils/globals.js';
-
 type KeyValuePairs<K extends PropertyKey, V> = [K, V][];
 type ObjectDefinition<K extends PropertyKey, V> = [/*items*/ KeyValuePairs<K, V>, /*null prototype*/ boolean];
 
@@ -48,14 +46,14 @@ export function keyValuePairsToObjectUnmapper<K extends PropertyKey, V>(value: u
   if (!hasNullPrototype && !hasObjectPrototype) {
     throw new Error('Incompatible instance received: should be of exact type Object');
   }
-  const propertyDescriptors = safeMap(Reflect.ownKeys(value), (key): [PropertyKey, PropertyDescriptor] => [
+  const propertyDescriptors = Reflect.ownKeys(value).map((key): [PropertyKey, PropertyDescriptor] => [
     key,
     // A key returned by `Reflect.ownKeys` must have a descriptor.
     // oxlint-disable-next-line typescript/no-non-null-assertion
     Object.getOwnPropertyDescriptor(value, key)!,
   ]);
-  if (!safeEvery(propertyDescriptors, ([, descriptor]) => isValidPropertyNameFilter(descriptor))) {
+  if (!propertyDescriptors.every(([, descriptor]) => isValidPropertyNameFilter(descriptor))) {
     throw new Error('Incompatible instance received: should contain only c/e/w properties without get/set');
   }
-  return [safeMap(propertyDescriptors, ([key, descriptor]) => [key as K, descriptor.value as V]), hasNullPrototype];
+  return [propertyDescriptors.map(([key, descriptor]) => [key as K, descriptor.value as V]), hasNullPrototype];
 }

@@ -1,4 +1,3 @@
-import { safeAdd, safePush, Set } from '../../../utils/globals.js';
 import type { CustomSet } from '../interfaces/CustomSet.js';
 
 /**
@@ -24,13 +23,13 @@ export class StrictlyEqualSet<T, U> implements CustomSet<T> {
   tryAdd(value: T): boolean {
     const selected = this.selector(value);
     if (Number.isNaN(selected)) {
-      safePush(this.data, value);
+      this.data.push(value);
       return true;
     }
     const sizeBefore = this.selectedItemsExceptNaN.size;
-    safeAdd(this.selectedItemsExceptNaN, selected);
+    this.selectedItemsExceptNaN.add(selected);
     if (sizeBefore !== this.selectedItemsExceptNaN.size) {
-      safePush(this.data, value);
+      this.data.push(value);
       return true;
     }
     return false;

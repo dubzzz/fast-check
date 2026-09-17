@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { Map, safeMapGet, safeMapSet, safePush } from '../../../utils/globals.js';
 
 type ArbitraryBuilder = () => Arbitrary<unknown>;
 type MemoedEntry<T = unknown> = { args: unknown[]; value: Arbitrary<T> };
@@ -20,10 +19,10 @@ export function buildStableArbitraryGeneratorCache(
     builder: (...args: TArgs) => Arbitrary<T>,
     args: TArgs,
   ): Arbitrary<T> {
-    const entriesForBuilder = safeMapGet(previousCallsPerBuilder, builder);
+    const entriesForBuilder = previousCallsPerBuilder.get(builder);
     if (entriesForBuilder === undefined) {
       const newValue = builder(...args);
-      safeMapSet(previousCallsPerBuilder, builder, [{ args, value: newValue }]);
+      previousCallsPerBuilder.set(builder, [{ args, value: newValue }]);
       return newValue;
     }
     const safeEntriesForBuilder = entriesForBuilder as MemoedEntry<T>[];
@@ -33,7 +32,7 @@ export function buildStableArbitraryGeneratorCache(
       }
     }
     const newValue = builder(...args);
-    safePush(safeEntriesForBuilder, { args, value: newValue });
+    safeEntriesForBuilder.push({ args, value: newValue });
     return newValue;
   };
 }

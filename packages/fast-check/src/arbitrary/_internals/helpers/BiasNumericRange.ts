@@ -1,5 +1,3 @@
-import { BigInt, String } from '../../../utils/globals.js';
-
 /** @internal */
 export function integerLogLike(v: number): number {
   return Math.floor(Math.log(v) / Math.log(2));

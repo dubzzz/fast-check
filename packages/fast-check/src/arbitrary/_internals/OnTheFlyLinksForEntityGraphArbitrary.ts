@@ -1,15 +1,4 @@
 import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
-import {
-  safeAdd,
-  safeHas,
-  safeMap,
-  safeMapGet,
-  safePush,
-  Set as SSet,
-  Error as SError,
-  String as SString,
-  safeSlice,
-} from '../../utils/globals.js';
 import { chainUntil } from '../chainUntil.js';
 import { constant } from '../constant.js';
 import { integer } from '../integer.js';
@@ -73,7 +62,7 @@ function buildLinkIndexArbitrary(
         { nil: [], depthIdentifier: currentEntityDepth },
       ).map((values) => {
         let offset = 0;
-        return safeMap(values, (v) => (v === countInTargetType ? v + offset++ : v));
+        return values.map((v) => (v === countInTargetType ? v + offset++ : v));
       });
     }
   }
@@ -100,8 +89,8 @@ function assertAcceptableRelations<TEntityFields, TEntityRelations extends Entit
   relations: TEntityRelations,
 ): void {
   // Basic sanity checks on the relations
-  const nonExclusiveEntities = new SSet<keyof TEntityRelations>();
-  const exclusiveEntities = new SSet<keyof TEntityRelations>();
+  const nonExclusiveEntities = new Set<keyof TEntityRelations>();
+  const exclusiveEntities = new Set<keyof TEntityRelations>();
   for (const name in relations) {
     const relationsForName = relations[name];
     for (const fieldName in relationsForName) {
@@ -110,21 +99,21 @@ function assertAcceptableRelations<TEntityFields, TEntityRelations extends Entit
         continue;
       }
       if (relation.strategy === 'exclusive') {
-        if (safeHas(nonExclusiveEntities, relation.type)) {
-          throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
+        if (nonExclusiveEntities.has(relation.type)) {
+          throw new Error(`Cannot mix exclusive with other strategies for type ${String(relation.type)}`);
         }
-        safeAdd(exclusiveEntities, relation.type);
+        exclusiveEntities.add(relation.type);
       } else {
-        if (safeHas(exclusiveEntities, relation.type)) {
-          throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
+        if (exclusiveEntities.has(relation.type)) {
+          throw new Error(`Cannot mix exclusive with other strategies for type ${String(relation.type)}`);
         }
-        safeAdd(nonExclusiveEntities, relation.type);
+        nonExclusiveEntities.add(relation.type);
       }
       if (relation.strategy === 'successor' && relation.type !== (name as keyof TEntityRelations)) {
-        throw new SError(`Cannot mix types for the strategy successor`);
+        throw new Error(`Cannot mix types for the strategy successor`);
       }
       if (relation.strategy === 'successor' && relation.arity === '1') {
-        throw new SError(`Cannot use an arity of 1 for the strategy successor`);
+        throw new Error(`Cannot use an arity of 1 for the strategy successor`);
       }
     }
   }
@@ -154,7 +143,7 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
   );
   function getOrCreateProducedLinksFor(type: keyof TEntityFields) {
     if (newProducedLinks[type] === producedLinks[type]) {
-      newProducedLinks[type] = safeSlice(producedLinks[type] as (typeof newProducedLinks)[typeof type]);
+      newProducedLinks[type] = (producedLinks[type] as (typeof newProducedLinks)[typeof type]).slice();
     }
     return newProducedLinks[type];
   }
@@ -178,7 +167,7 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
       // When `index` is an array, clone it — otherwise we'd keep sharing it (and mutating it) with the previous state.
       links[property] = {
         type: sharedRelation.type,
-        index: typeof sharedRelation.index === 'object' ? safeSlice(sharedRelation.index) : sharedRelation.index,
+        index: typeof sharedRelation.index === 'object' ? sharedRelation.index.slice() : sharedRelation.index,
       };
     }
     return links[property];
@@ -203,20 +192,20 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
       const producedLinksInTargetType = getOrCreateProducedLinksFor(targetType);
       const newEntityIndexInType = producedLinksInTargetType.length;
       if (newToBeProducedEntities === undefined) {
-        newToBeProducedEntities = safeSlice(toBeProducedEntities as (typeof toBeProducedEntities)[number][]);
+        newToBeProducedEntities = (toBeProducedEntities as (typeof toBeProducedEntities)[number][]).slice();
       }
-      safePush(newToBeProducedEntities, {
+      newToBeProducedEntities.push({
         type: targetType,
         indexInType: newEntityIndexInType,
         depth: toBeProduced.depth + 1,
       });
-      safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
+      producedLinksInTargetType.push(createEmptyLinksInstanceFor(relations, targetType));
       return newEntityIndexInType;
     },
     appendBackReference: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
       const relation = getOrCreateRelationFor(targetType, indexInType, property);
       const knownInversedLinks = relation.index;
-      safePush(knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>, toBeProduced.indexInType);
+      (knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>).push(toBeProduced.indexInType);
     },
     // Seal the step into a new immutable state and advance to the next entity.
     commit: (): ProductionState<TEntityFields, TEntityRelations> => ({
@@ -240,8 +229,8 @@ function buildInitialProductionState<TEntityFields, TEntityRelations extends Ent
   // Made of any entity whose links have to be created before building the whole graph.
   const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
   for (const name of defaultEntities) {
-    safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-    safePush(producedLinks[name], createEmptyLinksInstanceFor(relations, name));
+    toBeProducedEntities.push({ type: name, indexInType: producedLinks[name].length, depth: 0 });
+    producedLinks[name].push(createEmptyLinksInstanceFor(relations, name));
   }
   return { producedLinks, toBeProducedEntities, nextIndex: 0 };
 }
@@ -274,8 +263,8 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
       currentEntityDepth,
     );
-    safePush(subArbitraries, linkOrLinksArbitrary);
-    safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
+    subArbitraries.push(linkOrLinksArbitrary);
+    linkContexts.push({ name, relation, sentinelLinkIndex: countInTargetType });
   }
   if (subArbitraries.length === 0) {
     return undefined;
@@ -299,8 +288,8 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
         } else {
           newEntityIndexInType = link;
         }
-        safePush(effectiveLinks, newEntityIndexInType);
-        const inversed = safeMapGet(inversedRelations, relation);
+        effectiveLinks.push(newEntityIndexInType);
+        const inversed = inversedRelations.get(relation);
         if (inversed !== undefined) {
           state.appendBackReference(relation.type, newEntityIndexInType, inversed.property);
         }
