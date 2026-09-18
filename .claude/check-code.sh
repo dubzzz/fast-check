@@ -15,7 +15,7 @@ if ! pnpm -C "$CLAUDE_PROJECT_DIR" install --frozen-lockfile --ignore-scripts 2>
 fi
 
 echo "Running build..."
-if ! pnpm -C "$CLAUDE_PROJECT_DIR" build:all 2>&1; then
+if ! pnpm -C "$CLAUDE_PROJECT_DIR" build 2>&1; then
   ERRORS+="Build failed. "
 fi
 
@@ -25,7 +25,7 @@ if ! pnpm -C "$CLAUDE_PROJECT_DIR" lint:check 2>&1; then
 fi
 
 echo "Running typecheck..."
-if ! pnpm -C "$CLAUDE_PROJECT_DIR" typecheck:all 2>&1; then
+if ! pnpm -C "$CLAUDE_PROJECT_DIR" typecheck 2>&1; then
   ERRORS+="Typecheck failed. "
 fi
 
