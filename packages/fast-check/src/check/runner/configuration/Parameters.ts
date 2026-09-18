@@ -97,33 +97,6 @@ export interface Parameters<T = void> {
    */
   markInterruptAsFailure?: boolean;
   /**
-   * Skip runs corresponding to already tried values.
-   *
-   * WARNING:
-   * Discarded runs will be retried. Under the hood they are simple calls to `fc.pre`.
-   * In other words, if you ask for 100 runs but your generator can only generate 10 values then the property will fail as 100 runs will never be reached.
-   * Contrary to `ignoreEqualValues` you always have the number of runs you requested.
-   *
-   * NOTE: Relies on `fc.stringify` to check the equality.
-   *
-   * @remarks Since 2.14.0
-   * @deprecated Prefer the `skipEqualValues` plugin: `fc.assert(property, { plugins: [fc.skipEqualValues()] })`
-   */
-  skipEqualValues?: boolean;
-  /**
-   * Discard runs corresponding to already tried values.
-   *
-   * WARNING:
-   * Discarded runs will not be replaced.
-   * In other words, if you ask for 100 runs and have 2 discarded runs you will only have 98 effective runs.
-   *
-   * NOTE: Relies on `fc.stringify` to check the equality.
-   *
-   * @remarks Since 2.14.0
-   * @deprecated Prefer the `ignoreEqualValues` plugin: `fc.assert(property, { plugins: [fc.ignoreEqualValues()] })`
-   */
-  ignoreEqualValues?: boolean;
-  /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
    * @remarks Since 1.0.0
