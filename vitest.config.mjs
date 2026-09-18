@@ -1,4 +1,4 @@
-import { defaultExclude, defineConfig } from 'vitest/config';
+import { coverageConfigDefaults, defaultExclude, defineConfig } from 'vitest/config';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -18,7 +18,10 @@ export default defineConfig({
   test: {
     include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [...defaultExclude, '**/test-bundle/**', '**/.test-artifacts/**', '**/templates/*-tutorial/**'],
-    coverage: { include: ['packages/fast-check/src/**'] },
+    coverage: {
+      include: ['packages/fast-check/src/**'],
+      exclude: [...coverageConfigDefaults.exclude, '**/*.spec.ts', '**/__test-helpers__/**'],
+    },
     testTimeout,
     env: { TEST_TIMEOUT: testTimeout },
     projects: allProjects.map((projectPath) => {

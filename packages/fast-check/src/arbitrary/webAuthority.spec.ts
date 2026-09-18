@@ -1,0 +1,59 @@
+import { describe, it, expect } from 'vitest';
+import * as fc from 'fast-check';
+import type { WebAuthorityConstraints } from './webAuthority.js';
+import { webAuthority } from './webAuthority.js';
+import { URL } from 'url';
+
+import {
+  assertProduceCorrectValues,
+  assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
+  assertShrinkProducesSameValueWithoutInitialContext,
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers.js';
+
+describe('webAuthority (integration)', () => {
+  type Extra = WebAuthorityConstraints;
+  const extraParametersBuilder: (onlySmall?: boolean) => fc.Arbitrary<Extra> = (onlySmall?: boolean) =>
+    fc.record(
+      {
+        withIPv4: fc.boolean(),
+        withIPv4Extended: fc.boolean(),
+        withIPv6: fc.boolean(),
+        withPort: fc.boolean(),
+        withUserInfo: fc.boolean(),
+        size: onlySmall
+          ? fc.constantFrom(...(['-1', '=', 'xsmall', 'small'] as const))
+          : fc.oneof(sizeArb, relativeSizeArb),
+      },
+      { requiredKeys: [] },
+    );
+
+  const isCorrectForURL = (webAuthority: string) => {
+    expect(() => new URL(`http://${webAuthority}`)).not.toThrow();
+  };
+
+  const webAuthorityBuilder = (extra: Extra) => webAuthority(extra);
+
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(webAuthorityBuilder, { extraParameters: extraParametersBuilder() });
+  });
+
+  it('should only produce correct values regarding `new URL`', async () => {
+    await assertProduceCorrectValues(webAuthorityBuilder, isCorrectForURL, {
+      extraParameters: extraParametersBuilder(),
+    });
+  });
+
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(webAuthorityBuilder, {
+      extraParameters: extraParametersBuilder(true),
+    });
+  });
+
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(webAuthorityBuilder, {
+      extraParameters: extraParametersBuilder(true),
+    });
+  });
+});
