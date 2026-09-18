@@ -63,6 +63,17 @@ fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {});
 // @ts-expect-error - Expect at least one arbitrary to be provided
 fc.asyncProperty(() => {});
 
+// defaultReportMessage
+fc.check(fc.asyncProperty(fc.nat(), (_n) => true)).then((out) => {
+  if (out.failed) {
+    // Failure implies a string output
+    expectTypeOf(fc.defaultReportMessage(out)).toEqualTypeOf<Promise<string> | string>();
+  } else {
+    // No failure: output is no-report
+    expectTypeOf(fc.defaultReportMessage(out)).toEqualTypeOf<Promise<undefined> | undefined>();
+  }
+});
+
 // base arbitrary (chain)
 // Type of "chain" corresponds to the return type of the passed lambda
 expectTypeOf(fc.nat().chain((n) => fc.array(fc.string(), { maxLength: n }))).toEqualTypeOf<fc.Arbitrary<string[]>>();
