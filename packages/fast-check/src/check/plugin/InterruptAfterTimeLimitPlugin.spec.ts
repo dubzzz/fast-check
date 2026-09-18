@@ -79,8 +79,7 @@ describe('TimeLimitPlugins', () => {
         // Arrange
         vi.spyOn(global, 'setTimeout');
         vi.spyOn(global, 'clearTimeout');
-        const { interruptAfterTimeLimit } =
-          await import('./InterruptAfterTimeLimitPlugin.js');
+        const { interruptAfterTimeLimit } = await import('./InterruptAfterTimeLimitPlugin.js');
         const nestedRun = vi.fn<Property<unknown>['run']>(() => runOutput);
 
         // Act
