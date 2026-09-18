@@ -5,7 +5,7 @@ import type { Plugin, PluginInstance } from './Plugin.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
-const safePerformanceNow = typeof performance !== 'undefined' ? performance.now : Date.now;
+const safePerformanceNow = typeof performance !== 'undefined' ? performance.now.bind(performance) : Date.now.bind(Date);
 
 type Probe = {
   interruptedWhileRunning: boolean;
