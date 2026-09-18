@@ -17,3 +17,6 @@ export const runOptions: RunOptions[] = [
 
 export const testRunOptions: RunOptions = runOptions[0];
 export const testWorkerRunOptions: RunOptions = runOptions[1];
+export const testJasmineRunOptions: RunOptions = runOptions[2];
+export const testJasmineWorkerRunOptions: RunOptions = runOptions[3];
+export const itRunOptions: RunOptions = runOptions[4];

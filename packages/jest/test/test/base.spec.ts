@@ -1,3 +1,4 @@
+import { describe } from 'vitest';
 import { buildBaseSpecsFor } from '../__test-helpers__/BaseSpecs.js';
 import { testRunOptions } from '../__test-helpers__/RunOptions.js';
 

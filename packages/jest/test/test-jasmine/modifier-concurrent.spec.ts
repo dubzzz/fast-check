@@ -1,8 +1,8 @@
 import { describe } from 'vitest';
 import { buildModifierConcurrentSpecsFor } from '../__test-helpers__/ModifierConcurrentSpecs.js';
-import { testRunOptions } from '../__test-helpers__/RunOptions.js';
+import { testJasmineRunOptions } from '../__test-helpers__/RunOptions.js';
 
-const options = testRunOptions;
+const options = testJasmineRunOptions;
 describe(`${options.runnerName}.concurrent`, () => {
   buildModifierConcurrentSpecsFor(options);
 });

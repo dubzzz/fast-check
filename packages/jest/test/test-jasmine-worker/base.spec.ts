@@ -1,8 +1,8 @@
 import { describe } from 'vitest';
 import { buildBaseSpecsFor } from '../__test-helpers__/BaseSpecs.js';
-import { testWorkerRunOptions } from '../__test-helpers__/RunOptions.js';
+import { testJasmineWorkerRunOptions } from '../__test-helpers__/RunOptions.js';
 
-const options = testWorkerRunOptions;
+const options = testJasmineWorkerRunOptions;
 describe(options.runnerName, () => {
   buildBaseSpecsFor(options);
 });
