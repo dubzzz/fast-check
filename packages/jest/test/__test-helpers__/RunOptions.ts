@@ -7,16 +7,37 @@ export type RunOptions = {
   testRunner: 'jasmine' | undefined;
 };
 
-export const runOptions: RunOptions[] = [
-  { specName: 'test', runnerName: 'test', useWorkers: false, testRunner: undefined },
-  { specName: 'test (worker)', runnerName: 'test', useWorkers: true, testRunner: undefined },
-  { specName: 'test (jasmine)', runnerName: 'test', useWorkers: false, testRunner: 'jasmine' },
-  { specName: 'test (jasmine)(worker)', runnerName: 'test', useWorkers: true, testRunner: 'jasmine' },
-  { specName: 'it', runnerName: 'it', useWorkers: false, testRunner: undefined },
-];
+export const testRunOptions: RunOptions = {
+  specName: 'test',
+  runnerName: 'test',
+  useWorkers: false,
+  testRunner: undefined,
+};
 
-export const testRunOptions: RunOptions = runOptions[0];
-export const testWorkerRunOptions: RunOptions = runOptions[1];
-export const testJasmineRunOptions: RunOptions = runOptions[2];
-export const testJasmineWorkerRunOptions: RunOptions = runOptions[3];
-export const itRunOptions: RunOptions = runOptions[4];
+export const testWorkerRunOptions: RunOptions = {
+  specName: 'test (worker)',
+  runnerName: 'test',
+  useWorkers: true,
+  testRunner: undefined,
+};
+
+export const testJasmineRunOptions: RunOptions = {
+  specName: 'test (jasmine)',
+  runnerName: 'test',
+  useWorkers: false,
+  testRunner: 'jasmine',
+};
+
+export const testJasmineWorkerRunOptions: RunOptions = {
+  specName: 'test (jasmine)(worker)',
+  runnerName: 'test',
+  useWorkers: true,
+  testRunner: 'jasmine',
+};
+
+export const itRunOptions: RunOptions = {
+  specName: 'it',
+  runnerName: 'it',
+  useWorkers: false,
+  testRunner: undefined,
+};
