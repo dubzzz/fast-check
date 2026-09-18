@@ -1,0 +1,7 @@
+import { buildBaseSpecsFor } from '../__test-helpers__/BaseSpecs.js';
+import { testRunOptions } from '../__test-helpers__/RunOptions.js';
+
+const options = testRunOptions;
+describe(options.runnerName, () => {
+  buildBaseSpecsFor(options);
+});

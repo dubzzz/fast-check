@@ -1,15 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { it, expect } from 'vitest';
 import type * as _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/jest';
 import type { expect as _jestExpect } from '@jest/globals';
-import { writeToFile, runSpec, expectPass, expectFail, expectAlignedSeeds } from './__test-helpers__/RunJest.js';
-import { runOptions } from './__test-helpers__/RunOptions.js';
+import type { RunOptions } from './RunOptions.js';
+import { writeToFile, runSpec, expectPass, expectFail, expectAlignedSeeds } from './RunJest.js';
 
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 declare const jestExpect: typeof _jestExpect;
 
-describe.each(runOptions)('$specName', ({ runnerName, useWorkers, testRunner }) => {
+export function buildBaseSpecsFor(runOptions: RunOptions): void {
+  const { runnerName, testRunner, useWorkers } = runOptions;
   const options = { useWorkers, testRunner };
 
   it.concurrent('should pass on successful no prop mode', async () => {
@@ -147,4 +148,4 @@ describe.each(runOptions)('$specName', ({ runnerName, useWorkers, testRunner }) 
     expectAlignedSeeds(out);
     expect(out).toMatch(/[×✕] property fail record \(with seed=-?\d+\)/);
   });
-});
+}
