@@ -1,13 +1,14 @@
-import { describe, it, expect } from 'vitest';
+import { it, expect } from 'vitest';
 import type * as _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/jest';
-import { writeToFile, runSpec, expectFail, expectAlignedSeeds } from './__test-helpers__/RunJest.js';
-import { runOptions } from './__test-helpers__/RunOptions.js';
+import type { RunOptions } from './RunOptions.js';
+import { writeToFile, runSpec, expectFail, expectAlignedSeeds } from './RunJest.js';
 
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 
-describe.each(runOptions)('$specName', ({ runnerName, useWorkers, testRunner }) => {
+export function buildSeedsSpecsFor(runOptions: RunOptions): void {
+  const { runnerName, testRunner, useWorkers } = runOptions;
   const options = { useWorkers, testRunner };
 
   it.concurrent('should fail on falsy record-based property with seed', async () => {
@@ -73,4 +74,4 @@ describe.each(runOptions)('$specName', ({ runnerName, useWorkers, testRunner }) 
     expectAlignedSeeds(out);
     expect(out).toMatch(/[×✕] property fail with globally requested seed \(with seed=6969\)/);
   });
-});
+}
