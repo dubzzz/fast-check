@@ -33,20 +33,11 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     }
   }
   // Handle timeout
-  if (customParams.interruptAfterTimeLimit === undefined) {
-    // Copy global configuration of interruptAfterTimeLimit as local one
-    customParams.interruptAfterTimeLimit = fc.readConfigureGlobal().interruptAfterTimeLimit;
-  }
   // oxlint-disable-next-line no-use-before-define
   const jestTimeout = timeout !== undefined ? timeout : extractJestGlobalTimeout();
   if (jestTimeout !== undefined) {
-    if (customParams.interruptAfterTimeLimit === undefined) {
-      // Use the timeout specified at jest's level for interruptAfterTimeLimit
-      customParams.interruptAfterTimeLimit = jestTimeout;
-    } else {
-      // Mix both jest and fc's timeouts
-      customParams.interruptAfterTimeLimit = Math.min(customParams.interruptAfterTimeLimit, jestTimeout);
-    }
+    const plugin = fc.interruptAfterTimeLimit(jestTimeout) as NonNullable<typeof customParams.plugins>[number];
+    customParams.plugins = customParams.plugins === undefined ? [plugin] : [plugin, ...customParams.plugins];
   } else {
     // Related to ticket https://github.com/facebook/jest/issues/13338
     // May occur whenever test runner is not one of the uspported ones (see extractJestGLobalTimeout)

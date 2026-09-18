@@ -57,6 +57,7 @@ export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
     asyncProperty: propertyFor(url, options),
     assert: assert as FcExtra['assert'],
     readConfigureGlobal: fc.readConfigureGlobal,
+    interruptAfterTimeLimit: fc.interruptAfterTimeLimit,
   };
   if (typeof it !== 'undefined') {
     if (typeof jest !== 'undefined') {
