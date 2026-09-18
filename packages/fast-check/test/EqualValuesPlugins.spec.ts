@@ -10,7 +10,7 @@ describe(`IgnoreEqualValues (seed: ${seed})`, () => {
         fc.asyncProperty(fc.boolean(), fc.boolean(), () => {
           ++numRuns;
         }),
-        { ignoreEqualValues: true },
+        { plugins: [fc.ignoreEqualValues()] },
       );
       expect(out.failed).toBe(false);
       expect(out.interrupted).toBe(false);
@@ -28,7 +28,7 @@ describe(`IgnoreEqualValues (seed: ${seed})`, () => {
         fc.asyncProperty(fc.boolean(), fc.boolean(), () => {
           ++numRuns;
         }),
-        { skipEqualValues: true },
+        { plugins: [fc.skipEqualValues()] },
       );
       expect(out.failed).toBe(true);
       expect(out.interrupted).toBe(false);

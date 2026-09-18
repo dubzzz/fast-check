@@ -3,7 +3,6 @@ import { SkipAfterProperty } from '../property/plugins/SkipAfterProperty.js';
 import { TimeoutProperty } from '../property/plugins/TimeoutProperty.js';
 import { UnbiasedProperty } from '../property/plugins/UnbiasedProperty.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import { IgnoreEqualValuesProperty } from '../property/plugins/IgnoreEqualValuesProperty.js';
 
 // This helper MUST capture the following globals to avoid test runners to mock our internals and defeat us
 const safeDateNow = Date.now;
@@ -13,7 +12,7 @@ const safeClearTimeout = clearTimeout;
 /** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
   QualifiedParameters<Ts>,
-  'unbiased' | 'timeout' | 'skipAllAfterTimeLimit' | 'interruptAfterTimeLimit' | 'skipEqualValues' | 'ignoreEqualValues'
+  'unbiased' | 'timeout' | 'skipAllAfterTimeLimit' | 'interruptAfterTimeLimit'
 >;
 
 /** @internal */
@@ -44,12 +43,6 @@ export function decorateProperty<Ts>(rawProperty: Property<Ts>, qParams: Minimal
       safeSetTimeout,
       safeClearTimeout,
     );
-  }
-  if (qParams.skipEqualValues) {
-    prop = new IgnoreEqualValuesProperty(prop, true);
-  }
-  if (qParams.ignoreEqualValues) {
-    prop = new IgnoreEqualValuesProperty(prop, false);
   }
   return prop;
 }

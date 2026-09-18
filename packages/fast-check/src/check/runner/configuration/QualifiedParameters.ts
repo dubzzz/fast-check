@@ -35,8 +35,6 @@ export class QualifiedParameters<T> {
   skipAllAfterTimeLimit: number | undefined;
   interruptAfterTimeLimit: number | undefined;
   markInterruptAsFailure: boolean;
-  skipEqualValues: boolean;
-  ignoreEqualValues: boolean;
   reporter: ((runDetails: RunDetails<T>) => Promise<void> | void) | undefined;
   includeErrorInReport: boolean;
   plugins: Plugin<T>[];
@@ -52,8 +50,6 @@ export class QualifiedParameters<T> {
     this.skipAllAfterTimeLimit = safeTimeout(p.skipAllAfterTimeLimit);
     this.interruptAfterTimeLimit = safeTimeout(p.interruptAfterTimeLimit);
     this.markInterruptAsFailure = p.markInterruptAsFailure === true;
-    this.skipEqualValues = p.skipEqualValues === true;
-    this.ignoreEqualValues = p.ignoreEqualValues === true;
     this.logger =
       p.logger !== undefined
         ? p.logger
@@ -80,8 +76,6 @@ export class QualifiedParameters<T> {
       skipAllAfterTimeLimit: this.skipAllAfterTimeLimit,
       interruptAfterTimeLimit: this.interruptAfterTimeLimit,
       markInterruptAsFailure: this.markInterruptAsFailure,
-      skipEqualValues: this.skipEqualValues,
-      ignoreEqualValues: this.ignoreEqualValues,
       path: this.path,
       logger: this.logger,
       unbiased: this.unbiased,

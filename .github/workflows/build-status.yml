@@ -126,9 +126,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Build production packages
-        run: node --run build-ci:all
+        run: node --run build-ci
       - name: Create bundles
-        run: node --run pack:all
+        run: node --run pack
       - name: Upload production packages
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -167,10 +167,10 @@ jobs:
       - name: Wait for dependencies to be installed
         wait: install
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       - parallel:
           - name: Typecheck
-            run: node --run typecheck:all
+            run: node --run typecheck
           - name: Check API surface (missing exports, inconsistent visibility, etc.)
             run: pnpm --filter fast-check run api-extractor
   preview:
@@ -202,7 +202,7 @@ jobs:
       - name: Wait for dependencies to be installed
         wait: install
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       # These are not real npm publish commands, but pnpm exec pkg-pr-new publish
       # pkg-pr-new is a tool for creating preview deployments, not for publishing to npm
       - name: Preview (no comment) # zizmor: ignore[use-trusted-publishing]
@@ -277,11 +277,11 @@ jobs:
         wait: install
       - name: Unpack production packages
         if: matrix.os != 'windows-latest'
-        run: pnpm run unpack:all
+        run: pnpm run unpack
       - name: Unpack production packages (Windows only)
         if: matrix.os == 'windows-latest'
         # untar seems to fail on Windows when untaring already existing files
-        run: pnpm run unpack:all || true
+        run: pnpm run unpack || true
       - name: Unit tests
         shell: bash -l {0}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
@@ -371,7 +371,7 @@ jobs:
       - name: Wait for background steps to complete
         wait-all:
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       - name: Generate documentation
         run: pnpm --filter website run build
       - name: Copy raw logo within documentation
@@ -412,12 +412,12 @@ jobs:
       - name: Wait for dependencies to be installed
         wait: install
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-bundle
       - parallel:
           - name: Check publication lint
-            run: node --run publint:all
+            run: node --run publint
           - name: Check bundles
             run: pnpm --filter {./packages/**} --parallel run test-bundle
       - name: Check legacy bundles
@@ -478,7 +478,7 @@ jobs:
       - name: Wait for dependencies to be installed
         wait: install
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
       - name: Switch folder to CommonJS
@@ -525,7 +525,7 @@ jobs:
       - name: Wait for background steps to complete
         wait-all:
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       - name: Benchmark
         id: bench
         shell: bash -l {0}
