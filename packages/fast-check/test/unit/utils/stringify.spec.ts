@@ -617,7 +617,7 @@ describe('asyncStringify', () => {
 
     const instance2 = Object.create(null);
     Object.defineProperty(instance2, asyncToStringMethod, {
-      value: () => 'hello2',
+      value: async () => 'hello2',
       configurable: false,
       enumerable: false,
       writable: false,
@@ -635,14 +635,14 @@ describe('asyncStringify', () => {
     ); // fallbacking to default
 
     // prettier-ignore
-    const instance5 = { [asyncToStringMethod]: async () => { throw new Error('hello5'); }, [toStringMethod]: () => "world" };
+    const instance5 = { [asyncToStringMethod]: async  () => { throw new Error('hello5'); }, [toStringMethod]: () => "world" };
     expect(await asyncStringify(instance5)).toEqual('world'); // fallbacking to [toStringMethod]
 
     // prettier-ignore
-    const instance6 = { [asyncToStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
+    const instance6 = { [asyncToStringMethod]: async () => { throw new Error('hello6'); } }; // throw is sync
     const stringified6 = await asyncStringify(instance6);
     expect(stringified6.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol.for("fast-check/asyncToStringMethod")]:() => { throw new Error("hello6"); }}',
+      '{[Symbol.for("fast-check/asyncToStringMethod")]:async () => { throw new Error("hello6"); }}',
     ); // fallbacking to default
 
     class InProto {

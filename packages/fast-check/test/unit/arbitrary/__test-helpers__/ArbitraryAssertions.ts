@@ -50,7 +50,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
       .asyncProperty(
         fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
-        fc.iterator(fc.nat({ max: 20 })),
+        fc.iterator(fc.nat({ max: 20 }), { minLength: Number.POSITIVE_INFINITY }),
         extra,
         (seed, biasFactor, shrinkPath, extraParameters) => {
           // Arrange
@@ -65,7 +65,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
           }
           while (g1 !== null && g2 !== null) {
             assertEquality(isEqual, g1.value, g2.value, extraParameters);
-            const pos = shrinkPath.next().value;
+            const pos = shrinkPath.next().value!; // shrinkPath never ends: minLength is +infinity
             g1 = getNthOrLast(arb.shrink(g1.value_, g1.context), pos);
             g2 = getNthOrLast(arb.shrink(g2.value_, g2.context), pos);
           }
@@ -97,7 +97,7 @@ export function assertProduceCorrectValues<T, U = never>(
       .asyncProperty(
         fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
-        fc.iterator(fc.nat({ max: 20 })),
+        fc.iterator(fc.nat({ max: 20 }), { minLength: Number.POSITIVE_INFINITY }),
         extra,
         (seed, biasFactor, shrinkPath, extraParameters) => {
           // Arrange
@@ -107,7 +107,7 @@ export function assertProduceCorrectValues<T, U = never>(
           let g: Value<T> | null = arb.generate(randomFromSeed(seed), biasFactor);
           while (g !== null) {
             assertCorrectness(isCorrect, g.value, extraParameters, arb);
-            const pos = shrinkPath.next().value;
+            const pos = shrinkPath.next().value!; // shrinkPath never ends: minLength is +infinity
             g = getNthOrLast(arb.shrink(g.value, g.context), pos);
           }
           expect(g).toBe(null);
