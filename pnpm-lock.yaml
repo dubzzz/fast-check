@@ -227,8 +227,8 @@ importers:
         specifier: ^30.0.0
         version: 30.0.0
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       '@vitest/coverage-v8':
         specifier: ^4.0.18
         version: 4.1.5(vitest@4.1.11)
@@ -264,7 +264,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   examples:
     devDependencies:
@@ -281,8 +281,8 @@ importers:
         specifier: ^4.17.25
         version: 4.17.25
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       '@types/react':
         specifier: ^19.3.0
         version: 19.3.0
@@ -309,7 +309,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/ava:
     dependencies:
@@ -321,8 +321,8 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       ava:
         specifier: ^8.0.1
         version: 8.0.1(rollup@2.80.0)
@@ -340,7 +340,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/fast-check:
     dependencies:
@@ -353,10 +353,10 @@ importers:
         version: link:../poisoning
       '@microsoft/api-extractor':
         specifier: ^7.59.1
-        version: 7.59.1(@types/node@24.13.4)
+        version: 7.59.1(@types/node@24.13.6)
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       fast-check:
         specifier: workspace:*
         version: 'link:'
@@ -371,7 +371,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/jest:
     dependencies:
@@ -395,14 +395,14 @@ importers:
         specifier: ^30.0.0
         version: 30.0.0
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       babel-jest:
         specifier: ^30.5.1
         version: 30.5.1(@babel/core@7.29.0)
       jest:
         specifier: ^30.5.1
-        version: 30.5.1(@types/node@24.13.4)
+        version: 30.5.1(@types/node@24.13.6)
       jest-jasmine2:
         specifier: ^30.5.1
         version: 30.5.1
@@ -411,10 +411,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: ^8.3.0
-        version: 8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
+        version: 8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/packaged:
     dependencies:
@@ -439,7 +439,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/poisoning:
     devDependencies:
@@ -447,8 +447,8 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       rolldown:
         specifier: ^1.2.8
         version: 1.2.8
@@ -457,7 +457,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/vitest:
     dependencies:
@@ -469,8 +469,8 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       rolldown:
         specifier: ^1.2.8
         version: 1.2.8
@@ -479,10 +479,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: ^8.3.0
-        version: 8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
+        version: 8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
       vitest:
         specifier: ^5.0.0
-        version: 5.0.0(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.0(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/worker:
     dependencies:
@@ -497,14 +497,14 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   website:
     dependencies:
@@ -564,8 +564,8 @@ importers:
         specifier: ^4.17.25
         version: 4.17.25
       '@types/node':
-        specifier: ^24.13.4
-        version: 24.13.4
+        specifier: ^24.13.6
+        version: 24.13.6
       '@types/react':
         specifier: ^19.3.0
         version: 19.3.0
@@ -592,7 +592,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.10
-        version: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
 packages:
 
@@ -3735,6 +3735,9 @@ packages:
 
   '@types/node@24.13.4':
     resolution: {integrity: sha512-YJ7EqCstVTzIr0fMr7qul/977en+pQHrfmuKIo6Zr9i75Be21dr3MovcfvGtyvi2HAUrRerWps5sMO9I7WaxDw==}
+
+  '@types/node@24.13.6':
+    resolution: {integrity: sha512-SGrw/h3KPFshy3OE6ZL53LMBG5vGQQ8/gIpiqz/kRZhPJ7HgwCEs8LBuNtWLa8dvGZVpSF7+Bf+c11HUrCb/yg==}
 
   '@types/npm-package-arg@6.1.4':
     resolution: {integrity: sha512-vDgdbMy2QXHnAruzlv68pUtXCjmqUk3WrBAsRboRovsOmxbfn/WiYCjmecyKjGztnMps5dWp4Uq2prp+Ilo17Q==}
@@ -13104,23 +13107,23 @@ snapshots:
     dependencies:
       langium: 4.2.3
 
-  '@microsoft/api-extractor-model@7.33.12(@types/node@24.13.4)':
+  '@microsoft/api-extractor-model@7.33.12(@types/node@24.13.6)':
     dependencies:
       '@microsoft/tsdoc': 0.16.0
       '@microsoft/tsdoc-config': 0.18.1
-      '@rushstack/node-core-library': 5.24.1(@types/node@24.13.4)
+      '@rushstack/node-core-library': 5.24.1(@types/node@24.13.6)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.59.1(@types/node@24.13.4)':
+  '@microsoft/api-extractor@7.59.1(@types/node@24.13.6)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.33.12(@types/node@24.13.4)
+      '@microsoft/api-extractor-model': 7.33.12(@types/node@24.13.6)
       '@microsoft/tsdoc': 0.16.0
       '@microsoft/tsdoc-config': 0.18.1
-      '@rushstack/node-core-library': 5.24.1(@types/node@24.13.4)
+      '@rushstack/node-core-library': 5.24.1(@types/node@24.13.6)
       '@rushstack/rig-package': 0.7.3
-      '@rushstack/terminal': 0.24.4(@types/node@24.13.4)
-      '@rushstack/ts-command-line': 5.3.14(@types/node@24.13.4)
+      '@rushstack/terminal': 0.24.4(@types/node@24.13.6)
+      '@rushstack/ts-command-line': 5.3.14(@types/node@24.13.6)
       diff: 8.0.4
       minimatch: 10.2.3
       resolve: 1.22.12
@@ -13714,7 +13717,7 @@ snapshots:
 
   '@rspack/lite-tapable@1.1.0': {}
 
-  '@rushstack/node-core-library@5.24.1(@types/node@24.13.4)':
+  '@rushstack/node-core-library@5.24.1(@types/node@24.13.6)':
     dependencies:
       ajv: 8.20.0
       ajv-draft-04: 1.0.0(ajv@8.20.0)
@@ -13725,28 +13728,28 @@ snapshots:
       resolve: 1.22.12
       semver: 7.7.4
     optionalDependencies:
-      '@types/node': 24.13.4
+      '@types/node': 24.13.6
 
-  '@rushstack/problem-matcher@0.2.1(@types/node@24.13.4)':
+  '@rushstack/problem-matcher@0.2.1(@types/node@24.13.6)':
     optionalDependencies:
-      '@types/node': 24.13.4
+      '@types/node': 24.13.6
 
   '@rushstack/rig-package@0.7.3':
     dependencies:
       jju: 1.4.0
       resolve: 1.22.12
 
-  '@rushstack/terminal@0.24.4(@types/node@24.13.4)':
+  '@rushstack/terminal@0.24.4(@types/node@24.13.6)':
     dependencies:
-      '@rushstack/node-core-library': 5.24.1(@types/node@24.13.4)
-      '@rushstack/problem-matcher': 0.2.1(@types/node@24.13.4)
+      '@rushstack/node-core-library': 5.24.1(@types/node@24.13.6)
+      '@rushstack/problem-matcher': 0.2.1(@types/node@24.13.6)
       supports-color: 8.1.1
     optionalDependencies:
-      '@types/node': 24.13.4
+      '@types/node': 24.13.6
 
-  '@rushstack/ts-command-line@5.3.14(@types/node@24.13.4)':
+  '@rushstack/ts-command-line@5.3.14(@types/node@24.13.6)':
     dependencies:
-      '@rushstack/terminal': 0.24.4(@types/node@24.13.4)
+      '@rushstack/terminal': 0.24.4(@types/node@24.13.6)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -14385,6 +14388,10 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
+  '@types/node@24.13.6':
+    dependencies:
+      undici-types: 7.18.2
+
   '@types/npm-package-arg@6.1.4': {}
 
   '@types/npm-packlist@7.0.3':
@@ -14611,7 +14618,7 @@ snapshots:
       obug: 2.2.1
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+      vitest: 4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   '@vitest/expect@4.1.11':
     dependencies:
@@ -14622,22 +14629,22 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.11(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.11(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
+      vite: 8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
 
-  '@vitest/mocker@5.0.0(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))':
+  '@vitest/mocker@5.0.0(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.0
       estree-walker: 3.0.3
       magic-string: 1.2.3
     optionalDependencies:
-      vite: 8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
+      vite: 8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.11':
     dependencies:
@@ -17526,7 +17533,7 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@30.5.1(@types/node@24.13.4):
+  jest-cli@30.5.1(@types/node@24.13.6):
     dependencies:
       '@jest/core': 30.5.1
       '@jest/test-result': 30.5.1
@@ -17534,7 +17541,7 @@ snapshots:
       chalk: 4.1.2
       exit-x: 0.2.2
       import-local: 3.2.0
-      jest-config: 30.5.1(@types/node@24.13.4)
+      jest-config: 30.5.1(@types/node@24.13.6)
       jest-util: 30.5.1
       jest-validate: 30.5.1
       yargs: 17.7.2
@@ -17572,6 +17579,37 @@ snapshots:
       strip-json-comments: 3.1.1
     optionalDependencies:
       '@types/node': 24.13.4
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+
+  jest-config@30.5.1(@types/node@24.13.6):
+    dependencies:
+      '@babel/core': 7.29.0
+      '@jest/get-type': 30.5.0
+      '@jest/pattern': 30.5.0
+      '@jest/test-sequencer': 30.5.1
+      '@jest/types': 30.5.1
+      babel-jest: 30.5.1(@babel/core@7.29.0)
+      chalk: 4.1.2
+      ci-info: 4.4.0
+      deepmerge: 4.3.1
+      glob: 13.0.6
+      graceful-fs: 4.2.11
+      jest-circus: 30.5.1
+      jest-docblock: 30.5.0
+      jest-environment-node: 30.5.1
+      jest-regex-util: 30.5.0
+      jest-resolve: 30.5.1
+      jest-runner: 30.5.1
+      jest-util: 30.5.1
+      jest-validate: 30.5.1
+      parse-json: 5.2.0
+      pretty-format: 30.5.1
+      slash: 3.0.0
+      strip-json-comments: 3.1.1
+    optionalDependencies:
+      '@types/node': 24.13.6
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -17832,12 +17870,12 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@30.5.1(@types/node@24.13.4):
+  jest@30.5.1(@types/node@24.13.6):
     dependencies:
       '@jest/core': 30.5.1
       '@jest/types': 30.5.1
       import-local: 3.2.0
-      jest-cli: 30.5.1(@types/node@24.13.4)
+      jest-cli: 30.5.1(@types/node@24.13.6)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -21130,7 +21168,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0):
+  vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -21138,16 +21176,16 @@ snapshots:
       rolldown: 1.2.8
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 24.13.4
+      '@types/node': 24.13.6
       fsevents: 2.3.3
       jiti: 1.21.7
       terser: 5.46.2
       yaml: 2.9.0
 
-  vitest@4.1.11(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)):
+  vitest@4.1.11(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.11(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -21164,19 +21202,19 @@ snapshots:
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
+      vite: 8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 24.13.4
+      '@types/node': 24.13.6
       '@vitest/coverage-v8': 4.1.5(vitest@4.1.11)
       happy-dom: 20.14.3
     transitivePeerDependencies:
       - msw
 
-  vitest@5.0.0(@types/node@24.13.4)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)):
+  vitest@5.0.0(@types/node@24.13.6)(@vitest/coverage-v8@4.1.5(vitest@4.1.11))(happy-dom@20.14.3)(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.0(vite@8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+      '@vitest/mocker': 5.0.0(vite@8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -21187,10 +21225,10 @@ snapshots:
       tinybench: 6.1.4
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
-      vite: 8.3.0(@types/node@24.13.4)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
+      vite: 8.3.0(@types/node@24.13.6)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 24.13.4
+      '@types/node': 24.13.6
       '@vitest/coverage-v8': 4.1.5(vitest@4.1.11)
       happy-dom: 20.14.3
     transitivePeerDependencies:
