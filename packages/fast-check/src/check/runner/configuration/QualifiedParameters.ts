@@ -28,7 +28,6 @@ export class QualifiedParameters<T> {
   timeout: number | undefined;
   path: string;
   logger: (v: string) => void;
-  unbiased: boolean;
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
@@ -58,7 +57,6 @@ export class QualifiedParameters<T> {
             console.log(v);
           };
     this.path = p.path !== undefined ? p.path : '';
-    this.unbiased = p.unbiased === true;
     this.examples = p.examples !== undefined ? p.examples : [];
     this.endOnFailure = p.endOnFailure === true;
     this.reporter = p.reporter;
@@ -78,7 +76,6 @@ export class QualifiedParameters<T> {
       markInterruptAsFailure: this.markInterruptAsFailure,
       path: this.path,
       logger: this.logger,
-      unbiased: this.unbiased,
       verbose: this.verbose,
       examples: this.examples,
       endOnFailure: this.endOnFailure,

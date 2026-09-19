@@ -1,7 +1,6 @@
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
 import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
-import { UnbiasedProperty } from '../property/plugins/UnbiasedProperty.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
@@ -10,11 +9,11 @@ import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 
 /** @internal */
-function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters<Ts>): Property<Ts> {
+function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
     ? new PropertyImplem(generator as Arbitrary<Ts>, () => true)
     : (generator as Property<Ts>);
-  return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
+  return prop;
 }
 
 /** @internal */
@@ -27,7 +26,7 @@ function streamSample<Ts>(
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
-  const nextProperty = toProperty(generator, qParams);
+  const nextProperty = toProperty(generator);
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues =
     qParams.path.length === 0
