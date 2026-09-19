@@ -1,10 +1,20 @@
 # 4.10.1
 
+_Fix interrupt plugin (throwing)_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.10.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.10.1...v4.10.2)]
+
+## Fixes
+
+- ([PR#7333](https://github.com/dubzzz/fast-check/pull/7333)) Bug: Plugin `interruptAfterTimeLimit` crashes
+
+# 4.10.1
+
 _Fix fake-timer compatibility in timeout and interrupt plugins_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.10.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.10.0...v4.10.1)]
 
 ## Fixes
 
+- ([PR#7292](https://github.com/dubzzz/fast-check/pull/7292)) Bug: Capture timer globals for `timeout` plugin
 - ([PR#7293](https://github.com/dubzzz/fast-check/pull/7293)) Bug: Capture timers for `interruptAfterTimeLimit` plugin
 - ([PR#7282](https://github.com/dubzzz/fast-check/pull/7282)) CI: Temporarily disable documentation updates until v5
 - ([PR#7279](https://github.com/dubzzz/fast-check/pull/7279)) Doc: Release note for 4.10.0
