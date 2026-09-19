@@ -108,12 +108,6 @@ export interface Parameters<T = void> {
    */
   logger?(v: string): void;
   /**
-   * Force the use of unbiased arbitraries: biased by default
-   * @remarks Since 1.1.0
-   * @deprecated Prefer the `unbiased` plugin: `fc.assert(property, { plugins: [fc.unbiased()] })`
-   */
-  unbiased?: boolean;
-  /**
    * Enable verbose mode: {@link VerbosityLevel.None} by default
    *
    * Using `verbose: true` is equivalent to `verbose: VerbosityLevel.Verbose`

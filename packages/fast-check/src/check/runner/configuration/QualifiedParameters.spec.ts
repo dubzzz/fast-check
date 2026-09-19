@@ -22,7 +22,6 @@ const parametersArbitrary = fc.record(
     markInterruptAsFailure: fc.boolean(),
     path: fc.array(fc.nat()).map((arr) => arr.join(':')),
     logger: fc.func(fc.constant(undefined)),
-    unbiased: fc.boolean(),
     verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
     examples: fc.array(fc.nat()),
     endOnFailure: fc.boolean(),

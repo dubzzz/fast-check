@@ -70,7 +70,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
         const filtered = removeDuplicates(arr);
         expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates
       }),
-      { seed, unbiased: true },
+      { seed, plugins: [fc.unbiased()] },
     );
     expect(out.failed).toBe(false);
   });
