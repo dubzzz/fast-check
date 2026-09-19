@@ -222,8 +222,8 @@ jobs:
       matrix:
         node-version: [22.x, 24.x, latest]
         os: ['ubuntu-latest']
-        shard-id: ['1']
-        shard-count: ['1']
+        shard-id: ['1', '2']
+        shard-count: ['2']
         include:
           - node-version: 24.x
             os: 'macos-latest'
