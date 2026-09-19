@@ -10,7 +10,8 @@ import type { RunDetails } from '../runner/reporter/RunDetails.js';
  */
 export type PluginStore = {
   /**
-   * Read the value registered for `key`, if any.  
+   * Read the value registered for `key`, if any.
+   *
    * WARNING: `T` is declared by the caller, never checked by the store.
    * @remarks Since 4.10.0
    */
