@@ -1,4 +1,4 @@
-# 4.10.1
+# 4.10.2
 
 _Fix interrupt plugin (throwing)_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.10.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.10.1...v4.10.2)]
