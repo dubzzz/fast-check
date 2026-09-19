@@ -1,5 +1,5 @@
-import type { Property } from '../property/types/Property.js';
-import type { RunDetails } from '../runner/reporter/RunDetails.js';
+import type { Property } from "../property/types/Property.js";
+import type { RunDetails } from "../runner/reporter/RunDetails.js";
 
 /**
  * Storage shared by all the plugins instantiated for one call to {@link check} or {@link assert}.
@@ -10,7 +10,8 @@ import type { RunDetails } from '../runner/reporter/RunDetails.js';
  */
 export type PluginStore = {
   /**
-   * Read the value registered for `key`, if any.  
+   * Read the value registered for `key`, if any.
+   *
    * WARNING: `T` is declared by the caller, never checked by the store.
    * @remarks Since 4.10.0
    */
@@ -39,7 +40,9 @@ export type PluginInstance<Ts> = {
    *
    * @remarks Since 4.10.0
    */
-  decorateGenerate?: (nestedGenerate: Property<Ts>['generate']) => Property<Ts>['generate'];
+  decorateGenerate?: (
+    nestedGenerate: Property<Ts>["generate"],
+  ) => Property<Ts>["generate"];
 
   /**
    * Enrich the execution of the predicate linked to the property with extra behaviors.
@@ -50,7 +53,7 @@ export type PluginInstance<Ts> = {
    *
    * @remarks Since 4.10.0
    */
-  decorateRun?: (nestedRun: Property<Ts>['run']) => Property<Ts>['run'];
+  decorateRun?: (nestedRun: Property<Ts>["run"]) => Property<Ts>["run"];
   /**
    * Called once at the end of the full property assessment, with the result of the execution.
    *
@@ -91,4 +94,7 @@ export type PluginInstance<Ts> = {
  * @remarks Since 4.10.0
  * @public
  */
-export type Plugin<Ts> = (pluginIndex: number, pluginStore: PluginStore) => PluginInstance<Ts>;
+export type Plugin<Ts> = (
+  pluginIndex: number,
+  pluginStore: PluginStore,
+) => PluginInstance<Ts>;
