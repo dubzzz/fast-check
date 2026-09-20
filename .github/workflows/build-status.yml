@@ -462,7 +462,7 @@ jobs:
               TS_VERSION: latest
             run: &check_types |
               pnpm --package "typescript@${TS_VERSION}" dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext packages/*/test-types/*.cts packages/*/test-types/*.mts
-          # Various intermediate versions of Typescript (if any required) 
+          # Various intermediate versions of Typescript (if any required)
           # Minimal requirement for TypeScript
           - name: Check types (TypeScript 5.8)
             env:
