@@ -459,6 +459,7 @@ jobs:
             done
           '
       - parallel:
+          # Latest version of TypeScript
           - name: Check types (TypeScript latest)
             env:
               TS_VERSION: latest
