@@ -444,7 +444,7 @@ jobs:
         run: node --run unpack
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
-+      - name: Prepare CommonJS and ES module fixtures
+      - name: Prepare CommonJS and ES module fixtures
         run: |
           pnpm --filter '{./packages/**}' --parallel -c exec '
             set -eu
