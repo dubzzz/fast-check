@@ -247,7 +247,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
   test_macos:
-    name: 'Test (macOS)'
+    name: 'Test'
     needs:
       - warmup_pnpm_cache_macos
       - production_packages
