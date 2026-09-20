@@ -278,6 +278,8 @@ jobs:
     name: 'Publish test coverage'
     needs:
       - test
+      - test_macos
+      - test_windows
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -562,6 +564,8 @@ jobs:
       - sanity_checks
       - typecheck
       - test
+      - test_macos
+      - test_windows
       - test_bundle
       - test_types
     runs-on: ubuntu-latest
