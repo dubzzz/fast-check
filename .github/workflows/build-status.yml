@@ -64,30 +64,9 @@ jobs:
         if: steps.pnpm-cache.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-  # Jobs without any strong requirement on warmup_pnpm_cache
-  # except that they have to wait for it to avoid setting an empty cache that would replace the one pushed by warmup_pnpm_cache
-  no_dedupe_required:
-    name: 'No dedupe required'
-    needs: warmup_pnpm_cache
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Install pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-      - name: Using Node v24.x
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: '24.x'
-          cache: 'pnpm'
-      - name: Ensure no dedupe required
-        run: pnpm dedupe --check
-
   # Jobs requesting warmup_pnpm_cache
-  format_lint:
-    name: 'Format & Lint'
+  sanity_checks:
+    name: 'Sanity checks'
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
@@ -102,12 +81,14 @@ jobs:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter @fast-check/monorepo install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - parallel:
           - name: Check format
             run: node --run format:check
           - name: Check lint
             run: node --run lint:check
+          - name: Ensure no dedupe required
+            run: pnpm dedupe --check
   production_packages:
     name: 'Build production packages'
     needs: warmup_pnpm_cache
@@ -589,8 +570,7 @@ jobs:
     needs:
       - production_packages
       - documentation
-      - format_lint
-      - no_dedupe_required
+      - sanity_checks
       - typecheck
       - test
       - test_bundle
