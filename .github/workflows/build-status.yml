@@ -261,7 +261,7 @@ jobs:
     env: *test_env
     steps: *test_steps
   test_windows:
-    name: 'Test (Windows)'
+    name: 'Test'
     needs:
       - warmup_pnpm_cache_windows
       - production_packages
