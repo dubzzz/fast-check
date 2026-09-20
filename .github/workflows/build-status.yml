@@ -418,15 +418,6 @@ jobs:
       - warmup_pnpm_cache
       - production_packages
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ts-version:
-          # Latest version of TypeScript
-          - 'latest'
-          # Various intermediate versions of Typescript (if any required)
-          # Minimal requirement for TypeScript
-          - '5.8'
-          # Other release channels for TypeScript
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -449,14 +440,34 @@ jobs:
           path: packages/
       - name: Wait for dependencies to be installed
         wait: install
-      - name: Unpack production packages
-        run: node --run unpack
-      - name: Alter internals to behave as if published
-        run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
-      - name: Switch folder to CommonJS
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
-      - name: Switch folder to ES Modules
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+      - parallel:
+          - name: Prepare published packages
+            run: |
+              node --run unpack
+              pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
+          - name: Prepare CommonJS and ES module fixtures
+            run: |
+              pnpm --filter '{./packages/**}' --parallel -c exec '
+                set -eu
+                cd test-types
+                for file in *.ts; do
+                  cp "$file" "${file%.ts}.cts"
+                  mv "$file" "${file%.ts}.mts"
+                done
+              '
+      - parallel:
+          # Latest version of TypeScript
+          - name: Check types (TypeScript latest)
+            env:
+              TS_VERSION: latest
+            run: &check_types |
+              pnpm --package "typescript@${TS_VERSION}" dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext packages/*/test-types/*.cts packages/*/test-types/*.mts
+          # Various intermediate versions of Typescript (if any required)
+          # Minimal requirement for TypeScript
+          - name: Check types (TypeScript 5.8)
+            env:
+              TS_VERSION: '5.8'
+            run: *check_types
 
   # Optional jobs
   bench:
