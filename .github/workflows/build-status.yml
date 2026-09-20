@@ -463,8 +463,7 @@ jobs:
             env:
               TS_VERSION: latest
             run: &check_types |
-              pnpm -r --filter '{./packages/**}' \
-                --no-sort --no-bail -c exec \
+              pnpm -r --filter '{./packages/**}' -c exec \
                 "cd test-types && pnpm --package typescript@${TS_VERSION} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts *.mts"
           - name: Check types (TypeScript 5.8)
             env:
