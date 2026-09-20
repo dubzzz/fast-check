@@ -184,7 +184,6 @@ jobs:
     name: 'Test'
     needs:
       - warmup_pnpm_cache
-      - warmup_pnpm_cache_others
       - production_packages
     runs-on: ${{matrix.os}}
     strategy:
@@ -193,36 +192,10 @@ jobs:
         os: ['ubuntu-latest']
         shard-id: ['1', '2']
         shard-count: ['2']
-        include:
-          - node-version: 24.x
-            os: 'macos-latest'
-            shard-id: 1
-            shard-count: 3
-          - node-version: 24.x
-            os: 'macos-latest'
-            shard-id: 2
-            shard-count: 3
-          - node-version: 24.x
-          - node-version: 24.x
-            os: 'macos-latest'
-            shard-id: 3
-            shard-count: 3
-          - node-version: 24.x
-            os: 'windows-latest'
-            shard-id: 1
-            shard-count: 3
-          - node-version: 24.x
-            os: 'windows-latest'
-            shard-id: 2
-            shard-count: 3
-          - node-version: 24.x
-            os: 'windows-latest'
-            shard-id: 3
-            shard-count: 3
-    env:
+    env: &test_env
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_DOCUMENTATION: ${{ matrix.node-version != '24.x' || matrix.os == 'windows-latest' }}
-    steps:
+    steps: &test_steps
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -273,6 +246,34 @@ jobs:
           path: coverage/
           if-no-files-found: error
           retention-days: 1
+  test_macos:
+    name: 'Test (macOS)'
+    needs:
+      - warmup_pnpm_cache_macos
+      - production_packages
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        node-version: [24.x]
+        os: ['macos-latest']
+        shard-id: ['1', '2', '3']
+        shard-count: ['3']
+    env: *test_env
+    steps: *test_steps
+  test_windows:
+    name: 'Test (Windows)'
+    needs:
+      - warmup_pnpm_cache_windows
+      - production_packages
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        node-version: [24.x]
+        os: ['windows-latest']
+        shard-id: ['1', '2', '3']
+        shard-count: ['3']
+    env: *test_env
+    steps: *test_steps
   publish_test_coverage:
     name: 'Publish test coverage'
     needs:
