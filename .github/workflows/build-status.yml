@@ -449,27 +449,27 @@ jobs:
       - name: Switch folder to ES Modules
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
 +      - name: Prepare CommonJS and ES module fixtures
-+        run: |
-+          pnpm --filter '{./packages/**}' --parallel -c exec '
-+            set -eu
-+            cd test-types
-+            for file in *.ts; do
-+              cp "$file" "${file%.ts}.cts"
-+              mv "$file" "${file%.ts}.mts"
-+            done
-+          '
-+      - parallel:
-+          - name: Check types (TypeScript latest)
-+            env:
-+              TS_VERSION: latest
-+            run: &check_types |
-+              pnpm -r --filter '{./packages/**}' \
-+                --workspace-concurrency=2 --no-sort --no-bail -c exec \
-+                "cd test-types && pnpm --package typescript@${TS_VERSION} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts *.mts"
-+          - name: Check types (TypeScript 5.8)
-+            env:
-+              TS_VERSION: '5.8'
-+            run: *check_types
+        run: |
+          pnpm --filter '{./packages/**}' --parallel -c exec '
+            set -eu
+            cd test-types
+            for file in *.ts; do
+              cp "$file" "${file%.ts}.cts"
+              mv "$file" "${file%.ts}.mts"
+            done
+          '
+      - parallel:
+          - name: Check types (TypeScript latest)
+            env:
+              TS_VERSION: latest
+            run: &check_types |
+              pnpm -r --filter '{./packages/**}' \
+                --no-sort --no-bail -c exec \
+                "cd test-types && pnpm --package typescript@${TS_VERSION} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts *.mts"
+          - name: Check types (TypeScript 5.8)
+            env:
+              TS_VERSION: '5.8'
+            run: *check_types
 
   # Optional jobs
   bench:
