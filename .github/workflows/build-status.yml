@@ -440,20 +440,21 @@ jobs:
           path: packages/
       - name: Wait for dependencies to be installed
         wait: install
-      - name: Unpack production packages
-        run: node --run unpack
-      - name: Alter internals to behave as if published
-        run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
-      - name: Prepare CommonJS and ES module fixtures
-        run: |
-          pnpm --filter '{./packages/**}' --parallel -c exec '
-            set -eu
-            cd test-types
-            for file in *.ts; do
-              cp "$file" "${file%.ts}.cts"
-              mv "$file" "${file%.ts}.mts"
-            done
-          '
+      - parallel:
+          - name: Prepare published packages
+            run: |
+              node --run unpack
+              pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
+          - name: Prepare CommonJS and ES module fixtures
+            run: |
+              pnpm --filter '{./packages/**}' --parallel -c exec '
+                set -eu
+                cd test-types
+                for file in *.ts; do
+                  cp "$file" "${file%.ts}.cts"
+                  mv "$file" "${file%.ts}.mts"
+                done
+              '
       - parallel:
           # Latest version of TypeScript
           - name: Check types (TypeScript latest)
