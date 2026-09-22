@@ -1,7 +1,15 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "compiler": {
-    "tsconfigFilePath": "<projectFolder>/tsconfig.publish.types.api-extractor.json"
+    "overrideTsconfig": {
+      "extends": "../../tsconfig.shared.json",
+      "compilerOptions": {
+        "target": "esnext",
+        "lib": ["esnext"]
+      },
+      "include": ["src/"],
+      "exclude": ["src/**/*.spec.ts", "src/**/__test-helpers__/"]
+    }
   },
   "tsdocMetadata": {
     "enabled": false
