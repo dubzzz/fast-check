@@ -1,39 +1,39 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-import type { Config } from "@docusaurus/types";
-import type * as Preset from "@docusaurus/preset-classic";
-import { themes } from "prism-react-renderer";
+import type { Config } from '@docusaurus/types';
+import type * as Preset from '@docusaurus/preset-classic';
+import { themes } from 'prism-react-renderer';
 const lightCodeTheme = themes.github;
 const darkCodeTheme = themes.dracula;
 
 const config: Config = {
-  title: "fast-check",
+  title: 'fast-check',
   tagline:
     "fast-check is a Property-based Testing framework for JavaScript and TypeScript. It works with Jest, Mocha, Vitest, and others. Let's fuzz!",
-  favicon: "img/favicon.ico",
+  favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: "https://fast-check.dev/",
+  url: 'https://fast-check.dev/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+  baseUrl: '/',
   trailingSlash: true,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "dubzzz", // Usually your GitHub org/user name.
-  projectName: "fast-check", // Usually your repo name.
+  organizationName: 'dubzzz', // Usually your GitHub org/user name.
+  projectName: 'fast-check', // Usually your repo name.
 
-  onBrokenAnchors: "throw",
-  onBrokenLinks: "throw",
+  onBrokenAnchors: 'throw',
+  onBrokenLinks: 'throw',
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: "en",
-    locales: ["en"],
+    defaultLocale: 'en',
+    locales: ['en'],
   },
 
   future: {
@@ -44,56 +44,54 @@ const config: Config = {
 
   presets: [
     [
-      "classic",
+      'classic',
       {
         docs: {
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
-          sidebarPath: require.resolve("./sidebars.js"),
-          remarkPlugins: [
-            [require("@docusaurus/remark-plugin-npm2yarn"), { sync: true }],
-          ],
+          sidebarPath: require.resolve('./sidebars.js'),
+          remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
         },
         blog: { showReadingTime: true },
-        sitemap: { lastmod: "date" },
-        theme: { customCss: require.resolve("./src/css/custom.css") },
+        sitemap: { lastmod: 'date' },
+        theme: { customCss: require.resolve('./src/css/custom.css') },
       } satisfies Preset.Options,
     ],
   ],
 
   themeConfig: {
     // Replace with your project's social card
-    image: "img/social.png",
+    image: 'img/social.png',
     navbar: {
-      title: "fast-check",
-      logo: { alt: "fast-check Logo", src: "img/mug.svg", width: "40px" },
+      title: 'fast-check',
+      logo: { alt: 'fast-check Logo', src: 'img/mug.svg', width: '40px' },
       items: [
-        { to: "/docs/introduction/", label: "Documentation" },
+        { to: '/docs/introduction/', label: 'Documentation' },
         {
-          to: "/docs/tutorials/quick-start/basic-setup/",
-          label: "Quick Start",
+          to: '/docs/tutorials/quick-start/basic-setup/',
+          label: 'Quick Start',
         },
-        { to: "/docs/tutorials/", label: "All Tutorials" },
-        { to: "/docs/support-us/", "aria-label": "Support us", label: "❤️" },
-        { to: "/blog", label: "Blog", position: "right" },
-        { to: "/docs/api/", label: "API", position: "right" },
+        { to: '/docs/tutorials/', label: 'All Tutorials' },
+        { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
+        { to: '/blog', label: 'Blog', position: 'right' },
+        { to: '/docs/api/', label: 'API', position: 'right' },
         {
-          href: "https://bsky.app/profile/fast-check.dev",
-          "aria-label": "Bluesky account",
-          position: "right",
-          className: "header-bluesky-link",
-        },
-        {
-          href: "https://github.com/dubzzz/fast-check",
-          "aria-label": "GitHub repository",
-          position: "right",
-          className: "header-github-link",
+          href: 'https://bsky.app/profile/fast-check.dev',
+          'aria-label': 'Bluesky account',
+          position: 'right',
+          className: 'header-bluesky-link',
         },
         {
-          href: "https://tangled.org/fast-check.dev/fast-check",
-          "aria-label": "Tangled repository",
-          position: "right",
-          className: "header-tangled-link",
+          href: 'https://github.com/dubzzz/fast-check',
+          'aria-label': 'GitHub repository',
+          position: 'right',
+          className: 'header-github-link',
+        },
+        {
+          href: 'https://tangled.org/fast-check.dev/fast-check',
+          'aria-label': 'Tangled repository',
+          position: 'right',
+          className: 'header-tangled-link',
         },
       ],
     },
@@ -103,46 +101,46 @@ const config: Config = {
       },
     },
     footer: {
-      style: "dark",
+      style: 'dark',
       links: [
         {
-          title: "Guides",
+          title: 'Guides',
           items: [
-            { label: "Documentation", to: "/docs/introduction/" },
+            { label: 'Documentation', to: '/docs/introduction/' },
             {
-              label: "Quick Start",
-              to: "/docs/tutorials/quick-start/basic-setup/",
+              label: 'Quick Start',
+              to: '/docs/tutorials/quick-start/basic-setup/',
             },
-            { label: "All Tutorials", to: "/docs/tutorials/" },
+            { label: 'All Tutorials', to: '/docs/tutorials/' },
           ],
         },
         {
-          title: "Community",
+          title: 'Community',
           items: [
             {
-              label: "Bluesky 🦋",
-              href: "https://bsky.app/profile/fast-check.dev",
+              label: 'Bluesky 🦋',
+              href: 'https://bsky.app/profile/fast-check.dev',
             },
             {
-              label: "Become a contributor",
-              href: "https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md",
+              label: 'Become a contributor',
+              href: 'https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md',
             },
-            { label: "Sponsor us", href: "https://github.com/sponsors/dubzzz" },
+            { label: 'Sponsor us', href: 'https://github.com/sponsors/dubzzz' },
           ],
         },
         {
-          title: "More",
+          title: 'More',
           items: [
-            { label: "Blog", to: "/blog" },
-            { label: "API Reference", to: "/docs/api/" },
-            { label: "GitHub", href: "https://github.com/dubzzz/fast-check" },
+            { label: 'Blog', to: '/blog' },
+            { label: 'API Reference', to: '/docs/api/' },
+            { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             {
-              label: "Tangled",
-              href: "https://tangled.org/fast-check.dev/fast-check",
+              label: 'Tangled',
+              href: 'https://tangled.org/fast-check.dev/fast-check',
             },
             {
-              label: "Work with me @Pigment",
-              href: "https://refer.hellotrusty.io/kz48qf0nh7",
+              label: 'Work with me @Pigment',
+              href: 'https://refer.hellotrusty.io/kz48qf0nh7',
             },
             {
               html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys via Netlify"><img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" width="114" height="51" loading="lazy" /></a>`,
@@ -155,14 +153,14 @@ const config: Config = {
     prism: {
       theme: lightCodeTheme,
       darkTheme: darkCodeTheme,
-      additionalLanguages: ["bash", "diff", "json"],
+      additionalLanguages: ['bash', 'diff', 'json'],
     },
     algolia: {
       // The application ID provided by Algolia
-      appId: "XIUK9DGBYC",
+      appId: 'XIUK9DGBYC',
       // Public API key: it is safe to commit it
-      apiKey: "e4f0293eb2e2c09903abbd32fe972a3c",
-      indexName: "fast-check documentation",
+      apiKey: 'e4f0293eb2e2c09903abbd32fe972a3c',
+      indexName: 'fast-check documentation',
       // Optional: see doc section below
       contextualSearch: true,
       // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
@@ -175,102 +173,98 @@ const config: Config = {
       // Optional: Algolia search parameters
       searchParameters: {},
       // Optional: path for search page that enabled by default (`false` to disable it)
-      searchPagePath: "search",
+      searchPagePath: 'search',
       //... other Algolia params
       askAi: {
-        assistantId: "oXlQHyhfOwgY",
-        indexName: "llms",
-        apiKey: "e4f0293eb2e2c09903abbd32fe972a3c",
-        appId: "XIUK9DGBYC",
+        assistantId: 'oXlQHyhfOwgY',
+        indexName: 'llms',
+        apiKey: 'e4f0293eb2e2c09903abbd32fe972a3c',
+        appId: 'XIUK9DGBYC',
       },
     },
   } satisfies Preset.ThemeConfig,
 
   plugins: [
     [
-      "@docusaurus/plugin-pwa",
+      '@docusaurus/plugin-pwa',
       {
-        offlineModeActivationStrategies: [
-          "appInstalled",
-          "standalone",
-          "queryString",
-        ],
+        offlineModeActivationStrategies: ['appInstalled', 'standalone', 'queryString'],
         pwaHead: [
           {
-            tagName: "link",
-            rel: "icon",
-            href: "/img/favicon.ico",
+            tagName: 'link',
+            rel: 'icon',
+            href: '/img/favicon.ico',
           },
           {
-            tagName: "link",
-            rel: "manifest",
-            href: "/manifest.json",
+            tagName: 'link',
+            rel: 'manifest',
+            href: '/manifest.json',
           },
           {
-            tagName: "meta",
-            name: "theme-color",
-            content: "rgb(40, 46, 169)",
+            tagName: 'meta',
+            name: 'theme-color',
+            content: 'rgb(40, 46, 169)',
           },
           {
-            tagName: "meta",
-            name: "apple-mobile-web-app-capable",
-            content: "yes",
+            tagName: 'meta',
+            name: 'apple-mobile-web-app-capable',
+            content: 'yes',
           },
           {
-            tagName: "meta",
-            name: "apple-mobile-web-app-status-bar-style",
-            content: "#000",
+            tagName: 'meta',
+            name: 'apple-mobile-web-app-status-bar-style',
+            content: '#000',
           },
           {
-            tagName: "link",
-            rel: "apple-touch-icon",
-            href: "/img/favicon.ico",
+            tagName: 'link',
+            rel: 'apple-touch-icon',
+            href: '/img/favicon.ico',
           },
           {
-            tagName: "link",
-            rel: "mask-icon",
-            href: "/img/mug.svg",
-            color: "rgb(40, 46, 169)",
+            tagName: 'link',
+            rel: 'mask-icon',
+            href: '/img/mug.svg',
+            color: 'rgb(40, 46, 169)',
           },
           {
-            tagName: "meta",
-            name: "msapplication-TileImage",
-            content: "/img/favicon.ico",
+            tagName: 'meta',
+            name: 'msapplication-TileImage',
+            content: '/img/favicon.ico',
           },
           {
-            tagName: "meta",
-            name: "msapplication-TileColor",
-            content: "#000",
+            tagName: 'meta',
+            name: 'msapplication-TileColor',
+            content: '#000',
           },
         ],
       },
     ],
     [
-      "docusaurus-plugin-typedoc",
+      'docusaurus-plugin-typedoc',
       {
-        entryPoints: ["../packages/fast-check/src/fast-check.ts"],
-        tsconfig: "../packages/fast-check/tsconfig.json",
-        out: "docs/api",
-        readme: "none",
+        entryPoints: ['../packages/fast-check/src/fast-check.ts'],
+        tsconfig: '../packages/fast-check/tsconfig.json',
+        out: 'docs/api',
+        readme: 'none',
         skipErrorChecking: true,
         useCustomAnchors: true,
-        parametersFormat: "table",
-        enumMembersFormat: "list",
-        indexFormat: "table",
+        parametersFormat: 'table',
+        enumMembersFormat: 'list',
+        indexFormat: 'table',
         textContentMappings: {
-          "title.indexPage": "API Reference",
-          "title.modulePage": "{name}",
+          'title.indexPage': 'API Reference',
+          'title.modulePage': '{name}',
         },
       },
     ],
     [
-      "docusaurus-plugin-llms",
+      'docusaurus-plugin-llms',
       {
         generateLLMsTxt: true,
         generateLLMsFullTxt: true,
-        title: "fast-check Documentation",
+        title: 'fast-check Documentation',
         description:
-          "Complete documentation for fast-check - Property-based testing framework for JavaScript/TypeScript",
+          'Complete documentation for fast-check - Property-based testing framework for JavaScript/TypeScript',
         includeBlog: true,
         excludeImports: true,
         removeDuplicateHeadings: true,
@@ -282,19 +276,19 @@ const config: Config = {
   markdown: {
     mermaid: true,
     hooks: {
-      onBrokenMarkdownLinks: "throw",
+      onBrokenMarkdownLinks: 'throw',
     },
     parseFrontMatter: async (params) => {
       const result = await params.defaultParseFrontMatter(params);
       // Typedoc-generated API docs contain TypeScript generics (<T>, {…}) that
       // the MDX parser interprets as JSX. Force CommonMark format for those files.
-      if (params.filePath.includes("docs/api/")) {
-        result.frontMatter.mdx = { format: "md" };
+      if (params.filePath.includes('docs/api/')) {
+        result.frontMatter.mdx = { format: 'md' };
       }
       return result;
     },
   },
-  themes: ["@docusaurus/theme-mermaid"],
+  themes: ['@docusaurus/theme-mermaid'],
 };
 
 export default config;

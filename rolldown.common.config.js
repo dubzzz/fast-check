@@ -1,21 +1,21 @@
-import { defineConfig } from "rolldown";
-import { dts } from "rolldown-plugin-dts";
-import { replacePlugin } from "rolldown/plugins";
+import { defineConfig } from 'rolldown';
+import { dts } from 'rolldown-plugin-dts';
+import { replacePlugin } from 'rolldown/plugins';
 
-const inputDir = "src";
-const outputDir = "lib";
+const inputDir = 'src';
+const outputDir = 'lib';
 
 export default function buildConfigFor(pkg, dirname, replacementsFor) {
   let isDual = false;
   const inputs = Object.values(pkg.exports)
     .map((exportValue) => {
-      if (typeof exportValue === "string") {
+      if (typeof exportValue === 'string') {
         return exportValue;
       }
       isDual = true;
       return exportValue.import.default;
     })
-    .filter((filePath) => filePath.endsWith(".js"))
+    .filter((filePath) => filePath.endsWith('.js'))
     .map((filePath) => filePath.replace(`./${outputDir}/`, `./${inputDir}/`));
 
   /** @type {RolldownOptions} */
@@ -24,12 +24,11 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
     output: {
       cleanDir: true,
       dir: outputDir,
-      format: "esm",
+      format: 'esm',
       entryFileNames: (chunkInfo) => {
         const cwdAndInputDirLength = dirname.length + inputDir.length + 2;
-        const relativeFilePathWithTsExtension =
-          chunkInfo.facadeModuleId.substring(cwdAndInputDirLength);
-        return `${relativeFilePathWithTsExtension.replace(/\.ts$/, "")}.js`;
+        const relativeFilePathWithTsExtension = chunkInfo.facadeModuleId.substring(cwdAndInputDirLength);
+        return `${relativeFilePathWithTsExtension.replace(/\.ts$/, '')}.js`;
       },
     },
     external: /^[^./]/, // as recommended by https://rolldown.rs/reference/InputOptions.external#avoid-node-modules-for-npm-packages
@@ -43,14 +42,12 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
       ...sharedOptions,
       output: {
         ...sharedOptions.output,
-        format: "esm",
+        format: 'esm',
       },
       plugins: [
         ...sharedOptions.plugins,
-        ...(replacementsFor !== undefined
-          ? [replacePlugin(replacementsFor(true), { preventAssignment: true })]
-          : []),
-        dts({ tsconfig: "./tsconfig.json" }),
+        ...(replacementsFor !== undefined ? [replacePlugin(replacementsFor(true), { preventAssignment: true })] : []),
+        dts({ tsconfig: './tsconfig.json' }),
       ],
     },
     ...(isDual
@@ -59,8 +56,8 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
             ...sharedOptions,
             output: {
               ...sharedOptions.output,
-              format: "cjs",
-              dir: outputDir + "/cjs",
+              format: 'cjs',
+              dir: outputDir + '/cjs',
             },
             plugins: [
               ...sharedOptions.plugins,
