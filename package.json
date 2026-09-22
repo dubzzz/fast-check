@@ -24,6 +24,7 @@
     "contributor:add": "all-contributors add",
     "build": "pnpm --filter {./packages/**} run build",
     "build-ci": "pnpm --filter {./packages/**} run build-ci",
+    "build:compare": "./scripts/compare-build.sh",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "bench": "vitest bench",
