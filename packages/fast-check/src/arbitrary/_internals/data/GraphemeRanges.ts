@@ -1,10 +1,7 @@
-/** @internal */
 export type GraphemeRange = [number] | [number, number];
 
-/** @internal */
 export const asciiAlphabetRanges: GraphemeRange[] = [[0x00, 0x7f]];
 
-/** @internal */
 export const fullAlphabetRanges: GraphemeRange[] = [
   [0x0000, 0xd7ff], // d800-dfff being the range of surrogate pairs
   [0xe000, 0x10ffff],
@@ -13,7 +10,6 @@ export const fullAlphabetRanges: GraphemeRange[] = [
 /**
  * Ranges of Graphemes safe to be combined together without any risks to interract between each others.
  * 779 ranges, gathering 31828 code-points over the 34931 being declared by http://unicode.org/Public/UNIDATA/UnicodeData.txt on the 17th of August 2024
- * @internal
  */
 export const autonomousGraphemeRanges: GraphemeRange[] = [
   [0x20, 0x7e],
@@ -802,7 +798,6 @@ export const autonomousGraphemeRanges: GraphemeRange[] = [
  * We preserved only one version of each decomposition meaning that if c1.normalize('NFD') === c2.normalize('NFD')
  * we only preserved the first one to build our set of ranges.
  * As such we found 998 NFD decomposable graphemes and kept 980 of them spread into 197 ranges.
- * @internal
  */
 export const autonomousDecomposableGraphemeRanges: GraphemeRange[] = [
   [0xc0, 0xc5],

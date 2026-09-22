@@ -22,7 +22,6 @@ export interface ContextValue {
   size(): number;
 }
 
-/** @internal */
 class ContextImplem implements ContextValue {
   private readonly receivedLogs: string[];
   constructor() {

@@ -4,15 +4,12 @@ import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import { stringify } from '../../utils/stringify.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
-/** @internal */
 type RunOutput = ReturnType<Property<unknown>['run']>;
 
-/** @internal */
 function fromSyncCachedForAsyncPath(cachedValue: Awaited<RunOutput>): Awaited<RunOutput> {
   return cachedValue === null ? new PreconditionFailure() : cachedValue;
 }
 
-/** @internal */
 function fromCached(cachedValue: RunOutput): RunOutput {
   if (cachedValue !== null) {
     if ('then' in cachedValue) {
@@ -24,7 +21,6 @@ function fromCached(cachedValue: RunOutput): RunOutput {
   return new PreconditionFailure(); // already encountered with sync success, so skip it
 }
 
-/** @internal */
 function equalValuesRunner(
   coveredCases: Map<string, RunOutput>,
   nestedRun: Property<unknown>['run'],

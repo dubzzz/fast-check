@@ -1,6 +1,5 @@
 import type { DoubleConstraints } from '../../double.js';
 
-/** @internals */
 export function refineConstraintsForFloatingOnly(
   constraints: Omit<DoubleConstraints, 'noInteger'>,
   maxValue: number,

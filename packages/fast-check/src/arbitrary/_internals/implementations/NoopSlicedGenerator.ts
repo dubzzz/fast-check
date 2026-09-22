@@ -3,7 +3,6 @@ import type { Value } from '../../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../../random/generator/Random.js';
 import type { SlicedGenerator } from '../interfaces/SlicedGenerator.js';
 
-/** @internal */
 export class NoopSlicedGenerator<T> implements SlicedGenerator<T> {
   constructor(
     private readonly arb: Arbitrary<T>,

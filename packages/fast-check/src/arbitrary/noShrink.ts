@@ -3,7 +3,6 @@ import type { Random } from '../random/generator/Random.js';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { nil } from '../utils/iterator.js';
 
-/** @internal */
 class NoShrinkArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arb: Arbitrary<T>) {
     super();

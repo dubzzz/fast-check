@@ -2,7 +2,6 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js
 import { array } from '../../array.js';
 import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength.js';
 
-/** @internal */
 type TypedIntArrayBuilderConstraints<TValue> = {
   minLength?: number;
   maxLength?: number;
@@ -11,7 +10,6 @@ type TypedIntArrayBuilderConstraints<TValue> = {
   size?: SizeForArbitrary;
 };
 
-/** @internal */
 export function typedIntArrayArbitraryArbitraryBuilder<TTypedArrayType extends Iterable<TValue>, TValue>(
   constraints: TypedIntArrayBuilderConstraints<TValue>,
   defaultMin: TValue,

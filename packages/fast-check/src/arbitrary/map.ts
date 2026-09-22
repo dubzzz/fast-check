@@ -5,7 +5,6 @@ import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLeng
 import { arrayToMapMapper, arrayToMapUnmapper } from './_internals/mappers/ArrayToMap.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
-/** @internal */
 function mapKeyExtractor<K, V>(entry: [K, V]): K {
   return entry[0];
 }

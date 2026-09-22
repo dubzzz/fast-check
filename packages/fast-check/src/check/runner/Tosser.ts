@@ -8,7 +8,6 @@ import { adaptRandomGenerator } from '../../random/generator/RandomGenerator.js'
 
 /**
  * Extracting tossNext out of toss was dropping some bailout reasons on v8 side
- * @internal
  */
 function tossNext<Ts>(
   generator: Pick<Property<Ts>, 'generate'>,
@@ -19,7 +18,6 @@ function tossNext<Ts>(
   return generator.generate(new Random(rng), index);
 }
 
-/** @internal */
 export function* toss<Ts>(
   generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
@@ -34,7 +32,6 @@ export function* toss<Ts>(
   }
 }
 
-/** @internal */
 function lazyGenerate<Ts>(
   generator: Pick<Property<Ts>, 'generate'>,
   rng: RandomGenerator,
@@ -43,7 +40,6 @@ function lazyGenerate<Ts>(
   return () => generator.generate(new Random(rng), idx);
 }
 
-/** @internal */
 export function* lazyToss<Ts>(
   generator: Pick<Property<Ts>, 'generate'>,
   seed: number,

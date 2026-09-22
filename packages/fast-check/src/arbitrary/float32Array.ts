@@ -29,12 +29,10 @@ export type Float32ArrayConstraints = {
   size?: SizeForArbitrary;
 } & FloatConstraints;
 
-/** @internal */
 function toTypedMapper(data: number[]): Float32Array<ArrayBuffer> {
   return Float32Array.from(data);
 }
 
-/** @internal */
 function fromTypedUnmapper(value: unknown): number[] {
   if (!(value instanceof Float32Array)) throw new Error('Unexpected type');
   return [...value];
