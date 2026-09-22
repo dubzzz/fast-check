@@ -67,7 +67,10 @@ const config: Config = {
       logo: { alt: 'fast-check Logo', src: 'img/mug.svg', width: '40px' },
       items: [
         { to: '/docs/introduction/', label: 'Documentation' },
-        { to: '/docs/tutorials/quick-start/basic-setup/', label: 'Quick Start' },
+        {
+          to: '/docs/tutorials/quick-start/basic-setup/',
+          label: 'Quick Start',
+        },
         { to: '/docs/tutorials/', label: 'All Tutorials' },
         { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
         { to: '/blog', label: 'Blog', position: 'right' },
@@ -104,15 +107,24 @@ const config: Config = {
           title: 'Guides',
           items: [
             { label: 'Documentation', to: '/docs/introduction/' },
-            { label: 'Quick Start', to: '/docs/tutorials/quick-start/basic-setup/' },
+            {
+              label: 'Quick Start',
+              to: '/docs/tutorials/quick-start/basic-setup/',
+            },
             { label: 'All Tutorials', to: '/docs/tutorials/' },
           ],
         },
         {
           title: 'Community',
           items: [
-            { label: 'Bluesky 🦋', href: 'https://bsky.app/profile/fast-check.dev' },
-            { label: 'Become a contributor', href: 'https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md' },
+            {
+              label: 'Bluesky 🦋',
+              href: 'https://bsky.app/profile/fast-check.dev',
+            },
+            {
+              label: 'Become a contributor',
+              href: 'https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md',
+            },
             { label: 'Sponsor us', href: 'https://github.com/sponsors/dubzzz' },
           ],
         },
@@ -122,8 +134,14 @@ const config: Config = {
             { label: 'Blog', to: '/blog' },
             { label: 'API Reference', to: '/docs/api/' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
-            { label: 'Tangled', href: 'https://tangled.org/fast-check.dev/fast-check' },
-            { label: 'Work with me @Pigment', href: 'https://refer.hellotrusty.io/kz48qf0nh7' },
+            {
+              label: 'Tangled',
+              href: 'https://tangled.org/fast-check.dev/fast-check',
+            },
+            {
+              label: 'Work with me @Pigment',
+              href: 'https://refer.hellotrusty.io/kz48qf0nh7',
+            },
             {
               html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys via Netlify"><img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" width="114" height="51" loading="lazy" /></a>`,
             },
@@ -132,7 +150,11 @@ const config: Config = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Nicolas Dubien. Built with Docusaurus.`,
     },
-    prism: { theme: lightCodeTheme, darkTheme: darkCodeTheme, additionalLanguages: ['bash', 'diff', 'json'] },
+    prism: {
+      theme: lightCodeTheme,
+      darkTheme: darkCodeTheme,
+      additionalLanguages: ['bash', 'diff', 'json'],
+    },
     algolia: {
       // The application ID provided by Algolia
       appId: 'XIUK9DGBYC',
@@ -221,7 +243,7 @@ const config: Config = {
       'docusaurus-plugin-typedoc',
       {
         entryPoints: ['../packages/fast-check/src/fast-check.ts'],
-        tsconfig: '../packages/fast-check/tsconfig.typedoc.json',
+        tsconfig: '../packages/fast-check/tsconfig.json',
         out: 'docs/api',
         readme: 'none',
         skipErrorChecking: true,

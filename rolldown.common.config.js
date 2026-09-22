@@ -47,7 +47,7 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
       plugins: [
         ...sharedOptions.plugins,
         ...(replacementsFor !== undefined ? [replacePlugin(replacementsFor(true), { preventAssignment: true })] : []),
-        dts({ tsconfig: './tsconfig.publish.types.json' }),
+        dts({ tsconfig: './tsconfig.json' }),
       ],
     },
     ...(isDual
@@ -62,7 +62,11 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
             plugins: [
               ...sharedOptions.plugins,
               ...(replacementsFor !== undefined
-                ? [replacePlugin(replacementsFor(false), { preventAssignment: true })]
+                ? [
+                    replacePlugin(replacementsFor(false), {
+                      preventAssignment: true,
+                    }),
+                  ]
                 : []),
             ],
           },
