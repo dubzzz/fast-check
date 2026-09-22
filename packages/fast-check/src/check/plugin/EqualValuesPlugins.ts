@@ -1,21 +1,20 @@
-import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { Property } from '../property/types/Property.js';
-import type { PropertyFailure } from '../property/types/PropertyFailure.js';
-import { stringify } from '../../utils/stringify.js';
-import type { Plugin, PluginInstance } from './Plugin.js';
+import { PreconditionFailure } from "../precondition/PreconditionFailure.js";
+import type { Property } from "../property/types/Property.js";
+import type { PropertyFailure } from "../property/types/PropertyFailure.js";
+import { stringify } from "../../utils/stringify.js";
+import type { Plugin, PluginInstance } from "./Plugin.js";
 
-/** @internal */
-type RunOutput = ReturnType<Property<unknown>['run']>;
+type RunOutput = ReturnType<Property<unknown>["run"]>;
 
-/** @internal */
-function fromSyncCachedForAsyncPath(cachedValue: Awaited<RunOutput>): Awaited<RunOutput> {
+function fromSyncCachedForAsyncPath(
+  cachedValue: Awaited<RunOutput>,
+): Awaited<RunOutput> {
   return cachedValue === null ? new PreconditionFailure() : cachedValue;
 }
 
-/** @internal */
 function fromCached(cachedValue: RunOutput): RunOutput {
   if (cachedValue !== null) {
-    if ('then' in cachedValue) {
+    if ("then" in cachedValue) {
       return cachedValue.then(fromSyncCachedForAsyncPath);
     } else {
       return cachedValue satisfies PreconditionFailure | PropertyFailure;
@@ -24,10 +23,9 @@ function fromCached(cachedValue: RunOutput): RunOutput {
   return new PreconditionFailure(); // already encountered with sync success, so skip it
 }
 
-/** @internal */
 function equalValuesRunner(
   coveredCases: Map<string, RunOutput>,
-  nestedRun: Property<unknown>['run'],
+  nestedRun: Property<unknown>["run"],
   value: unknown,
   skipRuns: boolean,
 ): ReturnType<typeof nestedRun> {
@@ -65,7 +63,8 @@ export function ignoreEqualValues(): Plugin<unknown> {
   return (): PluginInstance<unknown> => {
     const coveredCases = new Map<string, RunOutput>();
     return {
-      decorateRun: (nestedRun) => (value) => equalValuesRunner(coveredCases, nestedRun, value, false),
+      decorateRun: (nestedRun) => (value) =>
+        equalValuesRunner(coveredCases, nestedRun, value, false),
     };
   };
 }
@@ -95,7 +94,8 @@ export function skipEqualValues(): Plugin<unknown> {
   return (): PluginInstance<unknown> => {
     const coveredCases = new Map<string, RunOutput>();
     return {
-      decorateRun: (nestedRun) => (value) => equalValuesRunner(coveredCases, nestedRun, value, true),
+      decorateRun: (nestedRun) => (value) =>
+        equalValuesRunner(coveredCases, nestedRun, value, true),
     };
   };
 }

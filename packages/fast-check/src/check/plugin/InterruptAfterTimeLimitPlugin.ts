@@ -1,7 +1,7 @@
-import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { Property } from '../property/types/Property.js';
-import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
-import type { Plugin, PluginInstance } from './Plugin.js';
+import { PreconditionFailure } from "../precondition/PreconditionFailure.js";
+import type { Property } from "../property/types/Property.js";
+import { reportRunDetails } from "../runner/utils/RunDetailsFormatter.js";
+import type { Plugin, PluginInstance } from "./Plugin.js";
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
@@ -18,7 +18,6 @@ type Interrupt = {
   promise: Promise<PreconditionFailure>;
 };
 
-/** @internal */
 function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
   const limitTime = safePerformanceNow() + timeMs;
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -37,10 +36,9 @@ function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
   };
 }
 
-/** @internal */
 function timeLimitRunner(
   interrupt: Interrupt,
-  nestedRun: Property<unknown>['run'],
+  nestedRun: Property<unknown>["run"],
   value: unknown,
   probe: Probe,
 ): ReturnType<typeof nestedRun> {
@@ -51,7 +49,7 @@ function timeLimitRunner(
     return new PreconditionFailure(true);
   }
   const runOut = nestedRun(value);
-  if (runOut === null || !('then' in runOut)) {
+  if (runOut === null || !("then" in runOut)) {
     probe.running = false;
     return runOut;
   }
@@ -106,10 +104,16 @@ export function interruptAfterTimeLimit(
     const probe: Probe = { interruptedWhileRunning: false, running: false };
     const interrupt = interruptAfterDelay(timeLimitMs, probe);
     return {
-      decorateRun: (nestedRun) => (value) => timeLimitRunner(interrupt, nestedRun, value, probe),
+      decorateRun: (nestedRun) => (value) =>
+        timeLimitRunner(interrupt, nestedRun, value, probe),
       onAllRunsComplete: (runDetails) => {
         interrupt.clear();
-        if (options.failOnInterrupt && !runDetails.failed && runDetails.interrupted && probe.interruptedWhileRunning) {
+        if (
+          options.failOnInterrupt &&
+          !runDetails.failed &&
+          runDetails.interrupted &&
+          probe.interruptedWhileRunning
+        ) {
           // TODO(v5) - Move to the async version instead
           return reportRunDetails({ ...runDetails, failed: true });
         }
