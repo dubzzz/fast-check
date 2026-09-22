@@ -1,6 +1,9 @@
 {
-  "extends": "../../tsconfig.common.json",
+  "extends": "../../tsconfig.shared.json",
   "compilerOptions": {
-    "types": ["node", "jest"]
-  }
+    "types": ["node", "jest"],
+    "rootDir": "",
+    "outDir": "lib/"
+  },
+  "include": ["src/", "test/"]
 }

@@ -1,6 +1,10 @@
 {
-  "extends": "../../tsconfig.common.json",
+  "extends": "../../tsconfig.shared.json",
   "compilerOptions": {
+    "types": ["node"],
+    "rootDir": "",
+    "outDir": "lib/",
     "esModuleInterop": true
-  }
+  },
+  "include": ["src/", "test/"]
 }

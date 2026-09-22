@@ -1,8 +1,11 @@
 {
-  "extends": "../../tsconfig.common.json",
+  "extends": "../../tsconfig.shared.json",
   "compilerOptions": {
+    "types": ["node"],
+    "rootDir": "",
+    "outDir": "lib/",
     "target": "es2025",
-    "lib": ["es2025"],
-    "types": ["node"]
-  }
+    "lib": ["es2025"]
+  },
+  "include": ["src/", "test/"]
 }

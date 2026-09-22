@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "noEmit": true,
-    "declaration": true,
-    "isolatedDeclarations": true,
     "incremental": false,
-    "sourceMap": true,
     "target": "es2020",
     "lib": ["ES2020", "ES2022.Error"],
     "module": "node18",
@@ -15,6 +11,13 @@
     "skipLibCheck": true,
     "strict": true,
     "moduleDetection": "force",
-    "isolatedModules": true
+    "isolatedModules": true,
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "isolatedDeclarations": true,
+    "removeComments": false,
+    "sourceMap": false,
+    "stripInternal": true
   }
 }
