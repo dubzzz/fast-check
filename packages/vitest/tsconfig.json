@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.shared.json",
   "compilerOptions": {
     "types": ["node"],
-    "rootDir": "",
     "outDir": "lib/"
   },
   "include": ["src/", "test/"]
