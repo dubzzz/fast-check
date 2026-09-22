@@ -4,7 +4,6 @@ import type { _Constraints as FrequencyConstraints } from './_internals/Frequenc
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength.js';
-import { safeHasOwnProperty } from '../utils/globals.js';
 
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
 
@@ -64,7 +63,7 @@ export function option<T, TNil = null>(
   constraints: OptionConstraints<TNil> = {},
 ): Arbitrary<T | TNil> {
   const freq = constraints.freq === undefined ? 6 : constraints.freq;
-  const nilValue = safeHasOwnProperty(constraints, 'nil') ? constraints.nil : (null as any);
+  const nilValue = Object.prototype.hasOwnProperty.call(constraints, 'nil') ? constraints.nil : (null as any);
   if (freq === safePositiveInfinity) {
     return arb as Arbitrary<T | TNil>;
   }

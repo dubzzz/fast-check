@@ -190,44 +190,44 @@ describe('myArbitrary (integration)', () => {
 
   const isCorrect = (value: /* Type of the value */, extra: Extra) => {
     // Returns true if the value is correct given extra
-    // Returs false or throws (possibly via expect) if value is invalid
+    // Returns false or throws (possibly via expect) if value is invalid
   };
 
   const isStrictlySmaller = (vNew: /* Type of the value */, vOld: /* Type of the value */, extra: Extra) => {
     // Returns true if the vNew is really strictly smaller than vOld
-    // Returs false or throws (possibly via expect) otherwise
+    // Returns false or throws (possibly via expect) otherwise
   };
 
   const myArbitraryBuilder = (extra: Extra) => convertToNext(myArbitrary(extra));
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(myArbitraryBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(myArbitraryBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(myArbitraryBuilder, isCorrect, { extraParameters });
-  });
-
-  // OPTIONAL STEP
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(myArbitraryBuilder, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(myArbitraryBuilder, isCorrect, { extraParameters });
   });
 
   // OPTIONAL STEP
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(myArbitraryBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(myArbitraryBuilder, { extraParameters });
   });
 
   // OPTIONAL STEP
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(myArbitraryBuilder, isStrictlySmaller, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(myArbitraryBuilder, { extraParameters });
+  });
+
+  // OPTIONAL STEP
+  it('should preserve strictly smaller ordering in shrink', async () => {
+    await assertShrinkProducesStrictlySmallerValue(myArbitraryBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 ```
 
-- No regression test - in `test/e2e/NoRegression.spec.ts`
+- No regression test - in `test/NoRegression.spec.ts`
 
-Then run `pnpm --filter fast-check e2e -- -u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
+Then run `pnpm test NoRegression --u` locally to update the snapshot file. The `NoRegression` spec is supposed to prevent unwanted breaking changes to be included in a future release of fast-check by taking a snapshot of the current output and enforcing it does not change over time (except if needed).
 
 - Legacy support test - in `packages/test-minimal-support/main.js`
 

@@ -1,22 +1,15 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { jsonValue } from './jsonValue.js';
 import type { JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder.js';
-import { Error } from '../utils/globals.js';
 
 export type { JsonSharedConstraints };
-
-/** @internal */
-const safeJsonStringify = JSON.stringify;
-
-/** @internal */
-const safeJsonParse = JSON.parse;
 
 /** @internal */
 function jsonStringUnmapper(value: unknown): JsonValue {
   if (typeof value !== 'string') {
     throw new Error('Cannot unmap the passed value');
   }
-  return safeJsonParse(value) as JsonValue;
+  return JSON.parse(value) as JsonValue;
 }
 
 /**
@@ -31,5 +24,5 @@ function jsonStringUnmapper(value: unknown): JsonValue {
  */
 export function json(constraints: JsonSharedConstraints = {}): Arbitrary<string> {
   const arb = jsonValue(constraints);
-  return arb.map(safeJsonStringify, jsonStringUnmapper);
+  return arb.map(JSON.stringify, jsonStringUnmapper);
 }

@@ -1,5 +1,5 @@
 import { WorkerPropertyFromWorker } from '../../../src/internals/worker-property/WorkerPropertyFromWorker.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { describe, it, expect, vi } from 'vitest';
 
@@ -79,15 +79,15 @@ describe('WorkerPropertyFromWorker', () => {
 
     mrngStates.push(mrng.getState());
     const value1 = property.generate(mrng, 0);
-    mrng.nextInt();
+    mrng.nextInt(-0x80000000, 0x7fffffff);
 
     mrngStates.push(mrng.getState());
     const value2 = property.generate(mrng, 0);
-    mrng.nextInt();
+    mrng.nextInt(-0x80000000, 0x7fffffff);
 
     mrngStates.push(mrng.getState());
     const value3 = property.generate(mrng, 0);
-    mrng.nextInt();
+    mrng.nextInt(-0x80000000, 0x7fffffff);
 
     const stringified2 = fc.stringify(value2.value_);
     const stringified3 = fc.stringify(value3.value_);
@@ -113,7 +113,7 @@ class TrackedArbitrary extends fc.Arbitrary<unknown> {
   canShrinkWithoutContext(_value: unknown): _value is unknown {
     throw new Error('Method not implemented.');
   }
-  shrink(_value: unknown, _context: unknown): fc.Stream<fc.Value<unknown>> {
+  shrink(_value: unknown, _context: unknown): IteratorObject<fc.Value<unknown>> {
     throw new Error('Method not implemented.');
   }
 }

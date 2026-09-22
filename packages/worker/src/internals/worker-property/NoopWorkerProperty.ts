@@ -1,4 +1,4 @@
-import type { IAsyncPropertyWithHooks, Value, Stream, PreconditionFailure, PropertyFailure } from 'fast-check';
+import type { PropertyWithHooks, Value, PreconditionFailure, PropertyFailure } from 'fast-check';
 import type { WorkerProperty } from '../SharedTypes.js';
 
 /**
@@ -7,19 +7,16 @@ import type { WorkerProperty } from '../SharedTypes.js';
  * In such case, the assert runner whould never call anything from it.
  */
 export class NoopWorkerProperty<Ts> implements WorkerProperty<Ts> {
-  beforeEach(): IAsyncPropertyWithHooks<Ts> {
+  beforeEach(): PropertyWithHooks<Ts> {
     throw new Error('Method not implemented.');
   }
-  afterEach(): IAsyncPropertyWithHooks<Ts> {
-    throw new Error('Method not implemented.');
-  }
-  isAsync(): true {
+  afterEach(): PropertyWithHooks<Ts> {
     throw new Error('Method not implemented.');
   }
   generate(): Value<Ts> {
     throw new Error('Method not implemented.');
   }
-  shrink(): Stream<Value<Ts>> {
+  shrink(): IteratorObject<Value<Ts>> {
     throw new Error('Method not implemented.');
   }
   run(): Promise<PreconditionFailure | PropertyFailure | null> {

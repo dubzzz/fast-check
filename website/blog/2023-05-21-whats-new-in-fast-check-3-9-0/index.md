@@ -122,7 +122,7 @@ test('should update to the value of the last promise', async () => {
 
 This snippet specifies how to wrap each `Promise` when defining it. It lets the author of the test the ability to define for each scheduled task how to wrap it.
 
-:::tip Alternative with act at wait level
+:::tip[Alternative with act at wait level]
 Instead of specifying for each scheduled task how to wrap it, we can wrap them all the same way by passing the `act` function at wait time. In order to do that, we mostly have to replace:
 
 - `s.schedule(..., undefined, undefined, act)` by `s.schedule(...)`,
@@ -130,11 +130,11 @@ Instead of specifying for each scheduled task how to wrap it, we can wrap them a
 
 :::
 
-:::warning Alternative with act at scheduler level
+:::warning[Alternative with act at scheduler level]
 While it was the only approach available in the past, we now recommend users to adopt the usage of `act` at either the wait level or the scheduling level. Defining `act` on `fc.scheduler` is not optimal when it comes to custom manual examples, as it would require passing the custom `act` to the manually created instances of `fc.schedulerFor` as well (supported but easy to forget).
 :::
 
-:::tip Not restricted to React
+:::tip[Not restricted to React]
 The `act` pattern is not restricted to React. While it was initially designed for React, it can be highly beneficial whenever you need to encapsulate calls and introduce a specific context around them. For example, we used it to manipulate timers in the new documentation, as demonstrated in [the section on scheduling native timers](/docs/advanced/race-conditions/#scheduling-native-timers).
 :::
 

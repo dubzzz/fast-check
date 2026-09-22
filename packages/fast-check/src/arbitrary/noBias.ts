@@ -1,9 +1,6 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import type { Value } from '../check/arbitrary/definition/Value.js';
 import type { Random } from '../random/generator/Random.js';
-import type { Stream } from '../stream/Stream.js';
-
-const stableObjectGetPrototypeOf = Object.getPrototypeOf;
 
 /** @internal */
 class NoBiasArbitrary<T> extends Arbitrary<T> {
@@ -16,7 +13,7 @@ class NoBiasArbitrary<T> extends Arbitrary<T> {
   canShrinkWithoutContext(value: unknown): value is T {
     return this.arb.canShrinkWithoutContext(value);
   }
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
+  shrink(value: T, context?: unknown): IteratorObject<Value<T>> {
     return this.arb.shrink(value, context);
   }
 }
@@ -34,7 +31,7 @@ class NoBiasArbitrary<T> extends Arbitrary<T> {
  */
 export function noBias<T>(arb: Arbitrary<T>): Arbitrary<T> {
   if (
-    stableObjectGetPrototypeOf(arb) === NoBiasArbitrary.prototype &&
+    Object.getPrototypeOf(arb) === NoBiasArbitrary.prototype &&
     arb.generate === NoBiasArbitrary.prototype.generate &&
     arb.canShrinkWithoutContext === NoBiasArbitrary.prototype.canShrinkWithoutContext &&
     arb.shrink === NoBiasArbitrary.prototype.shrink

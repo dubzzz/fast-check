@@ -1,13 +1,3 @@
-import {
-  Error,
-  safeErrorToString,
-  safeMapGet,
-  Map,
-  safePush,
-  safeReplace,
-  safeToString,
-  String,
-} from '../../../utils/globals.js';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify.js';
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from '../reporter/ExecutionStatus.js';
@@ -17,9 +7,8 @@ import type {
   RunDetailsFailureInterrupted,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
+  RunDetailsSuccess,
 } from '../reporter/RunDetails.js';
-
-const safeObjectAssign = Object.assign;
 
 /** @internal */
 function formatHints(hints: string[]): string {
@@ -79,8 +68,7 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
   if (out.verbose >= VerbosityLevel.VeryVerbose) {
     details = formatExecutionSummary(out.executionSummary, stringifyOne);
   } else {
-    safePush(
-      hints,
+    hints.push(
       'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status',
     );
   }
@@ -105,7 +93,7 @@ function prettyError(errorInstance: unknown) {
   // Second fallback: Error::toString()
   if (errorInstance instanceof Error) {
     try {
-      return safeErrorToString(errorInstance);
+      return Error.prototype.toString.call(errorInstance);
     } catch (_err) {
       // no-op
     }
@@ -114,7 +102,7 @@ function prettyError(errorInstance: unknown) {
   // Third fallback: Object::toString()
   if (errorInstance !== null && typeof errorInstance === 'object') {
     try {
-      return safeToString(errorInstance);
+      return Object.prototype.toString.call(errorInstance);
     } catch (_err) {
       // no-op
     }
@@ -128,7 +116,7 @@ function prettyError(errorInstance: unknown) {
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
   const includeErrorInReport = out.runConfiguration.includeErrorInReport;
   const messageErrorPart = includeErrorInReport
-    ? `\nGot ${safeReplace(prettyError(out.errorInstance), /^Error: /, 'error: ')}`
+    ? `\nGot ${prettyError(out.errorInstance).replace(/^Error: /, 'error: ')}`
     : '';
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
@@ -143,7 +131,7 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
   } else if (out.verbose === VerbosityLevel.Verbose) {
     details = formatFailures(out.failures, stringifyOne);
   } else {
-    safePush(hints, 'Enable verbose mode in order to have the list of all failing values encountered during the run');
+    hints.push('Enable verbose mode in order to have the list of all failing values encountered during the run');
   }
 
   return { message, details, hints };
@@ -158,8 +146,7 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, st
   if (out.verbose >= VerbosityLevel.VeryVerbose) {
     details = formatExecutionSummary(out.executionSummary, stringifyOne);
   } else {
-    safePush(
-      hints,
+    hints.push(
       'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status',
     );
   }
@@ -196,7 +183,9 @@ function defaultReportMessageInternal<Ts>(
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): undefined;
+function defaultReportMessage<Ts>(
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
+): Promise<string> | string;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}
  *
@@ -206,7 +195,7 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): unde
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): string;
+function defaultReportMessage<Ts>(out: RunDetailsSuccess<Ts>): Promise<undefined> | undefined;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}
  *
@@ -216,42 +205,8 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): strin
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined;
-function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined {
-  return defaultReportMessageInternal(out, stringify);
-}
-
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): Promise<undefined>;
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): Promise<string>;
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined>;
-async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> {
+function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined;
+function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined {
   // The asynchronous version might require two passes:
   // - the first one will register the asynchronous values that will need to be stringified
   // - the second one will take the computed values
@@ -273,65 +228,57 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
   }
 
   // Retry with async stringified versions in mind
-  const registeredValues = new Map(await Promise.all(pendingStringifieds));
-  function stringifySecond(value: unknown): string {
-    const asyncStringifiedIfRegistered = safeMapGet(registeredValues, value);
-    if (asyncStringifiedIfRegistered !== undefined) {
-      return asyncStringifiedIfRegistered;
+  return Promise.all(pendingStringifieds).then((rawRegisteredValues) => {
+    const registeredValues = new Map(rawRegisteredValues);
+    function stringifySecond(value: unknown): string {
+      const asyncStringifiedIfRegistered = registeredValues.get(value);
+      if (asyncStringifiedIfRegistered !== undefined) {
+        return asyncStringifiedIfRegistered;
+      }
+      // Here we ALWAYS recompute sync versions to avoid putting a cost penalty
+      // on usual paths, the ones not having any async generated values
+      return stringify(value);
     }
-    // Here we ALWAYS recompute sync versions to avoid putting a cost penalty
-    // on usual paths, the ones not having any async generated values
-    return stringify(value);
-  }
-  return defaultReportMessageInternal(out, stringifySecond);
+    return defaultReportMessageInternal(out, stringifySecond);
+  });
 }
 
 /** @internal */
-function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
+function buildError<Ts>(
+  errorMessage: string | undefined,
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
+) {
   if (out.runConfiguration.includeErrorInReport) {
     throw new Error(errorMessage);
   }
   const error = new Error(errorMessage, { cause: out.errorInstance });
   if (!('cause' in error)) {
-    safeObjectAssign(error, { cause: out.errorInstance });
+    Object.assign(error, { cause: out.errorInstance });
   }
   return error;
 }
 
 /** @internal */
-function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
-  if (!out.failed) return;
-  throw buildError<Ts>(defaultReportMessage(out), out);
+function throwIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+  if (!out.failed) {
+    return;
+  }
+  const messageOrThenable: Promise<string> | string = defaultReportMessage(out);
+  if (typeof messageOrThenable === 'string') {
+    // Synchrounous handling for non-Promise values for faster throughput
+    throw buildError<Ts>(messageOrThenable, out);
+  }
+  return messageOrThenable.then((message) => {
+    throw buildError<Ts>(message, out);
+  });
 }
 
 /** @internal */
-async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
-  if (!out.failed) return;
-  throw buildError<Ts>(await asyncDefaultReportMessage(out), out);
-}
-
-/**
- * In case this code has to be executed synchronously the caller
- * has to make sure that no asyncReporter has been defined
- * otherwise it might trigger an unchecked promise
- * @internal
- */
 export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
-  if (out.runConfiguration.asyncReporter) return out.runConfiguration.asyncReporter(out);
-  else if (out.runConfiguration.reporter) return out.runConfiguration.reporter(out);
-  else return throwIfFailed(out);
+  if (out.runConfiguration.reporter !== undefined) {
+    return out.runConfiguration.reporter(out);
+  }
+  return throwIfFailed(out);
 }
 
-/**
- * In case this code has to be executed synchronously the caller
- * has to make sure that no asyncReporter has been defined
- * otherwise it might trigger an unchecked promise
- * @internal
- */
-export async function asyncReportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> {
-  if (out.runConfiguration.asyncReporter) return out.runConfiguration.asyncReporter(out);
-  else if (out.runConfiguration.reporter) return out.runConfiguration.reporter(out);
-  else return asyncThrowIfFailed(out);
-}
-
-export { defaultReportMessage, asyncDefaultReportMessage };
+export { defaultReportMessage };

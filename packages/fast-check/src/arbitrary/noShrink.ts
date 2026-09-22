@@ -1,9 +1,7 @@
 import type { Value } from '../check/arbitrary/definition/Value.js';
 import type { Random } from '../random/generator/Random.js';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { Stream } from '../stream/Stream.js';
-
-const stableObjectGetPrototypeOf = Object.getPrototypeOf;
+import { nil } from '../utils/iterator.js';
 
 /** @internal */
 class NoShrinkArbitrary<T> extends Arbitrary<T> {
@@ -16,8 +14,8 @@ class NoShrinkArbitrary<T> extends Arbitrary<T> {
   canShrinkWithoutContext(value: unknown): value is T {
     return this.arb.canShrinkWithoutContext(value);
   }
-  shrink(_value: T, _context?: unknown): Stream<Value<T>> {
-    return Stream.nil();
+  shrink(_value: T, _context?: unknown): IteratorObject<Value<T>> {
+    return nil;
   }
 }
 
@@ -36,7 +34,7 @@ class NoShrinkArbitrary<T> extends Arbitrary<T> {
  */
 export function noShrink<T>(arb: Arbitrary<T>): Arbitrary<T> {
   if (
-    stableObjectGetPrototypeOf(arb) === NoShrinkArbitrary.prototype &&
+    Object.getPrototypeOf(arb) === NoShrinkArbitrary.prototype &&
     arb.generate === NoShrinkArbitrary.prototype.generate &&
     arb.canShrinkWithoutContext === NoShrinkArbitrary.prototype.canShrinkWithoutContext &&
     arb.shrink === NoShrinkArbitrary.prototype.shrink

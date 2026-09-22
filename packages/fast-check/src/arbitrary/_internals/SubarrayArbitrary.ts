@@ -1,15 +1,9 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import { makeLazy } from '../../stream/LazyIterableIterator.js';
-import { Stream } from '../../stream/Stream.js';
-import { safeMap, safePush, safeSlice, safeSort, safeSplice } from '../../utils/globals.js';
+import { makeLazy, joinAll, nil } from '../../utils/iterator.js';
 import { isSubarrayOf } from './helpers/IsSubarrayOf.js';
 import { IntegerArbitrary } from './IntegerArbitrary.js';
-
-const safeMathFloor = Math.floor;
-const safeMathLog = Math.log;
-const safeArrayIsArray = Array.isArray;
 
 /** @internal */
 export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
@@ -36,10 +30,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     this.lengthArb = new IntegerArbitrary(minLength, maxLength);
     this.biasedLengthArb =
       minLength !== maxLength
-        ? new IntegerArbitrary(
-            minLength,
-            minLength + safeMathFloor(safeMathLog(maxLength - minLength) / safeMathLog(2)),
-          )
+        ? new IntegerArbitrary(minLength, minLength + Math.floor(Math.log(maxLength - minLength) / Math.log(2)))
         : this.lengthArb;
   }
 
@@ -49,25 +40,25 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     const size = lengthArb.generate(mrng, undefined);
     const sizeValue = size.value;
 
-    const remainingElements = safeMap(this.originalArray, (_v, idx) => idx);
+    const remainingElements = this.originalArray.map((_v, idx) => idx);
     const ids: number[] = [];
     for (let index = 0; index !== sizeValue; ++index) {
       const selectedIdIndex = mrng.nextInt(0, remainingElements.length - 1);
-      safePush(ids, remainingElements[selectedIdIndex]);
-      safeSplice(remainingElements, selectedIdIndex, 1);
+      ids.push(remainingElements[selectedIdIndex]);
+      remainingElements.splice(selectedIdIndex, 1);
     }
     if (this.isOrdered) {
-      safeSort(ids, (a, b) => a - b);
+      ids.sort((a, b) => a - b);
     }
 
     return new Value(
-      safeMap(ids, (i) => this.originalArray[i]),
+      ids.map((i) => this.originalArray[i]),
       size.context,
     );
   }
 
   canShrinkWithoutContext(value: unknown): value is T[] {
-    if (!safeArrayIsArray(value)) {
+    if (!Array.isArray(value)) {
       return false;
     }
     if (!this.lengthArb.canShrinkWithoutContext(value.length)) {
@@ -76,28 +67,26 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     return isSubarrayOf(this.originalArray, value);
   }
 
-  shrink(value: T[], context: unknown): Stream<Value<T[]>> {
+  shrink(value: T[], context: unknown): IteratorObject<Value<T[]>> {
     // shrinking one by one is not the most comprehensive
     // but allows a reasonable number of entries in the shrink
     if (value.length === 0) {
-      return Stream.nil<Value<T[]>>();
+      return nil;
     }
-    return this.lengthArb
-      .shrink(value.length, context)
-      .map((newSize) => {
+    return joinAll([
+      this.lengthArb.shrink(value.length, context).map((newSize) => {
         return new Value(
-          safeSlice(value, value.length - newSize.value), // array of length newSize.value
+          value.slice(value.length - newSize.value), // array of length newSize.value
           newSize.context, // integer context for value newSize.value (the length)
         );
-      })
-      .join(
-        value.length > this.minLength
-          ? makeLazy(() =>
-              this.shrink(safeSlice(value, 1), undefined)
-                .filter((newValue) => this.minLength <= newValue.value.length + 1)
-                .map((newValue) => new Value([value[0], ...newValue.value], undefined)),
-            )
-          : Stream.nil<Value<T[]>>(),
-      );
+      }),
+      value.length > this.minLength
+        ? makeLazy(() =>
+            this.shrink(value.slice(1), undefined)
+              .filter((newValue) => this.minLength <= newValue.value.length + 1)
+              .map((newValue) => new Value([value[0], ...newValue.value], undefined)),
+          )
+        : nil,
+    ]);
   }
 }

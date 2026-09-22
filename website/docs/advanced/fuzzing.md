@@ -24,7 +24,7 @@ For instance, if you intend to run the tests an infinite number of times, you ca
 fc.configureGlobal({ numRuns: Number.POSITIVE_INFINITY });
 ```
 
-:::warning Multi-process
+:::warning[Multi-process]
 Please note that if you intend to run multiple properties an infinite number of times, it may be necessary to run them via multiple processes. JavaScript being a single-threaded language, running multiple infinite loops in a single thread may result in only one property being executed.
 
 Therefore, to avoid this limitation and ensure that all properties are executed as intended, you should consider running them in separate processes.
@@ -41,7 +41,7 @@ The following code snippets offer an approach to run fast-check continuously wit
 The code snippet presented below consists of a function designed to wrap any predicate into a function that will not fail but will report into a file when a failure is detected.
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import fs from 'fs';
 import process from 'process';
 
@@ -75,12 +75,12 @@ This function can be used to run fast-check indefinitely without stopping on err
 The above helpers can be utilized directly to define properties and execute them in a fuzzer fashion as shown below:
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 fc.configureGlobal({ numRuns: 1_000_000 });
 
-test('fuzz predicate against arbitraries', () => {
-  fc.assert(fc.property(...arbitraries, neverFailingPredicate(predicate)));
+test('fuzz predicate against arbitraries', async () => {
+  await fc.assert(fc.asyncProperty(...arbitraries, neverFailingPredicate(predicate)));
 });
 ```
 
@@ -93,8 +93,8 @@ Finally, the `configureGlobal` function is used to set the number of runs for th
 In contrast to normal runs, when using the `neverFailingPredicate` function, the inputs provided to the predicate will never be shrunk. However, if you want to shrink them or just replay the failure, you can do it on a case-by-case basis as demonstrated below:
 
 ```js
-test('replay reported error and shrink it', () => {
-  fc.assert(fc.property(...arbitraries, predicate), {
+test('replay reported error and shrink it', async () => {
+  await fc.assert(fc.asyncProperty(...arbitraries, predicate), {
     numRuns: 1,
     examples: [[/* reported error */]],
   });

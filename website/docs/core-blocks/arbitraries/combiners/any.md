@@ -52,7 +52,7 @@ Generate one value based on one of the passed arbitraries
 
 Randomly chooses an arbitrary at each new generation. Should be provided with at least one arbitrary. Probability to select a specific arbitrary is based on its weight: `weight(instance) / sumOf(weights)` (for depth=0). For higher depths, the probability to select the first arbitrary will increase as we go deeper in the tree so the formula is not applicable as-is. It preserves the shrinking capabilities of the underlying arbitrary. `fc.oneof` is able to shrink inside the failing arbitrary but not across arbitraries (contrary to `fc.constantFrom` when dealing with constant arbitraries) except if called with `withCrossShrink`.
 
-:::warning First arbitrary, a privileged one
+:::warning[First arbitrary, a privileged one]
 The first arbitrary specified on `oneof` will have a privileged position. Constraints like `withCrossShrink` or `depthSize` tend to favor it over others.
 :::
 
@@ -192,7 +192,7 @@ Available since 3.20.0.
 
 Drop shrinking capabilities from an existing arbitrary.
 
-:::warning Avoid dropping shrinking capabilities
+:::warning[Avoid dropping shrinking capabilities]
 Although dropping the shrinking capabilities can speed up your CI when failures occur, we do not recommend this approach. Instead, if you want to reduce the shrinking time for automated jobs or local runs, consider using `endOnFailure` or `interruptAfterTimeLimit`.
 
 The only potentially legitimate use of dropping shrinking is when creating new complex arbitraries. In such cases, dropping useless parts of the shrinker may prove useful.
@@ -220,7 +220,7 @@ Available since 3.20.0.
 
 Limit shrinking capabilities of an existing arbitrary. Cap the number of potential shrunk values it could produce.
 
-:::warning Avoid limiting shrinking capabilities
+:::warning[Avoid limiting shrinking capabilities]
 Although limiting the shrinking capabilities can speed up your CI when failures occur, we do not recommend this approach. Instead, if you want to reduce the shrinking time for automated jobs or local runs, consider using `endOnFailure` or `interruptAfterTimeLimit`.
 
 The only potentially legitimate use of limiting shrinking is when creating new complex arbitraries. In such cases, limiting some less relevant parts may help preserve shrinking capabilities without requiring exhaustive coverage of the shrinker.
@@ -314,7 +314,7 @@ Available since 0.0.1.
 
 Flat-Map an existing arbitrary.
 
-:::warning Limited shrink
+:::warning[Limited shrink]
 Be aware that the shrinker of such construct might not be able to shrink as much as possible (more details [here](https://github.com/dubzzz/fast-check/issues/650#issuecomment-648397230))
 :::
 

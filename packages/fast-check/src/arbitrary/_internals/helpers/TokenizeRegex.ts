@@ -1,9 +1,6 @@
-import { safeIndexOf } from '../../../utils/globals.js';
 import { TokenizerBlockMode, readFrom } from './ReadRegex.js';
 import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
 import { resolveUnicodeProperty } from './UnicodePropertyData.js';
-
-const safeStringFromCodePoint = String.fromCodePoint;
 
 /**
  * Pop the last pushed token and return it,
@@ -183,7 +180,7 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
       case 'x': {
         const allDigits = block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
-        const symbol = safeStringFromCodePoint(codePoint);
+        const symbol = String.fromCodePoint(codePoint);
         return { type: 'Char', kind: 'hex', symbol, value: block, codePoint };
       }
       case 'u': {
@@ -192,7 +189,7 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
         }
         const allDigits = block[2] === '{' ? block.substring(3, block.length - 1) : block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
-        const symbol = safeStringFromCodePoint(codePoint);
+        const symbol = String.fromCodePoint(codePoint);
         return { type: 'Char', kind: 'unicode', symbol, value: block, codePoint };
       }
 
@@ -228,7 +225,7 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
         if (isDigit(next)) {
           const allDigits = block.substring(1);
           const codePoint = Number(allDigits);
-          const symbol = safeStringFromCodePoint(codePoint);
+          const symbol = String.fromCodePoint(codePoint);
           return { type: 'Char', kind: 'decimal', symbol, value: block, codePoint };
         }
         if (block.length > 2 && (next === 'p' || next === 'P')) {
@@ -465,7 +462,7 @@ function pushTokens(
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
-  const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
+  const unicodeMode = [...regex.flags].indexOf('u') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
   pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });

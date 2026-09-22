@@ -34,9 +34,9 @@ test('sort users by ascending age', () => {
 Although the previous test successfully generates random users and checks that ordering is applied correctly, it falls short when it comes to providing details about the nature of any failures that may occur. In contrast, property-based testing, while requiring more initial effort, provides more reliable tests that can report failures and simplify the debugging process. To demonstrate this, we can rewrite the previous test using a property-based approach as shown below:
 
 ```js
-test('sort users by ascending age', () => {
-  fc.assert(
-    fc.property(
+test('sort users by ascending age', async () => {
+  await fc.assert(
+    fc.asyncProperty(
       fc
         .record({
           firstName: firstNameArb(),
@@ -67,9 +67,9 @@ The previous test revealed a challenge in generating entries beforehand, which c
 This challenge has been addressed with the introduction of `gen` in fast-check. It makes writing property-based tests as straightforward as writing regular tests. With `gen` the test can be written as follow:
 
 ```js
-test('sort users by ascending age', () => {
-  fc.assert(
-    fc.property(fc.gen(), (g) => {
+test('sort users by ascending age', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.gen(), (g) => {
       const userA = {
         firstName: g(firstName),
         lastName: g(lastName),
@@ -95,7 +95,7 @@ For example, while an IPv4 address may be commonly represented as something like
 
 However, fast-check does not currently provide generators for names, surnames, or other non-fully constrained values. It is up to the user to provide their own generators for such data types.
 
-:::tip Build your own arbitraries
+:::tip[Build your own arbitraries]
 If you need to generate custom fake data, such as names and surnames, you can refer to fast-check's [combiners](/docs/core-blocks/arbitraries/combiners/any/), which are designed to allow users to create their own values according to their specific needs.
 :::
 
@@ -103,11 +103,11 @@ If you need to generate custom fake data, such as names and surnames, you can re
 
 In order to integrate external fake data libraries with fast-check, the generators have to be wrapped as arbitraries.
 
-:::warning Minimal requirements
+:::warning[Minimal requirements]
 The minimal requirement that needs to be fulfilled by the wrapped library is to provide a way to be seeded and reproducible. fast-check cannot offer replay capabilities if the underlying generators are not able to generate the same values from one run to another.
 :::
 
-:::warning Limitations
+:::warning[Limitations]
 Please note that if not explictely defined, the arbitraries will not be able to shrink the generated values.
 :::
 
@@ -118,7 +118,7 @@ Here are some examples of how external fake data libraries can be wrapped within
 With [@faker-js/faker](https://www.npmjs.com/package/@faker-js/faker):
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { faker } from '@faker-js/faker';
 
 const fakerToArb = (fakerGen) => {
@@ -140,7 +140,7 @@ const streetAddressArb = fakerToArb(faker.address.streetAddress);
 const customArb = fakerToArb(() => faker.fake('{{name.lastName}}, {{name.firstName}} {{name.suffix}}'));
 ```
 
-:::tip Recommended integration for Faker
+:::tip[Recommended integration for Faker]
 
 Our recommended integration for Faker has changed since the release of the version 8.2.0 of Faker. We recommend you to have a look to [our article](/blog/2024/07/18/integrating-faker-with-fast-check/) on the subject.
 :::
@@ -150,12 +150,12 @@ Our recommended integration for Faker has changed since the release of the versi
 With [lorem-ipsum](https://www.npmjs.com/package/lorem-ipsum):
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { loremIpsum } from 'lorem-ipsum';
 
 const loremArb = fc
   .noShrink(
-    fc.infiniteStream(
+    fc.iterator(
       // Arbitrary generating 32-bit floating point numbers
       // between 0 (included) and 1 (excluded) (uniform distribution)
       fc.noBias(fc.integer({ min: 0, max: (1 << 24) - 1 }).map((v) => v / (1 << 24))),

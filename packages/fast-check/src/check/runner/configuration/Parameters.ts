@@ -1,7 +1,7 @@
-import type { RandomType } from './RandomType.js';
 import type { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from '../../../random/generator/RandomGenerator.js';
+import type { Plugin } from '../../plugin/Plugin.js';
 
 /**
  * Customization of the parameters used to run the properties
@@ -24,15 +24,13 @@ export interface Parameters<T = void> {
    * Random number generator: `xorshift128plus` by default
    *
    * Random generator is the core element behind the generation of random values - changing it might directly impact the quality and performances of the generation of random values.
-   * It can be one of: 'mersenne', 'congruential', 'congruential32', 'xorshift128plus', 'xoroshiro128plus'
-   * Or any function able to build a `RandomGenerator` based on a seed
+   * It can be any function able to build a `RandomGenerator` based on a seed.
    *
-   * As required since pure-rand v6.0.0, when passing a builder for {@link RandomGenerator},
-   * the random number generator must generate values between -0x80000000 and 0x7fffffff.
+   * As required since pure-rand v6.0.0, the random number generator must generate values between -0x80000000 and 0x7fffffff.
    *
    * @remarks Since 1.6.0
    */
-  randomType?: RandomType | ((seed: number) => RandomGenerator);
+  randomType?: (seed: number) => RandomGenerator;
   /**
    * Number of runs before success: 100 by default
    * @remarks Since 1.0.0
@@ -54,6 +52,7 @@ export interface Parameters<T = void> {
    *
    * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
    * @remarks Since 0.0.11
+   * @deprecated Prefer the `timeout` plugin: `fc.assert(property, { plugins: [fc.timeout(timeMs)] })`
    */
   timeout?: number;
   /**
@@ -87,39 +86,16 @@ export interface Parameters<T = void> {
    * it will be marked as success. Except if `markInterruptAsFailure` has been set to `true`
    *
    * @remarks Since 1.19.0
+   * @deprecated Prefer the `interruptAfterTimeLimit` plugin: `fc.assert(property, { plugins: [fc.interruptAfterTimeLimit(timeMs)] })`
    */
   interruptAfterTimeLimit?: number;
   /**
    * Mark interrupted runs as failed runs if preceded by one success or more: disabled by default
    * Interrupted with no success at all always defaults to failure whatever the value of this flag.
    * @remarks Since 1.19.0
+   * @deprecated Prefer the `failOnInterrupt` option of the `interruptAfterTimeLimit` plugin: `fc.interruptAfterTimeLimit(timeMs, { failOnInterrupt: true })`
    */
   markInterruptAsFailure?: boolean;
-  /**
-   * Skip runs corresponding to already tried values.
-   *
-   * WARNING:
-   * Discarded runs will be retried. Under the hood they are simple calls to `fc.pre`.
-   * In other words, if you ask for 100 runs but your generator can only generate 10 values then the property will fail as 100 runs will never be reached.
-   * Contrary to `ignoreEqualValues` you always have the number of runs you requested.
-   *
-   * NOTE: Relies on `fc.stringify` to check the equality.
-   *
-   * @remarks Since 2.14.0
-   */
-  skipEqualValues?: boolean;
-  /**
-   * Discard runs corresponding to already tried values.
-   *
-   * WARNING:
-   * Discarded runs will not be replaced.
-   * In other words, if you ask for 100 runs and have 2 discarded runs you will only have 98 effective runs.
-   *
-   * NOTE: Relies on `fc.stringify` to check the equality.
-   *
-   * @remarks Since 2.14.0
-   */
-  ignoreEqualValues?: boolean;
   /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
@@ -131,11 +107,6 @@ export interface Parameters<T = void> {
    * @remarks Since 0.0.6
    */
   logger?(v: string): void;
-  /**
-   * Force the use of unbiased arbitraries: biased by default
-   * @remarks Since 1.1.0
-   */
-  unbiased?: boolean;
   /**
    * Enable verbose mode: {@link VerbosityLevel.None} by default
    *
@@ -173,24 +144,24 @@ export interface Parameters<T = void> {
    * But you may want to change this behaviour in yours.
    *
    * Only used when calling {@link assert}
-   * Cannot be defined in conjonction with `asyncReporter`
+   *
+   * @example
+   * ```typescript
+   * // Prefer a plugin relying on the `onAllRunsComplete` hook.
+   * const reporterPlugin: fc.Plugin<unknown> = () => ({
+   *   onAllRunsComplete: (runDetails) => {
+   *     if (runDetails.failed) {
+   *       throw new Error(fc.defaultReportMessage(runDetails));
+   *     }
+   *   },
+   * });
+   * fc.assert(property, { plugins: [reporterPlugin] });
+   * ```
    *
    * @remarks Since 1.25.0
+   * @deprecated Prefer a plugin relying on the `onAllRunsComplete` hook: `fc.assert(property, { plugins: [reporterPlugin] })`
    */
-  reporter?: (runDetails: RunDetails<T>) => void;
-  /**
-   * Replace the default reporter handling errors by a custom one
-   *
-   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
-   * But you may want to change this behaviour in yours.
-   *
-   * Only used when calling {@link assert}
-   * Cannot be defined in conjonction with `reporter`
-   * Not compatible with synchronous properties: runner will throw
-   *
-   * @remarks Since 1.25.0
-   */
-  asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
+  reporter?: (runDetails: RunDetails<T>) => Promise<void> | void;
   /**
    * By default the Error causing the failure of the predicate will not be directly exposed within the message
    * of the Error thown by fast-check. It will be exposed by a cause field attached to the Error.
@@ -203,4 +174,17 @@ export interface Parameters<T = void> {
    * as part of the message and not as a cause.
    */
   includeErrorInReport?: boolean;
+  /**
+   * Set of plugins extending the way the property gets executed by the runner
+   *
+   * Each plugin is instantiated once per run.
+   * They can be leveraged to control and enrich the execution flow of each predicate.
+   *
+   * They come after the plugins installed globally via {@link installGlobalPlugin}.
+   * At execution time, the first plugin of the resulting array is entered first while the last one is the closest to the predicate.
+   * Plugins are instantiated in order.
+   *
+   * @remarks Since 4.10.0
+   */
+  plugins?: Plugin<T>[];
 }

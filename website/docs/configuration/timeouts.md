@@ -18,7 +18,7 @@ Let's dig into the multiple timeout options provided by fast-check.
 
 You can use the `timeout` option with the `assert` function in fast-check to limit the amount of time allocated to run each instance of the predicate defined by your property. If the predicate takes longer than the specified time, the execution will be reported as a failure. fast-check will then attempt to shrink the inputs so that you can more easily identify the cause of the timeout.
 
-:::warning Need asynchronous properties
+:::warning[Need asynchronous properties]
 It's important to note that the `timeout` option only works with asynchronous properties as it needs a way to interrupt another running script. If you want to use it with synchronous code, you can check out the `@fast-check/worker` package.
 :::
 
@@ -46,7 +46,7 @@ await fc.assert(
 
 In the provided example, the `timeout` will only be triggered if one execution of `async (packages, selectedSeed) => {...}` takes more than 1 second. It's also important to highlight the fact that the timeout option can only intervene for asynchronous tasks taking too long. In other words, in the predicate above, only the code executed asynchronously during the execution of `extractAllDependenciesFor` could be bypassed and raise a timeout issue.
 
-:::info Cannot stop the async code
+:::info[Cannot stop the async code]
 It's important to note that fast-check cannot stop the execution of a running `Promise` as there is no way to cancel it in JavaScript. As a result, if a run takes too long to execute and exceeds the specified timeout limit, fast-check will simply ignore the follow-up results. This means that the code will continue to run until it completes, even if fast-check reported a timeout failure.
 
 If you want to stop asynchronous code abruptly when it takes too long, you can check out the `@fast-check/worker` package. It provides a way to run code in a separate worker thread and stop the worker thread if it takes too long, effectively interrupting the execution of the code.
@@ -68,7 +68,7 @@ Hint: Enable verbose mode in order to have the list of all failing values encoun
     at process.processTimers (node:internal/timers:509:9)
 ```
 
-:::info Interaction with `beforeEach` and `afterEach`
+:::info[Interaction with `beforeEach` and `afterEach`]
 Note that the function provided to `beforeEach` and `afterEach` are not included in the measured time for the timeout. If the execution is interrupted due to a timeout, `afterEach` will be called immediately without waiting for the predicate to finish.
 :::
 
@@ -91,7 +91,7 @@ Here is a summary:
 | with at least one success | Success                                               | Failure                                              |
 | during shrink phase       | Failure (shrink only happens on failures)             | Failure                                              |
 
-:::tip Companion for Fuzzing
+:::tip[Companion for Fuzzing]
 `interruptAfterTimeLimit` is particularly useful for fuzzing. For instance, setting it to `interruptAfterTimeLimit: 600_000` and adding `numRuns: Number.POSITIVE_INFINITY` would allow the runner to loop for 10 minutes, regardless of the number of predicates executed during that time.
 :::
 
@@ -121,7 +121,7 @@ Hint (3): Enable verbose mode at level VeryVerbose in order to check all generat
 
 During the shrinking process, skipping predicates will result in one-by-one skipping of all the executions required by the shrinker.
 
-:::info Interrupting is more efficient
+:::info[Interrupting is more efficient]
 When we skip a predicate due to the `skipAllAfterTimeLimit` option, we still pass on it, which may take time. This is because each subsequent run needs to be marked as "will not be executed" one by one. On the other hand, with the `interruptAfterTimeLimit` option, the runner is stopped immediately when the deadline is reached, resulting in a faster stop.
 :::
 
@@ -136,6 +136,6 @@ Available since 1.15.0.
 | `interruptAfterTimeLimit` | runner    | sync and async | yes                                                    | no except when first run or `markInterruptAsFailure:true`  |
 | `skipAllAfterTimeLimit`   | runner    | sync and async | yes                                                    | no except when timeout occured outside of the shrink phase |
 
-:::info Always run `beforeEach` and `afterEach`
+:::info[Always run `beforeEach` and `afterEach`]
 `beforeEach` and `afterEach` functions will always be executed, regardless of whether they are included in the measured time for the timeout or not
 :::

@@ -1,18 +1,9 @@
-import type {
-  AsyncPropertyHookFunction,
-  IAsyncPropertyWithHooks,
-  IRawProperty,
-  PreconditionFailure,
-  PropertyFailure,
-  Random,
-  Stream,
-  Value,
-} from 'fast-check';
+import type { PropertyHookFunction, PropertyWithHooks, Property, Random, Value } from 'fast-check';
 import type { PropertyArbitraries } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { generateValueFromState } from '../ValueFromState.js';
 
 const WorkerPropertyFromWorkerCache = new WeakMap<object, ValueState>();
@@ -23,7 +14,7 @@ class WorkerPropertyFromWorkerError extends Error {
   }
 }
 
-function lazyGenerateValueFromState<Ts>(property: IRawProperty<Ts>, state: ValueState): () => Ts {
+function lazyGenerateValueFromState<Ts>(property: Property<Ts>, state: ValueState): () => Ts {
   let value: Ts | undefined = undefined;
   return function getValue(): Ts {
     if (value === undefined) {
@@ -38,7 +29,7 @@ function extractCacheKey(inputs: [unknown, ...unknown[]]): object {
 }
 
 function buildInputsAndRegister<Ts extends [unknown, ...unknown[]]>(
-  property: IRawProperty<Ts>,
+  property: Property<Ts>,
   valueState: ValueState,
   numArbitraries: number,
 ): Ts {
@@ -59,17 +50,13 @@ function buildInputsAndRegister<Ts extends [unknown, ...unknown[]]>(
  * A WorkerProperty delegating generating the values to the Worker thread
  * instead of running it into the main thread
  */
-export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
+export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements PropertyWithHooks<Ts> {
   private readonly numArbitraries: number;
-  private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
+  private readonly internalProperty: PropertyWithHooks<Ts>;
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.numArbitraries = arbitraries.length;
     this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
-  }
-
-  isAsync(): true {
-    return this.internalProperty.isAsync();
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
@@ -83,35 +70,37 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return new fc.Value(inputs, undefined);
   }
 
-  shrink(_value: Value<Ts>): Stream<Value<Ts>> {
+  shrink(_value: Value<Ts>): IteratorObject<Value<Ts>> {
     // No shrink on worker-based generations
-    return fc.Stream.nil();
+    return Iterator.from([]);
   }
 
-  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
+  run(v: Ts): ReturnType<PropertyWithHooks<Ts>['run']> {
     return this.internalProperty.run(v);
   }
 
-  beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
+  beforeEach(hookFunction: PropertyHookFunction): PropertyWithHooks<Ts> {
     return this.internalProperty.beforeEach(hookFunction);
   }
 
-  afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
+  afterEach(hookFunction: PropertyHookFunction): PropertyWithHooks<Ts> {
     return this.internalProperty.afterEach(hookFunction);
   }
 
-  runBeforeEach(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async runBeforeEach(): Promise<void> {
     if (this.internalProperty.runBeforeEach !== undefined) {
       return this.internalProperty.runBeforeEach();
     }
-    return Promise.resolve();
+    return;
   }
 
-  runAfterEach(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async runAfterEach(): Promise<void> {
     if (this.internalProperty.runAfterEach !== undefined) {
       return this.internalProperty.runAfterEach();
     }
-    return Promise.resolve();
+    return;
   }
 
   getPayload(inputs: Ts): Payload<Ts> {

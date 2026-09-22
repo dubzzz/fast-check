@@ -5,6 +5,9 @@ tags: [tips, integration]
 image: /img/blog/2024-07-18-integrating-faker-with-fast-check--social.png
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 [Faker](https://fakerjs.dev) is a well-known and powerful library for generating fake data. It provides a wide range of random but realistic-looking data generators. However, testing with purely random data can be risky, which is why property-based testing is valuable. While using fake but realistic data in tests can be beneficial, it is essential to integrate it properly. fast-check offers a robust solution for this integration.
 
 {/* truncate */}
@@ -31,7 +34,7 @@ For some time, our documentation recommended the following basic integration app
 
 ```ts
 import { faker } from '@faker-js/faker';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 function fakerToArb<TValue>(generator: () => TValue): fc.Arbitrary<TValue> {
   return fc.noShrink(fc.integer()).map((seed) => {
@@ -57,7 +60,7 @@ test('produce a string containing the first and the last name', () => {
 });
 ```
 
-:::info Shrink or no shrink?
+:::info[Shrink or no shrink?]
 
 As shrinking the seed does not provide any value in terms of the shrinker, we wrapped our seed generator within `fc.noShrink(...)`. Shrinking only makes sense if it simplifies the produced values. By shrinking the seed, we have no guarantee that we will reach a simpler value. As such, we dropped the shrinking capabilities for `fakerToArb`.
 :::
@@ -113,9 +116,45 @@ Our constraint of reusing the generator passed by fast-check prevents us from re
 
 Here is the implmentation we came up with:
 
+<Tabs>
+  <TabItem value="v5" label="Since v5" default>
+
 ```ts
 import { Faker, Randomizer, base } from '@faker-js/faker';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
+
+class FakerBuilder<TValue> extends fc.Arbitrary<TValue> {
+  constructor(private readonly generator: (faker: Faker) => TValue) {
+    super();
+  }
+  generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<TValue> {
+    const randomizer: Randomizer = {
+      // Build a double in [0, 1) out of two integer draws: 26 bits then 27 bits, for 53 bits of randomness
+      next: (): number => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
+      seed: () => {}, // no-op, no support for updates of the seed, could even throw
+    };
+    const customFaker = new Faker({ locale: base, randomizer });
+    return new fc.Value(this.generator(customFaker), undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is TValue {
+    return false;
+  }
+  shrink(value: TValue, context: unknown): fc.Stream<fc.Value<TValue>> {
+    return fc.Stream.nil();
+  }
+}
+
+function fakerToArb<TValue>(generator: (faker: Faker) => TValue): fc.Arbitrary<TValue> {
+  return new FakerBuilder(generator);
+}
+```
+
+  </TabItem>
+  <TabItem value="v4" label="Until v4">
+
+```ts
+import { Faker, Randomizer, base } from '@faker-js/faker';
+import * as fc from 'fast-check';
 
 class FakerBuilder<TValue> extends fc.Arbitrary<TValue> {
   constructor(private readonly generator: (faker: Faker) => TValue) {
@@ -142,6 +181,9 @@ function fakerToArb<TValue>(generator: (faker: Faker) => TValue): fc.Arbitrary<T
 }
 ```
 
+  </TabItem>
+</Tabs>
+
 This refined implementation addresses most of the issues with the naive approach and provides a more powerful and cleaner integration with Faker.
 
 ## Advanced integration
@@ -151,6 +193,31 @@ The previous implementation does not provide any shrinking capabilities. While b
 ### Simplified version
 
 To incorporate shrinking capabilities, let's simplify the previous snippet to focus on generating first names only:
+
+<Tabs>
+  <TabItem value="v5" label="Since v5" default>
+
+```ts
+class FakerFirstNameBuilder extends fc.Arbitrary<string> {
+  generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<string> {
+    const randomizer = {
+      next: () => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
+      seed: () => {},
+    };
+    const customFaker = new Faker({ locale: base, randomizer });
+    return new fc.Value(customFaker.person.firstName(), undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is string {
+    return false;
+  }
+  shrink(value: TValue, context: unknown): fc.Stream<fc.Value<string>> {
+    return fc.Stream.nil();
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="v4" label="Until v4">
 
 ```ts
 class FakerFirstNameBuilder extends fc.Arbitrary<string> {
@@ -168,11 +235,14 @@ class FakerFirstNameBuilder extends fc.Arbitrary<string> {
 }
 ```
 
+  </TabItem>
+</Tabs>
+
 ### Adding shrinking
 
 Shrinking capabilities primarily depend on the `shrink` method of `FakerFirstNameBuilder`.
 
-:::info What about others?
+:::info[What about others?]
 
 It's important to note that attributing shrinker capability solely to the `shrink` method is a simplification. All methods within an Arbitrary instance work together to provide effective shrinking.
 
@@ -214,6 +284,37 @@ class FakerFirstNameBuilder extends fc.Arbitrary<string> {
 
 But, our implementation still makes a subtle assumption. It supposes that an undefined context value is always linked to a value coming from our own `generate` and cannot be something produced by the shrinker of `strArb`. We can make it safer by being able to differentiate our own values from the ones of `strArb`.
 
+<Tabs>
+  <TabItem value="v5" label="Since v5" default>
+
+```ts
+const ctxProbe = Symbol();
+const strArb = fc.string({ minLength: 1 });
+
+class FakerFirstNameBuilder extends fc.Arbitrary<string> {
+  generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<string> {
+    const randomizer = {
+      next: () => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
+      seed: () => {},
+    };
+    const customFaker = new Faker({ locale: base, randomizer });
+    return new fc.Value(customFaker.person.firstName(), ctxProbe);
+  }
+  canShrinkWithoutContext(value: unknown): value is string {
+    return false;
+  }
+  shrink(value: TValue, context: unknown): fc.Stream<fc.Value<string>> {
+    if (context !== ctxProbe || strArb.canShrinkWithoutContext(value)) {
+      return strArb.shrink(value, context);
+    }
+    return fc.Stream.nil();
+  }
+}
+```
+
+  </TabItem>
+  <TabItem value="v4" label="Until v4">
+
 ```ts
 const ctxProbe = Symbol();
 const strArb = fc.string({ minLength: 1 });
@@ -236,7 +337,10 @@ class FakerFirstNameBuilder extends fc.Arbitrary<string> {
 }
 ```
 
-:::tip `fc.string()` might not be ideal
+  </TabItem>
+</Tabs>
+
+:::tip[`fc.string()` might not be ideal]
 
 While the previous implementation is functional, users might have requirements to exclude certain characters from generated strings. Therefore, `fc.string()` might not be optimal since it could potentially shrink a first name to include non-alphabetic characters. An alternative approach could involve using `fc.stringOf(...)` to better control the character set allowed in generated strings.
 :::

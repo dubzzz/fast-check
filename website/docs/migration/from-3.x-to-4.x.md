@@ -276,7 +276,7 @@ function unicode(): Arbitrary<string> {
 
 </details>
 
-:::warning You probably don't need `unicode`/`unicodeString`
+:::warning[You probably don't need `unicode`/`unicodeString`]
 
 The `unicode` arbitrary was introduced early in fast-check, but later, `fullUnicode` was added to provide full Unicode support. `unicode` stayed limited to characters from the BMP (Basic Multilingual Plane).
 
@@ -409,7 +409,7 @@ Related pull requests: [#5590](https://github.com/dubzzz/fast-check/pull/5590)
 
 ### Faster `scheduler`
 
-:::tip Prefer `waitNext`, `waitIdle`, or `waitFor`
+:::tip[Prefer `waitNext`, `waitIdle`, or `waitFor`]
 
 Since v4.2.0, `waitOne` and `waitAll` are deprecated in favor of `waitNext`, `waitIdle`, and `waitFor`, which behave more predictably — especially when tasks are scheduled after a few awaits, not immediately.
 

@@ -1,8 +1,6 @@
-import { stream } from '../../stream/Stream.js';
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
-import type { IRawProperty } from '../property/IRawProperty.js';
-import { Property } from '../property/Property.generic.js';
-import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
+import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
+import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
@@ -11,19 +9,16 @@ import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 
 /** @internal */
-function toProperty<Ts>(
-  generator: IRawProperty<Ts> | Arbitrary<Ts>,
-  qParams: QualifiedParameters<Ts>,
-): IRawProperty<Ts> {
-  const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
-    ? new Property(generator as Arbitrary<Ts>, () => true)
-    : (generator as IRawProperty<Ts>);
-  return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
+function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
+  const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
+    ? new PropertyImplem(generator as Arbitrary<Ts>, () => true)
+    : (generator as Property<Ts>);
+  return prop;
 }
 
 /** @internal */
 function streamSample<Ts>(
-  generator: IRawProperty<Ts> | Arbitrary<Ts>,
+  generator: Property<Ts> | Arbitrary<Ts>,
   params?: Parameters<Ts> | number,
 ): IterableIterator<Ts> {
   const extendedParams =
@@ -31,16 +26,12 @@ function streamSample<Ts>(
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
-  const nextProperty = toProperty(generator, qParams);
+  const nextProperty = toProperty(generator);
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues =
     qParams.path.length === 0
-      ? stream(toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples))
-      : pathWalk(
-          qParams.path,
-          stream(lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)),
-          shrink,
-        );
+      ? toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
+      : pathWalk(qParams.path, lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples), shrink);
   return tossedValues.take(qParams.numRuns).map((s) => s.value_);
 }
 
@@ -53,13 +44,13 @@ function streamSample<Ts>(
  * fc.sample(fc.nat(), {seed: 42}); // extract values from fc.nat() as if we were running fc.assert with seed=42
  * ```
  *
- * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
+ * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
  *
  * @remarks Since 0.0.6
  * @public
  */
-function sample<Ts>(generator: IRawProperty<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
   return [...streamSample(generator, params)];
 }
 
@@ -85,7 +76,7 @@ function round2(n: number): string {
  * // The output will be sent line by line to the logger
  * ```
  *
- * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
+ * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
  *
@@ -93,7 +84,7 @@ function round2(n: number): string {
  * @public
  */
 function statistics<Ts>(
-  generator: IRawProperty<Ts> | Arbitrary<Ts>,
+  generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: Parameters<Ts> | number,
 ): void {

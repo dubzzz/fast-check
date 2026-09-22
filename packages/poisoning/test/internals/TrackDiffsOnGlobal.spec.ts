@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { PoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
-import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
+import { toPoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
+import { toPoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 import { trackDiffsOnGlobals } from '../../src/internals/TrackDiffsOnGlobal.js';
 import type { AllGlobals, GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 
@@ -8,7 +8,7 @@ describe('trackDiffsOnGlobals', () => {
   it('should detect added entries', () => {
     // Arrange
     const globalA: any = {};
-    const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
+    const allGlobals: AllGlobals = toPoisoningFreeMap<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
     ]);
     globalA.a = 2; // adding key onto a tracked global
@@ -38,7 +38,7 @@ describe('trackDiffsOnGlobals', () => {
     // Arrange
     const addedSymbol = Symbol('my-symbol');
     const globalA: any = {};
-    const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
+    const allGlobals: AllGlobals = toPoisoningFreeMap<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
     ]);
     globalA[addedSymbol] = 2; // adding key onto a tracked global
@@ -67,7 +67,7 @@ describe('trackDiffsOnGlobals', () => {
   it('should detect added non-enumerable entries', () => {
     // Arrange
     const globalA: any = {};
-    const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
+    const allGlobals: AllGlobals = toPoisoningFreeMap<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
     ]);
     Object.defineProperty(globalA, 'a', { configurable: true, enumerable: false, writable: false, value: 2 }); // adding key onto a tracked global
@@ -96,7 +96,7 @@ describe('trackDiffsOnGlobals', () => {
   it('should detect removed entries', () => {
     // Arrange
     const globalA: any = { a: 2 };
-    const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
+    const allGlobals: AllGlobals = toPoisoningFreeMap<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
     ]);
     delete globalA.a; // deleting key from a tracked global
@@ -125,7 +125,7 @@ describe('trackDiffsOnGlobals', () => {
   it('should detect changed entries', () => {
     // Arrange
     const globalA: any = { a: 2 };
-    const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
+    const allGlobals: AllGlobals = toPoisoningFreeMap<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
     ]);
     globalA.a = 3; // updating value linked to a key from a tracked global
@@ -159,7 +159,7 @@ describe('trackDiffsOnGlobals', () => {
     const helloOverride = () => {};
     const globalA = new BaseA();
     globalA.hello = helloOverride; // 'a' now defines 'hello' as one of its own properties
-    const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
+    const allGlobals: AllGlobals = toPoisoningFreeMap<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
     ]);
     // @ts-expect-error - Cannot delete required property 'hello' from object, intentionally deleting for testing prototype chain behavior
@@ -190,7 +190,7 @@ describe('trackDiffsOnGlobals', () => {
     // Arrange
     const globalA: any = { a: 2 };
     const globalB: any = { b: 2 };
-    const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
+    const allGlobals: AllGlobals = toPoisoningFreeMap<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
       [globalB, extractGlobalDetailsFor('globalB', globalB)],
     ]);
@@ -217,7 +217,7 @@ describe('trackDiffsOnGlobals', () => {
   it('should skip entry when not eligible even when it possibly changed', () => {
     // Arrange
     const globalA: any = { a: 2, b: 2 };
-    const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
+    const allGlobals: AllGlobals = toPoisoningFreeMap<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
     ]);
     globalA.a = 3; // updating value linked to a key from a tracked global
@@ -245,12 +245,12 @@ function extractGlobalDetailsFor(itemName: string, item: unknown): GlobalDetails
   return {
     name: itemName,
     depth: 0,
-    properties: PoisoningFreeMap.from(
+    properties: toPoisoningFreeMap(
       [...Object.getOwnPropertyNames(item), ...Object.getOwnPropertySymbols(item)].map((keyName) => [
         keyName,
         Object.getOwnPropertyDescriptor(item, keyName)!,
       ]),
     ),
-    rootAncestors: PoisoningFreeSet.from(['globalThis']),
+    rootAncestors: toPoisoningFreeSet(['globalThis']),
   };
 }

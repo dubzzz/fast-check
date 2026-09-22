@@ -1,15 +1,15 @@
-import type { IAsyncPropertyWithHooks } from 'fast-check';
+import type { PropertyWithHooks } from 'fast-check';
 import type { PropertyArbitraries } from '../SharedTypes.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { WorkerPropertyFromWorker } from './WorkerPropertyFromWorker.js';
 
 /**
  * Property tailored for usage with workers
  * it produces the payload to be sent to the workers
  */
-type WorkerProperty<Ts> = IAsyncPropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> };
+type WorkerProperty<Ts> = PropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> };
 
 /**
  * Build an async property tailored for workers

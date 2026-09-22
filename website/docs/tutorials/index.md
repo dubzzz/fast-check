@@ -17,7 +17,7 @@ Reading the reference documentation tells you _what_ fast-check can do. Followin
 - highlights the fast-check features that matter most for that scenario,
 - ends with takeaways you can immediately bring back to your own codebase.
 
-:::tip New to Property-Based Testing?
+:::tip[New to Property-Based Testing?]
 If the concept itself is new, start by reading [What is Property-Based Testing?](/docs/introduction/what-is-property-based-testing/) and [Why Property-Based?](/docs/introduction/why-property-based/) before diving in.
 :::
 

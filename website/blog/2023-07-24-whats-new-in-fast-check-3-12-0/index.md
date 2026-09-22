@@ -12,7 +12,7 @@ Continue reading to explore the detailed updates it brings.
 
 ## Performance optimizations
 
-:::info Benchmarks
+:::info[Benchmarks]
 When it comes to optimizing JavaScript code, developers have a variety of tricks to choose from. These range from minimizing the number of operations to adopting memory-efficient algorithms and utilizing caches. However, achieving the best performance often involves navigating trade-offs, considering factors such as garbage collection costs, V8 optimization of monomorphic operations, and V8's internal representation of certain data types.
 
 To determine the most effective option, we conducted benchmarks using [tinybench](https://github.com/tinylibs/tinybench). All the following figures are based on measurements from running tinybench with 100k iterations on GitHub Actions workers.

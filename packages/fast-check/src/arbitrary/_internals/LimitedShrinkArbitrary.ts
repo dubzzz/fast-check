@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import { nil } from '../../utils/iterator.js';
 import { zipIterableIterators } from './helpers/ZipIterableIterators.js';
 
 /** @internal */
@@ -28,18 +28,18 @@ export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
   canShrinkWithoutContext(value: unknown): value is T {
     return this.arb.canShrinkWithoutContext(value);
   }
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
+  shrink(value: T, context?: unknown): IteratorObject<Value<T>> {
     if (this.isSafeContext(context)) {
       return this.safeShrink(value, context.originalContext, context.length);
     }
     return this.safeShrink(value, undefined, 0);
   }
-  private safeShrink(value: T, originalContext: unknown, currentLength: number): Stream<Value<T>> {
+  private safeShrink(value: T, originalContext: unknown, currentLength: number): IteratorObject<Value<T>> {
     const remaining = this.maxShrinks - currentLength;
     if (remaining <= 0) {
-      return Stream.nil(); // early-exit to avoid potentially expensive computations in .shrink
+      return nil; // early-exit to avoid potentially expensive computations in .shrink
     }
-    return new Stream(zipIterableIterators(this.arb.shrink(value, originalContext), iotaFrom(currentLength + 1)))
+    return zipIterableIterators(this.arb.shrink(value, originalContext), iotaFrom(currentLength + 1))
       .take(remaining)
       .map((valueAndLength) => this.valueMapper(valueAndLength[0], valueAndLength[1]));
   }

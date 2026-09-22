@@ -21,7 +21,7 @@ npm install --save-dev fast-check
 
 Congratulations, everything is ready to start using Property-Based Tests with the Node.js test runner 🚀
 
-:::info Runner-agnostic patterns
+:::info[Runner-agnostic patterns]
 fast-check does not ship a dedicated connector for the Node.js test runner: you use it the same way you would with any other runner. For the generic sync and async patterns, along with tips on sharing configuration via `fc.configureGlobal`, refer to our [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/) page. The rest of this tutorial focuses on the Node-specific bits.
 :::
 
@@ -34,9 +34,9 @@ const assert = require('node:assert');
 const { test } = require('node:test');
 const fc = require('fast-check');
 
-test('should follow the rule: fibo(n) = fibo(n-1) + fibo(n-2)', () => {
-  fc.assert(
-    fc.property(fc.integer({ min: 2, max: 78 }), (n) => {
+test('should follow the rule: fibo(n) = fibo(n-1) + fibo(n-2)', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.integer({ min: 2, max: 78 }), (n) => {
       assert.equal(fibo(n), fibo(n - 1) + fibo(n - 2));
     }),
   );
@@ -71,4 +71,4 @@ You've written and executed your first Property-Based Test using the Node.js tes
 
 The Fibonacci sequence isn't just about `fibo(n) = fibo(n-1) + fibo(n-2)`. Tests can be extended much further with additional properties to confirm the implementation. You can read [this article](https://dev.to/dubzzz/advent-of-pbt-2021-day-7-solution-4lf3) to explore more properties for it.
 
-There are many advanced techniques to manage fast-check like a pro. Whether you want to start experimenting with [asynchronous properties](/docs/core-blocks/properties/#asynchronous-properties), [detecting race conditions](/docs/tutorials/detect-race-conditions/), [building complex values](/docs/core-blocks/arbitraries/primitives/number/), or more, our documentation is the best place to start to discover all these details and subtleties.
+There are many advanced techniques to manage fast-check like a pro. Whether you want to start experimenting with [asynchronous properties](/docs/core-blocks/properties/), [detecting race conditions](/docs/tutorials/detect-race-conditions/), [building complex values](/docs/core-blocks/arbitraries/primitives/number/), or more, our documentation is the best place to start to discover all these details and subtleties.

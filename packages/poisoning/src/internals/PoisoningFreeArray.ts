@@ -22,8 +22,9 @@ export type PoisoningFreeArray<T> = Array<T> & {
   [SortSymbol]: (compare: (keyA: T, keyB: T) => number) => T[];
 };
 
-/** Alter an instance of Array to include non-poisonable methods */
-function toPoisoningFreeArray<T>(instance: T[]): PoisoningFreeArray<T> {
+/** Factory responsible to build instances of PoisoningFreeArray */
+export function toPoisoningFreeArray<T>(arrayLike: ArrayLike<T>): PoisoningFreeArray<T> {
+  const instance = safeArrayFrom(arrayLike);
   safeObjectDefineProperty(instance, MapSymbol, {
     value: safeArrayMap,
     configurable: false,
@@ -50,10 +51,3 @@ function toPoisoningFreeArray<T>(instance: T[]): PoisoningFreeArray<T> {
   });
   return instance as PoisoningFreeArray<T>;
 }
-
-/** Factory responsible to build instances of PoisoningFreeArray */
-export const PoisoningFreeArray = {
-  from<T>(arrayLike: ArrayLike<T>): PoisoningFreeArray<T> {
-    return toPoisoningFreeArray(safeArrayFrom(arrayLike));
-  },
-};

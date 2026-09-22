@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.common.json",
   "compilerOptions": {
-    "types": ["node"]
+    "types": ["node"],
+    "target": "es2025",
+    "lib": ["es2025"]
   },
-  "include": ["src/"]
+  "include": ["src/"],
+  "exclude": ["src/**/*.spec.ts", "src/**/__test-helpers__/"]
 }

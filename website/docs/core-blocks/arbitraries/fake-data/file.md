@@ -113,7 +113,7 @@ Generate any value eligible to be stringified in JSON and parsed back to itself 
 As `JSON.parse` preserves `-0`, `jsonValue` can also have `-0` as a value.
 `jsonValue` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
 
-:::info Note
+:::info[Note]
 `JSON.parse(JSON.stringify(value))` is not the identity as `-0` is changed into `0` by `JSON.stringify`.
 :::
 

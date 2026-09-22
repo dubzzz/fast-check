@@ -1,26 +1,21 @@
 import { Value } from '../../../check/arbitrary/definition/Value.js';
-import type { Stream } from '../../../stream/Stream.js';
-import { stream } from '../../../stream/Stream.js';
-
-const safeMathCeil = Math.ceil;
-const safeMathFloor = Math.floor;
 
 /** @internal */
 function halvePosInteger(n: number): number {
-  return safeMathFloor(n / 2);
+  return Math.floor(n / 2);
 }
 /** @internal */
 function halveNegInteger(n: number): number {
-  return safeMathCeil(n / 2);
+  return Math.ceil(n / 2);
 }
 
 /**
  * Compute shrunk values to move from current to target
  * @internal
  */
-export function shrinkInteger(current: number, target: number, tryTargetAsap: boolean): Stream<Value<number>> {
+export function shrinkInteger(current: number, target: number, tryTargetAsap: boolean): IteratorObject<Value<number>> {
   const realGap = current - target;
-  function* shrinkDecr(): IterableIterator<Value<number>> {
+  function* shrinkDecr(): IteratorObject<Value<number>> {
     let previous: number | undefined = tryTargetAsap ? undefined : target;
     const gap = tryTargetAsap ? realGap : halvePosInteger(realGap);
     for (let toremove = gap; toremove > 0; toremove = halvePosInteger(toremove)) {
@@ -30,8 +25,9 @@ export function shrinkInteger(current: number, target: number, tryTargetAsap: bo
       yield new Value(next, previous); // previous indicates the last passing value
       previous = next;
     }
+    return undefined;
   }
-  function* shrinkIncr(): IterableIterator<Value<number>> {
+  function* shrinkIncr(): IteratorObject<Value<number>> {
     let previous: number | undefined = tryTargetAsap ? undefined : target;
     const gap = tryTargetAsap ? realGap : halveNegInteger(realGap);
     for (let toremove = gap; toremove < 0; toremove = halveNegInteger(toremove)) {
@@ -39,6 +35,7 @@ export function shrinkInteger(current: number, target: number, tryTargetAsap: bo
       yield new Value(next, previous); // previous indicates the last passing value
       previous = next;
     }
+    return undefined;
   }
-  return realGap > 0 ? stream(shrinkDecr()) : stream(shrinkIncr());
+  return realGap > 0 ? shrinkDecr() : shrinkIncr();
 }

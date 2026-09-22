@@ -204,7 +204,7 @@ Available since 1.16.0.
 
 Generate recursive structures.
 
-:::tip Prefer `fc.letrec` when feasible
+:::tip[Prefer `fc.letrec` when feasible]
 Initially `fc.memo` has been designed to offer a higher control over the generated depth. Unfortunately it came with a cost: the arbitrary itself is costly to build.
 Most of the features offered by `fc.memo` can now be done using `fc.letrec` coupled with `fc.option` or `fc.oneof`.
 Whenever possible, we recommend using `fc.letrec` instead of `fc.memo`.

@@ -1,9 +1,5 @@
-import { safePush } from '../../../utils/globals.js';
 import { noSuchValue } from '../../../utils/noSuchValue.js';
 import type { RegexToken } from './TokenizeRegex.js';
-
-const safeMathFloor = Math.floor;
-const safeMathMin = Math.min;
 
 /** @internal */
 function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNode: RegexToken; minLength: number } {
@@ -34,7 +30,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
                 ...astNode.quantifier,
                 kind: 'Range',
                 from: 1,
-                to: safeMathFloor(maxLength / scaledClampedMinLength),
+                to: Math.floor(maxLength / scaledClampedMinLength),
               },
               expression: clamped.astNode,
             },
@@ -57,7 +53,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
         }
         case 'Range': {
           const scaledMaxLength =
-            astNode.quantifier.from > 1 ? safeMathFloor(maxLength / astNode.quantifier.from) : maxLength;
+            astNode.quantifier.from > 1 ? Math.floor(maxLength / astNode.quantifier.from) : maxLength;
           const clamped = clampRegexAstInternal(astNode.expression, scaledMaxLength);
           const scaledClampedMinLength = clamped.minLength > 1 ? clamped.minLength : 1;
           if (astNode.quantifier.to === undefined || astNode.quantifier.to * scaledClampedMinLength > maxLength) {
@@ -69,7 +65,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
                 quantifier: {
                   ...astNode.quantifier,
                   kind: 'Range',
-                  to: safeMathFloor(maxLength / scaledClampedMinLength),
+                  to: Math.floor(maxLength / scaledClampedMinLength),
                 },
                 expression: clamped.astNode,
               },
@@ -97,7 +93,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
         const temporaryAllowance = maxLength - totalMinLength;
         const clamped = clampRegexAstInternal(astNode.expressions[index], temporaryAllowance);
         totalMinLength += clamped.minLength;
-        safePush(extendedClampeds, { value: clamped, allowance: temporaryAllowance });
+        extendedClampeds.push({ value: clamped, allowance: temporaryAllowance });
       }
       const refinedExpressions: RegexToken[] = [];
       for (let index = 0; index !== extendedClampeds.length; ++index) {
@@ -105,7 +101,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
         const pastAllowance = extendedClampeds[index].allowance;
         const allowance = maxLength - totalMinLength + current.minLength;
         const reclamped = allowance !== pastAllowance ? clampRegexAstInternal(current.astNode, allowance) : current;
-        safePush(refinedExpressions, reclamped.astNode);
+        refinedExpressions.push(reclamped.astNode);
       }
       return { astNode: { ...astNode, expressions: refinedExpressions }, minLength: totalMinLength };
     }
@@ -149,7 +145,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
       }
       return {
         astNode: { ...astNode, left: clampedLeft.astNode, right: clampedRight.astNode },
-        minLength: safeMathMin(clampedLeft.minLength, clampedRight.minLength),
+        minLength: Math.min(clampedLeft.minLength, clampedRight.minLength),
       };
     }
     case 'Assertion': {

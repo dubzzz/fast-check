@@ -1,10 +1,8 @@
 import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { biasNumericRange, bigIntLogLike } from './helpers/BiasNumericRange.js';
 import { shrinkBigInt } from './helpers/ShrinkBigInt.js';
-import { BigInt } from '../../utils/globals.js';
 
 /** @internal */
 export class BigIntArbitrary extends Arbitrary<bigint> {
@@ -35,7 +33,7 @@ export class BigIntArbitrary extends Arbitrary<bigint> {
     return typeof value === 'bigint' && this.min <= value && value <= this.max;
   }
 
-  shrink(current: bigint, context?: unknown): Stream<Value<bigint>> {
+  shrink(current: bigint, context?: unknown): IteratorObject<Value<bigint>> {
     if (!BigIntArbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it
@@ -47,7 +45,7 @@ export class BigIntArbitrary extends Arbitrary<bigint> {
       // Last chance try...
       // context is set to undefined, so that shrink will restart
       // without any assumptions in case our try find yet another bug
-      return Stream.of(new Value(context, undefined));
+      return Iterator.from([new Value(context, undefined)]);
     }
     // Normal shrink process
     return shrinkBigInt(current, context, false);
@@ -56,7 +54,7 @@ export class BigIntArbitrary extends Arbitrary<bigint> {
   private defaultTarget(): bigint {
     // min <= 0 && max >= 0   => shrink towards zero
     if (this.min <= 0 && this.max >= 0) {
-      return BigInt(0);
+      return 0n;
     }
     // min < 0                => shrink towards max (closer to zero)
     // otherwise              => shrink towards min (closer to zero)
@@ -66,8 +64,8 @@ export class BigIntArbitrary extends Arbitrary<bigint> {
   private isLastChanceTry(current: bigint, context: bigint): boolean {
     // Last chance corresponds to scenario where shrink should be empty
     // But we try a last thing just in case it can work
-    if (current > 0) return current === context + BigInt(1) && current > this.min;
-    if (current < 0) return current === context - BigInt(1) && current < this.max;
+    if (current > 0) return current === context + 1n && current > this.min;
+    if (current < 0) return current === context - 1n && current < this.max;
     return false;
   }
 
@@ -82,7 +80,7 @@ export class BigIntArbitrary extends Arbitrary<bigint> {
       throw new Error(`Invalid context type passed to BigIntArbitrary (#1)`);
     }
     const differentSigns = (current > 0 && context < 0) || (current < 0 && context > 0);
-    if (context !== BigInt(0) && differentSigns) {
+    if (context !== 0n && differentSigns) {
       throw new Error(`Invalid context value passed to BigIntArbitrary (#2)`);
     }
     return true;

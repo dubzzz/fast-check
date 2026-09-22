@@ -1,8 +1,5 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary.js';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { Map as SMap, safeMapSet, safeMapGet } from '../utils/globals.js';
-
-const safeGetOwnPropertyNames = Object.getOwnPropertyNames;
 
 /**
  * Type of the value produced by {@link letrec}
@@ -52,14 +49,14 @@ export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => Letre
 
 /** @internal */
 function createLazyArbsPool<T>() {
-  const lazyArbsPool = new SMap<keyof T, LazyArbitrary<unknown>>();
+  const lazyArbsPool = new Map<keyof T, LazyArbitrary<unknown>>();
   const getLazyFromPool = (key: keyof T): LazyArbitrary<unknown> => {
-    let lazyArb = safeMapGet(lazyArbsPool, key);
+    let lazyArb = lazyArbsPool.get(key);
     if (lazyArb !== undefined) {
       return lazyArb;
     }
     lazyArb = new LazyArbitrary(String(key));
-    safeMapSet(lazyArbsPool, key, lazyArb);
+    lazyArbsPool.set(key, lazyArb);
     return lazyArb;
   };
   return getLazyFromPool;
@@ -114,7 +111,7 @@ export function letrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBui
 
   // Fill the "underlying" field for each arbitrary in the lazy pool
   // Iterate on own-only: to prevents accidental scan over properties inherited from an object’s prototype
-  const declaredArbitraryNames = safeGetOwnPropertyNames(strictArbs) as (keyof T)[];
+  const declaredArbitraryNames = Object.getOwnPropertyNames(strictArbs) as (keyof T)[];
   for (const name of declaredArbitraryNames) {
     const lazyArb = getLazyFromPool(name);
     lazyArb.underlying = strictArbs[name];

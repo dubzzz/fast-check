@@ -48,7 +48,7 @@ Users can now easily restrict the shrinking capabilities of an existing arbitrar
 fc.limitShrink(anyArbitrary, 4); // here we limit the shrinker of anyArbitrary to produce at most 4 values
 ```
 
-:::warning Avoid limiting shrinking capabilities
+:::warning[Avoid limiting shrinking capabilities]
 Although limiting the shrinking capabilities can speed up your CI when failures occur, we do not recommend this approach to be the default. Instead, if you want to reduce the shrinking time for automated jobs or local runs, consider using `endOnFailure` or `interruptAfterTimeLimit`.
 
 The only potentially legitimate use of limiting shrinking is when creating new complex arbitraries. In such cases, limiting some less relevant parts may help preserve shrinking capabilities without requiring exhaustive coverage of the shrinker.

@@ -13,14 +13,14 @@ By default, the [runners](/docs/core-blocks/runners/) take an [optional argument
 Example:
 
 ```js
-test('test #1', () => {
-  fc.assert(myProp1, { numRuns: 10 });
+test('test #1', async () => {
+  await fc.assert(myProp1, { numRuns: 10 });
 });
-test('test #2', () => {
-  fc.assert(myProp2, { numRuns: 10 });
+test('test #2', async () => {
+  await fc.assert(myProp2, { numRuns: 10 });
 });
-test('test #3', () => {
-  fc.assert(myProp3, { numRuns: 10 });
+test('test #3', async () => {
+  await fc.assert(myProp3, { numRuns: 10 });
 });
 ```
 
@@ -33,14 +33,14 @@ Here is how to update the snippet above to share the settings:
 ```js
 fc.configureGlobal({ numRuns: 10 });
 
-test('test #1', () => {
-  fc.assert(myProp1);
+test('test #1', async () => {
+  await fc.assert(myProp1);
 });
-test('test #2', () => {
-  fc.assert(myProp2);
+test('test #2', async () => {
+  await fc.assert(myProp2);
 });
-test('test #3', () => {
-  fc.assert(myProp3);
+test('test #3', async () => {
+  await fc.assert(myProp3);
 });
 ```
 
@@ -48,7 +48,7 @@ test('test #3', () => {
 `configureGlobal` fully resets the settings. In other words, it fully drops the previously defined global settings if any even if they applied on other keys.
 :::
 
-:::tip Enrich existing global settings
+:::tip[Enrich existing global settings]
 If you want to only add new options on top of the existing ones you may want to use `readConfigureGlobal` as follow:
 
 ```js
@@ -56,6 +56,14 @@ fc.configureGlobal({ ...fc.readConfigureGlobal(), ...myNewOptions });
 ```
 
 You can also fully reset all the global options by calling `resetConfigureGlobal`.
+:::
+
+:::info[Plugins]
+[Plugins](/docs/core-blocks/plugins/) cannot be shared via `configureGlobal`, they have their own installer: `fc.installGlobalPlugin(myPlugin())`.
+:::
+
+:::warning[Deprecated hooks]
+The `beforeEach`, `afterEach`, `asyncBeforeEach` and `asyncAfterEach` settings have been deprecated in favor of their plugin equivalents. They can be set up via `fc.installGlobalPlugin(fc.beforeEach(fn))`, see [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/).
 :::
 
 Resources: [API reference](/docs/api/functions/configureGlobal).  
@@ -111,6 +119,6 @@ export default defineConfig({
 Then you can add the global settings snippet directly into the setup file:
 
 ```js title="vitest.setup.js"
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 fc.configureGlobal({ numRuns: 10 });
 ```

@@ -8,7 +8,7 @@ sidebar_label: Ecosystem
 
 Bring additional capabilities to fast-check by leveraging its rich ecosystem of extensions and plugins
 
-:::warning Stability
+:::warning[Stability]
 This page provides a list of packages available in the fast-check ecosystem. It includes both official and third-party packages. While we can ensure the stability, usage, and maintenance of the official packages, we cannot provide any specific details or guarantees regarding the non-official packages.
 
 <details>
@@ -59,9 +59,9 @@ const Person = S.struct({
 const isPerson = S.is(Person);
 const personArbitrary = Arbitrary.make(Person)(fc);
 
-test('Only generating valid Person', () => {
-  fc.assert(
-    fc.property(personArbitrary, (person) => {
+test('Only generating valid Person', async () => {
+  await fc.assert(
+    fc.asyncProperty(personArbitrary, (person) => {
       expect(isPerson(person)).toBe(true);
     }),
   );
@@ -88,9 +88,9 @@ import { ZodFastCheck } from 'zod-fast-check';
 const User = z.object({ firstName: z.string(), lastName: z.string() });
 const userArbitrary = ZodFastCheck().inputOf(User);
 
-test("User's full name always contains their first and last names", () => {
-  fc.assert(
-    fc.property(userArbitrary, (user) => {
+test("User's full name always contains their first and last names", async () => {
+  await fc.assert(
+    fc.asyncProperty(userArbitrary, (user) => {
       const parsedUser = User.parse(user);
       const fullName = `${parsedUser.firstName} ${parsedUser.lastName}`;
       expect(fullName).toContain(user.firstName);
@@ -285,7 +285,7 @@ Can generate the following fast-check arbitraries file:
 ```js
 // Generated from TypeSpec using `typespec-fast-check`
 
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 export const Car = fc.record({
   /** Kind of car */
@@ -417,7 +417,7 @@ Prototype poisoning is a commonly exploited vulnerability that can lead to vario
 By utilizing this package in conjunction with fast-check, you can effectively safeguard against inadvertently modifying global prototypes when your code interacts with specially crafted inputs. Using both packages together unlocks their full potential and pushes your testing capabilities a step forward.
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
 const ignoredRootRegex = /^(__coverage__|console)$/;
@@ -429,11 +429,11 @@ function poisoningAfterEach() {
     throw err;
   }
 }
-fc.configureGlobal({ afterEach: poisoningAfterEach });
+fc.installGlobalPlugin(fc.afterEach(poisoningAfterEach));
 
-test('should detect the substring', () => {
-  fc.assert(
-    fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+test('should detect the substring', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.string(), fc.string(), fc.string(), (a, b, c) => {
       expect(isSubstring(a + b + c, b)).toBe(true);
     }),
   );
@@ -454,7 +454,7 @@ By default fast-check does not change where the code runs: everything run within
 
 ```js
 import { test, expect } from '@jest/globals';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { isMainThread } from 'node:worker_threads';
 import { assert, propertyFor } from '@fast-check/worker';
 
@@ -470,7 +470,7 @@ if (isMainThread) {
 }
 ```
 
-:::info Integration with Jest runner
+:::info[Integration with Jest runner]
 `@fast-check/worker` is directly integrating with `@fast-check/jest`. Checkout the [official documentation of `@fast-check/jest`](https://www.npmjs.com/package/@fast-check/jest) for more details.
 :::
 

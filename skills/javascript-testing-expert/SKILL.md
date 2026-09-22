@@ -295,7 +295,7 @@ If using `faker` to fake data, we recommend wiring any fake data generation with
 ```ts
 // Source: https://fast-check.dev/blog/2024/07/18/integrating-faker-with-fast-check/
 import { Faker, Randomizer, base } from '@faker-js/faker';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 class FakerBuilder<TValue> extends fc.Arbitrary<TValue> {
   constructor(private readonly generator: (faker: Faker) => TValue) {
@@ -303,7 +303,7 @@ class FakerBuilder<TValue> extends fc.Arbitrary<TValue> {
   }
   generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<TValue> {
     const randomizer: Randomizer = {
-      next: (): number => mrng.nextDouble(),
+      next: (): number => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
       seed: () => {}, // no-op, no support for updates of the seed, could even throw
     };
     const customFaker = new Faker({ locale: base, randomizer });
@@ -349,7 +349,7 @@ it('...', ({ g }) => {
 
 // with fast-check
 import { it } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 it('...', () => {
   fc.assert(
     fc.property(fc.gen(), (g) => {
@@ -370,7 +370,7 @@ it.prop([...arbitraries])('...', (...values) => {
 
 // with fast-check
 import { it } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 it('...', () => {
   fc.assert(
     fc.property(...arbitraries, (...values) => {
@@ -391,7 +391,7 @@ it.prop([...arbitraries])('...', async (...values) => {
 
 // with fast-check
 import { it } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 it('...', async () => {
   await fc.assert(
     fc.asyncProperty(...arbitraries, async (...values) => {

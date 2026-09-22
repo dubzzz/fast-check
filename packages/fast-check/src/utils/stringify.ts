@@ -1,28 +1,3 @@
-import {
-  safeFilter,
-  safeGetTime,
-  safeIndexOf,
-  safeJoin,
-  safeMap,
-  safePush,
-  safeToISOString,
-  safeToString,
-  Map,
-  String,
-  Symbol as StableSymbol,
-} from './globals.js';
-
-const safeArrayFrom = Array.from;
-const safeBufferIsBuffer = typeof Buffer !== 'undefined' ? Buffer.isBuffer : undefined;
-const safeJsonStringify = JSON.stringify;
-const safeNumberIsNaN = Number.isNaN;
-const safeObjectKeys = Object.keys;
-const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
-const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-const safeObjectGetPrototypeOf = Object.getPrototypeOf;
-const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
-const safePositiveInfinity = Number.POSITIVE_INFINITY;
-
 /**
  * Use this symbol to define a custom serializer for your instances.
  * Serializer must be a function returning a string (see {@link WithToStringMethod}).
@@ -60,6 +35,7 @@ export function hasToStringMethod<T>(instance: T): instance is T & WithToStringM
  * Please note that:
  * 1. It will only be useful for asynchronous properties.
  * 2. It has to return barely instantly.
+ * 3. When not defined using an async function, it should not throw synchronously.
  *
  * @remarks Since 2.17.0
  * @public
@@ -112,10 +88,10 @@ function getSymbolDescription(s: symbol): string | null {
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
-      return 1 / numValue === safeNegativeInfinity ? '-0' : '0';
-    case safeNegativeInfinity:
+      return 1 / numValue === Number.NEGATIVE_INFINITY ? '-0' : '0';
+    case Number.NEGATIVE_INFINITY:
       return 'Number.NEGATIVE_INFINITY';
-    case safePositiveInfinity:
+    case Number.POSITIVE_INFINITY:
       return 'Number.POSITIVE_INFINITY';
     default:
       return numValue === numValue ? String(numValue) : 'Number.NaN';
@@ -137,15 +113,17 @@ function isSparseArray(arr: unknown[]): boolean {
 /** @internal */
 export function stringifyInternal<Ts>(
   value: Ts,
-  previousValues: any[],
+  previousValues: Set<unknown>,
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
 ): string {
-  const currentValues = [...previousValues, value];
+  let currentValues = previousValues;
   if (typeof value === 'object') {
     // early cycle detection for objects
-    if (safeIndexOf(previousValues, value) !== -1) {
+    if (previousValues.has(value)) {
       return '[cyclic]';
     }
+    currentValues = new Set(previousValues);
+    currentValues.add(value);
   }
 
   if (hasAsyncToStringMethod(value)) {
@@ -164,7 +142,7 @@ export function stringifyInternal<Ts>(
     }
   }
 
-  switch (safeToString(value)) {
+  switch (Object.prototype.toString.call(value)) {
     case '[object Array]': {
       const arr = value as unknown as unknown[];
       if (arr.length >= 50 && isSparseArray(arr)) {
@@ -173,21 +151,18 @@ export function stringifyInternal<Ts>(
         // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
         // oxlint-disable-next-line typescript/no-for-in-array
         for (const index in arr) {
-          if (!safeNumberIsNaN(Number(index)))
-            safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
+          if (!Number.isNaN(Number(index)))
+            assignments.push(`${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
         }
         return assignments.length !== 0
-          ? `Object.assign(Array(${arr.length}),{${safeJoin(assignments, ',')}})`
+          ? `Object.assign(Array(${arr.length}),{${assignments.join(',')}})`
           : `Array(${arr.length})`;
       }
       // stringifiedArray results in: '' for [,]
       // stringifiedArray results in: ',' for [,,]
       // stringifiedArray results in: '1,' for [1,,]
       // stringifiedArray results in: '1,,2' for [1,,2]
-      const stringifiedArray = safeJoin(
-        safeMap(arr, (v) => stringifyInternal(v, currentValues, getAsyncContent)),
-        ',',
-      );
+      const stringifiedArray = arr.map((v) => stringifyInternal(v, currentValues, getAsyncContent)).join(',');
       return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
     }
     case '[object BigInt]':
@@ -199,7 +174,7 @@ export function stringifyInternal<Ts>(
     }
     case '[object Date]': {
       const d = value as unknown as Date;
-      return safeNumberIsNaN(safeGetTime(d)) ? `new Date(NaN)` : `new Date(${safeJsonStringify(safeToISOString(d))})`;
+      return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
     }
     case '[object Map]':
       return `new Map(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
@@ -225,37 +200,36 @@ export function stringifyInternal<Ts>(
             ? '["__proto__"]'
             : typeof k === 'symbol'
               ? `[${stringifyInternal(k, currentValues, getAsyncContent)}]`
-              : safeJsonStringify(k)
+              : JSON.stringify(k)
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
-        ...(safeObjectGetPrototypeOf(value) === null ? ['__proto__:null'] : []),
-        ...safeMap(safeObjectKeys(value as object), mapper),
-        ...safeMap(
-          safeFilter(safeObjectGetOwnPropertySymbols(value), (s) => {
-            const descriptor = safeObjectGetOwnPropertyDescriptor(value, s);
+        ...(Object.getPrototypeOf(value) === null ? ['__proto__:null'] : []),
+        ...Object.keys(value as object).map(mapper),
+        ...Object.getOwnPropertySymbols(value)
+          .filter((s) => {
+            const descriptor = Object.getOwnPropertyDescriptor(value, s);
             return descriptor && descriptor.enumerable;
-          }),
-          mapper,
-        ),
+          })
+          .map(mapper),
       ];
-      return '{' + safeJoin(stringifiedProperties, ',') + '}';
+      return '{' + stringifiedProperties.join(',') + '}';
     }
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
     case '[object String]':
-      return typeof value === 'string' ? safeJsonStringify(value) : `new String(${safeJsonStringify(value)})`;
+      return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
     case '[object Symbol]': {
       const s = value as unknown as symbol;
-      if (StableSymbol.keyFor(s) !== undefined) {
-        return `Symbol.for(${safeJsonStringify(StableSymbol.keyFor(s))})`;
+      if (Symbol.keyFor(s) !== undefined) {
+        return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
       if (desc === null) {
         return 'Symbol()';
       }
-      const knownSymbol = desc.startsWith('Symbol.') && (StableSymbol as any)[desc.substring(7)];
-      return s === knownSymbol ? desc : `Symbol(${safeJsonStringify(desc)})`;
+      const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
+      return s === knownSymbol ? desc : `Symbol(${JSON.stringify(desc)})`;
     }
     case '[object Promise]': {
       const promiseContent = getAsyncContent(value as any as Promise<unknown>);
@@ -289,7 +263,8 @@ export function stringifyInternal<Ts>(
     case '[object Float64Array]':
     case '[object BigInt64Array]':
     case '[object BigUint64Array]': {
-      if (typeof safeBufferIsBuffer === 'function' && safeBufferIsBuffer(value)) {
+      // Buffer is not defined in browsers environments
+      if (typeof Buffer !== 'undefined' && Buffer.isBuffer(value)) {
         // Warning: value.values() may crash at runtime if Buffer got poisoned
         return `Buffer.from(${
           // This cast is necessary because `detached` only exists in ES2024,
@@ -298,10 +273,10 @@ export function stringifyInternal<Ts>(
             ? // Don't try to access the buffer contents if its underlying
               // `ArrayBuffer` is detached because it will throw.
               '/*detached ArrayBuffer*/'
-            : stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)
+            : stringifyInternal(Array.from(value.values()), currentValues, getAsyncContent)
         })`;
       }
-      const valuePrototype = safeObjectGetPrototypeOf(value);
+      const valuePrototype = Object.getPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
       if (typeof className === 'string') {
         const typedArray = value as unknown as
@@ -327,7 +302,7 @@ export function stringifyInternal<Ts>(
         // Warning: typedArray.values() may crash at runtime if type got poisoned
         const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
         return `${className}.from(${stringifyInternal(
-          safeArrayFrom(valuesFromTypedArr),
+          Array.from(valuesFromTypedArr),
           currentValues,
           getAsyncContent,
         )})`;
@@ -340,9 +315,15 @@ export function stringifyInternal<Ts>(
   try {
     return (value as any).toString();
   } catch {
-    return safeToString(value);
+    return Object.prototype.toString.call(value);
   }
 }
+
+/** @internal */
+const emptySet = new Set();
+
+/** @internal */
+const unknownAsyncContentGetter = () => ({ state: 'unknown', value: undefined }) satisfies AsyncContent;
 
 /**
  * Convert any value to its fast-check string representation
@@ -353,7 +334,33 @@ export function stringifyInternal<Ts>(
  * @public
  */
 export function stringify<Ts>(value: Ts): string {
-  return stringifyInternal(value, [], () => ({ state: 'unknown', value: undefined }));
+  return stringifyInternal(value, emptySet, unknownAsyncContentGetter);
+}
+
+/** @internal */
+const stillPendingMarker = Symbol();
+
+/** @internal */
+function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
+  let handleId: ReturnType<typeof setTimeout> | null = null;
+  const cancel = () => {
+    if (handleId !== null) {
+      clearTimeout(handleId);
+    }
+  };
+  const delay = new Promise<typeof stillPendingMarker>((resolve) => {
+    // setTimeout allows to keep higher priority on any already resolved Promise (or close to)
+    // including nested ones like:
+    // >  (async () => {
+    // >    await Promise.resolve();
+    // >    await Promise.resolve();
+    // >  })()
+    handleId = setTimeout(() => {
+      handleId = null;
+      resolve(stillPendingMarker);
+    }, 0);
+  });
+  return { delay, cancel };
 }
 
 /**
@@ -367,61 +374,26 @@ export function stringify<Ts>(value: Ts): string {
  * @internal
  */
 export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
-  const stillPendingMarker = StableSymbol();
-  const pendingPromisesForCache: Promise<void>[] = [];
+  const pendingPromisesForCache = new Map<unknown, Promise<unknown>>();
   const cache = new Map<unknown, AsyncContent>();
-
-  function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
-    let handleId: ReturnType<typeof setTimeout> | null = null;
-    const cancel = () => {
-      if (handleId !== null) {
-        clearTimeout(handleId);
-      }
-    };
-    const delay = new Promise<typeof stillPendingMarker>((resolve) => {
-      // setTimeout allows to keep higher priority on any already resolved Promise (or close to)
-      // including nested ones like:
-      // >  (async () => {
-      // >    await Promise.resolve();
-      // >    await Promise.resolve();
-      // >  })()
-      handleId = setTimeout(() => {
-        handleId = null;
-        resolve(stillPendingMarker);
-      }, 0);
-    });
-    return { delay, cancel };
-  }
 
   const unknownState = { state: 'unknown', value: undefined } as const;
   const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithAsyncToStringMethod): AsyncContent {
     const cacheKey = data;
-    if (cache.has(cacheKey)) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      return cache.get(cacheKey)!;
+    const match = cache.get(cacheKey);
+    if (match !== undefined) {
+      return match;
     }
 
-    const delay0 = createDelay0();
-    const p: Promise<unknown> =
-      asyncToStringMethod in data
-        ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
-        : (data as Promise<unknown>);
-    // oxlint-disable-next-line no-empty-function
-    p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
-
-    pendingPromisesForCache.push(
-      // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
-      // > If the iterable contains one or more non-promise value and/or an already settled promise,
-      // > then Promise.race will resolve to the first of these values found in the iterable.
-      Promise.race([p, delay0.delay]).then(
+    const p: Promise<unknown> = asyncToStringMethod in data ? data[asyncToStringMethod]() : data;
+    pendingPromisesForCache.set(
+      cacheKey,
+      p.then(
         (successValue) => {
-          if (successValue === stillPendingMarker) cache.set(cacheKey, { state: 'pending', value: undefined });
-          else cache.set(cacheKey, { state: 'fulfilled', value: successValue });
-          delay0.cancel();
+          cache.set(cacheKey, { state: 'fulfilled', value: successValue });
         },
         (errorValue) => {
           cache.set(cacheKey, { state: 'rejected', value: errorValue });
-          delay0.cancel();
         },
       ),
     );
@@ -435,11 +407,34 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
     //      a single loop (or two) will must of the time be enough for most of the values.
     //      Nested Promise will be a sub-optimal case, but given the fact that it barely never
     //      happens in real world, we may pay the cost for it for time to time.
-    const stringifiedValue = stringifyInternal(value, [], getAsyncContent);
-    if (pendingPromisesForCache.length === 0) {
+    const stringifiedValue = stringifyInternal(value, emptySet, getAsyncContent);
+    if (pendingPromisesForCache.size === 0) {
       return stringifiedValue;
     }
-    return Promise.all(pendingPromisesForCache.splice(0)).then(loop);
+    const allKeys = Array.from(pendingPromisesForCache.keys());
+    const allPromises = Array.from(pendingPromisesForCache.values());
+    const delay0 = createDelay0();
+    pendingPromisesForCache.clear();
+    return (
+      Promise.race([Promise.all(allPromises), delay0.delay])
+        // Can only be a success given we catch all errors at Map::set-time
+        .then((successValue) => {
+          if (successValue !== stillPendingMarker) {
+            // Awaited promises resolve before we reach the time limit of delay0
+            delay0.cancel(); // fast cancel to avoid dangling timeout from staying longer than suitable
+            return loop();
+          }
+          // At least one of the awaited promises got slower than our delay0
+          // As such we must mark the still awaited ones as pending
+          for (const cacheKey of allKeys) {
+            const inCache = cache.get(cacheKey);
+            if (inCache === undefined || inCache.state === 'unknown') {
+              cache.set(cacheKey, { state: 'pending', value: undefined });
+            }
+          }
+          return loop();
+        })
+    );
   }
   return loop();
 }

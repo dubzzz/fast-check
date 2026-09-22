@@ -14,8 +14,9 @@ export type PoisoningFreeSet<K> = Set<K> & {
   [HasSymbol]: (key: K) => boolean;
 };
 
-/** Alter an instance of Set to include non-poisonable methods */
-function toPoisoningFreeSet<K>(instance: Set<K>): PoisoningFreeSet<K> {
+/** Factory responsible to build instances of PoisoningFreeMap */
+export function toPoisoningFreeSet<K>(ins?: readonly K[] | Iterable<K> | null): PoisoningFreeSet<K> {
+  const instance = new SSet(ins);
   safeObjectDefineProperty(instance, AddSymbol, {
     value: safeSetAdd,
     configurable: false,
@@ -30,10 +31,3 @@ function toPoisoningFreeSet<K>(instance: Set<K>): PoisoningFreeSet<K> {
   });
   return instance as PoisoningFreeSet<K>;
 }
-
-/** Factory responsible to build instances of PoisoningFreeMap */
-export const PoisoningFreeSet = {
-  from<K>(ins?: readonly K[] | Iterable<K> | null): PoisoningFreeSet<K> {
-    return toPoisoningFreeSet(new SSet(ins));
-  },
-};

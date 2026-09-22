@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import type { GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 import { shouldIgnoreGlobal, shouldIgnoreProperty } from '../../src/internals/FilterNonEligibleDiffs.js';
-import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
+import { toPoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 
 describe('shouldIgnore{Global,Property}', () => {
   it('should reject any direct property on globalThis matching the regex', () => {
     // Arrange
     const entry: Entry = {
       keyName: '_ignored', // Case: globalThis._ignored added, edited or dropped from globalThis
-      globalDetails: { depth: 0, name: 'globalThis', rootAncestors: PoisoningFreeSet.from(['globalThis']) },
+      globalDetails: { depth: 0, name: 'globalThis', rootAncestors: toPoisoningFreeSet(['globalThis']) },
     };
 
     // Act
@@ -22,7 +22,7 @@ describe('shouldIgnore{Global,Property}', () => {
     // Arrange
     const entry: Entry = {
       keyName: 'keepIt', // Case: globalThis.keepIt added, edited or dropped from globalThis
-      globalDetails: { depth: 0, name: 'globalThis', rootAncestors: PoisoningFreeSet.from(['globalThis']) },
+      globalDetails: { depth: 0, name: 'globalThis', rootAncestors: toPoisoningFreeSet(['globalThis']) },
     };
 
     // Act
@@ -36,7 +36,7 @@ describe('shouldIgnore{Global,Property}', () => {
     // Arrange
     const entry: Entry = {
       keyName: 'child', // Case: globalThis._ignored.child added, edited or dropped from globalThis._ignored
-      globalDetails: { depth: 1, name: '_ignored', rootAncestors: PoisoningFreeSet.from(['globalThis']) },
+      globalDetails: { depth: 1, name: '_ignored', rootAncestors: toPoisoningFreeSet(['globalThis']) },
     };
 
     // Act
@@ -50,7 +50,7 @@ describe('shouldIgnore{Global,Property}', () => {
     // Arrange
     const entry: Entry = {
       keyName: 'child', // Case: globalThis.keepIt.child added, edited or dropped from globalThis.keepIt
-      globalDetails: { depth: 1, name: 'keepIt', rootAncestors: PoisoningFreeSet.from(['globalThis']) },
+      globalDetails: { depth: 1, name: 'keepIt', rootAncestors: toPoisoningFreeSet(['globalThis']) },
     };
 
     // Act
@@ -64,7 +64,7 @@ describe('shouldIgnore{Global,Property}', () => {
     // Arrange
     const entry: Entry = {
       keyName: 'child', // Case: globalThis._ignored.[...].something.child added, edited or dropped from globalThis._ignored.[...].something
-      globalDetails: { depth: 10, name: 'something', rootAncestors: PoisoningFreeSet.from(['_ignored']) },
+      globalDetails: { depth: 10, name: 'something', rootAncestors: toPoisoningFreeSet(['_ignored']) },
     };
 
     // Act
@@ -78,7 +78,7 @@ describe('shouldIgnore{Global,Property}', () => {
     // Arrange
     const entry: Entry = {
       keyName: 'child', // Case: globalThis.keepIt.[...].something.child added, edited or dropped from globalThis.keepIt.[...].something
-      globalDetails: { depth: 10, name: 'something', rootAncestors: PoisoningFreeSet.from(['keepIt']) },
+      globalDetails: { depth: 10, name: 'something', rootAncestors: toPoisoningFreeSet(['keepIt']) },
     };
 
     // Act
@@ -92,7 +92,7 @@ describe('shouldIgnore{Global,Property}', () => {
     // Arrange
     const entry: Entry = {
       keyName: 'child', // Case: globalThis.keepIt.[...].something.child added, edited or dropped from globalThis.keepIt.[...].something
-      globalDetails: { depth: 10, name: 'something', rootAncestors: PoisoningFreeSet.from(['_ignored', 'keepIt']) },
+      globalDetails: { depth: 10, name: 'something', rootAncestors: toPoisoningFreeSet(['_ignored', 'keepIt']) },
     };
 
     // Act

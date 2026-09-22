@@ -16,7 +16,7 @@ The syntax is the following:
 
 ```ts
 // For a one parameter property
-fc.assert(fc.property(fc.nat(), myCheckFunction), {
+await fc.assert(fc.asyncProperty(fc.nat(), myCheckFunction), {
   examples: [
     [0], // first example I want to test
     [Number.MAX_SAFE_INTEGER],
@@ -24,7 +24,7 @@ fc.assert(fc.property(fc.nat(), myCheckFunction), {
 });
 
 // For a multiple parameters property
-fc.assert(fc.property(fc.string(), fc.string(), fc.string(), myCheckFunction), {
+await fc.assert(fc.asyncProperty(fc.string(), fc.string(), fc.string(), myCheckFunction), {
   examples: [
     // Manual case 1
     [
@@ -36,20 +36,20 @@ fc.assert(fc.property(fc.string(), fc.string(), fc.string(), myCheckFunction), {
 });
 ```
 
-:::tip Usage with `context`
+:::tip[Usage with `context`]
 If you are using `context` to log within a predicate, you will need to use the following context implementation in your examples.
 
 ```ts
 const exampleContext = () => fc.sample(fc.context(), { numRuns: 1 })[0];
 
-fc.assert(fc.property(fc.string(), fc.string(), fc.context(), myCheckFunction), {
+await fc.assert(fc.asyncProperty(fc.string(), fc.string(), fc.context(), myCheckFunction), {
   examples: [['', '', exampleContext()]],
 });
 ```
 
 :::
 
-:::info Trust the framework
+:::info[Trust the framework]
 Please keep in mind that property based testing frameworks are fully able to find corner-cases with no help at all.
 :::
 
@@ -65,8 +65,8 @@ function buildQuickLookup(values) {
   return { has: (value) => value in fastValues };
 }
 
-fc.assert(
-  fc.property(fc.array(fc.string()), fc.string(), (allValues, lookForValue) => {
+await fc.assert(
+  fc.asyncProperty(fc.array(fc.string()), fc.string(), (allValues, lookForValue) => {
     // Arrange
     const expectedResult = allValues.includes(lookForValue);
 
@@ -93,8 +93,8 @@ Although, most built-in arbitraries come with built-in support for automatic shr
 - No special treatment needed for: `record`, `string` and many others.
 
 ```js
-fc.assert(
-  fc.property(
+await fc.assert(
+  fc.asyncProperty(
     fc.array(fc.string()).map(
       (arr) => arr.join(','),
       (raw) => {
