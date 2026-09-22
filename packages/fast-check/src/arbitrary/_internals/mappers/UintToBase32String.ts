@@ -1,4 +1,3 @@
-/** @internal */
 const encodeSymbolLookupTable: Record<number, string> = {
   10: 'A',
   11: 'B',
@@ -24,7 +23,6 @@ const encodeSymbolLookupTable: Record<number, string> = {
   31: 'Z',
 };
 
-/** @internal */
 const decodeSymbolLookupTable: Record<string, number> = {
   '0': 0,
   '1': 1,
@@ -60,12 +58,10 @@ const decodeSymbolLookupTable: Record<string, number> = {
   Z: 31,
 };
 
-/** @internal */
 function encodeSymbol(symbol: number) {
   return symbol < 10 ? String(symbol) : encodeSymbolLookupTable[symbol];
 }
 
-/** @internal */
 function pad(value: string, paddingLength: number) {
   let extraPadding = '';
   while (value.length + extraPadding.length < paddingLength) {
@@ -74,7 +70,6 @@ function pad(value: string, paddingLength: number) {
   return extraPadding + value;
 }
 
-/** @internal */
 function smallUintToBase32StringMapper(num: number): string {
   let base32Str = '';
   // num must be in 0 (incl.), 0x7fff_ffff (incl.)
@@ -88,21 +83,18 @@ function smallUintToBase32StringMapper(num: number): string {
   return base32Str;
 }
 
-/** @internal */
 function uintToBase32StringMapper(num: number, paddingLength: number): string {
   const head = ~~(num / 0x40000000);
   const tail = num & 0x3fffffff;
   return pad(smallUintToBase32StringMapper(head), paddingLength - 6) + pad(smallUintToBase32StringMapper(tail), 6);
 }
 
-/** @internal */
 export function paddedUintToBase32StringMapper(paddingLength: number) {
   return function padded(num: number): string {
     return uintToBase32StringMapper(num, paddingLength);
   };
 }
 
-/** @internal */
 export function uintToBase32StringUnmapper(value: unknown): number {
   if (typeof value !== 'string') {
     throw new Error('Unsupported type');

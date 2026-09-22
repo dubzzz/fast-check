@@ -18,7 +18,6 @@ type Interrupt = {
   promise: Promise<PreconditionFailure>;
 };
 
-/** @internal */
 function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
   const limitTime = safePerformanceNow() + timeMs;
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -37,7 +36,6 @@ function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
   };
 }
 
-/** @internal */
 function timeLimitRunner(
   interrupt: Interrupt,
   nestedRun: Property<unknown>['run'],

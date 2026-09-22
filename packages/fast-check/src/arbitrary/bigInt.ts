@@ -19,10 +19,7 @@ export interface BigIntConstraints {
   max?: bigint;
 }
 
-/**
- * Build fully set BigIntConstraints from a partial data
- * @internal
- */
+/** Build fully set BigIntConstraints from a partial data */
 function buildCompleteBigIntConstraints(constraints: BigIntConstraints): Required<BigIntConstraints> {
   const DefaultMin = -1n << 255n;
   const DefaultMax = (1n << 255n) - 1n;
@@ -35,10 +32,7 @@ function buildCompleteBigIntConstraints(constraints: BigIntConstraints): Require
   };
 }
 
-/**
- * Extract constraints from args received by bigint
- * @internal
- */
+/** Extract constraints from args received by bigint */
 function extractBigIntConstraints(args: [] | [bigint, bigint] | [BigIntConstraints]): BigIntConstraints {
   if (args[0] === undefined) {
     // bigInt()

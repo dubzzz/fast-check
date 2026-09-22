@@ -1,7 +1,6 @@
 import { noSuchValue } from '../../../utils/noSuchValue.js';
 import type { RegexToken } from './TokenizeRegex.js';
 
-/** @internal */
 function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNode: RegexToken; minLength: number } {
   switch (astNode.type) {
     case 'Char': {

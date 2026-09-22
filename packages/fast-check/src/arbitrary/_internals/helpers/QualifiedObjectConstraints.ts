@@ -120,22 +120,18 @@ export interface ObjectConstraints {
   stringUnit?: StringConstraints['unit'];
 }
 
-/** @internal */
 type ObjectConstraintsOptionalValues = 'depthSize' | 'maxDepth' | 'maxKeys' | 'size';
 
 /**
  * Internal wrapper around an `ObjectConstraints`, it adds all the missing pieces in the configuration
- * @internal
  */
 export type QualifiedObjectConstraints = Required<
   Omit<ObjectConstraints, 'withBoxedValues' | 'withUnicodeString' | 'stringUnit' | ObjectConstraintsOptionalValues>
 > &
   Pick<ObjectConstraints, ObjectConstraintsOptionalValues>;
 
-/** @internal */
 type DefaultValuesConstraints = { size: SizeForArbitrary };
 
-/** @internal */
 function defaultValues(
   constraints: DefaultValuesConstraints,
   stringArbitrary: (constraints: DefaultValuesConstraints) => Arbitrary<string>,
@@ -149,19 +145,16 @@ function defaultValues(
   ];
 }
 
-/** @internal */
 function boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
   return arbs.map((arb) => boxedArbitraryBuilder(arb));
 }
 
-/** @internal */
 function boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
   return boxEnabled ? boxArbitraries(arbs).concat(arbs) : arbs;
 }
 
 /**
  * Convert constraints of type ObjectConstraints into fully qualified constraints
- * @internal
  */
 export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): QualifiedObjectConstraints {
   const valueConstraints = {

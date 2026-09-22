@@ -8,8 +8,6 @@ import { readConfigureGlobal } from '../../../check/runner/configuration/GlobalP
  *
  * "The String type is the set of all ordered sequences [...] up to a maximum length of 2^53 - 1 elements."
  * See {@link https://262.ecma-international.org/11.0/#sec-ecmascript-language-types-string-type | ECMAScript Specifications}
- *
- * @internal
  */
 export const MaxLengthUpperBound = 0x7fffffff;
 
@@ -24,7 +22,6 @@ export const MaxLengthUpperBound = 0x7fffffff;
  */
 export type Size = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
 
-/** @internal */
 const orderedSize = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
 
 /**
@@ -33,7 +30,6 @@ const orderedSize = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
  */
 export type RelativeSize = '-4' | '-3' | '-2' | '-1' | '=' | '+1' | '+2' | '+3' | '+4';
 
-/** @internal */
 const orderedRelativeSize = ['-4', '-3', '-2', '-1', '=', '+1', '+2', '+3', '+4'] as const;
 
 /**
@@ -65,13 +61,11 @@ export type DepthSize = RelativeSize | Size | 'max' | number | undefined;
 
 /**
  * The default size used by fast-check
- * @internal
  */
 export const DefaultSize: Size = 'small';
 
 /**
  * Compute `maxLength` based on `minLength` and `size`
- * @internal
  */
 export function maxLengthFromMinLength(minLength: number, size: Size): number {
   switch (size) {
@@ -92,7 +86,6 @@ export function maxLengthFromMinLength(minLength: number, size: Size): number {
 
 /**
  * Transform a RelativeSize|Size into a Size
- * @internal
  */
 export function relativeSizeToSize(size: Size | RelativeSize, defaultSize: Size): Size {
   const sizeInRelative = orderedRelativeSize.indexOf(size as RelativeSize);
@@ -117,7 +110,6 @@ export function relativeSizeToSize(size: Size | RelativeSize, defaultSize: Size)
  * @param minLength - Considered minimal length
  * @param maxLength - Considered maximal length
  * @param specifiedMaxLength - Whether or not the caller specified the max (true) or if it has been defaulted (false)
- * @internal
  */
 export function maxGeneratedLengthFromSizeForArbitrary(
   size: SizeForArbitrary | undefined,
@@ -146,7 +138,6 @@ export function maxGeneratedLengthFromSizeForArbitrary(
  * Compute `depthSize` based on `size`
  * @param size - Size or depthSize defined by the caller on the arbitrary
  * @param specifiedMaxDepth - Whether or not the caller specified a max depth
- * @internal
  */
 export function depthBiasFromSizeForArbitrary(depthSizeOrSize: DepthSize, specifiedMaxDepth: boolean): number {
   if (typeof depthSizeOrSize === 'number') {

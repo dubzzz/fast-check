@@ -14,7 +14,6 @@ type CommandsArbitraryContext<Model extends object, Real, RunResult, CheckAsync 
   items: Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[];
 };
 
-/** @internal */
 export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
   CommandsIterable<Model, Real, RunResult, CheckAsync>
 > {

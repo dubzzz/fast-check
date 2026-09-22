@@ -236,7 +236,6 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
 
 /**
  * Extract the block starting at "from" in "text"
- * @internal
  */
 export function readFrom(text: string, from: number, unicodeMode: boolean, mode: TokenizerBlockMode): string {
   const to = blockEndFrom(text, from, unicodeMode, mode);

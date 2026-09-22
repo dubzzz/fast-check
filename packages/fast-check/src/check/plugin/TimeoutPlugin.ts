@@ -5,12 +5,13 @@ import type { Plugin, PluginInstance } from './Plugin.js';
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
 
-/** @internal */
 function timeoutAfter(timeMs: number) {
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = safeSetTimeout(() => {
-      resolve({ error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`) });
+      resolve({
+        error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`),
+      });
     }, timeMs);
   });
   return {
@@ -19,7 +20,6 @@ function timeoutAfter(timeMs: number) {
   };
 }
 
-/** @internal */
 function timeoutRunner(
   timeMs: number,
   nestedRun: Property<unknown>['run'],

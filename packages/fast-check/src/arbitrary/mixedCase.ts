@@ -21,7 +21,6 @@ export interface MixedCaseConstraints {
   untoggleAll?: (toggledString: string) => string;
 }
 
-/** @internal */
 function defaultToggleCase(rawChar: string) {
   const upper = rawChar.toUpperCase();
   if (upper !== rawChar) return upper;
