@@ -1,16 +1,16 @@
-import type { RandomGenerator } from "pure-rand/types/RandomGenerator";
+import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 
-import { Random } from "../../random/generator/Random.js";
-import type { Property } from "../property/types/Property.js";
-import { Value } from "../arbitrary/definition/Value.js";
-import type { QualifiedRandomGenerator } from "./configuration/QualifiedParameters.js";
-import { adaptRandomGenerator } from "../../random/generator/RandomGenerator.js";
+import { Random } from '../../random/generator/Random.js';
+import type { Property } from '../property/types/Property.js';
+import { Value } from '../arbitrary/definition/Value.js';
+import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters.js';
+import { adaptRandomGenerator } from '../../random/generator/RandomGenerator.js';
 
 /**
  * Extracting tossNext out of toss was dropping some bailout reasons on v8 side
  */
 function tossNext<Ts>(
-  generator: Pick<Property<Ts>, "generate">,
+  generator: Pick<Property<Ts>, 'generate'>,
   rng: QualifiedRandomGenerator,
   index: number,
 ): Value<Ts> {
@@ -19,7 +19,7 @@ function tossNext<Ts>(
 }
 
 export function* toss<Ts>(
-  generator: Pick<Property<Ts>, "generate">,
+  generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
   random: (seed: number) => QualifiedRandomGenerator,
   examples: Ts[],
@@ -33,7 +33,7 @@ export function* toss<Ts>(
 }
 
 function lazyGenerate<Ts>(
-  generator: Pick<Property<Ts>, "generate">,
+  generator: Pick<Property<Ts>, 'generate'>,
   rng: RandomGenerator,
   idx: number,
 ): () => Value<Ts> {
@@ -41,7 +41,7 @@ function lazyGenerate<Ts>(
 }
 
 export function* lazyToss<Ts>(
-  generator: Pick<Property<Ts>, "generate">,
+  generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
   random: (seed: number) => RandomGenerator,
   examples: Ts[],

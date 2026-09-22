@@ -1,6 +1,6 @@
-import type { Property } from "../property/types/Property.js";
-import type { PropertyFailure } from "../property/types/PropertyFailure.js";
-import type { Plugin, PluginInstance } from "./Plugin.js";
+import type { Property } from '../property/types/Property.js';
+import type { PropertyFailure } from '../property/types/PropertyFailure.js';
+import type { Plugin, PluginInstance } from './Plugin.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
@@ -10,9 +10,7 @@ function timeoutAfter(timeMs: number) {
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = safeSetTimeout(() => {
       resolve({
-        error: new Error(
-          `Property timeout: exceeded limit of ${timeMs} milliseconds`,
-        ),
+        error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`),
       });
     }, timeMs);
   });
@@ -24,12 +22,12 @@ function timeoutAfter(timeMs: number) {
 
 function timeoutRunner(
   timeMs: number,
-  nestedRun: Property<unknown>["run"],
+  nestedRun: Property<unknown>['run'],
   value: unknown,
 ): ReturnType<typeof nestedRun> {
   const t = timeoutAfter(timeMs);
   const runOut = nestedRun(value);
-  if (runOut === null || !("then" in runOut)) {
+  if (runOut === null || !('then' in runOut)) {
     // synchronous run: it already came to an end, nothing to race against the timeout
     t.clear();
     return runOut;
@@ -63,8 +61,7 @@ function timeoutRunner(
 export function timeout(timeMs: number): Plugin<unknown> {
   return (): PluginInstance<unknown> => {
     return {
-      decorateRun: (nestedRun) => (value) =>
-        timeoutRunner(timeMs, nestedRun, value),
+      decorateRun: (nestedRun) => (value) => timeoutRunner(timeMs, nestedRun, value),
     };
   };
 }

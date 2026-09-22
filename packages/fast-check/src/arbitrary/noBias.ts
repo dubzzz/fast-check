@@ -1,6 +1,6 @@
-import { Arbitrary } from "../check/arbitrary/definition/Arbitrary.js";
-import type { Value } from "../check/arbitrary/definition/Value.js";
-import type { Random } from "../random/generator/Random.js";
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { Value } from '../check/arbitrary/definition/Value.js';
+import type { Random } from '../random/generator/Random.js';
 
 class NoBiasArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arb: Arbitrary<T>) {
@@ -32,8 +32,7 @@ export function noBias<T>(arb: Arbitrary<T>): Arbitrary<T> {
   if (
     Object.getPrototypeOf(arb) === NoBiasArbitrary.prototype &&
     arb.generate === NoBiasArbitrary.prototype.generate &&
-    arb.canShrinkWithoutContext ===
-      NoBiasArbitrary.prototype.canShrinkWithoutContext &&
+    arb.canShrinkWithoutContext === NoBiasArbitrary.prototype.canShrinkWithoutContext &&
     arb.shrink === NoBiasArbitrary.prototype.shrink
   ) {
     return arb;
