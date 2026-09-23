@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.shared.json",
+  "extends": "../tsconfig.common.json",
   "compilerOptions": {
     "isolatedDeclarations": false,
     "jsx": "react",

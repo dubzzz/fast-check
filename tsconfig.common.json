@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "incremental": false,
-    "target": "es2020",
-    "lib": ["es2025"],
+    "target": "esnext",
+    "lib": ["esnext"],
     "module": "node18",
     "rootDir": ".",
     "importHelpers": false,
@@ -24,7 +24,9 @@
       "fast-check": ["./packages/fast-check/src/fast-check.ts"],
       "@fast-check/ava": ["./packages/ava/src/ava-fast-check.ts"],
       "@fast-check/jest": ["./packages/jest/src/jest-fast-check.ts"],
-      "@fast-check/jest/worker": ["./packages/jest/src/jest-fast-check-worker.ts"],
+      "@fast-check/jest/worker": [
+        "./packages/jest/src/jest-fast-check-worker.ts"
+      ],
       "@fast-check/packaged": ["./packages/packaged/src/packaged.ts"],
       "@fast-check/poisoning": ["./packages/poisoning/src/main.ts"],
       "@fast-check/vitest": ["./packages/vitest/src/vitest-fast-check.ts"],

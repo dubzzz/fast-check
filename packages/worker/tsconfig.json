@@ -1,9 +1,8 @@
 {
-  "extends": "../../tsconfig.shared.json",
+  "extends": "../../tsconfig.common.json",
   "compilerOptions": {
     "types": ["node"],
     "outDir": "lib/",
-    "target": "es2025"
   },
   "include": ["src/", "test/"]
 }
