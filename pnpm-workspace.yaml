@@ -25,3 +25,5 @@ trustPolicyIgnoreAfter: 20160
 blockExoticSubdeps: true
 
 linkWorkspacePackages: deep
+
+autoDedupe: true
