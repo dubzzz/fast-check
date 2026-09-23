@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.common.json",
   "compilerOptions": {
     "types": ["node"],
-    "outDir": "lib/",
+    "outDir": "lib/"
   },
   "include": ["src/", "test/"]
 }
