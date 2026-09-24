@@ -20,10 +20,7 @@ export class RunExecution<Ts> {
   numSuccesses: number;
   interrupted: boolean;
 
-  constructor(
-    readonly verbosity: VerbosityLevel,
-    readonly interruptedAsFailure: boolean,
-  ) {
+  constructor(readonly verbosity: VerbosityLevel) {
     this.rootExecutionTrees = [];
     this.currentLevelExecutionTrees = this.rootExecutionTrees;
     this.failure = null;
@@ -135,7 +132,7 @@ export class RunExecution<Ts> {
 
     // Either 'too many skips' or 'interrupted' with flag interruptedAsFailure enabled
     // The two cases are exclusive (the two cannot be true at the same time)
-    const considerInterruptedAsFailure = this.interruptedAsFailure || this.numSuccesses === 0;
+    const considerInterruptedAsFailure = this.numSuccesses === 0;
     const failed = this.numSkips > maxSkips || (this.interrupted && considerInterruptedAsFailure);
 
     // -- Let's suppose: this.numSkips > maxSkips
