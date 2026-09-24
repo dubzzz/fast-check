@@ -379,7 +379,7 @@ importers:
     dependencies:
       '@npmcli/arborist':
         specifier: ^9.0.0
-        version: 9.9.1(supports-color@8.1.1)
+        version: 9.9.2(supports-color@8.1.1)
       npm-packlist:
         specifier: ^10.0.0 || ^11.0.0
         version: 11.3.0
@@ -2475,8 +2475,8 @@ packages:
     resolution: {integrity: sha512-EUEuWAxnL07Sp5/iC/1X6Xj+XThUvnbei9zfRWZdEXa7lss9RTHMhAHBeg+MZ5To9s/gGaSI+UwZTPdYMvKSeg==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@npmcli/arborist@9.9.1':
-    resolution: {integrity: sha512-K0mr16xJ/yiTApeGIFbpgZSvJFOvxO2VJnCBhP543t9NTlHzgL+ewpG0kaWv9xkjeESAlRWHG9Q4lbT/LqHbWw==}
+  '@npmcli/arborist@9.9.2':
+    resolution: {integrity: sha512-N8FWFgZPRtkBYUhrEXagY9ADlGylgQgWHw1ywlHRXE8IobqFH+RAK2KL2at5YM33XFFpIDeoDh6nJ+3ZqB/sQQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
@@ -13304,7 +13304,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@npmcli/arborist@9.9.1(supports-color@8.1.1)':
+  '@npmcli/arborist@9.9.2(supports-color@8.1.1)':
     dependencies:
       '@gar/promise-retry': 1.0.3
       '@isaacs/string-locale-compare': 1.1.0
