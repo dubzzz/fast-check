@@ -1,15 +1,9 @@
-import { readConfigureGlobal } from "fast-check";
-import { TestRunner } from "vitest";
+import { readConfigureGlobal } from 'fast-check';
+import { TestRunner } from 'vitest';
 
-import type { Parameters as FcParameters } from "fast-check";
-import type {
-  Prop,
-  PromiseProp,
-  It,
-  ArbitraryTuple,
-  FcExtra,
-} from "./types.js";
-import type { RunnerTestSuite } from "vitest";
+import type { Parameters as FcParameters } from 'fast-check';
+import type { Prop, PromiseProp, It, ArbitraryTuple, FcExtra } from './types.js';
+import type { RunnerTestSuite } from 'vitest';
 
 function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
@@ -30,7 +24,7 @@ function getSuiteChain(suite: RunnerTestSuite): RunnerTestSuite[] {
   while (true) {
     chain.push(current);
 
-    if ("filepath" in current) {
+    if ('filepath' in current) {
       break;
     }
 
@@ -41,11 +35,9 @@ function getSuiteChain(suite: RunnerTestSuite): RunnerTestSuite[] {
 }
 
 /** Collect beforeEach hooks in top-down order (parent suites first) as vitest does */
-function collectBeforeEachHooks(
-  suite: RunnerTestSuite,
-): ReturnType<typeof TestRunner.getSuiteHooks>["beforeEach"] {
+function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof TestRunner.getSuiteHooks>['beforeEach'] {
   const chain = getSuiteChain(suite);
-  const hooks: ReturnType<typeof TestRunner.getSuiteHooks>["beforeEach"] = [];
+  const hooks: ReturnType<typeof TestRunner.getSuiteHooks>['beforeEach'] = [];
   for (let i = chain.length - 1; i >= 0; i--) {
     const h = TestRunner.getSuiteHooks(chain[i]);
     hooks.push(...h.beforeEach);
@@ -54,11 +46,9 @@ function collectBeforeEachHooks(
 }
 
 /** Collect afterEach hooks in bottom-up order (current suite first) as vitest does */
-function collectAfterEachHooks(
-  suite: RunnerTestSuite,
-): ReturnType<typeof TestRunner.getSuiteHooks>["afterEach"] {
+function collectAfterEachHooks(suite: RunnerTestSuite): ReturnType<typeof TestRunner.getSuiteHooks>['afterEach'] {
   const chain = getSuiteChain(suite);
-  const hooks: ReturnType<typeof TestRunner.getSuiteHooks>["afterEach"] = [];
+  const hooks: ReturnType<typeof TestRunner.getSuiteHooks>['afterEach'] = [];
   for (let i = 0; i < chain.length; i++) {
     const h = TestRunner.getSuiteHooks(chain[i]);
     for (let j = h.afterEach.length - 1; j >= 0; j--) {
@@ -68,11 +58,8 @@ function collectAfterEachHooks(
   return hooks;
 }
 
-export function buildTestWithPropRunner<
-  Ts extends [any] | any[],
-  TsParameters extends Ts = Ts,
->(
-  testFn: It | It["only" | "skip" | "concurrent"],
+export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
+  testFn: It | It['only' | 'skip' | 'concurrent'],
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
@@ -94,10 +81,7 @@ export function buildTestWithPropRunner<
   const promiseProp = wrapProp(prop);
 
   // Instantiate property outside of testFn for the needs of worker-based version
-  const propertyInstance = (fc.asyncProperty as any)(
-    ...(arbitraries as any),
-    promiseProp,
-  );
+  const propertyInstance = (fc.asyncProperty as any)(...(arbitraries as any), promiseProp);
   testFn(
     `${label} (with seed=${customParams.seed})`,
     async () => {
@@ -113,14 +97,14 @@ export function buildTestWithPropRunner<
       const test = TestRunner.getCurrentTest();
       if (test === undefined) {
         throw new Error(
-          "Could not find the running test context. Make sure your property-based test is defined inside a vitest test() or it() block. Running outside a standard vitest test callback (e.g. in a worker thread) is not supported.",
+          'Could not find the running test context. Make sure your property-based test is defined inside a vitest test() or it() block. Running outside a standard vitest test callback (e.g. in a worker thread) is not supported.',
         );
       }
 
       const suite = test.suite ?? test.file;
       if (suite === undefined) {
         throw new Error(
-          "Could not find a parent suite or file for the current test. Make sure your test is defined inside a describe() block or a test file, not as a standalone detached test.",
+          'Could not find a parent suite or file for the current test. Make sure your test is defined inside a describe() block or a test file, not as a standalone detached test.',
         );
       }
 
@@ -131,32 +115,30 @@ export function buildTestWithPropRunner<
       if (beforeEachHooks.length > 0 || afterEachHooks.length > 0) {
         let isFirstRun = true;
 
-        propertyInstance.beforeEach(
-          async (previousHook: () => Promise<void>) => {
-            await previousHook();
+        propertyInstance.beforeEach(async (previousHook: () => Promise<void>) => {
+          await previousHook();
 
-            if (isFirstRun) {
-              isFirstRun = false;
-              return;
-            }
+          if (isFirstRun) {
+            isFirstRun = false;
+            return;
+          }
 
-            for (const hook of afterEachHooks) {
-              await hook(test.context, suite);
-            }
+          for (const hook of afterEachHooks) {
+            await hook(test.context, suite);
+          }
 
-            for (let i = pendingCleanups.length - 1; i >= 0; i--) {
-              await pendingCleanups[i]();
-            }
-            pendingCleanups.length = 0;
+          for (let i = pendingCleanups.length - 1; i >= 0; i--) {
+            await pendingCleanups[i]();
+          }
+          pendingCleanups.length = 0;
 
-            for (const hook of beforeEachHooks) {
-              const result = await hook(test.context, suite);
-              if (typeof result === "function") {
-                pendingCleanups.push(result as () => unknown);
-              }
+          for (const hook of beforeEachHooks) {
+            const result = await hook(test.context, suite);
+            if (typeof result === 'function') {
+              pendingCleanups.push(result as () => unknown);
             }
-          },
-        );
+          }
+        });
       }
 
       try {
