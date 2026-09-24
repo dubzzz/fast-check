@@ -245,6 +245,4 @@ The spec is responsible to check that the typings are correct. It also ensures t
 
 ## Can I use AI?
 
-## AI-assisted contributions
-
 Please read our [AI Policy](./AI_POLICY.md) before submitting code generated with AI tools.
