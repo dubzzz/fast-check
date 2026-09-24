@@ -1,34 +1,42 @@
 # AI Contribution Policy
 
-This project **welcomes the thoughtful use of AI tools** when contributing, yet asks all contributors to follow two core principles.
+This project is built by people, and new contributors are always welcome. To keep it that way, every part of a contribution should come from you: issues, pull requests, descriptions, comments, and replies to review.
 
-## Never let an LLM speak for you
+For the same reason, contributions from automated accounts, bots, or agents are not accepted.
 
-When maintainers read a comment, an issue, or a pull request from you, they want to know they are hearing your words. Grammar and spelling do not matter. What matters is real connection.
+If a maintainer believes a contribution was AI generated, they may close it without a detailed explanation.
 
-- All comments, issues, and pull request descriptions should be written in your own voice
-- We value clear, human communication over perfect grammar or spelling
-- Avoid copy-pasting AI-generated summaries that don't reflect your own understanding
+Maintainers may sometimes get it wrong, and apologies in advance if this affects contributions made with good intentions. These are challenging times, and this project is making deliberate choices about how it evolves.
 
-AI-generated summaries tend to be long-winded, dense, and often inaccurate. Simplicity is an art. The goal is not to sound impressive, but to communicate clearly.
+## What is not accepted
 
-## Never let an LLM think for you
+- Issues, pull requests, descriptions, commit messages, comments, and review replies that were not written by you, in your own words.
+- Submissions from automated accounts, bots, agents, or any workflow where a human does not personally write and post each action.
+- Code you cannot explain line by line and take responsibility for.
+- Reports or fixes for problems you have not reproduced yourself.
 
-Go ahead and use AI to explore the codebase, or to write the function or test you need. But the final step before contributing should always be understanding what it has written.
+Non-native English is welcome. Imperfect text written by you is always preferred over polished text you did not write.
 
-- Feel free to use AI tools to generate code or explore ideas
-- Only submit contributions you fully understand and can explain
-- Contributions should reflect your own reasoning and problem-solving
+## Your workflow is your business
 
-Use AI to point you in the right direction, but always take personal responsibility. Do not quote an LLM in an issue or pull request. Maintainers want to know what you think.
+What happens on your machine is not policed, will not be asked about, and does not need to be shared. What matters is what you submit. It must be yours, and you own it completely.
 
-Our aim is ensuring quality and maintaining the joy of collaborating and communicating with real people.
+Do not add notes about AI tools to your submissions. Disclosure does not make an unacceptable contribution acceptable, and a submission that discloses AI usage may be closed automatically.
 
-## Summary
+## Ownership
 
-- AI may be used to generate code or explore ideas
-- Comments, issues, and pull request descriptions must be written in your own voice
-- Contributions must be fully understood and explainable by the contributor
-- Contribution guidelines must still be followed
+By opening an issue, pull request, or any other submission, you affirm that:
+
+- You wrote it yourself.
+- You tested it and understand every part of it.
+- You will respond to review yourself, in your own words.
+
+## Enforcement
+
+- Suspicion is enough. Maintainers do not need proof, and are not required to explain a closure.
+- A closure is not an accusation and will not be debated in the thread.
+- Automated accounts, spam, scams, and malicious content are blocked immediately. Repeated or deliberate violations result in a ban.
+
+The issue templates, contribution guidelines, and code of conduct always apply.
 
 Read more about this and other AI contribution policies on [ai-policy.dev](https://ai-policy.dev/)
