@@ -10,7 +10,7 @@ Fixes #issue-number
 
 — _Don't delete this checklist and make sure you do the following before opening the PR_
 
-- [ ] I have a full understanding of every line in this PR — whether the code was hand-written, AI-generated, copied from external sources or produced by any other tool
+- [ ] I have a full understanding of every line in this PR — whether the code was hand-written, AI-generated (our [AI Policy](https://github.com/dubzzz/fast-check/blob/main/AI_POLICY.md)), copied from external sources or produced by any other tool
 - [ ] I flagged the impact of my change (minor / patch / major) either by running `pnpm run bump` or by following the instructions from the changeset bot
 - [ ] I kept this PR focused on a single concern and did not bundle unrelated changes
 - [ ] I followed the [gitmoji](https://gitmoji.dev/) specification for the name of the PR, including the package scope (e.g. `🐛(vitest) Something...`) when the change targets a package other than `fast-check`
