@@ -28,9 +28,6 @@ export class QualifiedParameters<T> {
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
-  skipAllAfterTimeLimit: number | undefined;
-  interruptAfterTimeLimit: number | undefined;
-  markInterruptAsFailure: boolean;
   reporter: ((runDetails: RunDetails<T>) => Promise<void> | void) | undefined;
   includeErrorInReport: boolean;
   plugins: Plugin<T>[];
@@ -43,9 +40,6 @@ export class QualifiedParameters<T> {
     this.verbose = readVerbose(p);
     this.maxSkipsPerRun = p.maxSkipsPerRun !== undefined ? p.maxSkipsPerRun : 100;
     this.timeout = safeTimeout(p.timeout);
-    this.skipAllAfterTimeLimit = safeTimeout(p.skipAllAfterTimeLimit);
-    this.interruptAfterTimeLimit = safeTimeout(p.interruptAfterTimeLimit);
-    this.markInterruptAsFailure = p.markInterruptAsFailure === true;
     this.logger =
       p.logger !== undefined
         ? p.logger
@@ -68,9 +62,6 @@ export class QualifiedParameters<T> {
       numRuns: this.numRuns,
       maxSkipsPerRun: this.maxSkipsPerRun,
       timeout: this.timeout,
-      skipAllAfterTimeLimit: this.skipAllAfterTimeLimit,
-      interruptAfterTimeLimit: this.interruptAfterTimeLimit,
-      markInterruptAsFailure: this.markInterruptAsFailure,
       path: this.path,
       logger: this.logger,
       verbose: this.verbose,

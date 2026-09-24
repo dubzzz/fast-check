@@ -22,9 +22,8 @@ async function runIt<Ts>(
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
-  interruptedAsFailure: boolean,
 ): Promise<RunExecution<Ts>> {
-  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
+  const runner = new RunnerIterator(sourceValues, shrink, verbose);
   for (const v of runner) {
     // TODO(v5) - Still awaiting for now, ideally we should avoid as much as possible awaiting (but here we have a Promise by construct)
     const out = await run(v);
@@ -154,7 +153,7 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
       : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : () => nil;
-  const out = runIt(run, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
+  const out = runIt(run, finalShrink, sourceValues, qParams.verbose).then((e) =>
     e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
   );
   return runPluginCompletionHooks(pluginInstances, out);

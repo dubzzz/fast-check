@@ -56,47 +56,6 @@ export interface Parameters<T = void> {
    */
   timeout?: number;
   /**
-   * Skip all runs after a given time limit: disabled by default
-   *
-   * NOTE: Relies on `Date.now()`.
-   *
-   * NOTE:
-   * Useful to stop too long shrinking processes.
-   * Replay capability (see `seed`, `path`) can resume the shrinking.
-   *
-   * WARNING:
-   * It skips runs. Thus test might be marked as failed.
-   * Indeed, it might not reached the requested number of successful runs.
-   *
-   * @remarks Since 1.15.0
-   */
-  skipAllAfterTimeLimit?: number;
-  /**
-   * Interrupt test execution after a given time limit: disabled by default
-   *
-   * NOTE: Relies on `Date.now()`.
-   *
-   * NOTE:
-   * Useful to avoid having too long running processes in your CI.
-   * Replay capability (see `seed`, `path`) can still be used if needed.
-   *
-   * WARNING:
-   * If the test got interrupted before any failure occured
-   * and before it reached the requested number of runs specified by `numRuns`
-   * it will be marked as success. Except if `markInterruptAsFailure` has been set to `true`
-   *
-   * @remarks Since 1.19.0
-   * @deprecated Prefer the `interruptAfterTimeLimit` plugin: `fc.assert(property, { plugins: [fc.interruptAfterTimeLimit(timeMs)] })`
-   */
-  interruptAfterTimeLimit?: number;
-  /**
-   * Mark interrupted runs as failed runs if preceded by one success or more: disabled by default
-   * Interrupted with no success at all always defaults to failure whatever the value of this flag.
-   * @remarks Since 1.19.0
-   * @deprecated Prefer the `failOnInterrupt` option of the `interruptAfterTimeLimit` plugin: `fc.interruptAfterTimeLimit(timeMs, { failOnInterrupt: true })`
-   */
-  markInterruptAsFailure?: boolean;
-  /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
    * @remarks Since 1.0.0

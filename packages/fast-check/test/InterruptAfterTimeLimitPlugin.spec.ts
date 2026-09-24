@@ -22,7 +22,9 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
           // first run will pass, but second one will be interrupted
           vi.advanceTimersByTime(80);
         }),
-        { plugins: [fc.interruptAfterTimeLimit(100, { failOnInterrupt: false })] },
+        {
+          plugins: [fc.interruptAfterTimeLimit(100, { failOnInterrupt: false })],
+        },
       ),
     ).resolves.toBeUndefined();
   });
@@ -38,7 +40,9 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
           // first run will pass, but second one will be interrupted
           vi.advanceTimersByTime(80);
         }),
-        { plugins: [fc.interruptAfterTimeLimit(100, { failOnInterrupt: true })] },
+        {
+          plugins: [fc.interruptAfterTimeLimit(100, { failOnInterrupt: true })],
+        },
       ),
     ).rejects.toThrow(/Property interrupted after 1 tests/);
   });
@@ -59,6 +63,22 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
             fc.interruptAfterTimeLimit(1000, { failOnInterrupt: true }), // not interrupted
             fc.interruptAfterTimeLimit(100, { failOnInterrupt: false }), // interrupted but considered ok
           ],
+        },
+      ),
+    ).resolves.toBeUndefined();
+  });
+
+  it('should run against real timers', async () => {
+    // Arrange
+    vi.useRealTimers();
+    const fc = await import('../src/fast-check.js');
+
+    // Act / Assert
+    await expect(
+      fc.assert(
+        fc.asyncProperty(fc.integer(), async (_x) => {}),
+        {
+          plugins: [fc.interruptAfterTimeLimit(60_000, { failOnInterrupt: true })],
         },
       ),
     ).resolves.toBeUndefined();
