@@ -77,11 +77,6 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
       customParams.seed = Date.now() ^ (Math.random() * 0x100000000);
     }
   }
-  // Handle timeout
-  if (customParams.interruptAfterTimeLimit === undefined) {
-    // Copy global configuration of interruptAfterTimeLimit as local one
-    customParams.interruptAfterTimeLimit = fc.readConfigureGlobal().interruptAfterTimeLimit;
-  }
 
   const promiseProp = wrapProp(prop);
 
