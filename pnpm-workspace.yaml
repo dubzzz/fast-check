@@ -22,6 +22,9 @@ allowBuilds:
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 20160
 
+minimumReleaseAge: 1440
+minimumReleaseAgeStrict: true
+
 blockExoticSubdeps: true
 
 linkWorkspacePackages: deep
