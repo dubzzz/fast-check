@@ -1,7 +1,7 @@
 import { readConfigureGlobal } from 'fast-check';
 import { TestRunner } from 'vitest';
 
-import type { Parameters as FcParameters } from 'fast-check';
+import type { Parameters as FcParameters, Plugin } from 'fast-check';
 import type { Prop, PromiseProp, It, ArbitraryTuple, FcExtra } from './types.js';
 import type { RunnerTestSuite } from 'vitest';
 
@@ -108,50 +108,48 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
         );
       }
 
-      const beforeEachHooks = collectBeforeEachHooks(suite);
-      const afterEachHooks = collectAfterEachHooks(suite);
-      const pendingCleanups: (() => unknown)[] = [];
+      const extraLifeCyclePlugins: Plugin<unknown>[] = [];
 
-      if (beforeEachHooks.length > 0 || afterEachHooks.length > 0) {
-        let isFirstRun = true;
-
-        propertyInstance.beforeEach(async (previousHook: () => Promise<void>) => {
-          await previousHook();
-
-          if (isFirstRun) {
-            isFirstRun = false;
-            return;
-          }
-
-          for (const hook of afterEachHooks) {
-            await hook(test.context, suite);
-          }
-
-          for (let i = pendingCleanups.length - 1; i >= 0; i--) {
-            await pendingCleanups[i]();
-          }
-          pendingCleanups.length = 0;
-
-          for (const hook of beforeEachHooks) {
-            const result = await hook(test.context, suite);
-            if (typeof result === 'function') {
-              pendingCleanups.push(result as () => unknown);
+      type LCHook<T> = T | Promise<T>;
+      const beforeHooks = collectBeforeEachHooks(suite);
+      for (let hookIndex = 0; hookIndex !== beforeHooks.length; ++hookIndex) {
+        const hook = beforeHooks[hookIndex];
+        let runCount = 0;
+        extraLifeCyclePlugins.push(
+          fc.beforeEach(() => {
+            if (hookIndex === 0) {
+              runCount += 1;
             }
-          }
-        });
+            if (runCount <= 1) {
+              return;
+            }
+            return hook(test.context, suite) as LCHook<void | (() => void)>;
+          }),
+        );
+      }
+      const afterHooks = collectAfterEachHooks(suite);
+      for (let hookIndex = 0; hookIndex !== afterHooks.length; ++hookIndex) {
+        const hook = afterHooks[hookIndex];
+        let runCount = 0;
+        extraLifeCyclePlugins.push(
+          fc.afterEach(() => {
+            if (hookIndex === 0) {
+              runCount += 1;
+            }
+            if (runCount <= 1) {
+              return;
+            }
+            return hook(test.context, suite) as LCHook<void>;
+          }),
+        );
       }
 
-      try {
-        await fc.assert(propertyInstance, customParams);
-      } finally {
-        // Cleanup from the last iteration (N). Cleanups 2..N-1 run inside
-        // fc's beforeEach hook above. Cleanup#1 is held by vitest in a local
-        // variable of runTest and runs after vitest's own afterEach — we cannot
-        // intercept it.
-        for (let i = pendingCleanups.length - 1; i >= 0; i--) {
-          await pendingCleanups[i]();
-        }
-      }
+      customParams.plugins =
+        customParams.plugins !== undefined
+          ? [...(extraLifeCyclePlugins as Plugin<TsParameters>[]), ...customParams.plugins]
+          : (extraLifeCyclePlugins as Plugin<TsParameters>[]);
+
+      await fc.assert(propertyInstance, customParams);
     },
     timeout,
   );
