@@ -147,7 +147,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
             }
             const out = hook(test.context, suite) as LCHook<void>;
             if (typeof out === 'object' && out !== null && 'then' in out) {
-              return out.then(() => {});
+              return Promise.resolve(out).then(() => {});
             }
           }),
         );
