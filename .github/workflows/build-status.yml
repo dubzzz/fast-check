@@ -75,8 +75,8 @@ jobs:
             run: node --run format:check
           - name: Check lint
             run: node --run lint:check
-          - name: Ensure no dedupe required
-            run: pnpm dedupe --check
+          - name: Check dependency trust and deduplication
+            run: pnpm dedupe --check --ignore-scripts
           - name: Typecheck
             run: node --run typecheck
   production_packages:
