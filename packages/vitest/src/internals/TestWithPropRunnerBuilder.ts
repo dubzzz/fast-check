@@ -128,7 +128,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
               return out;
             }
             if (typeof out === 'object' && out !== null && 'then' in out) {
-              return out.then((v) => (typeof v === 'function' ? v : undefined));
+              return Promise.resolve(out).then((v) => (typeof v === 'function' ? v : undefined));
             }
           }),
         );
