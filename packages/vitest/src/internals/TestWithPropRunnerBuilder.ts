@@ -128,8 +128,8 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
               return out;
             }
             if (typeof out === 'object' && 'then' in out) {
-return out.then(v => typeof v==='function'?v: undefined)
-}
+              return out.then((v) => (typeof v === 'function' ? v : undefined));
+            }
           }),
         );
       }
@@ -145,8 +145,10 @@ return out.then(v => typeof v==='function'?v: undefined)
             if (runCountAfter <= 1) {
               return;
             }
-            const out =hook(test.context, suite) as LCHook<void>;
-if (typeof out ==='object'&&'then' in out){return out.then(()=>{})}
+            const out = hook(test.context, suite) as LCHook<void>;
+            if (typeof out === 'object' && 'then' in out) {
+              return out.then(() => {});
+            }
           }),
         );
       }
