@@ -44,7 +44,7 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/documentation"
   },
   "devDependencies": {
-    "@atproto/api": "^0.20.44",
+    "@atproto/api": "^0.21.0",
     "@changesets/cli": "^3.0.3",
     "@fast-check/packaged": "workspace:*",
     "@types/jest": "^30.0.0",
