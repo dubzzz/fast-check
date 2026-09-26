@@ -123,7 +123,13 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
             if (runCount <= 1) {
               return;
             }
-            return hook(test.context, suite) as LCHook<void | (() => void)>;
+            const out = hook(test.context, suite) as LCHook<void | (() => void)>;
+            if (out === undefined || typeof out === function) {
+              return out;
+            }
+            if (typeof out === 'object' && 'then' in out) {
+return out.then(v => typeof v==='function'?v: undefined)
+}
           }),
         );
       }
