@@ -128,15 +128,15 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
         );
       }
       const afterHooks = collectAfterEachHooks(suite);
+      let runCountAfter = 0;
       for (let hookIndex = 0; hookIndex !== afterHooks.length; ++hookIndex) {
         const hook = afterHooks[hookIndex];
-        let runCount = 0;
         extraLifeCyclePlugins.push(
           fc.afterEach(() => {
-            if (hookIndex === 0) {
-              runCount += 1;
+            if (hookIndex === afterHooks.length - 1) {
+              runCountAfter += 1;
             }
-            if (runCount <= 1) {
+            if (runCountAfter <= 1) {
               return;
             }
             return hook(test.context, suite) as LCHook<void>;
