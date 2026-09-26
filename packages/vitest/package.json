@@ -37,7 +37,7 @@
     "@fast-check/vitest": "workspace:*",
     "@types/node": "^24.13.6",
     "fast-check": "workspace:*",
-    "rolldown": "^1.2.10",
+    "rolldown": "^1.2.11",
     "typescript": "~6.0.3",
     "vite": "^8.3.1",
     "vitest": "^5.0.0"
