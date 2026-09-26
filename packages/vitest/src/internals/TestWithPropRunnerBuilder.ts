@@ -112,9 +112,9 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
 
       type LCHook<T> = T | Promise<T>;
       const beforeHooks = collectBeforeEachHooks(suite);
+      let runCount = 0;
       for (let hookIndex = 0; hookIndex !== beforeHooks.length; ++hookIndex) {
         const hook = beforeHooks[hookIndex];
-        let runCount = 0;
         extraLifeCyclePlugins.push(
           fc.beforeEach(() => {
             if (hookIndex === 0) {
