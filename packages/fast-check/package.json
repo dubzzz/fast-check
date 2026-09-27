@@ -39,7 +39,7 @@
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.59.2",
-    "@types/node": "^24.13.6",
+    "@types/node": "^24.19.0",
     "fast-check": "workspace:*",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
