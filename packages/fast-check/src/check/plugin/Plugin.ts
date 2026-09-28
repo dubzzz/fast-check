@@ -93,3 +93,14 @@ export type PluginInstance<Ts> = {
  * @public
  */
 export type Plugin<Ts> = (pluginIndex: number, pluginStore: PluginStore) => PluginInstance<Ts>;
+
+/**
+ * Builder creating a plugin for any property value type while preserving that type.
+ * Check {@link Plugin} for plugins targeting a specific value type.
+ *
+ * It's just a syntaxic sugar!
+ *
+ * @remarks Since 4.10.3
+ * @public
+ */
+export type UniversalPlugin = <Ts>(pluginIndex: number, pluginStore: PluginStore) => PluginInstance<Ts>;

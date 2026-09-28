@@ -1,6 +1,6 @@
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
-import type { Plugin, PluginInstance } from './Plugin.js';
+import type { UniversalPlugin } from './Plugin.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
@@ -58,8 +58,8 @@ function timeoutRunner(
  * @remarks Since 4.10.0
  * @public
  */
-export function timeout(timeMs: number): Plugin<unknown> {
-  return (): PluginInstance<unknown> => {
+export function timeout(timeMs: number): UniversalPlugin {
+  return () => {
     return {
       decorateRun: (nestedRun) => (value) => timeoutRunner(timeMs, nestedRun, value),
     };
