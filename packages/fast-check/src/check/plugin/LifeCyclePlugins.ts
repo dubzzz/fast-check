@@ -1,5 +1,5 @@
 import type { Property } from '../property/types/Property.js';
-import type { Plugin, PluginInstance } from './Plugin.js';
+import type { UniversalPlugin } from './Plugin.js';
 
 const LifeCyclePluginSymbol = Symbol.for('fast-check/plugin/life-cycle');
 
@@ -193,8 +193,8 @@ function lifeCycleHooksRunner(
  * @remarks Since 4.10.0
  * @public
  */
-export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
-  return (pluginIndex, pluginStore): PluginInstance<unknown> => {
+export function beforeEach(fn: BeforeEachHook): UniversalPlugin {
+  return (pluginIndex, pluginStore) => {
     let lifeCycleHooks = pluginStore.get<LifeCycleHooks>(LifeCyclePluginSymbol);
     if (lifeCycleHooks !== undefined && lifeCycleHooks.lastPluginIndex === pluginIndex - 1) {
       lifeCycleHooks.lastPluginIndex = pluginIndex;
@@ -231,8 +231,8 @@ export function beforeEach(fn: BeforeEachHook): Plugin<unknown> {
  * @remarks Since 4.10.0
  * @public
  */
-export function afterEach(fn: AfterEachHook): Plugin<unknown> {
-  return (pluginIndex, pluginStore): PluginInstance<unknown> => {
+export function afterEach(fn: AfterEachHook): UniversalPlugin {
+  return (pluginIndex, pluginStore) => {
     let lifeCycleHooks = pluginStore.get<LifeCycleHooks>(LifeCyclePluginSymbol);
     if (lifeCycleHooks !== undefined && lifeCycleHooks.lastPluginIndex === pluginIndex - 1) {
       lifeCycleHooks.lastPluginIndex = pluginIndex;
