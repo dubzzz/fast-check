@@ -115,7 +115,3 @@ The `beforeEach` and `afterEach` methods are deprecated. Prefer the [life-cycle 
 :::
 
 They also accept `beforeEach` and `afterEach` functions to be provided: the passed functions can either be synchronous or asynchronous.
-
-:::info[Lifecycle]
-The `beforeEach` and `afterEach` functions will always be executed, regardless of whether the property times out. It's important to note that the `timeout` option passed to `fc.assert` only measures the time taken by the actual property test, not the setup and teardown phases.
-:::

@@ -1,5 +1,6 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters } from 'fast-check';
+import { timeout } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 
@@ -10,7 +11,7 @@ if (isMainThread) {
   describe('@fast-check/worker', () => {
     const testTimeout = 30000;
     const assertTimeout = 5000;
-    const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
+    const defaultOptions: Parameters<unknown> = { plugins: [timeout(assertTimeout)] };
 
     it(
       'should intercept asynchronous throw if any',

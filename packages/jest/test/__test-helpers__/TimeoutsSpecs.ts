@@ -17,7 +17,7 @@ export function buildTimeoutsSpecsFor(runOptions: RunOptions): void {
     it.concurrent('should fail on property blocking the main thread', async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, options, () => {
-        runner.prop([fc.nat()], { timeout: 500 })('property block main thread', () => {
+        runner.prop([fc.nat()], { plugins: [fc.timeout(500)] })('property block main thread', () => {
           while (true);
         });
       });

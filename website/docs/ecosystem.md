@@ -465,7 +465,7 @@ const isSubstringProperty = property(fc.string(), fc.string(), fc.string(), (a, 
 
 if (isMainThread) {
   test('should detect the substring', async () => {
-    await assert(isSubstringProperty, { timeout: 1000 });
+    await assert(isSubstringProperty, { plugins: [fc.timeout(1000)] });
   });
 }
 ```

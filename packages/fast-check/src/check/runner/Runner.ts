@@ -5,7 +5,6 @@ import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
-import { decorateProperty } from './DecorateProperty.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 import type { RunExecution } from './reporter/RunExecution.js';
 import { RunnerIterator } from './RunnerIterator.js';
@@ -112,8 +111,6 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  const decoratedProperty = decorateProperty(property, qParams);
-
   const globalPlugins = readInstalledGlobalPlugins();
   const localPlugins = qParams.plugins;
 
@@ -128,13 +125,13 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
   }
 
   // Apply and decorate with plugins
-  let surchargedGenerate: typeof decoratedProperty.generate | undefined = undefined;
-  let run: typeof decoratedProperty.run = (v) => propertyExecution(decoratedProperty, v);
+  let surchargedGenerate: typeof property.generate | undefined = undefined;
+  let run: typeof property.run = (v) => propertyExecution(property, v);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateGenerate !== undefined) {
       if (surchargedGenerate === undefined) {
-        surchargedGenerate = (mrng, runId) => decoratedProperty.generate(mrng, runId);
+        surchargedGenerate = (mrng, runId) => property.generate(mrng, runId);
       }
       surchargedGenerate = pluginInstance.decorateGenerate(surchargedGenerate);
     }
@@ -143,10 +140,10 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     }
   }
 
-  const generator = surchargedGenerate === undefined ? decoratedProperty : { generate: surchargedGenerate };
+  const generator = surchargedGenerate === undefined ? property : { generate: surchargedGenerate };
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const shrink: typeof decoratedProperty.shrink = (...args) => decoratedProperty.shrink(...args);
+  const shrink: typeof property.shrink = (...args) => property.shrink(...args);
   const initialValues =
     qParams.path.length === 0
       ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)

@@ -16,7 +16,6 @@ const parametersArbitrary = fc.record(
     randomType: fc.constantFrom(mersenne, congruential32, xorshift128plus, xoroshiro128plus),
     numRuns: fc.nat(),
     maxSkipsPerRun: fc.nat(),
-    timeout: fc.nat(),
     path: fc.array(fc.nat()).map((arr) => arr.join(':')),
     logger: fc.func(fc.constant(undefined)),
     verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
