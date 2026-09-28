@@ -1,7 +1,8 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { Property } from '../property/types/Property.js';
+import type { RunDetailsFailureInterrupted, RunDetailsSuccess } from '../runner/reporter/RunDetails.js';
 import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
-import type { Plugin, PluginInstance } from './Plugin.js';
+import type { PluginInstance, UniversalPlugin } from './Plugin.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
@@ -99,8 +100,8 @@ export type InterruptAfterTimeLimitOptions = {
 export function interruptAfterTimeLimit(
   timeLimitMs: number,
   options: InterruptAfterTimeLimitOptions = {},
-): Plugin<unknown> {
-  return (): PluginInstance<unknown> => {
+): UniversalPlugin {
+  return <Ts>(): PluginInstance<Ts> => {
     const probe: Probe = { interruptedWhileRunning: false, running: false };
     const interrupt = interruptAfterDelay(timeLimitMs, probe);
     return {
@@ -108,8 +109,14 @@ export function interruptAfterTimeLimit(
       onAllRunsComplete: (runDetails) => {
         interrupt.clear();
         if (options.failOnInterrupt && !runDetails.failed && runDetails.interrupted && probe.interruptedWhileRunning) {
+          const successRunDetails: RunDetailsSuccess<Ts> = runDetails;
+          const interruptedRunDetails: RunDetailsFailureInterrupted<Ts> = {
+            ...successRunDetails,
+            failed: true,
+            interrupted: true,
+          };
           // TODO(v5) - Move to the async version instead
-          return reportRunDetails({ ...runDetails, failed: true });
+          return reportRunDetails(interruptedRunDetails);
         }
       },
     };

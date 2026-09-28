@@ -1,6 +1,6 @@
-import type { Plugin } from '../../plugin/Plugin.js';
+import type { Plugin, UniversalPlugin } from '../../plugin/Plugin.js';
 
-const globalPlugins: Plugin<any>[] = [];
+const globalPlugins: UniversalPlugin[] = [];
 
 /**
  * Install a plugin to be used by all the runners
@@ -23,10 +23,10 @@ const globalPlugins: Plugin<any>[] = [];
  * @remarks Since 4.10.0
  * @public
  */
-export function installGlobalPlugin(plugin: Plugin<unknown>): void {
-  globalPlugins.push(plugin);
+export function installGlobalPlugin(plugin: UniversalPlugin | Plugin<unknown>): void {
+  globalPlugins.push(plugin as UniversalPlugin);
 }
 
-export function readInstalledGlobalPlugins(): Plugin<any>[] {
+export function readInstalledGlobalPlugins(): UniversalPlugin[] {
   return globalPlugins;
 }

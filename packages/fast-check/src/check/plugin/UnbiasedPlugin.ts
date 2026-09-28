@@ -1,4 +1,4 @@
-import type { Plugin, PluginInstance } from './Plugin.js';
+import type { UniversalPlugin } from './Plugin.js';
 
 /**
  * Forces values passed to the predicate to be generated without bias.
@@ -15,8 +15,8 @@ import type { Plugin, PluginInstance } from './Plugin.js';
  * @remarks Since 4.10.0
  * @public
  */
-export function unbiased(): Plugin<unknown> {
-  return (): PluginInstance<unknown> => {
+export function unbiased(): UniversalPlugin {
+  return () => {
     return {
       decorateGenerate: (nestedGenerate) => (mrng, _runId) => nestedGenerate(mrng, undefined),
     };

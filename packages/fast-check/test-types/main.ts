@@ -428,6 +428,78 @@ expectTypeOf(fc.configureGlobal({ reporter: (_out: fc.RunDetails<unknown>) => {}
 // FIXME // @ts-expect-error - reporter cannot be defined with precise type on configureGlobal
 //fc.configureGlobal({ reporter: (out: fc.RunDetails<[number]>) => {} });
 
+// plugins
+declare function universalPlugin(): fc.UniversalPlugin;
+declare function stringArgPlugin(): fc.Plugin<[string]>;
+declare function unknownPlugin(): fc.Plugin<unknown>;
+declare function anyPlugin(): fc.Plugin<any>;
+// can globally install an UniversalPlugin
+expectTypeOf(fc.installGlobalPlugin(universalPlugin())).toEqualTypeOf<void>();
+// can globally install a Plugin supporting unknown
+expectTypeOf(fc.installGlobalPlugin(unknownPlugin())).toEqualTypeOf<void>();
+// can globally install a Plugin supporting any
+expectTypeOf(fc.installGlobalPlugin(anyPlugin())).toEqualTypeOf<void>();
+// @ts-expect-error - cannot globally install a too specific plugin
+fc.installGlobalPlugin(stringArgPlugin());
+// can use an UniversalPlugin on any assert
+expectTypeOf(
+  fc.assert(
+    fc.asyncProperty(fc.string(), async (_s) => {}),
+    { plugins: [universalPlugin()] },
+  ),
+).toEqualTypeOf<Promise<void>>();
+// can use a Plugin supporting unknown on any assert
+expectTypeOf(
+  fc.assert(
+    fc.asyncProperty(fc.string(), async (_s) => {}),
+    { plugins: [unknownPlugin()] },
+  ),
+).toEqualTypeOf<Promise<void>>();
+// can use a Plugin supporting unknown on any assert even with multiple arguments
+expectTypeOf(
+  fc.assert(
+    fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}),
+    { plugins: [unknownPlugin()] },
+  ),
+).toEqualTypeOf<Promise<void>>();
+// can use a Plugin supporting any on any assert
+expectTypeOf(
+  fc.assert(
+    fc.asyncProperty(fc.string(), async (_s) => {}),
+    { plugins: [anyPlugin()] },
+  ),
+).toEqualTypeOf<Promise<void>>();
+// can use a Plugin supporting unknown on any assert even with multiple arguments
+expectTypeOf(
+  fc.assert(
+    fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}),
+    { plugins: [anyPlugin()] },
+  ),
+).toEqualTypeOf<Promise<void>>();
+// can use a properly typed plugin on a matching assert
+expectTypeOf(
+  fc.assert(
+    fc.asyncProperty(fc.string(), async (_s) => {}),
+    { plugins: [stringArgPlugin()] },
+  ),
+).toEqualTypeOf<Promise<void>>();
+// can use a properly typed plugin on a mismatching assert having extra parameters
+expectTypeOf(
+  fc.assert(
+    fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}),
+    // @ts-expect-error - string,string is not string
+    { plugins: [stringArgPlugin()] },
+  ),
+).toEqualTypeOf<Promise<void>>();
+// cannot use a wrongly typed plugin on a mismatching assert
+expectTypeOf(
+  fc.assert(
+    fc.asyncProperty(fc.nat(), async (_n) => {}),
+    // @ts-expect-error - string and number are incompatible
+    { plugins: [stringArgPlugin()] },
+  ),
+).toEqualTypeOf<Promise<void>>();
+
 // entityGraph
 type Node = { name: string; linkTo: Node[] };
 // translate "many" into an array
