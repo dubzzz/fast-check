@@ -2,7 +2,7 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import { stringify } from '../../utils/stringify.js';
-import type { Plugin, PluginInstance } from './Plugin.js';
+import type { UniversalPlugin } from './Plugin.js';
 
 type RunOutput = ReturnType<Property<unknown>['run']>;
 
@@ -57,8 +57,8 @@ function equalValuesRunner(
  * @remarks Since 4.10.0
  * @public
  */
-export function ignoreEqualValues(): Plugin<unknown> {
-  return (): PluginInstance<unknown> => {
+export function ignoreEqualValues(): UniversalPlugin {
+  return () => {
     const coveredCases = new Map<string, RunOutput>();
     return {
       decorateRun: (nestedRun) => (value) => equalValuesRunner(coveredCases, nestedRun, value, false),
@@ -87,8 +87,8 @@ export function ignoreEqualValues(): Plugin<unknown> {
  * @remarks Since 4.10.0
  * @public
  */
-export function skipEqualValues(): Plugin<unknown> {
-  return (): PluginInstance<unknown> => {
+export function skipEqualValues(): UniversalPlugin {
+  return () => {
     const coveredCases = new Map<string, RunOutput>();
     return {
       decorateRun: (nestedRun) => (value) => equalValuesRunner(coveredCases, nestedRun, value, true),

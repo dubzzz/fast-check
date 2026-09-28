@@ -198,7 +198,7 @@ export { noShrink } from './arbitrary/noShrink.js';
 export { noBias } from './arbitrary/noBias.js';
 export { limitShrink } from './arbitrary/limitShrink.js';
 export type { RandomGenerator } from './random/generator/RandomGenerator.js';
-export type { Plugin, PluginInstance, PluginStore } from './check/plugin/Plugin.js';
+export type { Plugin, PluginInstance, PluginStore, UniversalPlugin } from './check/plugin/Plugin.js';
 export { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
 export { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
 export { unbiased } from './check/plugin/UnbiasedPlugin.js';
