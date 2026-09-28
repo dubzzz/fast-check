@@ -208,7 +208,7 @@ import { noShrink } from './arbitrary/noShrink.js';
 import { noBias } from './arbitrary/noBias.js';
 import { limitShrink } from './arbitrary/limitShrink.js';
 import type { RandomGenerator } from './random/generator/RandomGenerator.js';
-import type { Plugin, PluginInstance, PluginStore } from './check/plugin/Plugin.js';
+import type { Plugin, PluginInstance, PluginStore, UniversalPlugin } from './check/plugin/Plugin.js';
 import { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
 import { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
 import { unbiased } from './check/plugin/UnbiasedPlugin.js';
@@ -248,6 +248,7 @@ export type {
   Plugin,
   PluginInstance,
   PluginStore,
+  UniversalPlugin,
   IRawProperty,
   IProperty,
   IPropertyWithHooks,
