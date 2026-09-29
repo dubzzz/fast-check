@@ -147,11 +147,11 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
       }
       const afterHooks = collectAfterEachHooks(suite);
       let runCountAfter = 0;
-      for (let hookIndex = 0; hookIndex !== afterHooks.length; ++hookIndex) {
+      for (let hookIndex = afterHooks.length - 1; hookIndex >= 0; --hookIndex) {
         const hook = afterHooks[hookIndex];
         extraLifeCyclePlugins.push(
           fc.afterEach(() => {
-            if (hookIndex === afterHooks.length - 1) {
+            if (hookIndex === 0) {
               runCountAfter += 1;
             }
             if (runCountAfter <= 1) {
