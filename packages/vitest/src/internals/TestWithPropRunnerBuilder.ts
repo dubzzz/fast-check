@@ -58,6 +58,20 @@ function collectAfterEachHooks(suite: RunnerTestSuite): ReturnType<typeof TestRu
   return hooks;
 }
 
+function isPromiseLike(value: unknown): value is PromiseLike<unknown> {
+  return value !== null && typeof value === 'object' && 'then' in value;
+}
+
+function safeTeardown(fn: () => unknown): () => void | Promise<void> {
+  return () => {
+    const out = fn();
+    if (isPromiseLike(out)) {
+      return Promise.resolve(out as PromiseLike<void>).then(() => undefined);
+    }
+    return undefined;
+  };
+}
+
 export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   testFn: It | It['only' | 'skip' | 'concurrent'],
   label: string,
@@ -124,12 +138,10 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
               return;
             }
             const out = hook(test.context, suite) as LCHook<void | (() => void)>;
-            if (out === undefined || typeof out === 'function') {
-              return out;
+            if (isPromiseLike(out)) {
+              return Promise.resolve(out).then((v) => (typeof v === 'function' ? safeTeardown(v) : undefined));
             }
-            if (typeof out === 'object' && out !== null && 'then' in out) {
-              return Promise.resolve(out).then((v) => (typeof v === 'function' ? v : undefined));
-            }
+            return typeof out === 'function' ? safeTeardown(out) : undefined;
           }),
         );
       }
@@ -146,8 +158,8 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
               return;
             }
             const out = hook(test.context, suite) as LCHook<void>;
-            if (typeof out === 'object' && out !== null && 'then' in out) {
-              return Promise.resolve(out).then(() => {});
+            if (isPromiseLike(out)) {
+              return Promise.resolve(out).then(() => undefined);
             }
           }),
         );
