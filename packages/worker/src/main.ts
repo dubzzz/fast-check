@@ -1,7 +1,7 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { assert as fcAssert, asyncProperty as fcProperty } from 'fast-check';
-import type { Property, Parameters } from 'fast-check';
+import type { Property, Parameters, UniversalPlugin } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProperty.js';
@@ -18,6 +18,8 @@ async function clearAllWorkersFor(property: Property<unknown>): Promise<void> {
   }
   await terminateAllWorkers();
 }
+
+const allKnownWorkerPluginPerProperty = new Map<Property<unknown>, UniversalPlugin>();
 
 /**
  * Run the property, throw in case of failure.
@@ -37,7 +39,15 @@ export async function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>
   if (isMainThread) {
     // Main thread code
     try {
-      await fcAssert(property, params);
+      const workerPlugin = allKnownWorkerPluginPerProperty.get(property);
+      const refinedParams: typeof params =
+        workerPlugin !== undefined
+          ? {
+              ...params,
+              plugins: [workerPlugin, ...(params !== undefined && params.plugins !== undefined ? params.plugins : [])],
+            }
+          : params;
+      await fcAssert(property, refinedParams);
     } finally {
       await clearAllWorkersFor(property);
     }
@@ -93,7 +103,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     const isolationLevel = options.isolationLevel || 'file';
     const randomSource = options.randomSource || 'main-thread';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
-    const { property, terminateAllWorkers } = runMainThread<Ts>(
+    const { property, workerPlugin, terminateAllWorkers } = runMainThread<Ts>(
       url,
       currentPredicateId,
       isolationLevel,
@@ -101,6 +111,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
       arbitraries,
     );
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
+    allKnownWorkerPluginPerProperty.set(property, workerPlugin);
     return property;
   } else if (parentPort !== null && workerData.fastcheckWorker === true) {
     // Worker code
