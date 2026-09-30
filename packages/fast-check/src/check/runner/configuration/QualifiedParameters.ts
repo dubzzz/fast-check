@@ -22,7 +22,6 @@ export class QualifiedParameters<T> {
   randomType: (seed: number) => QualifiedRandomGenerator;
   numRuns: number;
   maxSkipsPerRun: number;
-  timeout: number | undefined;
   path: string;
   logger: (v: string) => void;
   verbose: VerbosityLevel;
@@ -39,7 +38,6 @@ export class QualifiedParameters<T> {
     this.numRuns = readNumRuns(p);
     this.verbose = readVerbose(p);
     this.maxSkipsPerRun = p.maxSkipsPerRun !== undefined ? p.maxSkipsPerRun : 100;
-    this.timeout = safeTimeout(p.timeout);
     this.logger =
       p.logger !== undefined
         ? p.logger
@@ -61,7 +59,6 @@ export class QualifiedParameters<T> {
       randomType: this.randomType,
       numRuns: this.numRuns,
       maxSkipsPerRun: this.maxSkipsPerRun,
-      timeout: this.timeout,
       path: this.path,
       logger: this.logger,
       verbose: this.verbose,
@@ -124,13 +121,6 @@ function readVerbose<T>(p: Parameters<T>): VerbosityLevel {
     return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
   }
   return p.verbose;
-}
-
-function safeTimeout(value: number | undefined): number | undefined {
-  if (value === undefined) {
-    return undefined;
-  }
-  return Math.min(value, 0x7fffffff);
 }
 
 /**

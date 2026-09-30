@@ -48,14 +48,6 @@ export interface Parameters<T = void> {
    */
   maxSkipsPerRun?: number;
   /**
-   * Maximum time in milliseconds for the predicate to answer: disabled by default
-   *
-   * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
-   * @remarks Since 0.0.11
-   * @deprecated Prefer the `timeout` plugin: `fc.assert(property, { plugins: [fc.timeout(timeMs)] })`
-   */
-  timeout?: number;
-  /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
    * @remarks Since 1.0.0

@@ -9,7 +9,7 @@ if (isMainThread) {
   describe('@fast-check/worker', () => {
     const testTimeout = 30000;
     const assertTimeout = 5000;
-    const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
+    const defaultOptions: Parameters<unknown> = { plugins: [fc.timeout(assertTimeout)] };
 
     it.each`
       type                               | sync

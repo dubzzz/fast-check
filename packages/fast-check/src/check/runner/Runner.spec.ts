@@ -431,53 +431,6 @@ describe('Runner', () => {
           return true;
         }),
       ));
-    it('Should not timeout if no timeout defined', async () => {
-      const p: Property<[number]> = {
-        generate: () => new Value([1], undefined),
-        shrink: () => nil,
-        runBeforeEach: async () => {},
-        run: async (_value: [number]) => null,
-        runAfterEach: async () => {},
-      };
-      const out = await (check(p) as Promise<RunDetails<[number]>>);
-      expect(out.failed).toBe(false);
-    });
-    it('Should not timeout if timeout not reached', async () => {
-      const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
-      const p: Property<[number]> = {
-        generate: () => new Value([1], undefined),
-        shrink: () => nil,
-        runBeforeEach: async () => {},
-        run: async (_value: [number]) => await wait(0),
-        runAfterEach: async () => {},
-      };
-      const out = await (check(p, { timeout: 100 }) as Promise<RunDetails<[number]>>);
-      expect(out.failed).toBe(false);
-    });
-    it('Should timeout if it reached the timeout', async () => {
-      const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
-      const p: Property<[number]> = {
-        generate: () => new Value([1], undefined),
-        shrink: () => nil,
-        runBeforeEach: async () => {},
-        run: async (_value: [number]) => await wait(100),
-        runAfterEach: async () => {},
-      };
-      const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
-      expect(out.failed).toBe(true);
-    });
-    it('Should timeout if task never ends', async () => {
-      const neverEnds = () => new Promise<null>(() => {});
-      const p: Property<[number]> = {
-        generate: () => new Value([1], undefined),
-        shrink: () => nil,
-        runBeforeEach: async () => {},
-        run: async (_value: [number]) => await neverEnds(),
-        runAfterEach: async () => {},
-      };
-      const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
-      expect(out.failed).toBe(true);
-    });
   });
   describe('assert', () => {
     const v1 = { toString: () => 'toString(value#1)' };
