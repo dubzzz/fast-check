@@ -539,8 +539,9 @@ jobs:
             }
 
   # Job to confirm every required job passed
-  pre_all_checks_passed:
-    name: 'Pre All checks passed'
+  all_checks_passed:
+    name: 'All checks passed'
+    if: always()
     needs:
       - production_packages
       - documentation
@@ -552,20 +553,10 @@ jobs:
       - test_types
     runs-on: ubuntu-latest
     steps:
-      - name: Success
-        run: echo "Success"
-  all_checks_passed:
-    name: 'All checks passed'
-    needs: pre_all_checks_passed
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - if: needs.pre_all_checks_passed.result == 'success'
-        name: Success
-        run: echo "Success"
-      - if: needs.pre_all_checks_passed.result != 'success'
-        name: Failure
-        run: exit 1
+      - name: Check required job results
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: jq -e 'all(.[]; .result == "success")' <<< "$NEEDS_JSON"
 
   # Publication jobs
   publish_documentation_netlify:
