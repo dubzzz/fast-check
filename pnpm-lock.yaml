@@ -446,7 +446,7 @@ importers:
   packages/worker:
     dependencies:
       fast-check:
-        specifier: ^4.0.0
+        specifier: ^4.10.0
         version: link:../fast-check
       pure-rand:
         specifier: ^8.0.0
