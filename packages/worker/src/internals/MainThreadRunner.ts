@@ -5,7 +5,8 @@ import type { IWorkerPool, Payload, PooledWorker } from './worker-pool/IWorkerPo
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
-import { PreconditionFailure } from 'fast-check';
+import { PreconditionFailure, beforeEach } from 'fast-check';
+import type { UniversalPlugin } from 'fast-check';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -22,7 +23,11 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   isolationLevel: 'file' | 'property' | 'predicate',
   randomSource: 'main-thread' | 'worker',
   arbitraries: PropertyArbitraries<Ts>,
-): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
+): {
+  property: WorkerProperty<Ts>;
+  workerPlugin: UniversalPlugin;
+  terminateAllWorkers: () => Promise<void>;
+} {
   const lock = new Lock();
   const pool: IWorkerPool<boolean | void, Payload<Ts>> = isolationLevel === 'predicate'
     ? new OneTimePool(workerFileUrl)
@@ -47,23 +52,23 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
     },
     randomSource === 'worker',
   );
-  property.beforeEach(async (hookFunction) => {
-    await hookFunction(); // run outside of the worker, can throw
+  const workerPlugin = beforeEach(async () => {
+    // NOTE: Being capable of enriching the context of the runner with extra pieces
+    // would make us capable of forwarding the worker variable safely to the runner
     const acquired = await lock.acquire();
     releaseLock = acquired.release;
     worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
-  });
-  property.afterEach(async (hookFunction) => {
-    if (worker !== undefined) {
-      worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
-      worker = undefined;
-    }
-    if (releaseLock !== undefined) {
-      releaseLock();
-      releaseLock = undefined;
-    }
-    await hookFunction(); // run outside of the worker, can throw
+    return () => {
+      if (worker !== undefined) {
+        worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
+        worker = undefined;
+      }
+      if (releaseLock !== undefined) {
+        releaseLock();
+        releaseLock = undefined;
+      }
+    };
   });
   const terminateAllWorkers = () => pool.terminateAllWorkers();
-  return { property, terminateAllWorkers };
+  return { property, workerPlugin, terminateAllWorkers };
 }
