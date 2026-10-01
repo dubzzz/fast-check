@@ -18,10 +18,9 @@ Got TypeError: v is not a function
     at packages/fast-check/test/NoRegressionStack.spec.ts:?:?
     at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
-    at propertyExecution (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at node_modules/.pnpm/@vitest+runner@<version>/node_modules/@vitest/runner/dist/chunk-artifact.js:?:?
+    at packages/fast-check/test/__test-helpers__/StackSanitizer.ts:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
 `;
@@ -43,7 +42,6 @@ Shrunk 32 time(s)
 Got error: Property failed by returning false
     at outputToPropertyAnswer (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
-    at propertyExecution (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at node_modules/.pnpm/@vitest+runner@<version>/node_modules/@vitest/runner/dist/chunk-artifact.js:?:?
@@ -69,7 +67,6 @@ Got error: a must be >= b
     at packages/fast-check/test/NoRegressionStack.spec.ts:?:?
     at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
-    at propertyExecution (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at node_modules/.pnpm/@vitest+runner@<version>/node_modules/@vitest/runner/dist/chunk-artifact.js:?:?
