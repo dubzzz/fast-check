@@ -58,7 +58,7 @@ describe('DebouncedAutocomplete', () => {
       {
         plugins: [
           fc.beforeEach(async () => {
-            vi.resetAllMocks();
+            vi.clearAllTimers();
             await cleanup();
           }),
         ],
