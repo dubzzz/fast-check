@@ -525,7 +525,7 @@ describe(`NoRegression (async)`, () => {
 // Helpers
 
 async function expectPropertyToThrowErrorMatchingSnapshot<T>(
-  property: fc.PropertyWithHooks<T>,
+  property: fc.Property<T>,
   customSettings?: fc.Parameters<T>,
 ) {
   await expect(

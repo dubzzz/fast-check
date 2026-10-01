@@ -1,5 +1,4 @@
-import type { PropertyWithHooks } from 'fast-check';
-import type { PropertyArbitraries } from '../SharedTypes.js';
+import type { LegacyPropertyWithHooks, PropertyArbitraries } from '../SharedTypes.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
 import * as fc from 'fast-check';
@@ -9,7 +8,7 @@ import { WorkerPropertyFromWorker } from './WorkerPropertyFromWorker.js';
  * Property tailored for usage with workers
  * it produces the payload to be sent to the workers
  */
-type WorkerProperty<Ts> = PropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> };
+type WorkerProperty<Ts> = LegacyPropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> };
 
 /**
  * Build an async property tailored for workers
@@ -23,7 +22,7 @@ export function buildWorkerProperty<Ts extends [unknown, ...unknown[]]>(
   generateValuesInMainThread: boolean,
 ): WorkerProperty<Ts> {
   if (!generateValuesInMainThread) {
-    return Object.assign(fc.asyncProperty<Ts>(...arbitraries, predicate), {
+    return Object.assign(fc.asyncProperty<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>, {
       getPayload: (inputs: Ts): Payload<Ts> => ({ source: 'main', value: inputs }),
     });
   }

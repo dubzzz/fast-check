@@ -39,16 +39,4 @@ export interface Property<Ts> {
    * @remarks Since 5.0.0
    */
   run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null;
-
-  /**
-   * Run before each hook
-   * @remarks Since 5.0.0
-   */
-  runBeforeEach: () => Promise<void> | void;
-
-  /**
-   * Run after each hook
-   * @remarks Since 5.0.0
-   */
-  runAfterEach: () => Promise<void> | void;
 }

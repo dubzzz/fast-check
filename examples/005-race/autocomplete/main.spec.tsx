@@ -12,84 +12,90 @@ import { render, cleanup, fireEvent, act, getNodeText, screen } from '@testing-l
 describe('AutocompleteField', () => {
   it('should only show suggestions that match the current input', async () => {
     await fc.assert(
-      fc
-        .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
-          // Arrange
-          const searchImplem = s.scheduleFunction(function search(query: string, maxResults: number) {
-            return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
-          });
+      fc.asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
+        // Arrange
+        const searchImplem = s.scheduleFunction(function search(query: string, maxResults: number) {
+          return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
+        });
 
-          // Act
-          render(<AutocompleteField search={searchImplem} />);
-          const input = screen.getByRole('textbox') as HTMLElement;
-          s.scheduleSequence(buildAutocompleteEvents(input, queries));
+        // Act
+        render(<AutocompleteField search={searchImplem} />);
+        const input = screen.getByRole('textbox') as HTMLElement;
+        s.scheduleSequence(buildAutocompleteEvents(input, queries));
 
-          // Assert
-          while (s.count() !== 0) {
-            await s.waitOne();
+        // Assert
+        while (s.count() !== 0) {
+          await s.waitOne();
 
-            const autocompletionValue = input.attributes.getNamedItem('value')!.value;
-            const suggestions = (screen.queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
-            if (!suggestions.every((suggestion) => suggestion.includes(autocompletionValue))) {
-              throw new Error(
-                `Invalid suggestions for ${JSON.stringify(autocompletionValue)}, got: ${JSON.stringify(suggestions)}`,
-              );
-            }
+          const autocompletionValue = input.attributes.getNamedItem('value')!.value;
+          const suggestions = (screen.queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
+          if (!suggestions.every((suggestion) => suggestion.includes(autocompletionValue))) {
+            throw new Error(
+              `Invalid suggestions for ${JSON.stringify(autocompletionValue)}, got: ${JSON.stringify(suggestions)}`,
+            );
           }
-        })
-        .beforeEach(async () => {
-          vi.resetAllMocks();
-          await cleanup();
-        }),
+        }
+      }),
+      {
+        plugins: [
+          fc.beforeEach(async () => {
+            vi.resetAllMocks();
+            await cleanup();
+          }),
+        ],
+      },
     );
   });
 
   it('should show increasingly more suggestions as queries resolve', async () => {
     await fc.assert(
-      fc
-        .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
-          // Arrange
-          const query = queries[queries.length - 1];
-          const searchImplem = s.scheduleFunction(function search(query: string, maxResults: number) {
-            return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
-          });
+      fc.asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
+        // Arrange
+        const query = queries[queries.length - 1];
+        const searchImplem = s.scheduleFunction(function search(query: string, maxResults: number) {
+          return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
+        });
 
-          // Act
-          render(<AutocompleteField search={searchImplem} />);
-          const input = screen.getByRole('textbox') as HTMLElement;
-          for (const event of buildAutocompleteEvents(input, queries)) {
-            await event.builder();
-          } // All the user's inputs have been fired onto the AutocompleField
+        // Act
+        render(<AutocompleteField search={searchImplem} />);
+        const input = screen.getByRole('textbox') as HTMLElement;
+        for (const event of buildAutocompleteEvents(input, queries)) {
+          await event.builder();
+        } // All the user's inputs have been fired onto the AutocompleField
 
-          // Assert
-          let suggestions: string[] = [];
-          while (s.count() !== 0) {
-            // Resolving one async query in a random order
-            await s.waitOne();
+        // Assert
+        let suggestions: string[] = [];
+        while (s.count() !== 0) {
+          // Resolving one async query in a random order
+          await s.waitOne();
 
-            // Read suggestions shown by the component
-            const prevSuggestions = suggestions;
-            suggestions = (screen.queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
+          // Read suggestions shown by the component
+          const prevSuggestions = suggestions;
+          suggestions = (screen.queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
 
-            // We expect the number of suggestions to increase up to the final number
-            // of suggestions for <query> or 10 (max number of suggestions)
-            if (suggestions.length < prevSuggestions.length) {
-              const got = JSON.stringify({
-                prevSuggestions,
-                suggestions,
-              });
-              throw new Error(`We expect to have more and more suggestions as we resolve queries, got: ${got}`);
-            }
+          // We expect the number of suggestions to increase up to the final number
+          // of suggestions for <query> or 10 (max number of suggestions)
+          if (suggestions.length < prevSuggestions.length) {
+            const got = JSON.stringify({
+              prevSuggestions,
+              suggestions,
+            });
+            throw new Error(`We expect to have more and more suggestions as we resolve queries, got: ${got}`);
           }
-          // At the end we expect to get results matching <query>
-          if (!suggestions.every((s) => s.startsWith(query))) {
-            throw new Error(`Must start with ${JSON.stringify(query)}, got: ${JSON.stringify(suggestions)}`);
-          }
-        })
-        .beforeEach(async () => {
-          vi.resetAllMocks();
-          await cleanup();
-        }),
+        }
+        // At the end we expect to get results matching <query>
+        if (!suggestions.every((s) => s.startsWith(query))) {
+          throw new Error(`Must start with ${JSON.stringify(query)}, got: ${JSON.stringify(suggestions)}`);
+        }
+      }),
+      {
+        plugins: [
+          fc.beforeEach(async () => {
+            vi.resetAllMocks();
+            await cleanup();
+          }),
+        ],
+      },
     );
   });
 });

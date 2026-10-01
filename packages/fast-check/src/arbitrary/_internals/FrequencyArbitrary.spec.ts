@@ -18,7 +18,7 @@ function beforeEachHook() {
   vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
-fc.configureGlobal({ ...fc.readConfigureGlobal(), beforeEach: beforeEachHook });
+fc.installGlobalPlugin(fc.beforeEach(beforeEachHook));
 
 const frequencyValidInputsArb = fc
   .tuple(

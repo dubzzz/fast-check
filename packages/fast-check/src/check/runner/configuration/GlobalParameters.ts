@@ -4,14 +4,6 @@ import type { Parameters } from './Parameters.js';
 let globalParameters: GlobalParameters = {};
 
 /**
- * Type of legal hook function that can be used in the global parameter `beforeEach` and/or `afterEach`
- * Prefer `beforeEach` and/or `afterEach` plugins: `fc.assert(property, { plugins: [fc.beforeEach(fn)] })`
- * @remarks Since 2.3.0
- * @public
- */
-export type GlobalPropertyHookFunction = (() => Promise<unknown>) | (() => void);
-
-/**
  * Type describing the global overrides
  * @remarks Since 1.18.0
  * @public
@@ -20,22 +12,6 @@ export type GlobalParameters = Pick<
   Parameters<unknown>,
   Exclude<keyof Parameters<unknown>, 'path' | 'examples' | 'plugins'>
 > & {
-  /**
-   * Specify a function that will be called before each execution of a property.
-   * It behaves as-if you manually called `beforeEach` method on all the properties you execute with fast-check.
-   *
-   * @deprecated Prefer the life-cycle plugins: `fc.installGlobalPlugin(fc.beforeEach(fn))`
-   * @remarks Since 2.3.0
-   */
-  beforeEach?: GlobalPropertyHookFunction;
-  /**
-   * Specify a function that will be called after each execution of a property.
-   * It behaves as-if you manually called `afterEach` method on all the properties you execute with fast-check.
-   *
-   * @deprecated Prefer the life-cycle plugins: `fc.installGlobalPlugin(fc.afterEach(fn))`
-   * @remarks Since 2.3.0
-   */
-  afterEach?: GlobalPropertyHookFunction;
   /**
    * Define the base size to be used by arbitraries.
    *
