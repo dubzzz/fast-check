@@ -5,7 +5,7 @@ import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import type { RunDetails } from './reporter/RunDetails.js';
-import type { RunExecution } from './reporter/RunExecution.js';
+import { propertyRunner } from './PropertyRunner.js';
 import { RunnerIterator } from './RunnerIterator.js';
 import { SourceValuesIterator } from './SourceValuesIterator.js';
 import { lazyToss, toss } from './Tosser.js';
@@ -13,20 +13,6 @@ import { pathWalk } from './utils/PathWalker.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
-
-function runIt<Ts>(runner: RunnerIterator<Ts>, run: Property<Ts>['run']): Promise<RunExecution<Ts>> | RunExecution<Ts> {
-  for (const v of runner) {
-    const out = run(v);
-    if (out !== null && 'then' in out) {
-      return out.then((result) => {
-        runner.handleResult(result);
-        return runIt(runner, run);
-      });
-    }
-    runner.handleResult(out);
-  }
-  return runner.runExecution;
-}
 
 function runPluginCompletionHooks<Ts>(
   pluginInstances: PluginInstance<Ts>[],
@@ -130,8 +116,8 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
       : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : () => nil;
-  const out = Promise.resolve(runIt(new RunnerIterator(sourceValues, finalShrink, qParams.verbose), run)).then((e) =>
-    e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+  const out = Promise.resolve(propertyRunner(new RunnerIterator(sourceValues, finalShrink, qParams.verbose), run)).then(
+    (e) => e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
   );
   return runPluginCompletionHooks(pluginInstances, out);
 }
