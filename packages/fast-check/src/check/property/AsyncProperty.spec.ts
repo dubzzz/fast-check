@@ -15,9 +15,7 @@ describe('AsyncProperty', () => {
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       return false;
     });
-    await p.runBeforeEach();
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null); // property fails
-    await p.runAfterEach();
   });
   it('Should fail if predicate throws an Error', async () => {
     // Arrange
@@ -28,9 +26,7 @@ describe('AsyncProperty', () => {
     });
 
     // Act
-    await p.runBeforeEach();
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
-    await p.runAfterEach();
 
     // Assert
     expect((out as PropertyFailure).error).toBe(originalError);
@@ -42,9 +38,7 @@ describe('AsyncProperty', () => {
     });
 
     // Act
-    await p.runBeforeEach();
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
-    await p.runAfterEach();
 
     // Assert
     expect(out).toEqual({
@@ -61,9 +55,7 @@ describe('AsyncProperty', () => {
         });
 
         // Act
-        await p.runBeforeEach();
         const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
-        await p.runAfterEach();
 
         // Assert
         expect(out).toEqual({ error: stuff });
@@ -77,9 +69,7 @@ describe('AsyncProperty', () => {
       doNotResetThisValue = true;
       return false;
     });
-    await p.runBeforeEach();
     const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
-    await p.runAfterEach();
     expect(PreconditionFailure.isFailure(out)).toBe(true);
     expect(doNotResetThisValue).toBe(false); // does not run code after the failing precondition
   });
@@ -87,15 +77,11 @@ describe('AsyncProperty', () => {
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
       return true;
     });
-    await p.runBeforeEach();
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-    await p.runAfterEach();
   });
   it('Should succeed if predicate does not return anything', async () => {
     const p = asyncProperty(stubArb.single(8), async (_arg: number) => {});
-    await p.runBeforeEach();
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
-    await p.runAfterEach();
   });
   it('Should behave synchronously on run when predicate is synchronous', () => {
     let called = false;
@@ -126,7 +112,6 @@ describe('AsyncProperty', () => {
         resolvePromise = resolve;
       });
     });
-    await p.runBeforeEach();
     const runner = p.run(p.generate(stubRng.mutable.nocall()).value);
     expect(runner).toBeInstanceOf(Promise); // run is linked to an async predicate
     (runner as Promise<unknown>).then(() => (runnerHasCompleted = true));
@@ -138,7 +123,6 @@ describe('AsyncProperty', () => {
     await delay(); // give back the control for other threads
     expect(runnerHasCompleted).toBe(true);
     expect(await runner).toBe(null); // property success
-    await p.runAfterEach();
   });
 
   it('Should use the unbiased arbitrary by default', () => {
