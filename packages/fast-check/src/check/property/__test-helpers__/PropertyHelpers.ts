@@ -12,15 +12,11 @@ export function fakeProperty<T = unknown>(): { instance: Property<T> } & {
 } {
   const generate = vi.fn<Property<T>['generate']>(() => new Value(Symbol() as unknown as T, undefined));
   const shrink = vi.fn<Property<T>['shrink']>(() => nil);
-  const runBeforeEach = vi.fn<Property<T>['runBeforeEach']>(() => undefined);
-  const runAfterEach = vi.fn<Property<T>['runAfterEach']>(() => undefined);
   const run = vi.fn<Property<T>['run']>(() => null);
   class MyProperty implements Property<unknown> {
     generate = generate;
     shrink = shrink;
     run = run;
-    runBeforeEach = runBeforeEach;
-    runAfterEach = runAfterEach;
   }
-  return { instance: new MyProperty(), generate, shrink, run, runBeforeEach, runAfterEach };
+  return { instance: new MyProperty(), generate, shrink, run };
 }
