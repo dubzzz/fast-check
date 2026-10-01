@@ -168,7 +168,9 @@ overrides:
   follow-redirects@<1.16.0: ~1.16.0
   lodash-es@<4.18.0: ~4.18.0
   dompurify@<3.4.0: ~3.4.0
-  typedoc@0.28.20>typescript: npm:typescript@6.0.3
+  typedoc@0.28.20>typescript@<6: '-'
+
+packageExtensionsChecksum: sha256-G7kX7Gb/RjIYj86cyp4ISj34ji6oXUnefejjMNC6m4w=
 
 importers:
 
@@ -534,7 +536,7 @@ importers:
         version: 0.6.0(@docusaurus/core@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.46)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@8.1.1)))(@mdx-js/react@3.1.1(@types/react@19.3.0)(react@19.3.0))(@rspack/core@1.7.11)(@swc/core@1.15.46)(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(lightningcss@1.33.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(supports-color@8.1.1)(typescript@7.0.2))
       docusaurus-plugin-typedoc:
         specifier: ^1.4.3
-        version: 1.4.3(typedoc-plugin-markdown@4.13.1(typedoc@0.28.20(typescript@7.0.2)))(typedoc@0.28.20(typescript@7.0.2))
+        version: 1.4.3(typedoc-plugin-markdown@4.13.1(typedoc@0.28.20))(typedoc@0.28.20)
       fast-check:
         specifier: workspace:*
         version: link:../packages/fast-check
@@ -543,10 +545,10 @@ importers:
         version: 1.6.1(supports-color@8.1.1)
       typedoc:
         specifier: ^0.28.20
-        version: 0.28.20(typescript@7.0.2)
+        version: 0.28.20
       typedoc-plugin-markdown:
         specifier: ^4.13.1
-        version: 4.13.1(typedoc@0.28.20(typescript@7.0.2))
+        version: 4.13.1(typedoc@0.28.20)
       typescript:
         specifier: ~7.0.2
         version: 7.0.2
@@ -9583,11 +9585,14 @@ packages:
     resolution: {integrity: sha512-uSKqkh8Cr48vllnEy+jdaAgOeR6Y+QCBW7usgUsKj7gJEfR7stw9U/fE49LBnj2tPRKPY0c0EBJSWe9Appmplg==}
     engines: {node: '>= 18', pnpm: '>= 10'}
     hasBin: true
-    peerDependencies:
-      typescript: 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x || 5.6.x || 5.7.x || 5.8.x || 5.9.x || 6.0.x
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -16488,11 +16493,11 @@ snapshots:
       minimatch: 9.0.3
       yaml: 2.8.1
 
-  docusaurus-plugin-typedoc@1.4.3(typedoc-plugin-markdown@4.13.1(typedoc@0.28.20(typescript@7.0.2)))(typedoc@0.28.20(typescript@7.0.2)):
+  docusaurus-plugin-typedoc@1.4.3(typedoc-plugin-markdown@4.13.1(typedoc@0.28.20))(typedoc@0.28.20):
     dependencies:
-      typedoc: 0.28.20(typescript@7.0.2)
-      typedoc-docusaurus-theme: 1.4.3(typedoc-plugin-markdown@4.13.1(typedoc@0.28.20(typescript@7.0.2)))(typedoc@0.28.20(typescript@7.0.2))
-      typedoc-plugin-markdown: 4.13.1(typedoc@0.28.20(typescript@7.0.2))
+      typedoc: 0.28.20
+      typedoc-docusaurus-theme: 1.4.3(typedoc-plugin-markdown@4.13.1(typedoc@0.28.20))(typedoc@0.28.20)
+      typedoc-plugin-markdown: 4.13.1(typedoc@0.28.20)
 
   dom-accessibility-api@0.5.16: {}
 
@@ -21290,25 +21295,27 @@ snapshots:
     dependencies:
       is-typedarray: 1.0.0
 
-  typedoc-docusaurus-theme@1.4.3(typedoc-plugin-markdown@4.13.1(typedoc@0.28.20(typescript@7.0.2)))(typedoc@0.28.20(typescript@7.0.2)):
+  typedoc-docusaurus-theme@1.4.3(typedoc-plugin-markdown@4.13.1(typedoc@0.28.20))(typedoc@0.28.20):
     dependencies:
-      typedoc: 0.28.20(typescript@7.0.2)
-      typedoc-plugin-markdown: 4.13.1(typedoc@0.28.20(typescript@7.0.2))
+      typedoc: 0.28.20
+      typedoc-plugin-markdown: 4.13.1(typedoc@0.28.20)
 
-  typedoc-plugin-markdown@4.13.1(typedoc@0.28.20(typescript@7.0.2)):
+  typedoc-plugin-markdown@4.13.1(typedoc@0.28.20):
     dependencies:
-      typedoc: 0.28.20(typescript@7.0.2)
+      typedoc: 0.28.20
 
-  typedoc@0.28.20(typescript@7.0.2):
+  typedoc@0.28.20:
     dependencies:
       '@gerrit0/mini-shiki': 3.23.0
       lunr: 2.3.9
       markdown-it: 14.3.0
       minimatch: 10.2.6
-      typescript: 7.0.2
+      typescript: 6.0.3
       yaml: 2.9.0
 
   typescript@5.9.3: {}
+
+  typescript@6.0.3: {}
 
   typescript@7.0.2:
     optionalDependencies:
