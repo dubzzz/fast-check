@@ -31,23 +31,6 @@ async function runIt<Ts>(
   return runner.runExecution;
 }
 
-async function propertyExecution<Ts>(property: Property<Ts>, v: Ts) {
-  const beforeEachOut = property.runBeforeEach();
-  if (beforeEachOut !== undefined) {
-    await beforeEachOut;
-  }
-  const syncOut = property.run(v);
-  // Awaiting on an already resolved value brings a performance drop.
-  // As such we try to only await on Promises. Given the shape of the values produced by run
-  // we do a best effort check and drop unwanted await calls only on synchronous success cases.
-  const out = syncOut !== null ? await syncOut : syncOut;
-  const afterEachOut = property.runAfterEach();
-  if (afterEachOut !== undefined) {
-    await afterEachOut;
-  }
-  return out;
-}
-
 function runPluginCompletionHooks<Ts>(
   pluginInstances: PluginInstance<Ts>[],
   runDetailsPromise: Promise<RunDetails<Ts>>,
@@ -126,7 +109,7 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
 
   // Apply and decorate with plugins
   let surchargedGenerate: typeof property.generate | undefined = undefined;
-  let run: typeof property.run = (v) => propertyExecution(property, v);
+  let run: typeof property.run = (v) => property.run(v);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateGenerate !== undefined) {

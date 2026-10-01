@@ -1,5 +1,5 @@
-import type { PropertyHookFunction, PropertyWithHooks, Property, Random, Value } from 'fast-check';
-import type { PropertyArbitraries } from '../SharedTypes.js';
+import type { Property, Random, Value } from 'fast-check';
+import type { LegacyPropertyHookFunction, LegacyPropertyWithHooks, PropertyArbitraries } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
@@ -50,13 +50,13 @@ function buildInputsAndRegister<Ts extends [unknown, ...unknown[]]>(
  * A WorkerProperty delegating generating the values to the Worker thread
  * instead of running it into the main thread
  */
-export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements PropertyWithHooks<Ts> {
+export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements LegacyPropertyWithHooks<Ts> {
   private readonly numArbitraries: number;
-  private readonly internalProperty: PropertyWithHooks<Ts>;
+  private readonly internalProperty: LegacyPropertyWithHooks<Ts>;
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.numArbitraries = arbitraries.length;
-    this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
+    this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
@@ -75,15 +75,15 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return Iterator.from([]);
   }
 
-  run(v: Ts): ReturnType<PropertyWithHooks<Ts>['run']> {
+  run(v: Ts): ReturnType<LegacyPropertyWithHooks<Ts>['run']> {
     return this.internalProperty.run(v);
   }
 
-  beforeEach(hookFunction: PropertyHookFunction): PropertyWithHooks<Ts> {
+  beforeEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts> {
     return this.internalProperty.beforeEach(hookFunction);
   }
 
-  afterEach(hookFunction: PropertyHookFunction): PropertyWithHooks<Ts> {
+  afterEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts> {
     return this.internalProperty.afterEach(hookFunction);
   }
 

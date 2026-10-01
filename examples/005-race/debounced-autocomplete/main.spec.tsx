@@ -16,50 +16,53 @@ describe('DebouncedAutocomplete', () => {
   it('should autocomplete queries (with mocked timers)', async () => {
     vi.useFakeTimers();
     await fc.assert(
-      fc
-        .asyncProperty(
-          fc.scheduler(),
-          fc.uniqueArray(fc.string()),
-          fc.string({ minLength: 1 }),
-          async (s, allResults, userQuery) => {
-            // Arrange
-            const suggestionsFor = s.scheduleFunction(
-              async (query: string) => {
-                return allResults.filter((r) => r.includes(query));
+      fc.asyncProperty(
+        fc.scheduler(),
+        fc.uniqueArray(fc.string()),
+        fc.string({ minLength: 1 }),
+        async (s, allResults, userQuery) => {
+          // Arrange
+          const suggestionsFor = s.scheduleFunction(
+            async (query: string) => {
+              return allResults.filter((r) => r.includes(query));
+            },
+            // Continuations plugged onto calls to suggestionsFor(...) might perform state updates
+            // as a consequence they need to be fired from an act-context
+            act,
+          );
+          const expectedResults = allResults.filter((r) => r.includes(userQuery));
+
+          // Act
+          render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
+          const { task } = s.scheduleSequence(
+            [...userQuery].map((c, idx) => ({
+              label: `Typing "${c}"`,
+              builder: async () => {
+                act(() => {
+                  // Typing stuff may trigger state updates, thus they have to be wrapped into act
+                  const input = screen.getByRole('textbox');
+                  fireEvent.change(input, { target: { value: userQuery.substring(0, idx + 1) } });
+                });
               },
-              // Continuations plugged onto calls to suggestionsFor(...) might perform state updates
-              // as a consequence they need to be fired from an act-context
-              act,
-            );
-            const expectedResults = allResults.filter((r) => r.includes(userQuery));
+            })),
+          );
+          const customAct = buildWrapWithTimersAct(s);
+          await s.waitFor(task, customAct);
+          await s.waitAll(customAct);
 
-            // Act
-            render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
-            const { task } = s.scheduleSequence(
-              [...userQuery].map((c, idx) => ({
-                label: `Typing "${c}"`,
-                builder: async () => {
-                  act(() => {
-                    // Typing stuff may trigger state updates, thus they have to be wrapped into act
-                    const input = screen.getByRole('textbox');
-                    fireEvent.change(input, { target: { value: userQuery.substring(0, idx + 1) } });
-                  });
-                },
-              })),
-            );
-            const customAct = buildWrapWithTimersAct(s);
-            await s.waitFor(task, customAct);
-            await s.waitAll(customAct);
-
-            // Assert
-            const displayedSuggestions = screen.queryAllByRole('listitem');
-            expect(displayedSuggestions.map((el) => el.textContent)).toEqual(expectedResults);
-          },
-        )
-        .beforeEach(async () => {
-          vi.clearAllTimers();
-          await cleanup();
-        }),
+          // Assert
+          const displayedSuggestions = screen.queryAllByRole('listitem');
+          expect(displayedSuggestions.map((el) => el.textContent)).toEqual(expectedResults);
+        },
+      ),
+      {
+        plugins: [
+          fc.beforeEach(async () => {
+            vi.resetAllMocks();
+            await cleanup();
+          }),
+        ],
+      },
     );
   });
 });

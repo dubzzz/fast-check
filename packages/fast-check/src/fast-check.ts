@@ -2,7 +2,6 @@ export { pre } from './check/precondition/Pre.js';
 export { asyncProperty } from './check/property/AsyncProperty.js';
 export type { PropertyFailure } from './check/property/types/PropertyFailure.js';
 export type { Property } from './check/property/types/Property.js';
-export type { PropertyWithHooks, PropertyHookFunction } from './check/property/types/PropertyWithHooks.js';
 export type { Parameters } from './check/runner/configuration/Parameters.js';
 export type {
   RunDetails,
@@ -138,7 +137,7 @@ export { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelR
 
 export { Random } from './random/generator/Random.js';
 
-export type { GlobalParameters, GlobalPropertyHookFunction } from './check/runner/configuration/GlobalParameters.js';
+export type { GlobalParameters } from './check/runner/configuration/GlobalParameters.js';
 export {
   configureGlobal,
   readConfigureGlobal,

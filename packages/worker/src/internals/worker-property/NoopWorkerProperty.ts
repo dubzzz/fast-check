@@ -1,5 +1,5 @@
-import type { PropertyWithHooks, Value, PreconditionFailure, PropertyFailure } from 'fast-check';
-import type { WorkerProperty } from '../SharedTypes.js';
+import type { Value, PreconditionFailure, PropertyFailure } from 'fast-check';
+import type { WorkerProperty, LegacyPropertyWithHooks } from '../SharedTypes.js';
 
 /**
  * NoopWorkerProperty is a placeholder instance of property returned
@@ -7,10 +7,10 @@ import type { WorkerProperty } from '../SharedTypes.js';
  * In such case, the assert runner whould never call anything from it.
  */
 export class NoopWorkerProperty<Ts> implements WorkerProperty<Ts> {
-  beforeEach(): PropertyWithHooks<Ts> {
+  beforeEach(): LegacyPropertyWithHooks<Ts> {
     throw new Error('Method not implemented.');
   }
-  afterEach(): PropertyWithHooks<Ts> {
+  afterEach(): LegacyPropertyWithHooks<Ts> {
     throw new Error('Method not implemented.');
   }
   generate(): Value<Ts> {

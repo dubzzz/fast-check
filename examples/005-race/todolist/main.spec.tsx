@@ -16,30 +16,33 @@ import { listTodos, sortTodos } from './model-based/Model.js';
 describe('TodoList', () => {
   it('should detect potential issues with the TodoList', async () => {
     await fc.assert(
-      fc
-        .asyncProperty(
-          fc.scheduler(),
-          TodoListCommands,
-          fc.uniqueArray(fc.record({ id: fc.uuid(), label: fc.string(), checked: fc.boolean() }), {
-            selector: (entry) => entry.id,
-          }),
-          fc.iterator(fc.boolean()),
-          async (s, commands, initialTodos, allFailures) => {
-            const { mockedApi, expectedTodos } = mockApi(s, initialTodos, allFailures);
-
-            // Execute all the commands
-            const wrapper = render(<TodoList {...mockedApi} />);
-            await fc.scheduledModelRun(s, () => ({ model: { todos: [], wrapper }, real: {} }), commands);
-
-            // Check the final state (no more items should be loading)
-            expect(
-              sortTodos((await listTodos()).map((t) => ({ label: t.label, checked: t.checked, loading: t.loading }))),
-            ).toEqual(sortTodos(expectedTodos().map((t) => ({ label: t.label, checked: t.checked, loading: false }))));
-          },
-        )
-        .beforeEach(async () => {
-          await cleanup();
+      fc.asyncProperty(
+        fc.scheduler(),
+        TodoListCommands,
+        fc.uniqueArray(fc.record({ id: fc.uuid(), label: fc.string(), checked: fc.boolean() }), {
+          selector: (entry) => entry.id,
         }),
+        fc.iterator(fc.boolean()),
+        async (s, commands, initialTodos, allFailures) => {
+          const { mockedApi, expectedTodos } = mockApi(s, initialTodos, allFailures);
+
+          // Execute all the commands
+          const wrapper = render(<TodoList {...mockedApi} />);
+          await fc.scheduledModelRun(s, () => ({ model: { todos: [], wrapper }, real: {} }), commands);
+
+          // Check the final state (no more items should be loading)
+          expect(
+            sortTodos((await listTodos()).map((t) => ({ label: t.label, checked: t.checked, loading: t.loading }))),
+          ).toEqual(sortTodos(expectedTodos().map((t) => ({ label: t.label, checked: t.checked, loading: false }))));
+        },
+      ),
+      {
+        plugins: [
+          fc.beforeEach(async () => {
+            await cleanup();
+          }),
+        ],
+      },
     );
   });
 });

@@ -11,16 +11,6 @@ expectTypeOf(fc.assert(fc.asyncProperty(fc.nat(), async () => {}))).toEqualTypeO
 // Asynchronous property means asynchronous assert even with synchronous predicate
 expectTypeOf(fc.assert(fc.asyncProperty(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
-// assert (beforeEach, afterEach)
-// Asynchronous properties accept asynchronous beforeEach
-fc.assert(fc.asyncProperty(fc.nat(), () => {}).beforeEach(async () => {}));
-// Asynchronous properties accept asynchronous afterEach
-fc.assert(fc.asyncProperty(fc.nat(), () => {}).afterEach(async () => {}));
-// Asynchronous properties accept synchronous beforeEach
-fc.assert(fc.asyncProperty(fc.nat(), () => {}).beforeEach(() => {}));
-// Asynchronous properties accept synchronous afterEach
-fc.assert(fc.asyncProperty(fc.nat(), () => {}).afterEach(() => {}));
-
 // assert (reporter)
 // Accept a reporter featuring the right types
 expectTypeOf(
@@ -42,20 +32,6 @@ expectTypeOf(fc.asyncProperty(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Prop
 expectTypeOf(fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<
   fc.Property<[number, string]>
 >();
-// Asynchronous property accepts asynchronous hooks
-expectTypeOf(
-  fc
-    .asyncProperty(fc.nat(), async (_a) => {})
-    .beforeEach(async () => 123)
-    .afterEach(async () => 'anything'),
-).toMatchTypeOf<fc.Property<[number]>>();
-// Asynchronous property accepts synchronous hooks
-expectTypeOf(
-  fc
-    .asyncProperty(fc.nat(), async (_a) => {})
-    .beforeEach(() => 123)
-    .afterEach(() => 'anything'),
-).toMatchTypeOf<fc.Property<[number]>>();
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
