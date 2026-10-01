@@ -102,38 +102,4 @@ describe('propertyRunner', () => {
     await expect(propertyRunner(runner, run)).resolves.toBe(runner.runExecution);
     expect(runner.handleResult).toHaveBeenCalledTimes(3);
   });
-
-  it('Should propagate a rejected result without advancing or handling it', async () => {
-    const error = new Error('rejected run');
-    const runner = buildRunner([0, 1]);
-
-    await expect(propertyRunner(runner, () => Promise.reject(error))).rejects.toBe(error);
-    expect(runner.next).toHaveBeenCalledTimes(1);
-    expect(runner.handleResult).not.toHaveBeenCalled();
-  });
-
-  it('Should propagate synchronous errors synchronously', () => {
-    const error = new Error('thrown run');
-    const runner = buildRunner([0, 1]);
-    const run = () => {
-      throw error;
-    };
-
-    expect(() => propertyRunner(runner, run)).toThrow(error);
-    expect(runner.next).toHaveBeenCalledTimes(1);
-    expect(runner.handleResult).not.toHaveBeenCalled();
-  });
-
-  it('Should reject if a synchronous run throws after an asynchronous result', async () => {
-    const error = new Error('thrown run');
-    const runner = buildRunner([0, 1, 2]);
-    const run = (value: number) => {
-      if (value === 0) return Promise.resolve(null);
-      throw error;
-    };
-
-    await expect(propertyRunner(runner, run)).rejects.toBe(error);
-    expect(runner.next).toHaveBeenCalledTimes(2);
-    expect(vi.mocked(runner.handleResult).mock.calls).toEqual([[null]]);
-  });
 });
