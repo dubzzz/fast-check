@@ -4,7 +4,6 @@ import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 import type { RunExecution } from './reporter/RunExecution.js';
 import { RunnerIterator } from './RunnerIterator.js';
@@ -12,20 +11,18 @@ import { SourceValuesIterator } from './SourceValuesIterator.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
-import type { Value } from '../arbitrary/definition/Value.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
-async function runIt<Ts>(
-  run: Property<Ts>['run'],
-  shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
-  sourceValues: SourceValuesIterator<Value<Ts>>,
-  verbose: VerbosityLevel,
-): Promise<RunExecution<Ts>> {
-  const runner = new RunnerIterator(sourceValues, shrink, verbose);
+function runIt<Ts>(runner: RunnerIterator<Ts>, run: Property<Ts>['run']): Promise<RunExecution<Ts>> | RunExecution<Ts> {
   for (const v of runner) {
-    // TODO(v5) - Still awaiting for now, ideally we should avoid as much as possible awaiting (but here we have a Promise by construct)
-    const out = await run(v);
+    const out = run(v);
+    if (out !== null && 'then' in out) {
+      return out.then((result) => {
+        runner.handleResult(result);
+        return runIt(runner, run);
+      });
+    }
     runner.handleResult(out);
   }
   return runner.runExecution;
@@ -133,7 +130,7 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
       : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : () => nil;
-  const out = runIt(run, finalShrink, sourceValues, qParams.verbose).then((e) =>
+  const out = Promise.resolve(runIt(new RunnerIterator(sourceValues, finalShrink, qParams.verbose), run)).then((e) =>
     e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
   );
   return runPluginCompletionHooks(pluginInstances, out);
