@@ -1,105 +1,135 @@
 import { describe, expect, it, vi } from 'vitest';
-import { nil } from '../../utils/iterator.js';
-import { Value } from '../arbitrary/definition/Value.js';
-import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { Property } from '../property/types/Property.js';
-import { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import { propertyRunner } from './PropertyRunner.js';
-import { RunnerIterator } from './RunnerIterator.js';
-import { SourceValuesIterator } from './SourceValuesIterator.js';
-
-type RunResult = Awaited<ReturnType<Property<number>['run']>>;
-
-function buildRunner(values: number[]) {
-  const initialValues = values.map((value) => new Value(value, undefined)).values();
-  const sourceValues = new SourceValuesIterator(initialValues, values.length, values.length);
-  const runner = new RunnerIterator(sourceValues, () => nil, VerbosityLevel.None);
-  vi.spyOn(runner, 'next');
-  vi.spyOn(runner, 'handleResult');
-  return runner;
-}
+import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import * as fc from 'fast-check';
 
 describe('propertyRunner', () => {
-  it('Should return the execution synchronously when there are no values', () => {
-    const runner = buildRunner([]);
-    const run = vi.fn(() => null);
+  it.each([
+    { runOutput: null, runOutputFriendly: 'null' },
+    { runOutput: { error: new Error() }, runOutputFriendly: 'PropertyFailure' },
+    { runOutput: new PreconditionFailure(), runOutputFriendly: 'PreconditionFailure' },
+  ])('should return synchronously when all runs are synchronously returning $runOutputFriendly', ({ runOutput }) => {
+    // Arrange
+    const expectedValues = [1, 2, 3]; // strictly more than 1 element
+    function* generator() {
+      yield* expectedValues;
+    }
+    const handleResult = vi.fn();
+    const iterator = Object.assign(generator(), { handleResult });
+    const run = vi.fn(() => runOutput);
 
-    expect(propertyRunner(runner, run)).toBe(runner.runExecution);
-    expect(run).not.toHaveBeenCalled();
-    expect(runner.handleResult).not.toHaveBeenCalled();
+    // Act
+    const out = propertyRunner(iterator, run);
+
+    // Assert
+    expect(out).toBe(undefined);
+    expect(out).not.toBeInstanceOf(Promise);
+    expect(run).toHaveBeenCalledTimes(expectedValues.length);
+    expect(run.mock.calls).toEqual(expectedValues.map((v) => [v]));
+    expect(handleResult).toHaveBeenCalledTimes(expectedValues.length);
   });
 
-  it('Should return the execution synchronously and handle every synchronous result in order', () => {
-    const results: RunResult[] = [null, new PreconditionFailure(), { error: new Error('failure') }];
-    const runner = buildRunner([0, 1, 2]);
-    const run = vi.fn((value: number) => results[value]);
+  it.each([
+    { runOutput: null, runOutputFriendly: 'null' },
+    { runOutput: { error: new Error() }, runOutputFriendly: 'PropertyFailure' },
+    { runOutput: new PreconditionFailure(), runOutputFriendly: 'PreconditionFailure' },
+  ])(
+    'should return asynchronously when all runs are asynchronously returning $runOutputFriendly',
+    async ({ runOutput }) => {
+      // Arrange
+      const expectedValues = [1, 2, 3]; // strictly more than 1 element
+      function* generator() {
+        yield* expectedValues;
+      }
+      const handleResult = vi.fn();
+      const iterator = Object.assign(generator(), { handleResult });
+      const run = vi.fn(async () => runOutput);
 
-    expect(propertyRunner(runner, run)).toBe(runner.runExecution);
-    expect(run.mock.calls).toEqual([[0], [1], [2]]);
-    expect(vi.mocked(runner.handleResult).mock.calls).toEqual(results.map((result) => [result]));
-    expect(runner.runExecution.numSuccesses).toBe(1);
-    expect(runner.runExecution.numSkips).toBe(1);
-    expect(runner.runExecution.failure).toBe(results[2]);
-  });
+      // Act
+      const out = propertyRunner(iterator, run);
 
-  it.each([0, 1, 2])('Should return a promise when result %i is asynchronous', async (asyncIndex) => {
-    const results: RunResult[] = [null, new PreconditionFailure(), { error: new Error('failure') }];
-    const runner = buildRunner([0, 1, 2]);
-    const run = vi.fn((value: number) => (value === asyncIndex ? Promise.resolve(results[value]) : results[value]));
+      // Assert
+      expect(out).not.toBe(undefined);
+      expect(out).toBeInstanceOf(Promise);
+      expect(run).not.toHaveBeenCalledTimes(expectedValues.length);
+      expect(handleResult).not.toHaveBeenCalledTimes(expectedValues.length);
+      await out;
+      expect(run).toHaveBeenCalledTimes(expectedValues.length);
+      expect(run.mock.calls).toEqual(expectedValues.map((v) => [v]));
+      expect(handleResult).toHaveBeenCalledTimes(expectedValues.length);
+    },
+  );
 
-    const out = propertyRunner(runner, run);
+  it('should always batch together in the same micro-tasks all consecutive synchronous runs', async () => {
+    let getCount: () => number = () => -1;
+    await fc.assert(
+      fc.asyncProperty(
+        fc.array(fc.record({ value: fc.constantFrom(null), sync: fc.boolean() }), { minLength: 2 }),
+        async (runValues) => {
+          // Arrange
+          function* generator() {
+            yield* Array(runValues.length).fill(1);
+          }
+          const handleResult = vi.fn();
+          const iterator = Object.assign(generator(), { handleResult });
+          let runIndex = 0;
+          let lastRun: { count: number; sync: boolean } | undefined = undefined;
+          let wellSpaced = true;
+          const observedCounts: number[] = [];
+          const run = vi.fn(() => {
+            const currentCount = getCount();
+            observedCounts.push(currentCount);
+            if (lastRun !== undefined) {
+              if (lastRun.sync) {
+                wellSpaced &&= lastRun.count === currentCount; // Count must stay the same if previous was sync
+              } else {
+                wellSpaced &&= lastRun.count < currentCount; // Count must change to something higher if previous was async
+              }
+            }
+            const runValue = runValues[runIndex];
+            lastRun = { count: currentCount, sync: runValue.sync };
+            return runValue.sync ? runValue.value : Promise.resolve(runValue.value);
+          });
 
-    expect(out).toBeInstanceOf(Promise);
-    await expect(out).resolves.toBe(runner.runExecution);
-    expect(run.mock.calls).toEqual([[0], [1], [2]]);
-    expect(vi.mocked(runner.handleResult).mock.calls).toEqual(results.map((result) => [result]));
-    expect(runner.runExecution.numSuccesses).toBe(1);
-    expect(runner.runExecution.numSkips).toBe(1);
-    expect(runner.runExecution.failure).toBe(results[2]);
-  });
+          // Act
+          await propertyRunner(iterator, run);
 
-  it('Should execute each consecutive synchronous segment in the same microtask', async () => {
-    const firstPending = Promise.withResolvers<RunResult>();
-    const secondPending = Promise.withResolvers<RunResult>();
-    const runner = buildRunner([0, 1, 2, 3, 4, 5, 6, 7]);
-    const run = vi.fn((value: number) => {
-      if (value === 2) return firstPending.promise;
-      if (value === 5) return secondPending.promise;
-      return null;
-    });
-
-    const out = propertyRunner(runner, run);
-
-    expect(run.mock.calls).toEqual([[0], [1], [2]]);
-    expect(runner.next).toHaveBeenCalledTimes(3);
-    expect(runner.handleResult).toHaveBeenCalledTimes(2);
-    await Promise.resolve();
-    expect(runner.next).toHaveBeenCalledTimes(3);
-    expect(runner.handleResult).toHaveBeenCalledTimes(2);
-
-    firstPending.resolve(null);
-    await Promise.resolve();
-    expect(run.mock.calls).toEqual([[0], [1], [2], [3], [4], [5]]);
-    expect(runner.next).toHaveBeenCalledTimes(6);
-    expect(runner.handleResult).toHaveBeenCalledTimes(5);
-
-    secondPending.resolve(null);
-    await Promise.resolve();
-    expect(run.mock.calls).toEqual([[0], [1], [2], [3], [4], [5], [6], [7]]);
-    expect(runner.handleResult).toHaveBeenCalledTimes(8);
-    await expect(out).resolves.toBe(runner.runExecution);
-  });
-
-  it('Should handle each result before requesting the next value', async () => {
-    const runner = buildRunner([0, 1, 2]);
-    const next = runner.next.bind(runner);
-    runner.next = vi.fn(() => {
-      expect(runner.handleResult).toHaveBeenCalledTimes(vi.mocked(runner.next).mock.calls.length - 1);
-      return next();
-    });
-    const run = (value: number) => (value === 1 ? Promise.resolve(null) : null);
-
-    await expect(propertyRunner(runner, run)).resolves.toBe(runner.runExecution);
-    expect(runner.handleResult).toHaveBeenCalledTimes(3);
+          // Assert
+          expect(wellSpaced ? undefined : observedCounts).toBe(undefined);
+          expect(run).toHaveBeenCalledTimes(runValues.length);
+          expect(handleResult).toHaveBeenCalledTimes(runValues.length);
+        },
+      ),
+      {
+        plugins: [
+          fc.beforeEach(() => {
+            const counter = startMicroTasksCounter();
+            getCount = counter.getCount;
+            return () => {
+              counter.stop();
+            };
+          }),
+        ],
+      },
+    );
   });
 });
+
+// Helpers
+
+function startMicroTasksCounter() {
+  let stopMicroTasksCount = false;
+  let microTasksCount = 0;
+  function queueNext() {
+    if (stopMicroTasksCount) {
+      return;
+    }
+    microTasksCount += 1;
+    Promise.resolve().then(queueNext);
+  }
+  queueNext();
+  return {
+    getCount: () => microTasksCount,
+    stop: () => (stopMicroTasksCount = true),
+  };
+}

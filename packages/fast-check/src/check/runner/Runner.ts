@@ -14,7 +14,6 @@ import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
-
 function runPluginCompletionHooks<Ts>(
   pluginInstances: PluginInstance<Ts>[],
   runDetailsPromise: Promise<RunDetails<Ts>>,
@@ -115,10 +114,13 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     qParams.path.length === 0
       ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)
       : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
-  const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
-  const finalShrink = !qParams.endOnFailure ? shrink : () => nil;
-  const out = Promise.resolve(propertyRunner(new RunnerIterator(sourceValues, finalShrink, qParams.verbose), run)).then(
-    (e) => e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+  const runnerIterator = new RunnerIterator(
+    new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips),
+    !qParams.endOnFailure ? shrink : () => nil,
+    qParams.verbose,
+  );
+  const out = Promise.resolve(propertyRunner(runnerIterator, run)).then(() =>
+    runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
   );
   return runPluginCompletionHooks(pluginInstances, out);
 }
