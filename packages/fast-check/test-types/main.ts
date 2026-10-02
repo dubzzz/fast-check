@@ -459,22 +459,14 @@ expectTypeOf(
     { plugins: [stringArgPlugin()] },
   ),
 ).toEqualTypeOf<Promise<void>>();
-// can use a properly typed plugin on a mismatching assert having extra parameters
-expectTypeOf(
-  fc.assert(
-    fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}),
-    // @ts-expect-error - string,string is not string
-    { plugins: [stringArgPlugin()] },
-  ),
-).toEqualTypeOf<Promise<void>>();
+// cannot use a plugin expecting one string on a property generating two strings
+// prettier-ignore
+// @ts-expect-error - Plugin tuple must match the property tuple
+fc.assert(fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}), { plugins: [stringArgPlugin()] });
 // cannot use a wrongly typed plugin on a mismatching assert
-expectTypeOf(
-  fc.assert(
-    fc.asyncProperty(fc.nat(), async (_n) => {}),
-    // @ts-expect-error - string and number are incompatible
-    { plugins: [stringArgPlugin()] },
-  ),
-).toEqualTypeOf<Promise<void>>();
+// prettier-ignore
+// @ts-expect-error - string and number are incompatible
+fc.assert(fc.asyncProperty(fc.nat(), async (_n) => {}), { plugins: [stringArgPlugin()] });
 
 // entityGraph
 type Node = { name: string; linkTo: Node[] };

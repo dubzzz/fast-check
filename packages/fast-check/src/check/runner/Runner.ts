@@ -14,6 +14,7 @@ import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 
+
 function runPluginCompletionHooks<Ts>(
   pluginInstances: PluginInstance<Ts>[],
   runDetailsPromise: Promise<RunDetails<Ts>>,
