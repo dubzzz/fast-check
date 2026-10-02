@@ -86,7 +86,7 @@ describe('propertyRunner', () => {
                 wellSpaced &&= lastRun.count < currentCount; // Count must change to something higher if previous was async
               }
             }
-            const runValue = runValues[runIndex];
+            const runValue = runValues[runIndex++];
             lastRun = { count: currentCount, sync: runValue.sync };
             return runValue.sync ? runValue.value : Promise.resolve(runValue.value);
           });
