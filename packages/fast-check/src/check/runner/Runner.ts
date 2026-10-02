@@ -119,10 +119,14 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     !qParams.endOnFailure ? shrink : () => nil,
     qParams.verbose,
   );
-  const out = Promise.resolve(propertyRunner(runnerIterator, run)).then(() =>
-    runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-  );
-  return runPluginCompletionHooks(pluginInstances, out);
+  const propertyRunnerOut = propertyRunner(runnerIterator, run);
+  const out =
+    propertyRunnerOut === undefined
+      ? runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
+      : propertyRunnerOut.then(() =>
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+        );
+  return runPluginCompletionHooks(pluginInstances, Promise.resolve(out));
 }
 
 /**
