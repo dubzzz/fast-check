@@ -4,11 +4,7 @@ import { pluginCompletionRunner } from './PluginCompletionRunner.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 
 describe('pluginCompletionRunner', () => {
-  it.each([
-    { plugins: [] },
-    { plugins: [{}] },
-    { plugins: [{ onAllRunsComplete: undefined, afterAll: undefined }] },
-  ])(
+  it.each([{ plugins: [] }, { plugins: [{}] }, { plugins: [{ onAllRunsComplete: undefined, afterAll: undefined }] }])(
     'should return the original promise when no completion hooks are present (%j)',
     ({ plugins }) => {
       // Arrange
