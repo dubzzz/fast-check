@@ -82,7 +82,7 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
       : propertyRunnerOut.then(() =>
           runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
         );
-  return pluginCompletionRunner(pluginInstances, Promise.resolve(out));
+  return pluginCompletionRunner(pluginInstances, out);
 }
 
 /**

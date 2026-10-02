@@ -3,7 +3,7 @@ import type { RunDetails } from './reporter/RunDetails.js';
 
 export function pluginCompletionRunner<Ts>(
   pluginInstances: PluginInstance<Ts>[],
-  runDetailsPromise: Promise<RunDetails<Ts>>,
+  runDetails: Promise<RunDetails<Ts>> | RunDetails<Ts>,
 ): Promise<RunDetails<Ts>> {
   const followUps: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] = [];
   for (let index = 0; index !== pluginInstances.length; ++index) {
@@ -21,27 +21,36 @@ export function pluginCompletionRunner<Ts>(
     }
   }
   if (followUps.length === 0) {
-    return runDetailsPromise;
+    return Promise.resolve(runDetails);
   }
-  return runDetailsPromise.then(async (details) => {
-    let interceptedOnce = false;
-    let interceptedError: unknown = undefined;
-    for (const followUp of followUps) {
-      try {
-        const out = followUp(details);
-        if (out !== undefined) {
-          await out;
-        }
-      } catch (error) {
-        if (!interceptedOnce) {
-          interceptedOnce = true;
-          interceptedError = error;
-        }
+  return 'then' in runDetails
+    ? Promise.resolve(runDetails).then((details) => runFollowUps(details, followUps))
+    : runFollowUps(runDetails, followUps);
+}
+
+// Helpers
+
+async function runFollowUps<Ts>(
+  details: RunDetails<Ts>,
+  followUps: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[],
+) {
+  let interceptedOnce = false;
+  let interceptedError: unknown = undefined;
+  for (const followUp of followUps) {
+    try {
+      const out = followUp(details);
+      if (out !== undefined) {
+        await out;
+      }
+    } catch (error) {
+      if (!interceptedOnce) {
+        interceptedOnce = true;
+        interceptedError = error;
       }
     }
-    if (interceptedOnce) {
-      throw interceptedError;
-    }
-    return details;
-  });
+  }
+  if (interceptedOnce) {
+    throw interceptedError;
+  }
+  return details;
 }
