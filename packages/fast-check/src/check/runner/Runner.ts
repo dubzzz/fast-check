@@ -4,77 +4,16 @@ import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import type { RunDetails } from './reporter/RunDetails.js';
-import type { RunExecution } from './reporter/RunExecution.js';
+import { pluginCompletionRunner } from './PluginCompletionRunner.js';
+import { propertyRunner } from './PropertyRunner.js';
 import { RunnerIterator } from './RunnerIterator.js';
 import { SourceValuesIterator } from './SourceValuesIterator.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
-import type { Value } from '../arbitrary/definition/Value.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
-
-async function runIt<Ts>(
-  run: Property<Ts>['run'],
-  shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
-  sourceValues: SourceValuesIterator<Value<Ts>>,
-  verbose: VerbosityLevel,
-): Promise<RunExecution<Ts>> {
-  const runner = new RunnerIterator(sourceValues, shrink, verbose);
-  for (const v of runner) {
-    // TODO(v5) - Still awaiting for now, ideally we should avoid as much as possible awaiting (but here we have a Promise by construct)
-    const out = await run(v);
-    runner.handleResult(out);
-  }
-  return runner.runExecution;
-}
-
-function runPluginCompletionHooks<Ts>(
-  pluginInstances: PluginInstance<Ts>[],
-  runDetailsPromise: Promise<RunDetails<Ts>>,
-): Promise<RunDetails<Ts>> {
-  const followUps: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] = [];
-  for (let index = 0; index !== pluginInstances.length; ++index) {
-    const instance = pluginInstances[index];
-    if (instance.onAllRunsComplete !== undefined) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      followUps.push((runDetails) => instance.onAllRunsComplete!(runDetails));
-    }
-  }
-  for (let index = pluginInstances.length - 1; index >= 0; --index) {
-    const instance = pluginInstances[index];
-    if (instance.afterAll !== undefined) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      followUps.push(() => instance.afterAll!());
-    }
-  }
-  if (followUps.length === 0) {
-    return runDetailsPromise;
-  }
-  return runDetailsPromise.then(async (details) => {
-    let interceptedOnce = false;
-    let interceptedError: unknown = undefined;
-    for (const followUp of followUps) {
-      try {
-        const out = followUp(details);
-        if (out !== undefined) {
-          await out;
-        }
-      } catch (error) {
-        if (!interceptedOnce) {
-          interceptedOnce = true;
-          interceptedError = error;
-        }
-      }
-    }
-    if (interceptedOnce) {
-      throw interceptedError;
-    }
-    return details;
-  });
-}
 
 /**
  * Run the property, do not throw contrary to {@link assert}
@@ -131,12 +70,19 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     qParams.path.length === 0
       ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)
       : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
-  const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
-  const finalShrink = !qParams.endOnFailure ? shrink : () => nil;
-  const out = runIt(run, finalShrink, sourceValues, qParams.verbose).then((e) =>
-    e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+  const runnerIterator = new RunnerIterator(
+    new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips),
+    !qParams.endOnFailure ? shrink : () => nil,
+    qParams.verbose,
   );
-  return runPluginCompletionHooks(pluginInstances, out);
+  const propertyRunnerOut = propertyRunner(runnerIterator, run);
+  const out =
+    propertyRunnerOut === undefined
+      ? runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
+      : propertyRunnerOut.then(() =>
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+        );
+  return pluginCompletionRunner(pluginInstances, out);
 }
 
 /**

@@ -19,10 +19,10 @@ function sanitizeStack(initialMessage: string) {
     .replace(/node_modules\/\.pnpm\/([^/]*)@([^/]*)\//g, 'node_modules/.pnpm/$1@<version>/') // drop version from pnpm modules
     .split('\n');
   // Drop internals of Vitest from the stack: internals of vitest, subject to regular changes and OS dependent
-  const firstLineWithVitest = lines.findIndex((line) => line.includes('node_modules/vitest'));
+  const firstLineWithVitest = lines.findIndex((line) => line.match(/node_modules\/@?vitest/));
   if (firstLineWithVitest !== -1) {
     const lastLineWithVitest =
-      lines.length - 1 - [...lines].reverse().findIndex((line) => line.includes('node_modules/vitest'));
+      lines.length - 1 - [...lines].reverse().findIndex((line) => line.match(/node_modules\/@?vitest/));
     lines.splice(firstLineWithVitest, lastLineWithVitest - firstLineWithVitest + 1);
   }
   return lines.filter((line) => !line.includes('node:internal')).join('\n');
