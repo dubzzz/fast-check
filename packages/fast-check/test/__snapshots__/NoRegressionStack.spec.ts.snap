@@ -23,7 +23,6 @@ Got TypeError: v is not a function
     at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at packages/fast-check/test/__test-helpers__/StackSanitizer.ts:?:?
-    at _Assertion.__VITEST_REJECTS__ (node_modules/.pnpm/@vitest+expect@<version>/node_modules/@vitest/expect/dist/index.js:?:?)
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
 `;
@@ -50,7 +49,6 @@ Got error: Property failed by returning false
     at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at packages/fast-check/test/__test-helpers__/StackSanitizer.ts:?:?
-    at _Assertion.__VITEST_REJECTS__ (node_modules/.pnpm/@vitest+expect@<version>/node_modules/@vitest/expect/dist/index.js:?:?)
     at _Assertion.propertyGetter (node_modules/.pnpm/chai@<version>/node_modules/chai/index.js:?:?)
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
@@ -79,7 +77,6 @@ Got error: a must be >= b
     at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at packages/fast-check/test/__test-helpers__/StackSanitizer.ts:?:?
-    at _Assertion.__VITEST_REJECTS__ (node_modules/.pnpm/@vitest+expect@<version>/node_modules/@vitest/expect/dist/index.js:?:?)
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
 `;
