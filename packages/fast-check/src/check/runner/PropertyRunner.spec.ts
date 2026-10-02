@@ -64,7 +64,15 @@ describe('propertyRunner', () => {
     let getCount: () => number = () => -1;
     await fc.assert(
       fc.asyncProperty(
-        fc.array(fc.record({ value: fc.constantFrom(null), sync: fc.boolean() }), { minLength: 2 }),
+        fc.array(
+          fc.record({
+            value: fc.constantFrom(null, { error: new Error() }, new PreconditionFailure()),
+            sync: fc.boolean(),
+          }),
+          {
+            minLength: 2,
+          },
+        ),
         async (runValues) => {
           // Arrange
           function* generator() {
