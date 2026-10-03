@@ -3,12 +3,89 @@ import { ignoreEqualValues, skipEqualValues } from './EqualValuesPlugins.js';
 import type { Property } from '../property/types/Property.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { Plugin, PluginStore } from './Plugin.js';
+import { asyncToStringMethod } from '../../utils/stringify.js';
+import { asyncProperty } from '../property/AsyncProperty.js';
+import { constant } from '../../arbitrary/constant.js';
+import { check } from '../runner/Runner.js';
 
 describe('EqualValuesPlugins', () => {
   describe.each([
     { pluginName: 'ignoreEqualValues', factory: ignoreEqualValues },
     { pluginName: 'skipEqualValues', factory: skipEqualValues },
   ])('$pluginName', ({ factory }) => {
+    it('should detect a failure on a distinct promise-valued example', async () => {
+      // Arrange
+      const property = asyncProperty(constant(Promise.resolve(1)), async (value) => (await value) !== 2);
+      const parameters = {
+        examples: [[Promise.resolve(1)], [Promise.resolve(2)]],
+        numRuns: 2,
+        endOnFailure: true,
+        plugins: [factory()],
+      };
+
+      // Act
+      const result = await check(property, parameters);
+
+      // Assert
+      expect(result.failed).toBe(true);
+      expect(result.numRuns).toBe(2);
+    });
+
+    it.each([
+      { name: 'fulfilled promises', valueFor: (n: number) => [Promise.resolve(n)] },
+      {
+        name: 'rejected promises',
+        valueFor: (n: number) => {
+          const value = Promise.reject(n);
+          void value.catch(() => undefined);
+          return [value];
+        },
+      },
+      { name: 'async serializers', valueFor: (n: number) => ({ [asyncToStringMethod]: async () => `Value(${n})` }) },
+    ])('should distinguish $name and cache duplicate values', async ({ valueFor }) => {
+      // Arrange
+      const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
+      const first = valueFor(1);
+      const duplicate = valueFor(1);
+      const different = valueFor(2);
+
+      // Act
+      const finalRun = equalValuesPluginRun(factory, nestedRun);
+      const firstOutput = await finalRun(first);
+      const duplicateOutput = await finalRun(duplicate);
+      const differentOutput = await finalRun(different);
+
+      // Assert
+      expect(firstOutput).toBe(null);
+      expect(differentOutput).toBe(null);
+      expect(nestedRun).toHaveBeenCalledTimes(2);
+      expect(nestedRun).toHaveBeenNthCalledWith(1, first);
+      expect(nestedRun).toHaveBeenNthCalledWith(2, different);
+      if (factory === skipEqualValues) {
+        expect(PreconditionFailure.isFailure(duplicateOutput)).toBe(true);
+      } else {
+        expect(duplicateOutput).toBe(null);
+      }
+    });
+
+    it('should replay a cached failure for duplicate asynchronous values', async () => {
+      // Arrange
+      const failure = { error: new Error('failure') };
+      const nestedRun = vi.fn<Property<unknown>['run']>().mockResolvedValue(failure);
+      const first = [Promise.resolve(1)];
+      const duplicate = [Promise.resolve(1)];
+
+      // Act
+      const finalRun = equalValuesPluginRun(factory, nestedRun);
+      const firstOutput = await finalRun(first);
+      const duplicateOutput = await finalRun(duplicate);
+
+      // Assert
+      expect(firstOutput).toBe(failure);
+      expect(duplicateOutput).toBe(failure);
+      expect(nestedRun).toHaveBeenCalledTimes(1);
+    });
+
     it('should not call run twice when run on the same value', () => {
       // Arrange
       const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
