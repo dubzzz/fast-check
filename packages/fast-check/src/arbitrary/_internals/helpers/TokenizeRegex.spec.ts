@@ -17,6 +17,8 @@ describe('tokenizeRegex', () => {
     { regex: /.??/ },
     { regex: /.{1,4}?/ },
     { regex: /a/ },
+    // oxlint-disable-next-line no-control-regex
+    { regex: new RegExp('\0') },
     { regex: /🐱/, invalidWithUnicode: true }, // handled separately
     // @ts-expect-error Referencing non-existing group in Regex
     { regex: /\125/, invalidWithUnicode: true },
