@@ -65,14 +65,6 @@ export function hasAsyncToStringMethod<T>(instance: T): instance is T & WithAsyn
 
 type AsyncContent = { state: 'fulfilled' | 'rejected' | 'pending' | 'unknown'; value: unknown };
 
-/**
- * Only called with symbol produced by Symbol(string | undefined)
- * Not Symbol.for(string)
- */
-function getSymbolDescription(s: symbol): string | null {
-  return s.description ?? null;
-}
-
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
@@ -210,8 +202,8 @@ export function stringifyInternal<Ts>(
       if (Symbol.keyFor(s) !== undefined) {
         return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
-      const desc = getSymbolDescription(s);
-      if (desc === null) {
+      const desc = s.description;
+      if (desc === undefined) {
         return 'Symbol()';
       }
       const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
