@@ -39,6 +39,20 @@ export type RecordConstraints<T = unknown> = {
 export type RecordValue<T, K> = Prettify<Partial<T> & Pick<T, K & keyof T>>;
 
 /**
+ * For records following the `model` schema with all keys required
+ *
+ * @param model - Schema of the record
+ * @param constraints - Constraints on the generated record
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+function record<T>(
+  model: { [K in keyof T]: Arbitrary<T[K]> },
+  constraints?: Omit<RecordConstraints, 'requiredKeys'> & { requiredKeys?: undefined },
+): Arbitrary<T & {}>;
+
+/**
  * For records following the `recordModel` schema
  *
  * @example

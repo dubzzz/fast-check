@@ -17,15 +17,14 @@ export function unlinkedEntitiesForEntityGraph<TEntityFields>(
   const recordModel: { [K in keyof TEntityFields]: Arbitrary<TEntityFields[K][]> } = Object.create(null);
   for (const name in arbitraries) {
     const entityRecordModel = arbitraries[name];
-    const entityArbitrary = record(entityRecordModel, constraints);
+    const entityArbitrary = record<TEntityFields[typeof name]>(entityRecordModel, constraints);
     const count = countFor(name);
     const unicityConstraints = unicityConstraintsFor(name);
     const arrayConstraints = { minLength: count, maxLength: count };
     recordModel[name] =
       unicityConstraints !== undefined
-        ? (uniqueArray(entityArbitrary as any, { ...arrayConstraints, selector: unicityConstraints }) as any)
-        : (array(entityArbitrary, arrayConstraints) as any);
+        ? uniqueArray(entityArbitrary, { ...arrayConstraints, selector: unicityConstraints })
+        : array(entityArbitrary, arrayConstraints);
   }
-  // @ts-expect-error - We probably have a fishy typing issue in `record`, as we are supposed to produce `UnlinkedEntities<TEntityFields>`
   return record<UnlinkedEntities<TEntityFields>>(recordModel);
 }
