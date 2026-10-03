@@ -130,6 +130,9 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
           if (isHexaDigit(text[from + 2]) && isHexaDigit(text[from + 3])) {
             return from + 4;
           }
+          if (!unicodeMode) {
+            return from + 2;
+          }
           throw new Error(`Unexpected token '${text.substring(from, from + 4)}' found`);
         case 'u':
           if (text[from + 2] === '{') {
@@ -184,6 +187,9 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
             isHexaDigit(text[from + 5])
           ) {
             return from + 6;
+          }
+          if (!unicodeMode) {
+            return from + 2;
           }
           throw new Error(`Unexpected token '${text.substring(from, from + 6)}' found`);
         case 'p':
