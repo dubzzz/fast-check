@@ -2002,6 +2002,28 @@ describe('SchedulerImplem', () => {
   });
 
   describe('scheduleSequence', () => {
+    it.each([false, true])('should protect live sequence status from external writes (faulty: %s)', async (faulty) => {
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: () => 0 };
+      const s = new SchedulerImplem(act, taskSelector);
+      const status = s.scheduleSequence([
+        () => Promise.resolve(1),
+        () => (faulty ? Promise.reject(new Error('sequence failure')) : Promise.resolve(2)),
+      ]);
+
+      expect(Reflect.set(status, 'done', true)).toBe(false);
+      expect(Reflect.set(status, 'faulty', true)).toBe(false);
+      Object.freeze(status);
+      await s.waitNext(1);
+      expect(status.done).toBe(false);
+      expect(status.faulty).toBe(false);
+
+      await s.waitIdle();
+      expect(status.done).toBe(!faulty);
+      expect(status.faulty).toBe(faulty);
+      await expect(status.task).resolves.toEqual({ done: !faulty, faulty });
+    });
+
     it('should accept empty sequences', async () => {
       // Arrange
       const act = (f: () => Promise<void>) => f();
