@@ -5,7 +5,7 @@ import { maxGeneratedLengthFromSizeForArbitrary } from './_internals/helpers/Max
 
 /**
  * Constraints to be applied on {@link iterator}
- * @remarks Since 4.3.0
+ * @remarks Since 5.0.0 (previously called `InfiniteStreamConstraints` in 4.3.0)
  * @public
  */
 export interface IteratorConstraints {
@@ -69,9 +69,9 @@ export interface IteratorConstraints {
  * WARNING: Requires Object.assign
  *
  * @param arb - Arbitrary used to generate the values
- * @param constraints - Constraints to apply when building instances (since 4.3.0)
+ * @param constraints - Constraints to apply when building instances (since 4.3.0 on `infiniteStream`)
  *
- * @remarks Since 1.8.0
+ * @remarks Since 5.0.0 (previously called `infiniteStream` in 1.8.0)
  * @public
  */
 function iterator<T>(

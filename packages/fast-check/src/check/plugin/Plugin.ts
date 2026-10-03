@@ -100,7 +100,7 @@ export type Plugin<Ts> = (pluginIndex: number, pluginStore: PluginStore) => Plug
  *
  * It's just a syntaxic sugar!
  *
- * @remarks Since 4.10.3
+ * @remarks Since 5.0.0
  * @public
  */
 export type UniversalPlugin = <Ts>(pluginIndex: number, pluginStore: PluginStore) => PluginInstance<Ts>;
