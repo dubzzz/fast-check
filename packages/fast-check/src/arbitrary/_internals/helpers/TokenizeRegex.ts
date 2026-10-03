@@ -45,7 +45,7 @@ type QuantifierRegexToken =
       kind: 'Range';
       greedy: boolean;
       from: number;
-      to: number | undefined; // probably not that undefined
+      to: number | undefined; // undefined for an unbounded range such as {n,}
     };
 type AlternativeRegexToken = {
   type: 'Alternative';
