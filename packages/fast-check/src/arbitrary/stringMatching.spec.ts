@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from './stringMatching.js';
 
@@ -21,6 +21,15 @@ describe('stringMatching (integration)', () => {
 
   it('should only produce correct values', async () => {
     await assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
+  });
+
+  it.each([
+    { name: 'literal', character: '\0' },
+    { name: 'escaped', character: '\\0' },
+  ])('should generate NUL from a $name NUL character range', ({ character }) => {
+    const arb = stringMatching(new RegExp(`^[${character}-${character}]$`));
+
+    expect(fc.sample(arb, { seed: 42, numRuns: 10 })).toEqual(Array(10).fill('\0'));
   });
 });
 
