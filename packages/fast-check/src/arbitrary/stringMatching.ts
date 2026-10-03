@@ -92,7 +92,10 @@ function toMatchingArbitrary(
           }
           case '\\b':
           case '\\B': {
-            throw new Error(`Meta character ${astNode.value} not implemented yet!`);
+            if (astNode.symbol === undefined) {
+              throw new Error(`Meta character ${astNode.value} not implemented yet!`);
+            }
+            return constant(astNode.symbol);
           }
           case '.': {
             const forbiddenChars = flags.dotAll ? terminatorCharsSet : newLineAndTerminatorCharsSet;
