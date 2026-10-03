@@ -183,6 +183,13 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
             isHexaDigit(text[from + 4]) &&
             isHexaDigit(text[from + 5])
           ) {
+            if (unicodeMode && text[from + 6] === '\\' && text[from + 7] === 'u') {
+              const lead = Number.parseInt(text.substring(from + 2, from + 6), 16);
+              const trail = Number.parseInt(text.substring(from + 8, from + 12), 16);
+              if (lead >= 0xd800 && lead <= 0xdbff && trail >= 0xdc00 && trail <= 0xdfff) {
+                return from + 12;
+              }
+            }
             return from + 6;
           }
           throw new Error(`Unexpected token '${text.substring(from, from + 6)}' found`);
