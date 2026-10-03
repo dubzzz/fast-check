@@ -63,23 +63,7 @@ export function hasAsyncToStringMethod<T>(instance: T): instance is T & WithAsyn
   );
 }
 
-const findSymbolNameRegex = /^Symbol\((.*)\)$/;
-
 type AsyncContent = { state: 'fulfilled' | 'rejected' | 'pending' | 'unknown'; value: unknown };
-
-/**
- * Only called with symbol produced by Symbol(string | undefined)
- * Not Symbol.for(string)
- */
-function getSymbolDescription(s: symbol): string | null {
-  if (s.description !== undefined) return s.description;
-
-  // description is always undefined in node 6, 8, 10 (not 12)
-  const m = findSymbolNameRegex.exec(String(s));
-  // '' considered equivalent to undefined for node <12 (unable to distinguish undefined from '')
-  // s.description would have been equal to '' in node 12+
-  return m && m[1].length ? m[1] : null;
-}
 
 function stringifyNumber(numValue: number) {
   switch (numValue) {
@@ -218,8 +202,8 @@ export function stringifyInternal<Ts>(
       if (Symbol.keyFor(s) !== undefined) {
         return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
-      const desc = getSymbolDescription(s);
-      if (desc === null) {
+      const desc = s.description;
+      if (desc === undefined) {
         return 'Symbol()';
       }
       const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
