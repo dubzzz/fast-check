@@ -88,6 +88,16 @@ describe('patternsToStringUnmapperFor', () => {
       ),
     ));
 
+  it('should avoid exponential backtracking when a suffix cannot be split', () => {
+    const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation((value): value is string => value === 'a' || value === 'aa');
+    const source = 'a'.repeat(20) + 'b';
+    const unmapper = patternsToStringUnmapperFor(instance, {});
+
+    expect(() => unmapper(source)).toThrowError();
+    expect(canShrinkWithoutContext.mock.calls.length).toBeLessThan(source.length ** 3);
+  });
+
   it('should be able to split strings built out of chunks into chunks while respecting constraints in size', async () =>
     await fc.assert(
       fc.asyncProperty(

@@ -27,6 +27,8 @@ export function tokenizeString(
   // - chunks: chunks computed and extracted up-to endIndexChunks
   // - nextStartIndex: where to start next time (mostly needed as we want to go deep first)
   const stack: StackItem[] = [{ endIndexChunks: 0, nextStartIndex: 1, chunks: [] }];
+  // Suffix choices depend on the start index and number of chunks, not on the selected prefix.
+  const visited = new Map<number, Set<number>>();
   while (stack.length > 0) {
     // oxlint-disable-next-line typescript/no-non-null-assertion
     const last = stack.pop()!;
@@ -41,7 +43,6 @@ export function tokenizeString(
           if (newChunks.length < minLength) {
             break; // =continue as we already reach the last index of the for-loop
           }
-          // TODO - Rely on dynamic programming tricks not to retry from already investigated indices
           return newChunks; // we found a full match
         }
         // Pushed in case we need to try for next indices
@@ -52,7 +53,12 @@ export function tokenizeString(
         // Pushed to go deeper in the tree
         // If it's still acceptable in length
         if (newChunks.length < maxLength) {
-          stack.push({ endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+          const visitedLengths = visited.get(index) ?? new Set<number>();
+          if (!visitedLengths.has(newChunks.length)) {
+            visitedLengths.add(newChunks.length);
+            visited.set(index, visitedLengths);
+            stack.push({ endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+          }
         }
         break;
       }
