@@ -245,8 +245,7 @@ export function stringifyInternal<Ts>(
       if (typeof Buffer !== 'undefined' && Buffer.isBuffer(value)) {
         // Warning: value.values() may crash at runtime if Buffer got poisoned
         return `Buffer.from(${
-          // This cast is necessary because `detached` only exists in ES2024,
-          // but we target ES2020.
+          // SharedArrayBuffer has no detached property, so allow it to be absent.
           (value.buffer as { detached?: boolean }).detached
             ? // Don't try to access the buffer contents if its underlying
               // `ArrayBuffer` is detached because it will throw.
@@ -269,8 +268,7 @@ export function stringifyInternal<Ts>(
           | Float64Array
           | BigInt64Array
           | BigUint64Array;
-        // This cast is necessary because `detached` only exists in ES2024,
-        // but we target ES2020.
+        // SharedArrayBuffer has no detached property, so allow it to be absent.
         if ((typedArray.buffer as { detached?: boolean }).detached) {
           // Don't try to access the buffer contents if its underlying
           // `ArrayBuffer` is detached because it will throw.
