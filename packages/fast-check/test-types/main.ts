@@ -157,6 +157,25 @@ expectTypeOf(fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() })).toE
 //);
 // "record" accepts empty constraints
 expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, {})).toEqualTypeOf<fc.Arbitrary<{ a: number; b: string }>>();
+// "record" preserves generic mapped values when all keys are required
+function recordOfGenericArrays<T>(
+  model: { [K in keyof T]: fc.Arbitrary<T[K][]> },
+  constraints?: Omit<fc.RecordConstraints, 'requiredKeys'>,
+): fc.Arbitrary<{
+  [K in keyof T]: T[K][];
+}> {
+  const withoutConstraints: fc.Arbitrary<{ [K in keyof T]: T[K][] }> = fc.record<{ [K in keyof T]: T[K][] }>(model);
+  const withConstraints: fc.Arbitrary<{ [K in keyof T]: T[K][] }> = fc.record<{ [K in keyof T]: T[K][] }>(
+    model,
+    constraints,
+  );
+  return constraints === undefined ? withoutConstraints : withConstraints;
+}
+expectTypeOf(recordOfGenericArrays({ a: fc.array(fc.nat()), b: fc.array(fc.string()) })).toEqualTypeOf<
+  fc.Arbitrary<{ a: number[]; b: string[] }>
+>();
+expectTypeOf(fc.record({})).toEqualTypeOf<fc.Arbitrary<{}>>();
+expectTypeOf(fc.record({ a: fc.nat() }, { requiredKeys: undefined })).toEqualTypeOf<fc.Arbitrary<{ a: number }>>();
 // "record" only applies optional on keys declared within requiredKeys even when empty
 expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })).toEqualTypeOf<
   fc.Arbitrary<{ a?: number; b?: string }>
