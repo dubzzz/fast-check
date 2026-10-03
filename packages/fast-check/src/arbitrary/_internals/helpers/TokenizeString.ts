@@ -1,5 +1,15 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { safePop, safePush, safeSubstring } from '../../../utils/globals.js';
+import {
+  Map,
+  Set,
+  safeAdd,
+  safeHas,
+  safeMapGet,
+  safeMapSet,
+  safePop,
+  safePush,
+  safeSubstring,
+} from '../../../utils/globals.js';
 
 /**
  * Split a string into valid tokens of patternsArb
@@ -29,6 +39,8 @@ export function tokenizeString(
   // - chunks: chunks computed and extracted up-to endIndexChunks
   // - nextStartIndex: where to start next time (mostly needed as we want to go deep first)
   const stack: StackItem[] = [{ endIndexChunks: 0, nextStartIndex: 1, chunks: [] }];
+  // Suffix choices depend on the start index and number of chunks, not on the selected prefix.
+  const visited = new Map<number, Set<number>>();
   while (stack.length > 0) {
     // oxlint-disable-next-line typescript/no-non-null-assertion
     const last = safePop(stack)!;
@@ -43,7 +55,6 @@ export function tokenizeString(
           if (newChunks.length < minLength) {
             break; // =continue as we already reach the last index of the for-loop
           }
-          // TODO - Rely on dynamic programming tricks not to retry from already investigated indices
           return newChunks; // we found a full match
         }
         // Pushed in case we need to try for next indices
@@ -54,7 +65,12 @@ export function tokenizeString(
         // Pushed to go deeper in the tree
         // If it's still acceptable in length
         if (newChunks.length < maxLength) {
-          safePush(stack, { endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+          const visitedLengths = safeMapGet(visited, index) ?? new Set<number>();
+          if (!safeHas(visitedLengths, newChunks.length)) {
+            safeAdd(visitedLengths, newChunks.length);
+            safeMapSet(visited, index, visitedLengths);
+            safePush(stack, { endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+          }
         }
         break;
       }
