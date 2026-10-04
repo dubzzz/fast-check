@@ -201,6 +201,8 @@ it.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', 
 
 All this section considers that we are in the context of property based tests!
 
+**✅ Do** always await `fc.assert(...)` when using `fast-check` directly, even when the predicate is synchronous. Make the surrounding test callback `async` so property failures are reported by the test runner.
+
 **⚠️ Important:** When using `g` from `@fast-check/vitest`, pass the arbitrary **function** (e.g., `fc.string`, `fc.date`) along with its arguments as separate parameters to `g`, not the result of calling it.  
 Correct: `g(fc.string)`, `g(fc.date, { min: new Date('2010-01-01') })`  
 Incorrect: `g(fc.string())`, `g(fc.date({ min: new Date('2010-01-01') }))`
@@ -325,7 +327,7 @@ function fakerToArb<TValue>(generator: (faker: Faker) => TValue): fc.Arbitrary<T
 Example of usage
 
 ```ts
-fc.assert(
+await fc.assert(
   fc.property(
     fakerToArb((faker) => faker.person.firstName),
     fakerToArb((faker) => faker.person.lastName),
@@ -350,8 +352,8 @@ it('...', ({ g }) => {
 // with fast-check
 import { it } from 'vitest';
 import * as fc from 'fast-check';
-it('...', () => {
-  fc.assert(
+it('...', async () => {
+  await fc.assert(
     fc.property(fc.gen(), (g) => {
       //...
     }),
@@ -371,8 +373,8 @@ it.prop([...arbitraries])('...', (...values) => {
 // with fast-check
 import { it } from 'vitest';
 import * as fc from 'fast-check';
-it('...', () => {
-  fc.assert(
+it('...', async () => {
+  await fc.assert(
     fc.property(...arbitraries, (...values) => {
       //...
     }),
@@ -380,7 +382,7 @@ it('...', () => {
 });
 ```
 
-Example 3. If the predicate of `it` or `it.prop` is asynchronous, when using only `fast-check` the property has to be instantiated via `property` and `assert` has to be awaited.
+Example 3. Use `fc.property` for asynchronous predicates too, and await `fc.assert` just as in the synchronous examples above.
 
 ```ts
 // with @fast-check/vitest
