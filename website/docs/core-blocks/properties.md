@@ -49,24 +49,34 @@ The predicate can:
 The predicate function should not change the inputs it received. If it needs to, it has to clone them before going on. Impacting the inputs might led to bad shrinking and wrong display on error.
 :::
 
-### Advanced
+### Setup and teardown
 
-:::warning[Deprecated]
-The `beforeEach` and `afterEach` methods are deprecated. Prefer the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/): `fc.assert(property, { plugins: [fc.beforeEach(fn), fc.afterEach(fn)] })`.
-:::
-
-The built-in property comes with two methods that can be leveraged whenever you need to run setup or teardown steps.
+Use the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/) to run setup or teardown steps around each execution of the predicate, including executions during shrinking. Pass them to `fc.assert` or `fc.check` via the `plugins` parameter.
 
 ```js
-fc.asyncProperty(...arbitraries, (...args) => {})
-  .beforeEach((previousBeforeEach) => {})
-  .afterEach((previousAfterEach) => {});
+await fc.assert(
+  fc.asyncProperty(...arbitraries, (...args) => {}),
+  {
+    plugins: [
+      fc.beforeEach(() => {
+        // Set up state for this execution of the predicate.
+      }),
+      fc.afterEach(() => {
+        // Clean up state after this execution of the predicate.
+      }),
+    ],
+  },
+);
 ```
 
-They both only accept synchronous or asynchronous functions and give the user the ability to call the previously defined hook function if any. The before-each (respectively: after-each) function will be launched before (respectively: after) each execution of the predicate.
+Both plugins accept synchronous or asynchronous functions. The `beforeEach` plugin runs before the predicate, and the `afterEach` plugin runs afterward, including when the predicate fails. A `beforeEach` function can also return a teardown function.
+
+:::info[Migration from property methods]
+The `.beforeEach(...)` and `.afterEach(...)` methods on properties were removed in fast-check v5. Replace method chaining with the plugins shown above. Plugin callbacks do not receive a previous hook to call; compose hooks by adding plugins to the array.
+:::
 
 :::info[Independent]
-No need to define both. You may only call `beforeEach` or `afterEach` without the other.
+Use either plugin on its own or combine both.
 :::
 
 :::tip[Share them]
@@ -107,11 +117,3 @@ Whatever the filtering solution you chose between `fc.pre` or `.filter`, they bo
 
 As a consequence, whenever feasible it's recommended to prefer relying on options directly providing by the arbitraries rather than filtering them. For instance, if you want to generate strings having at least two characters you should prefer `fc.string({ minLength: 2 })` over `fc.string().filter(s => s.length >= 2)`.
 :::
-
-### Advanced
-
-:::warning[Deprecated]
-The `beforeEach` and `afterEach` methods are deprecated. Prefer the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/): `fc.assert(property, { plugins: [fc.beforeEach(fn), fc.afterEach(fn)] })`.
-:::
-
-They also accept `beforeEach` and `afterEach` functions to be provided: the passed functions can either be synchronous or asynchronous.
