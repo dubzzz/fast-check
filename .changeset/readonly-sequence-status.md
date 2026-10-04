@@ -1,5 +1,5 @@
 ---
-"fast-check": major
+"fast-check": patch
 ---
 
 ♻️ Expose `scheduleSequence` status through read-only getters
