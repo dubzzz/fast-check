@@ -3,4 +3,4 @@
 "fast-check": major
 ---
 
-💥 Unify synchronous and asynchronous properties under `property`
+💥 Drop `property`, replace it by `asyncProperty`

@@ -2,4 +2,4 @@
 "fast-check": patch
 ---
 
-⚡️ Drop defensive checks from `property`
+⚡️ Drop defensive checks from `asyncProperty`
