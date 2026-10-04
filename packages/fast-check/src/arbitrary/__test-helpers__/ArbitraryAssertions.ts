@@ -45,7 +45,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
     assertParameters,
   } = options;
   return fc.assert(
-    fc.asyncProperty(
+    fc.property(
       fc.noShrink(fc.integer()),
       biasFactorArbitrary(),
       fc.iterator(fc.nat({ max: 20 }), { minLength: Number.POSITIVE_INFINITY }),
@@ -90,7 +90,7 @@ export function assertProduceCorrectValues<T, U = never>(
   const { extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>, assertParameters } =
     options;
   return fc.assert(
-    fc.asyncProperty(
+    fc.property(
       fc.noShrink(fc.integer()),
       biasFactorArbitrary(),
       fc.iterator(fc.nat({ max: 20 }), { minLength: Number.POSITIVE_INFINITY }),
@@ -130,7 +130,7 @@ export function assertGenerateEquivalentTo<T, U = never>(
     assertParameters,
   } = options;
   return fc.assert(
-    fc.asyncProperty(fc.noShrink(fc.integer()), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
+    fc.property(fc.noShrink(fc.integer()), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
       // Arrange
       const arbA = arbitraryBuilderA(extraParameters);
       const arbB = arbitraryBuilderB(extraParameters);

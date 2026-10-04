@@ -6,41 +6,39 @@ import * as fc from 'fast-check';
 import { expectTypeOf } from 'vitest';
 
 // assert
-// Asynchronous property means asynchronous assert
-expectTypeOf(fc.assert(fc.asyncProperty(fc.nat(), async () => {}))).toEqualTypeOf<Promise<void>>();
-// Asynchronous property means asynchronous assert even with synchronous predicate
-expectTypeOf(fc.assert(fc.asyncProperty(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
+// assert is asynchronous with an asynchronous predicate
+expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Promise<void>>();
+// assert is asynchronous even with a synchronous predicate
+expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
 // assert (reporter)
 // Accept a reporter featuring the right types
 expectTypeOf(
   fc.assert(
-    fc.asyncProperty(fc.nat(), fc.string(), (_a, _b) => {}),
+    fc.property(fc.nat(), fc.string(), (_a, _b) => {}),
     { reporter: (_out: fc.RunDetails<[number, string]>) => {} },
   ),
 ).toEqualTypeOf<Promise<void>>();
 // prettier-ignore
 // @ts-expect-error - Reporter must be compatible with generated values
-fc.assert(fc.asyncProperty(fc.nat(), fc.string(), (_a, _b) => {}), { reporter: (_out: fc.RunDetails<[number]>) => {} });
+fc.assert(fc.property(fc.nat(), fc.string(), (_a, _b) => {}), { reporter: (_out: fc.RunDetails<[number]>) => {} });
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {}); // missing _b
+fc.property(fc.nat(), fc.string(), async (_a: number) => {}); // missing _b
 
-// asyncProperty
-// "asyncProperty" instantiates instances compatible with Property
-expectTypeOf(fc.asyncProperty(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
-// "asyncProperty" handles tuples
-expectTypeOf(fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<
-  fc.Property<[number, string]>
->();
+// property
+// "property" instantiates instances compatible with Property
+expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
+// "property" handles tuples
+expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<fc.Property<[number, string]>>();
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
-fc.asyncProperty(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
+fc.property(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {});
+fc.property(fc.nat(), fc.string(), async (_a: number) => {});
 // @ts-expect-error - Expect at least one arbitrary to be provided
-fc.asyncProperty(() => {});
+fc.property(() => {});
 
 // defaultReportMessage
-fc.check(fc.asyncProperty(fc.nat(), (_n) => true)).then((out) => {
+fc.check(fc.property(fc.nat(), (_n) => true)).then((out) => {
   if (out.failed) {
     // Failure implies a string output
     expectTypeOf(fc.defaultReportMessage(out)).toEqualTypeOf<Promise<string> | string>();
@@ -420,53 +418,53 @@ fc.installGlobalPlugin(stringArgPlugin());
 // can use an UniversalPlugin on any assert
 expectTypeOf(
   fc.assert(
-    fc.asyncProperty(fc.string(), async (_s) => {}),
+    fc.property(fc.string(), async (_s) => {}),
     { plugins: [universalPlugin()] },
   ),
 ).toEqualTypeOf<Promise<void>>();
 // can use a Plugin supporting unknown on any assert
 expectTypeOf(
   fc.assert(
-    fc.asyncProperty(fc.string(), async (_s) => {}),
+    fc.property(fc.string(), async (_s) => {}),
     { plugins: [unknownPlugin()] },
   ),
 ).toEqualTypeOf<Promise<void>>();
 // can use a Plugin supporting unknown on any assert even with multiple arguments
 expectTypeOf(
   fc.assert(
-    fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}),
+    fc.property(fc.string(), fc.string(), async (_s1, _s2) => {}),
     { plugins: [unknownPlugin()] },
   ),
 ).toEqualTypeOf<Promise<void>>();
 // can use a Plugin supporting any on any assert
 expectTypeOf(
   fc.assert(
-    fc.asyncProperty(fc.string(), async (_s) => {}),
+    fc.property(fc.string(), async (_s) => {}),
     { plugins: [anyPlugin()] },
   ),
 ).toEqualTypeOf<Promise<void>>();
 // can use a Plugin supporting unknown on any assert even with multiple arguments
 expectTypeOf(
   fc.assert(
-    fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}),
+    fc.property(fc.string(), fc.string(), async (_s1, _s2) => {}),
     { plugins: [anyPlugin()] },
   ),
 ).toEqualTypeOf<Promise<void>>();
 // can use a properly typed plugin on a matching assert
 expectTypeOf(
   fc.assert(
-    fc.asyncProperty(fc.string(), async (_s) => {}),
+    fc.property(fc.string(), async (_s) => {}),
     { plugins: [stringArgPlugin()] },
   ),
 ).toEqualTypeOf<Promise<void>>();
 // cannot use a plugin expecting one string on a property generating two strings
 // prettier-ignore
 // @ts-expect-error - Plugin tuple must match the property tuple
-fc.assert(fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}), { plugins: [stringArgPlugin()] });
+fc.assert(fc.property(fc.string(), fc.string(), async (_s1, _s2) => {}), { plugins: [stringArgPlugin()] });
 // cannot use a wrongly typed plugin on a mismatching assert
 // prettier-ignore
 // @ts-expect-error - string and number are incompatible
-fc.assert(fc.asyncProperty(fc.nat(), async (_n) => {}), { plugins: [stringArgPlugin()] });
+fc.assert(fc.property(fc.nat(), async (_n) => {}), { plugins: [stringArgPlugin()] });
 
 // entityGraph
 type Node = { name: string; linkTo: Node[] };

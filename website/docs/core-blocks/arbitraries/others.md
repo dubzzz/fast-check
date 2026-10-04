@@ -90,7 +90,7 @@ const CommandsArbitrary = fc.commands([
 ]);
 
 await fc.assert(
-  fc.asyncProperty(
+  fc.property(
     CommandsArbitrary,
     cmds => {
       const s = () => ({ // initial state builder

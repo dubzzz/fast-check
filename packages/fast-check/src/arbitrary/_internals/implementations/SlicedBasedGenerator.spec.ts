@@ -9,7 +9,7 @@ describe('SlicedBasedGenerator', () => {
   describe('attemptExact', () => {
     it('should take one of the provided slices and return it item by item', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
           fc.nat(),
           fc.nat(),
@@ -44,7 +44,7 @@ describe('SlicedBasedGenerator', () => {
   describe('next', () => {
     it('should only go for values coming from the source arbitrary when tossing for unbias', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
           fc.iterator(fc.anything(), { minLength: Number.POSITIVE_INFINITY }),
           fc.nat({ max: 10 }),
@@ -80,7 +80,7 @@ describe('SlicedBasedGenerator', () => {
 
     it('should only go for values coming from the slices when tossing for bias', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
           fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }),
           fc.nat({ max: 10 }),

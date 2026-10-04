@@ -6,7 +6,7 @@ import { partsToUrlUnmapper } from './PartsToUrl.js';
 describe('partsToUrlUnmapper', () => {
   it('should properly extract all parts of an url', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.webUrl({
           authoritySettings: {
             withIPv4: true,

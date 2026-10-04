@@ -12,7 +12,7 @@ import {
 describe('lorem', () => {
   it('should reject any negative or zero maxCount whatever the mode', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.integer({ max: 0 }),
         fc.constantFrom(...([undefined, 'words', 'sentences'] as const)),
         (maxCount, mode) => {

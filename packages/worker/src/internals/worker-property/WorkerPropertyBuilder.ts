@@ -4,6 +4,8 @@ import type { Payload } from '../worker-pool/IWorkerPool.js';
 import * as fc from 'fast-check';
 import { WorkerPropertyFromWorker } from './WorkerPropertyFromWorker.js';
 
+const property = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
+
 /**
  * Property tailored for usage with workers
  * it produces the payload to be sent to the workers
@@ -22,7 +24,7 @@ export function buildWorkerProperty<Ts extends [unknown, ...unknown[]]>(
   generateValuesInMainThread: boolean,
 ): WorkerProperty<Ts> {
   if (!generateValuesInMainThread) {
-    return Object.assign(fc.asyncProperty<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>, {
+    return Object.assign(property<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>, {
       getPayload: (inputs: Ts): Payload<Ts> => ({ source: 'main', value: inputs }),
     });
   }

@@ -16,7 +16,7 @@ Counterexample: [0]
 Shrunk 1 time(s)
 Got TypeError: v is not a function
     at packages/fast-check/test/NoRegressionStack.spec.ts:?:?
-    at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
+    at PropertyImplem.predicate (packages/fast-check/src/check/property/Property.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at propertyRunner (packages/fast-check/src/check/runner/PropertyRunner.ts:?:?)
@@ -69,7 +69,7 @@ Counterexample: [0,1]
 Shrunk 32 time(s)
 Got error: a must be >= b
     at packages/fast-check/test/NoRegressionStack.spec.ts:?:?
-    at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
+    at PropertyImplem.predicate (packages/fast-check/src/check/property/Property.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at propertyRunner (packages/fast-check/src/check/runner/PropertyRunner.ts:?:?)

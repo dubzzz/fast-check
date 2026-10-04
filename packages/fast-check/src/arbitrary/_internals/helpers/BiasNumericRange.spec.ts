@@ -5,7 +5,7 @@ import { biasNumericRange, bigIntLogLike, integerLogLike } from './BiasNumericRa
 describe('biasNumericRange', () => {
   it('should bias close to extreme values and zero if min and max have opposite signs', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.integer({ min: Number.MIN_SAFE_INTEGER, max: -1 }),
         fc.integer({ min: 1, max: Number.MAX_SAFE_INTEGER }),
         (min, max) => {
@@ -25,7 +25,7 @@ describe('biasNumericRange', () => {
 
   it('should bias close to extreme values if min and max have same signs', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.constantFrom(1, -1),
         fc.integer({ min: 0, max: Number.MAX_SAFE_INTEGER }),
         fc.integer({ min: 0, max: Number.MAX_SAFE_INTEGER }),
@@ -51,7 +51,7 @@ describe('biasNumericRange', () => {
 
   it('should not bias anything for equal values of min and max', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), (minMax) => {
+      fc.property(fc.maxSafeInteger(), (minMax) => {
         // Arrange / Act
         const ranges = biasNumericRange(minMax, minMax, integerLogLike);
 
@@ -63,7 +63,7 @@ describe('biasNumericRange', () => {
 
   it('should always bias in valid ranges when using integerLogLike', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b) => {
+      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b) => {
         // Arrange
         const min = a < b ? a : b;
         const max = a < b ? b : a;
@@ -85,7 +85,7 @@ describe('biasNumericRange', () => {
 
   it('should always bias in valid ranges when using bigIntLogLike', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.bigInt(), fc.bigInt(), (a, b) => {
+      fc.property(fc.bigInt(), fc.bigInt(), (a, b) => {
         // Arrange
         const min = a < b ? a : b;
         const max = a < b ? b : a;

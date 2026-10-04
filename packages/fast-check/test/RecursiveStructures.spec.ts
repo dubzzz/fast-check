@@ -15,7 +15,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     })).data;
 
     // Act
-    const out = await fc.check(fc.asyncProperty(dataArb, (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
@@ -30,7 +30,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     })).data;
 
     // Act
-    const out = await fc.check(fc.asyncProperty(dataArb, (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
@@ -46,7 +46,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     });
 
     // Act
-    const out = await fc.check(fc.asyncProperty(dataArb(5), (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
@@ -62,7 +62,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     });
 
     // Act
-    const out = await fc.check(fc.asyncProperty(dataArb(5), (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
@@ -88,7 +88,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
         })).self;
 
         // Act / Assert
-        await fc.assert(fc.asyncProperty(arb, () => true)); // expects no throw
+        await fc.assert(fc.property(arb, () => true)); // expects no throw
       } finally {
         fc.configureGlobal(initialGlobal);
       }
@@ -115,7 +115,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
         })).self;
 
         // Act / Assert
-        await fc.assert(fc.asyncProperty(arb, () => true)); // expects no throw
+        await fc.assert(fc.property(arb, () => true)); // expects no throw
       } finally {
         fc.configureGlobal(initialGlobal);
       }

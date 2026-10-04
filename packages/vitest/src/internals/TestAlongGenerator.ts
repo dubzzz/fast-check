@@ -3,7 +3,9 @@ import type { Arbitrary, GeneratorValue, Parameters } from 'fast-check';
 import type { ExtraContext } from './types.js';
 
 import { TestRunner } from 'vitest';
-import { assert, asyncProperty, gen, readConfigureGlobal } from 'fast-check';
+import * as fc from 'fast-check';
+
+const property = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
@@ -28,7 +30,7 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
       fn !== undefined
         ? async (context) => {
             let calledOnce = false;
-            const config = readConfigureGlobal();
+            const config = fc.readConfigureGlobal();
             try {
               const parameters: Parameters<unknown> = {
                 // Remark: We should turn it back to 1 in case g never gets called by the first execution of the predicate
@@ -38,8 +40,8 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
                 // @ts-expect-error - Added for backward compatility with fast-check@3
                 errorWithCause: true,
               };
-              await assert(
-                asyncProperty(gen(), (g) => {
+              await fc.assert(
+                property(fc.gen(), (g) => {
                   const refinedG: GeneratorValue = Object.assign(
                     <T, TArgs extends unknown[]>(arb: (...params: TArgs) => Arbitrary<T>, ...args: TArgs): T => {
                       calledOnce = true;

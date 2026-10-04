@@ -5,12 +5,12 @@ import { PropertyImplem } from './_internals/PropertyImplem.js';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary.js';
 
 /**
- * Instantiate a new {@link fast-check#Property}
+ * Instantiate a new {@link fast-check#Property} with a synchronous or asynchronous predicate
  * @param predicate - Assess the success of the property. Would be considered falsy if it throws or if its output evaluates to false
- * @remarks Since 0.0.7
+ * @remarks Since 0.0.1 (asynchronous predicates supported since 5.0.0, previously via `asyncProperty` since 0.0.7)
  * @public
  */
-function asyncProperty<Ts extends [unknown, ...unknown[]]>(
+function property<Ts extends [unknown, ...unknown[]]>(
   ...args: [
     ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
     predicate: (...args: Ts) => Promise<boolean | void> | boolean | void,
@@ -22,4 +22,4 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
   return new PropertyImplem(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 
-export { asyncProperty };
+export { property };

@@ -48,7 +48,7 @@ describe('properties', () => {
   // string text always contains itself
   it('should always contain itself', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.string(), (text) => {
+      fc.property(fc.string(), (text) => {
         return contains(text, text);
       }),
     );
@@ -57,7 +57,7 @@ describe('properties', () => {
   // string a + b + c always contains b, whatever the values of a, b and c
   it('should always contain its substrings', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+      fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // Alternatively: no return statement and direct usage of expect or assert
         return contains(a + b + c, b);
       }),
@@ -87,12 +87,12 @@ A property describes:
 1. what the user wants to assess — _via a predicate_
 2. how to generate the inputs of the predicate — _via arbitraries_
 
-The snippet above declared properties by calling `fc.asyncProperty`. Properties can deal with both synchronous and asynchronous predicates.
+The snippet above declared properties by calling `fc.property`. Properties can deal with both synchronous and asynchronous predicates.
 
 The structure to declare a property is always the same:
 
 ```js
-fc.asyncProperty(
+fc.property(
   ...arbitraries // how to generate the values received as inputs of the predicate
   predicate // how to check if the code worked
 );

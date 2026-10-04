@@ -6,7 +6,7 @@ import { knight } from './src/knight.js';
 describe('knight', () => {
   it('should always reach its target', async () => {
     await fc.assert(
-      fc.asyncProperty(SpaceArbitrary, (inputs) => {
+      fc.property(SpaceArbitrary, (inputs) => {
         const [space, max_guesses] = inputs;
         knight(space, max_guesses);
         return space.solved();

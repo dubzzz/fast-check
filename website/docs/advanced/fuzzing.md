@@ -80,7 +80,7 @@ import * as fc from 'fast-check';
 fc.configureGlobal({ numRuns: 1_000_000 });
 
 test('fuzz predicate against arbitraries', async () => {
-  await fc.assert(fc.asyncProperty(...arbitraries, neverFailingPredicate(predicate)));
+  await fc.assert(fc.property(...arbitraries, neverFailingPredicate(predicate)));
 });
 ```
 
@@ -94,7 +94,7 @@ In contrast to normal runs, when using the `neverFailingPredicate` function, the
 
 ```js
 test('replay reported error and shrink it', async () => {
-  await fc.assert(fc.asyncProperty(...arbitraries, predicate), {
+  await fc.assert(fc.property(...arbitraries, predicate), {
     numRuns: 1,
     examples: [[/* reported error */]],
   });

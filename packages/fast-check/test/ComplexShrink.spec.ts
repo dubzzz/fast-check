@@ -40,7 +40,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // the shrinker was too slow to be useful (given the range of values generated).
     const MaximalValue = 1000000;
     const out = await fc.check(
-      fc.asyncProperty(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
+      fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
         if (b < a) return true;
@@ -70,7 +70,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // if (a, b) fails, (b, a) will also fail.
     const MaximalValue = 1000000;
     const out = await fc.check(
-      fc.asyncProperty(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
+      fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
         if (Math.abs(a - b) < 10) return true;
@@ -108,7 +108,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
 
     it('distinct', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.integer()), (ls) => {
+        fc.property(fc.array(fc.integer()), (ls) => {
           return new Set(ls).size < 3;
         }),
         { seed },
@@ -132,7 +132,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
 
     it('large_union_list', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.array(fc.integer())), (ls) => {
+        fc.property(fc.array(fc.array(fc.integer())), (ls) => {
           return new Set(flat(ls)).size < 5;
         }),
         { seed },
@@ -156,7 +156,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
 
     it('nestedlists', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.array(fc.constant(0))), (ls) => {
+        fc.property(fc.array(fc.array(fc.constant(0))), (ls) => {
           return ls.map((l) => l.length).reduce((a, b) => a + b, 0) <= 10;
         }),
         { seed },
@@ -176,7 +176,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
 
     it('reverse', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.integer()), (ls) => {
+        fc.property(fc.array(fc.integer()), (ls) => {
           const rev = [...ls].reverse();
           expect(rev).toEqual(ls);
         }),

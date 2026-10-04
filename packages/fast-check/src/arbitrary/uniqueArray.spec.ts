@@ -23,7 +23,7 @@ describe('uniqueArray', () => {
 
   it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a, <default>) for uniqueArray(arb)', async () => {
     await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, (config) => {
+      fc.property(sizeRelatedGlobalConfigArb, (config) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -56,7 +56,7 @@ describe('uniqueArray', () => {
 
   it('should instantiate ArrayArbitrary(arb, 0, ?, maxLength, n.a, <default>) for uniqueArray(set, {maxLength})', async () => {
     await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, maxLength) => {
+      fc.property(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, maxLength) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -100,7 +100,7 @@ describe('uniqueArray', () => {
 
   it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff, n.a, <default>) for uniqueArray(arb, {minLength})', async () => {
     await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, minLength) => {
+      fc.property(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, minLength) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance, filter } = fakeArbitrary<unknown[]>();
@@ -138,7 +138,7 @@ describe('uniqueArray', () => {
 
   it('should instantiate ArrayArbitrary(arb, minLength, ?, maxLength, n.a, <default>) for uniqueArray(arb, {minLength,maxLength})', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),
@@ -189,7 +189,7 @@ describe('uniqueArray', () => {
 
   it('should accept custom comparator or selector or both at the same time or none', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc
           .record(
@@ -244,7 +244,7 @@ describe('uniqueArray', () => {
 
   it('should throw when minimum length is greater than maximum one', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),

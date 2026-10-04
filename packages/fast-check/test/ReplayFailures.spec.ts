@@ -14,7 +14,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
     }
     return true;
   };
-  const prop = fc.asyncProperty(propArbitrary, propCheck);
+  const prop = fc.property(propArbitrary, propCheck);
 
   describe('fc.sample', () => {
     it('Should rebuild counterexample using sample and (path, seed)', async () => {
@@ -27,7 +27,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
     it('Should rebuild the whole shrink path using sample', async () => {
       const failuresRecorded: string[][] = [];
       const out = await fc.check(
-        fc.asyncProperty(propArbitrary, (data) => {
+        fc.property(propArbitrary, (data) => {
           if (propCheck(data)) return true;
           failuresRecorded.push(data);
           return false;
@@ -55,7 +55,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       let numValidCalls = 0;
       let validCallIndex = -1;
       const out2 = await fc.check(
-        fc.asyncProperty(propArbitrary, (data) => {
+        fc.property(propArbitrary, (data) => {
           try {
             expect(data).toEqual(out.counterexample![0]);
             validCallIndex = numCalls;
@@ -118,14 +118,14 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
     });
     it('Should print the rejected path when unable to replay for path', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.integer(),
           fc.array(fc.nat({ max: 100 }), { minLength: 3 }).map((elements) => elements.join(':')),
           (internalSeed, path) => {
             // Sync throw!!!
             expect(() =>
               fc.check(
-                fc.asyncProperty(fc.constant(0), () => {}), // no shrink available on constant, our path should break
+                fc.property(fc.constant(0), () => {}), // no shrink available on constant, our path should break
                 { seed: internalSeed, path },
               ),
             ).toThrowError(new RegExp(`wrong path=${path}`));
@@ -136,7 +136,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
     });
     it('Should print the rejected path when unable to replay for path on sample', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.integer(),
           fc.array(fc.nat({ max: 100 }), { minLength: 3 }).map((elements) => elements.join(':')),
           (internalSeed, path) => {
