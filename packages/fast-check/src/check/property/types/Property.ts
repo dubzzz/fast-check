@@ -20,7 +20,7 @@ export interface Property<Ts> {
    * @param mrng - Random number generator
    * @param runId - Id of the generation, starting at 0 - if set the generation might be biased
    *
-   * @remarks Since 0.0.7 (return type changed in 3.0.0)
+   * @remarks Since 0.0.6 (return type changed in 3.0.0)
    */
   generate(mrng: Random, runId?: number): Value<Ts>;
 
@@ -36,7 +36,7 @@ export interface Property<Ts> {
   /**
    * Check the predicate for v
    * @param v - Value of which we want to check the predicate
-   * @remarks Since 0.0.7
+   * @remarks Since 0.0.1 (signature changed in 0.0.6; asynchronous support since 0.0.7)
    */
   run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null;
 }
