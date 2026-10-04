@@ -8,7 +8,9 @@ export function filterInvalidSubdomainLabel(subdomainLabel: string): boolean {
   //  - <let-dig> ::= <letter> | <digit>
   //  - <letter> ::= any one of the 52 alphabetic characters A through Z in upper case and a through z in lower case
   //  - <digit> ::= any one of the ten digits 0 through 9
-  // RFC 1123 section 2.1 allows a hostname to start with a letter or a digit (for example, 9gag).
+  // If we strictly follow RFC 1034, 9gag would be an invalid domain.
+  // Support for such domain has been added by RFC 1123 section 2.1.
+  // It allows a hostname to start with a letter or a digit.
   // https://www.rfc-editor.org/rfc/rfc1123.html#section-2.1
   if (subdomainLabel.length > 63) {
     return false; // invalid, it seems that this restriction has been relaxed in modern web browsers
