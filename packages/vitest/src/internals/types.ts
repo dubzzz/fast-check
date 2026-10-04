@@ -10,6 +10,7 @@ import type {
 } from 'fast-check';
 
 export type FcExtra = {
+  asyncProperty?: typeof property;
   property: typeof property;
   assert: typeof assert;
   readConfigureGlobal: typeof readConfigureGlobal;

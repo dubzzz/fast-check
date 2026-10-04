@@ -1,6 +1,6 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { assert as fcAssert, property as fcProperty } from 'fast-check';
+import * as fc from 'fast-check';
 import type { Property, Parameters, UniversalPlugin } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
@@ -8,6 +8,8 @@ import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProper
 import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 import { generateValueFromState } from './internals/ValueFromState.js';
+
+const fcProperty = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
 
 let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<Property<unknown>, () => Promise<void>>();
@@ -47,7 +49,7 @@ export async function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>
               plugins: [workerPlugin, ...(params !== undefined && params.plugins !== undefined ? params.plugins : [])],
             }
           : params;
-      await fcAssert(property, refinedParams);
+      await fc.assert(property, refinedParams);
     } finally {
       await clearAllWorkersFor(property);
     }
