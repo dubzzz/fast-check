@@ -9,7 +9,7 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
 
     // Act
     await fc.assert(
-      fc.asyncProperty(fc.integer(), async (_x) => {
+      fc.property(fc.integer(), async (_x) => {
         probes.push('predicate');
         return true;
       }),
@@ -89,7 +89,7 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
 
     // Act
     await fc.assert(
-      fc.asyncProperty(fc.integer(), async (_x) => {
+      fc.property(fc.integer(), async (_x) => {
         probes.push('predicate');
         return true;
       }),

@@ -18,7 +18,7 @@ describe('date', () => {
 
   it('should map on the output of an integer and specify mapper and unmapper', async () =>
     await fc.assert(
-      fc.asyncProperty(constraintsArb(), (constraints) => {
+      fc.property(constraintsArb(), (constraints) => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
@@ -39,7 +39,7 @@ describe('date', () => {
 
   it('should always map the minimal value of the internal integer to the requested minimal date', async () =>
     await fc.assert(
-      fc.asyncProperty(constraintsArb(), (constraints) => {
+      fc.property(constraintsArb(), (constraints) => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
@@ -69,7 +69,7 @@ describe('date', () => {
 
   it('should always map the maximal value (minus one if NaN accepted) of the internal integer to the requested maximal date', async () =>
     await fc.assert(
-      fc.asyncProperty(constraintsArb(), (constraints) => {
+      fc.property(constraintsArb(), (constraints) => {
         // Arrange
         const withInvalidDates = !constraints.noInvalidDate;
         const { instance, map } = fakeArbitrary<number>();
@@ -100,7 +100,7 @@ describe('date', () => {
 
   it('should always generate dates between min and max (or invalid ones when accepted) given the range and the mapper', async () =>
     await fc.assert(
-      fc.asyncProperty(constraintsArb(), fc.maxSafeNat(), (constraints, mod) => {
+      fc.property(constraintsArb(), fc.maxSafeNat(), (constraints, mod) => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
@@ -125,7 +125,7 @@ describe('date', () => {
 
   it('should throw whenever min is an invalid date', async () =>
     await fc.assert(
-      fc.asyncProperty(invalidMinConstraintsArb(), (constraints) => {
+      fc.property(invalidMinConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
       }),
@@ -133,7 +133,7 @@ describe('date', () => {
 
   it('should throw whenever max is an invalid date', async () =>
     await fc.assert(
-      fc.asyncProperty(invalidMaxConstraintsArb(), (constraints) => {
+      fc.property(invalidMaxConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
       }),
@@ -141,7 +141,7 @@ describe('date', () => {
 
   it('should throw whenever min is greater than max', async () =>
     await fc.assert(
-      fc.asyncProperty(invalidRangeConstraintsArb(), (constraints) => {
+      fc.property(invalidRangeConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
       }),

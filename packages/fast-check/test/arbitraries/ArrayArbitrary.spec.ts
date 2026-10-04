@@ -6,7 +6,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
   describe('array', () => {
     it('Should shrink on the size of the array', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.nat()), (arr: number[]) => arr.length < 2),
+        fc.property(fc.array(fc.nat()), (arr: number[]) => arr.length < 2),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -15,7 +15,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink on the content of the array', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.integer({ min: 3, max: 10 })), (arr: number[]) => arr.length < 2),
+        fc.property(fc.array(fc.integer({ min: 3, max: 10 })), (arr: number[]) => arr.length < 2),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -23,10 +23,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink removing unecessary entries in the array', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
-          fc.array(fc.integer({ min: 0, max: 10 })),
-          (arr: number[]) => arr.filter((v) => v >= 5).length < 2,
-        ),
+        fc.property(fc.array(fc.integer({ min: 0, max: 10 })), (arr: number[]) => arr.filter((v) => v >= 5).length < 2),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -51,7 +48,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
     const removeDuplicates = (arr: T[]) => [...arr];
     // Expect a failure
     const out = await fc.check(
-      fc.asyncProperty(fc.array(arb), (arr: T[]) => {
+      fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
         expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates (but will find some)
       }),
@@ -66,7 +63,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
     const removeDuplicates = (arr: T[]) => [...arr];
     // Expect a failure
     const out = await fc.check(
-      fc.asyncProperty(fc.array(arb), (arr: T[]) => {
+      fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
         expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates
       }),

@@ -57,7 +57,7 @@ When adding fast-check into a race condition test, the recommended initial step 
 {/* prettier-ignore-start */}
 ```js
 test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => { // <-- added
+  await fc.assert(fc.property(fc.scheduler(), async (s) => { // <-- added
     // ...unchanged code...
   }));                                                            // <-- added
 });

@@ -38,7 +38,7 @@ describe('bigInt', () => {
 
   it('should instantiate BigIntArbitrary with passed constraints and default missing ones', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.boolean(), fc.boolean(), (a, b, withMin, withMax) => {
+      fc.property(fc.bigInt(), fc.bigInt(), fc.boolean(), fc.boolean(), (a, b, withMin, withMax) => {
         // Arrange
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeBigIntArbitrary();
@@ -63,7 +63,7 @@ describe('bigInt', () => {
 
   it('[legacy] should instantiate the same BigIntArbitrary as constraints-based for bigInt(min, max)', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.bigInt(), fc.bigInt(), (a, b) => {
+      fc.property(fc.bigInt(), fc.bigInt(), (a, b) => {
         // Arrange
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeBigIntArbitrary();
@@ -86,7 +86,7 @@ describe('bigInt', () => {
 
   it('should throw when minimum value is greater than maximum one', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.bigInt(), fc.bigInt(), (a, b) => {
+      fc.property(fc.bigInt(), fc.bigInt(), (a, b) => {
         // Arrange
         fc.pre(a !== b);
         const [low, high] = a < b ? [a, b] : [b, a];
@@ -98,7 +98,7 @@ describe('bigInt', () => {
 
   it('should handle union type of [number, number] | BigIntConstraints', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.oneof(
           // no argument
           fc.tuple(),

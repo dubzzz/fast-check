@@ -30,12 +30,12 @@ Each part of the definition can be achieved directly within fast-check:
 
 ### Basic
 
-Properties define predicates. They can be declared by calling `fc.asyncProperty(...arbitraries, predicate)`.
+Properties define predicates. They can be declared by calling `fc.property(...arbitraries, predicate)`.
 
 The syntax is the following:
 
 ```js
-fc.asyncProperty(...arbitraries, (...args) => {});
+fc.property(...arbitraries, (...args) => {});
 ```
 
 When passing N arbitraries, the predicate will receive N arguments: first argument being produced by the first arbitrary, second argument by the second arbitrary...
@@ -44,6 +44,18 @@ The predicate can:
 
 - either throw in case of failure by relying on `assert`, `expect` or even directly throwing,
 - or return `true` or `undefined` for success and `false` for failure.
+
+Predicates can be synchronous or asynchronous. Use `fc.property` for both, and always await `fc.assert` or `fc.check` when running them:
+
+```js
+await fc.assert(fc.property(fc.string(), (value) => typeof value === 'string'));
+
+await fc.assert(
+  fc.property(fc.string(), async (value) => {
+    await checkValue(value);
+  }),
+);
+```
 
 :::warning[Beware of side effects]
 The predicate function should not change the inputs it received. If it needs to, it has to clone them before going on. Impacting the inputs might led to bad shrinking and wrong display on error.
@@ -55,7 +67,7 @@ Use the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/) to run setup
 
 ```js
 await fc.assert(
-  fc.asyncProperty(...arbitraries, (...args) => {}),
+  fc.property(...arbitraries, (...args) => {}),
   {
     plugins: [
       fc.beforeEach(() => {
@@ -83,7 +95,7 @@ Consider using `fc.installGlobalPlugin(fc.beforeEach(fn))` to share your hooks a
 Let's imagine we have a function called `crop` taking a string and the maximal length we accept. We can write the following property:
 
 ```js
-fc.asyncProperty(fc.nat(), fc.string(), (maxLength, label) => {
+fc.property(fc.nat(), fc.string(), (maxLength, label) => {
   fc.pre(label.length <= maxLength); // any label such label.length > maxLength, will be dropped
   return crop(label, maxLength) === label; // true is success, false is failure
 });
@@ -94,7 +106,7 @@ The property defined above is relying on `fc.pre` to filter out invalid entries 
 It can also be written with `.filter` and `expect`:
 
 ```js
-fc.asyncProperty(
+fc.property(
   fc
     .record({
       maxLength: fc.nat(),

@@ -2,6 +2,8 @@ import type { AfterFn, BeforeFn, Implementation, ImplementationFn, TestFn, TryRe
 import test from 'ava';
 import * as fc from 'fast-check';
 
+const property = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
+
 export { fc, test };
 
 type NonEmptyArray<A> = A[] & { 0: A };
@@ -38,7 +40,7 @@ function wrapProp<Context, Ts extends NonEmptyArray<any>>(
 
     try {
       await fc.assert(
-        (fc.asyncProperty as any)(...(arbitraries as any), async (...args: Ts) => {
+        (property as any)(...(arbitraries as any), async (...args: Ts) => {
           const tryResult = await t.try((tt) => prop(tt, ...args));
 
           if (tryResult.passed) {

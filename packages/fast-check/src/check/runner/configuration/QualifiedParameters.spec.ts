@@ -34,7 +34,7 @@ describe('QualifiedParameters', () => {
   describe('read', () => {
     it('Should forward as-is values already set in Parameters', async () =>
       await fc.assert(
-        fc.asyncProperty(parametersArbitrary, (params) => {
+        fc.property(parametersArbitrary, (params) => {
           const qualifiedParams = read(params);
           for (const key of Object.keys(params)) {
             expect(qualifiedParams).toHaveProperty(key);
@@ -47,7 +47,7 @@ describe('QualifiedParameters', () => {
       ));
     it('Should transform verbose boolean to its corresponding VerbosityLevel', async () =>
       await fc.assert(
-        fc.asyncProperty(parametersArbitrary, fc.boolean(), (params, verbose) => {
+        fc.property(parametersArbitrary, fc.boolean(), (params, verbose) => {
           const expectedVerbosityLevel = verbose ? VerbosityLevel.Verbose : VerbosityLevel.None;
           const qparams = read({ ...params, verbose });
           return qparams.verbose === expectedVerbosityLevel;
@@ -55,19 +55,15 @@ describe('QualifiedParameters', () => {
       ));
     it('Should transform correctly randomType factories', async () =>
       await fc.assert(
-        fc.asyncProperty(
-          parametersArbitrary,
-          fc.option(randomTypeName, { nil: undefined }),
-          (params, randomTypeName) => {
-            const randomType = randomTypeName !== undefined ? prand[randomTypeName] : undefined;
-            const qparams = read({ ...params, randomType });
-            if (randomTypeName === undefined) {
-              expect(qparams.randomType).toBe(xorshift128plus);
-            } else {
-              expect(qparams.randomType).toBe(prand[randomTypeName]);
-            }
-          },
-        ),
+        fc.property(parametersArbitrary, fc.option(randomTypeName, { nil: undefined }), (params, randomTypeName) => {
+          const randomType = randomTypeName !== undefined ? prand[randomTypeName] : undefined;
+          const qparams = read({ ...params, randomType });
+          if (randomTypeName === undefined) {
+            expect(qparams.randomType).toBe(xorshift128plus);
+          } else {
+            expect(qparams.randomType).toBe(prand[randomTypeName]);
+          }
+        }),
       ));
     describe('Seeds outside of 32 bits range', () => {
       const seedsOutsideRangeArb = fc.oneof(
@@ -78,14 +74,14 @@ describe('QualifiedParameters', () => {
       );
       it('Should produce 32 bits signed seed', async () =>
         await fc.assert(
-          fc.asyncProperty(seedsOutsideRangeArb, (unsafeSeed) => {
+          fc.property(seedsOutsideRangeArb, (unsafeSeed) => {
             const qparams = read({ seed: unsafeSeed });
             return (qparams.seed | 0) === qparams.seed;
           }),
         ));
       it('Should produce the same seed given the same input', async () =>
         await fc.assert(
-          fc.asyncProperty(seedsOutsideRangeArb, (unsafeSeed) => {
+          fc.property(seedsOutsideRangeArb, (unsafeSeed) => {
             const qparams1 = read({ seed: unsafeSeed });
             const qparams2 = read({ seed: unsafeSeed });
             return qparams1.seed === qparams2.seed;
@@ -93,7 +89,7 @@ describe('QualifiedParameters', () => {
         ));
       it('Should transform distinct values between 0 and 1 into distinct seeds', async () =>
         await fc.assert(
-          fc.asyncProperty(
+          fc.property(
             fc.double({ min: 0, max: 1 - Number.EPSILON }),
             fc.double({ min: 0, max: 1 - Number.EPSILON }),
             (unsafeSeed1, unsafeSeed2) => {
@@ -106,7 +102,7 @@ describe('QualifiedParameters', () => {
         ));
       it('Should truncate integer values into a 32 signed bits seed', async () =>
         await fc.assert(
-          fc.asyncProperty(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }), (unsafeSeed) => {
+          fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }), (unsafeSeed) => {
             const qparams = read({ seed: unsafeSeed });
             return qparams.seed === (unsafeSeed | 0);
           }),

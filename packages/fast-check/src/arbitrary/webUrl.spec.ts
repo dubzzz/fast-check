@@ -27,7 +27,7 @@ describe('webUrl', () => {
 
   it('should always use the same size value for all its sub-arbitraries (except webAuthority when using its own)', async () => {
     await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
+      fc.property(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
         // Arrange
         const { instance } = fakeArbitrary();
         const webAuthority = vi.spyOn(WebAuthorityMock, 'webAuthority');

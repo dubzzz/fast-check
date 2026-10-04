@@ -9,7 +9,7 @@ import { read } from '../configuration/QualifiedParameters.js';
 describe('RunExecution', () => {
   it('Should expose data coming from the last failure', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.integer(),
         fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
         fc.array(
@@ -55,7 +55,7 @@ describe('RunExecution', () => {
     ));
   it('Should generate correct counterexamplePath with no initial offset', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
+      fc.property(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
         // Simulate the run
         const run = new RunExecution<number>(VerbosityLevel.None);
         for (let idx = 0; idx !== path[0]; ++idx) {
@@ -70,7 +70,7 @@ describe('RunExecution', () => {
     ));
   it('Should generate correct counterexamplePath given initial offset', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.integer(),
         fc.array(fc.nat(1000), { minLength: 1 }),
         fc.array(fc.nat(1000), { minLength: 1 }),
@@ -95,7 +95,7 @@ describe('RunExecution', () => {
     ));
   it('Should produce an execution summary corresponding to the execution', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(
           fc.record({
             status: fc.constantFrom(ExecutionStatus.Success, ExecutionStatus.Failure, ExecutionStatus.Skipped),

@@ -25,7 +25,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
     };
     it('Should shrink on entity having a reverse JSON a valid JSON', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.json(), (json: string) => {
+        fc.property(fc.json(), (json: string) => {
           if (json[0] !== '{') return true;
           try {
             JSON.parse(revJson(json));
@@ -43,7 +43,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
   describe('object', () => {
     it('Should shrink on object in object', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.object(), (obj: any) => {
+        fc.property(fc.object(), (obj: any) => {
           const isObject = (ins: any) => {
             return typeof ins === 'object' && !Array.isArray(ins) && ins !== null;
           };

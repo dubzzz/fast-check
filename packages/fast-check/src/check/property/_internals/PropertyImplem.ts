@@ -23,9 +23,9 @@ function errorToPropertyAnswer(err: unknown) {
 }
 
 /**
- * Asynchronous property, see {@link Property}
+ * Property with a synchronous or asynchronous predicate, see {@link Property}
  *
- * Prefer using {@link asyncProperty} instead
+ * Prefer using {@link property} instead
  */
 export class PropertyImplem<Ts> implements Property<Ts> {
   constructor(

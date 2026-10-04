@@ -49,7 +49,7 @@ function equalValuesRunner(
  * @example
  * ```ts
  * await fc.assert(
- *   fc.asyncProperty(..., (...) => {...}),
+ *   fc.property(..., (...) => {...}),
  *   { plugins: [fc.ignoreEqualValues()] }
  * )
  * ```
@@ -79,7 +79,7 @@ export function ignoreEqualValues(): UniversalPlugin {
  * @example
  * ```ts
  * await fc.assert(
- *   fc.asyncProperty(..., (...) => {...}),
+ *   fc.property(..., (...) => {...}),
  *   { plugins: [fc.skipEqualValues()] }
  * )
  * ```

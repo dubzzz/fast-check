@@ -178,7 +178,7 @@ function lifeCycleHooksRunner(
  * @example
  * ```ts
  * await fc.assert(
- *   fc.asyncProperty(..., (...) => {...}),
+ *   fc.property(..., (...) => {...}),
  *   { plugins: [fc.beforeEach(() => {...})] }
  * )
  * ```
@@ -216,7 +216,7 @@ export function beforeEach(fn: BeforeEachHook): UniversalPlugin {
  * @example
  * ```ts
  * await fc.assert(
- *   fc.asyncProperty(..., (...) => {...}),
+ *   fc.property(..., (...) => {...}),
  *   { plugins: [fc.afterEach(() => {...})] }
  * )
  * ```
