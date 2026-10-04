@@ -5,7 +5,7 @@ import type { Plugin } from '../../plugin/Plugin.js';
 
 /**
  * Customization of the parameters used to run the properties
- * @remarks Since 0.0.6
+ * @remarks Since 0.0.7
  * @public
  */
 export interface Parameters<T = void> {
@@ -17,7 +17,7 @@ export interface Parameters<T = void> {
    * In theory, seeds are supposed to be 32-bit integers.
    * In case of double value, the seed will be rescaled into a valid 32-bit integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
    *
-   * @remarks Since 0.0.6
+   * @remarks Since 0.0.1
    */
   seed?: number;
   /**

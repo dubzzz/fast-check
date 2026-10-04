@@ -11,7 +11,7 @@ export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRel
 
 /**
  * Constraints to be applied on {@link entityGraph}
- * @remarks Since 4.5.0
+ * @remarks Since 4.9.0 (previously called `EntityGraphContraints` in 4.5.0)
  * @public
  */
 export type EntityGraphConstraints<TEntityFields> = {

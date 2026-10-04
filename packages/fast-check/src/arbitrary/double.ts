@@ -16,7 +16,7 @@ export interface DoubleConstraints {
   /**
    * Lower bound for the generated 64-bit floats (included, see minExcluded to exclude it)
    * @defaultValue Number.NEGATIVE_INFINITY, -1.7976931348623157e+308 when noDefaultInfinity is true
-   * @remarks Since 2.8.0
+   * @remarks Since 2.6.0
    */
   min?: number;
   /**
@@ -29,7 +29,7 @@ export interface DoubleConstraints {
   /**
    * Upper bound for the generated 64-bit floats (included, see maxExcluded to exclude it)
    * @defaultValue Number.POSITIVE_INFINITY, 1.7976931348623157e+308 when noDefaultInfinity is true
-   * @remarks Since 2.8.0
+   * @remarks Since 2.6.0 (upper bound included since 2.8.0 with `next: true` and since 3.0.0 by default)
    */
   max?: number;
   /**
@@ -128,7 +128,7 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
  * - significand: 52 bits
  * - exponent: 11 bits
  *
- * @param constraints - Constraints to apply when building instances (since 2.8.0)
+ * @param constraints - Constraints to apply when building instances (since 2.6.0)
  *
  * @remarks Since 0.0.6
  * @public

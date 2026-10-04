@@ -80,7 +80,7 @@ function createLazyArbsPool<T>() {
  *
  * @param builder - Arbitraries builder based on themselves (through `tie`)
  *
- * @remarks Since 1.16.0
+ * @remarks Since 3.0.0
  * @public
  */
 export function letrec<T>(builder: T extends Record<string, unknown> ? LetrecTypedBuilder<T> : never): LetrecValue<T>;
