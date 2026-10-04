@@ -56,7 +56,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.numArbitraries = arbitraries.length;
-    this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
+    this.internalProperty = fc.property<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {

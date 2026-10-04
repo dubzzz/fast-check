@@ -25,7 +25,7 @@ Deno.test({
   name: "should print Fizz whenever divisible by 3",
   async fn() {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.nat().map((n) => n * 3),
         (n) => {
           assertStringIncludes(fizzbuzz(n), "Fizz");

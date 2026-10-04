@@ -68,7 +68,7 @@ describe('CloneArbitrary', () => {
   describe('canShrinkWithoutContext', () => {
     it('should return false if passed value does not have the right length', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.nat({ max: 1000 }), fc.nat({ max: 1000 }), (numValues, numRequestedValues) => {
+        fc.property(fc.nat({ max: 1000 }), fc.nat({ max: 1000 }), (numValues, numRequestedValues) => {
           // Arrange
           fc.pre(numValues !== numRequestedValues);
           const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();

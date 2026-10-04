@@ -5,7 +5,7 @@ import * as fc from '../../../fast-check.js';
 describe('keyValuePairsToObjectMapper', () => {
   it('should create instances with Object prototype when requested to', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.uniqueArray(fc.tuple(fc.oneof(fc.string(), fc.nat(), fc.string().map(Symbol)), fc.anything()), {
           selector: (kv) =>
             // Numbers will become strings when used in an object.
@@ -30,7 +30,7 @@ describe('keyValuePairsToObjectMapper', () => {
 
   it('should create instances with null prototype when requested to', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.uniqueArray(fc.tuple(fc.oneof(fc.string(), fc.nat(), fc.string().map(Symbol)), fc.anything()), {
           selector: (kv) =>
             // Numbers will become strings when used in an object.
@@ -55,7 +55,7 @@ describe('keyValuePairsToObjectMapper', () => {
 
   it('should create instances with all requested keys', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.uniqueArray(fc.tuple(fc.oneof(fc.string(), fc.nat(), fc.string().map(Symbol)), fc.anything()), {
           selector: (kv) =>
             // Numbers will become strings when used in an object.
@@ -79,7 +79,7 @@ describe('keyValuePairsToObjectMapper', () => {
 
   it('should create the same instances as-if we used bracket-based assignment (except proto for null case)', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.uniqueArray(
           fc.tuple(
             fc.oneof(

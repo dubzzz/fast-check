@@ -2,4 +2,4 @@
 "fast-check": minor
 ---
 
-🏷️ Allow sync predicate on `asyncProperty`
+🏷️ Allow sync predicate on `property`

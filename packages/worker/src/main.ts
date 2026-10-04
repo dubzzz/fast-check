@@ -1,6 +1,6 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { assert as fcAssert, asyncProperty as fcProperty } from 'fast-check';
+import { assert as fcAssert, property as fcProperty } from 'fast-check';
 import type { Property, Parameters, UniversalPlugin } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
@@ -128,7 +128,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
 
 /**
  * Create a builder for async properties backed by workers.
- * The output of this function can be used as `fc.property` or `fc.asyncProperty` except it must be executed by the `assert` of this package.
+ * The output of this function can be used as `fc.property` except it must be executed by the `assert` of this package.
  *
  * The properties build from this builder will ALWAYS run predicates in another worker and not within the main thread which will only deal
  * with the generation of the random values and orchestration.

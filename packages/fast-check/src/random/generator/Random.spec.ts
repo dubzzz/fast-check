@@ -9,7 +9,7 @@ describe('Random', () => {
   describe('nextInt', () => {
     it('Should produce values within the range', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.integer(), fc.integer(), fc.nat(MAX_SIZE), (seed, a, b, num) => {
+        fc.property(fc.integer(), fc.integer(), fc.integer(), fc.nat(MAX_SIZE), (seed, a, b, num) => {
           const mrng = new Random(xorshift128plus(seed));
           const min = a < b ? a : b;
           const max = a < b ? b : a;
@@ -22,7 +22,7 @@ describe('Random', () => {
       ));
     it('Should produce the same sequences given same seeds', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
+        fc.property(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
           const mrng1 = new Random(xorshift128plus(seed));
           const mrng2 = new Random(xorshift128plus(seed));
           for (let idx = 0; idx !== num; ++idx)
@@ -34,7 +34,7 @@ describe('Random', () => {
   describe('clone', () => {
     it('Should produce the same sequences', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
+        fc.property(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
           const mrng1 = new Random(xorshift128plus(seed));
           const mrng2 = mrng1.clone();
           for (let idx = 0; idx !== num; ++idx)

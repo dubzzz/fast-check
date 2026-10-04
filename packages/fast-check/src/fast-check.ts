@@ -1,5 +1,5 @@
 export { pre } from './check/precondition/Pre.js';
-export { asyncProperty } from './check/property/AsyncProperty.js';
+export { property } from './check/property/Property.js';
 export type { PropertyFailure } from './check/property/types/PropertyFailure.js';
 export type { Property } from './check/property/types/Property.js';
 export type { Parameters } from './check/runner/configuration/Parameters.js';

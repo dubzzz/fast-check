@@ -270,7 +270,7 @@ Into:
 ```ts
 it('should resolve in call order', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.scheduler(), async (s) => {
+    fc.property(fc.scheduler(), async (s) => {
       // Arrange
       const seenAnswers = [];
       const call = vi.fn().mockImplementation((v) => Promise.resolve(v));
@@ -380,7 +380,7 @@ it('...', () => {
 });
 ```
 
-Example 3. If the predicate of `it` or `it.prop` is asynchronous, when using only `fast-check` the property has to be instantiated via `asyncProperty` and `assert` has to be awaited.
+Example 3. If the predicate of `it` or `it.prop` is asynchronous, when using only `fast-check` the property has to be instantiated via `property` and `assert` has to be awaited.
 
 ```ts
 // with @fast-check/vitest
@@ -394,7 +394,7 @@ import { it } from 'vitest';
 import * as fc from 'fast-check';
 it('...', async () => {
   await fc.assert(
-    fc.asyncProperty(...arbitraries, async (...values) => {
+    fc.property(...arbitraries, async (...values) => {
       //...
     }),
   );

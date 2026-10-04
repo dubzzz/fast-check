@@ -15,7 +15,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {
     it('Should shrink up to the shortest failing commands list', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.commands(
             [
               fc.nat().map((n) => new IncreaseCommand(n)),
@@ -44,7 +44,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
     });
     it('Should result in empty commands if failures happen after the run', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.commands([fc.constant(new SuccessAlwaysCommand())]), (cmds) => {
+        fc.property(fc.commands([fc.constant(new SuccessAlwaysCommand())]), (cmds) => {
           const setup = () => ({
             model: { count: 0 },
             real: {},
@@ -68,7 +68,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       // Expected the only played command to be 'failure', got: -,success,failure for steps 2
       // The output for 'steps 2' should have been '-,-,failure'
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.array(fc.nat(9), { maxLength: 3 }),
           fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
             disableReplayLog: true,
@@ -93,7 +93,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       // between two runs it is supposed to clone the commands before resetting the hasRan flag
       const unexpectedPartiallyExecuted: string[] = [];
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.array(fc.nat(9), { maxLength: 3 }),
           fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
             disableReplayLog: true,

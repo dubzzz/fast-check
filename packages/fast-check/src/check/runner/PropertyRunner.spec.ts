@@ -63,7 +63,7 @@ describe('propertyRunner', () => {
   it('should always batch together in the same micro-tasks all consecutive synchronous runs', async () => {
     let getCount: () => number = () => -1;
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(
           fc.record({
             value: fc.constantFrom(null, { error: new Error() }, new PreconditionFailure()),

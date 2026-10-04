@@ -8,7 +8,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
   describe('subarray', () => {
     it('Should not re-order the values', async () => {
       await fc.assert(
-        fc.asyncProperty(fc.subarray(src), (arr: number[]) => {
+        fc.property(fc.subarray(src), (arr: number[]) => {
           const correspondingIndexes = arr.map((v) => src.indexOf(v));
           let prev = -1;
           for (const item of correspondingIndexes) {
@@ -22,7 +22,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
     });
     it('Should be able to shrink to the minimal counterexample', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.subarray(src), (arr: number[]) => arr.indexOf(src[0]) === -1 || arr.indexOf(src[3]) === -1),
+        fc.property(fc.subarray(src), (arr: number[]) => arr.indexOf(src[0]) === -1 || arr.indexOf(src[3]) === -1),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -32,7 +32,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
   describe('shuffledSubarray', () => {
     it('Should be able to shrink to counterexample restricted to an inverted pair', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.shuffledSubarray(src), (arr: number[]) => {
+        fc.property(fc.shuffledSubarray(src), (arr: number[]) => {
           const correspondingIndexes = arr.map((v) => src.indexOf(v));
           let prev = -1;
           for (const item of correspondingIndexes) {

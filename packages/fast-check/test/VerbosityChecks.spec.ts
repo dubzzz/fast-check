@@ -8,7 +8,7 @@ describe(`VerbosityChecks (seed: ${seed})`, () => {
     const expectedLines: string[] = [];
     try {
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.integer(), (x, y) => {
+        fc.property(fc.integer(), fc.integer(), (x, y) => {
           fc.pre(Math.abs(x - y) >= 10);
           if (x < y && x > 0) {
             expectedLines.push(`- [${x},${y}]`);
@@ -34,7 +34,7 @@ describe(`VerbosityChecks (seed: ${seed})`, () => {
     let indent = '';
     try {
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.integer(), (x, y) => {
+        fc.property(fc.integer(), fc.integer(), (x, y) => {
           if (Math.abs(x - y) < 10) {
             expectedLines.push(`${indent}\x1b[33m!\x1b[0m [${x},${y}]`);
             fc.pre(false);

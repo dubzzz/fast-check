@@ -27,7 +27,7 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
 
       // Act
       const outPromise = fc.check(
-        fc.asyncProperty(fc.noShrink(fc.integer()), async (_x) => {
+        fc.property(fc.noShrink(fc.integer()), async (_x) => {
           ++numRuns;
           await new Promise((resolve) => {
             setTimeout(resolve, 100); // delay of 100ms (longer than timeout)
@@ -64,7 +64,7 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
 
     // Act
     const out = await fc.check(
-      fc.asyncProperty(fc.integer(), (_x) => {
+      fc.property(fc.integer(), (_x) => {
         ++numRuns;
       }),
       { plugins: [fc.timeout(10)] },

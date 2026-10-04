@@ -13,7 +13,7 @@ describe('constant', () => {
 
   it('should instantiate ConstantArbitrary([c]) for constant(c)', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.anything(), (c) => {
+      fc.property(fc.anything(), (c) => {
         // Arrange
         const { instance } = fakeArbitrary();
         const ConstantArbitrary = vi.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');

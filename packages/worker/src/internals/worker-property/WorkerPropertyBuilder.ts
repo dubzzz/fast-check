@@ -22,7 +22,7 @@ export function buildWorkerProperty<Ts extends [unknown, ...unknown[]]>(
   generateValuesInMainThread: boolean,
 ): WorkerProperty<Ts> {
   if (!generateValuesInMainThread) {
-    return Object.assign(fc.asyncProperty<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>, {
+    return Object.assign(fc.property<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>, {
       getPayload: (inputs: Ts): Payload<Ts> => ({ source: 'main', value: inputs }),
     });
   }

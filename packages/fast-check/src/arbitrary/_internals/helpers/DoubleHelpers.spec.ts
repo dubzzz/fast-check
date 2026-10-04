@@ -26,7 +26,7 @@ describe('decomposeDouble', () => {
 
   it('should decompose a 64-bit float into its equivalent (significand, exponent)', async () => {
     await fc.assert(
-      fc.asyncProperty(float64raw(), (f64) => {
+      fc.property(float64raw(), (f64) => {
         // Arrange
         fc.pre(!Number.isNaN(f64));
 
@@ -85,7 +85,7 @@ describe('doubleToIndex', () => {
 
   it('should be able to infer index for negative double from the positive one', async () => {
     await fc.assert(
-      fc.asyncProperty(float64raw(), (d) => {
+      fc.property(float64raw(), (d) => {
         // Arrange
         fc.pre(!Number.isNaN(d));
         const posD = d > 0 || 1 / d > 0 ? d : -d;
@@ -102,7 +102,7 @@ describe('doubleToIndex', () => {
 
   it('should return index +1 for the successor of a given double', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.integer({ min: -1022, max: +1023 }),
         fc.integer({ min: 0, max: 2 ** 53 - 1 }),
         (exponent, rescaledSignificand) => {
@@ -125,7 +125,7 @@ describe('doubleToIndex', () => {
 
   it('should preserve ordering between two doubles', async () => {
     await fc.assert(
-      fc.asyncProperty(float64raw(), float64raw(), (fa64, fb64) => {
+      fc.property(float64raw(), float64raw(), (fa64, fb64) => {
         // Arrange
         fc.pre(!Number.isNaN(fa64) && !Number.isNaN(fb64));
 
@@ -143,7 +143,7 @@ describe('doubleToIndex', () => {
 describe('indexToDouble', () => {
   it('should reverse doubleToIndex', async () =>
     await fc.assert(
-      fc.asyncProperty(float64raw(), (f64) => {
+      fc.property(float64raw(), (f64) => {
         fc.pre(!Number.isNaN(f64));
         expect(indexToDouble(doubleToIndex(f64))).toBe(f64);
       }),
@@ -161,7 +161,7 @@ describe('indexToDouble', () => {
 
   it('should be reversed by doubleToIndex', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.bigInt({ min: -9218868437227405313n, max: 9218868437227405312n }), (bigIntIndex) => {
+      fc.property(fc.bigInt({ min: -9218868437227405313n, max: 9218868437227405312n }), (bigIntIndex) => {
         // The test below checks that indexToDouble(doubleToIndex) is identity
         // It does not confirm that doubleToIndex(indexToDouble)) is identity
 

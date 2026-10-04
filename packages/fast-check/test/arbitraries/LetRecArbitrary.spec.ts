@@ -30,7 +30,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
         leaf: fc.nat(),
       }));
       const out = await fc.check(
-        fc.asyncProperty(tree, (t) => {
+        fc.property(tree, (t) => {
           const depth = (n: any): number => {
             if (typeof n === 'number') return 0;
             return 1 + Math.max(depth(n[0]), depth(n[1]));
@@ -50,7 +50,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
         };
       });
       const out = await fc.check(
-        fc.asyncProperty(tree, (t) => typeof t !== 'object'),
+        fc.property(tree, (t) => typeof t !== 'object'),
         { seed },
       );
       expect(out.failed).toBe(true);
