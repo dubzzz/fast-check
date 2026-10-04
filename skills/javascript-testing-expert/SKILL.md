@@ -201,7 +201,9 @@ it.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', 
 
 All this section considers that we are in the context of property based tests!
 
-**✅ Do** always await `fc.assert(...)` when using `fast-check` directly, even when the predicate is synchronous. Make the surrounding test callback `async` so property failures are reported by the test runner.
+**⚠️ Version compatibility:** Starting with fast-check v5, use `fc.property` for both synchronous and asynchronous predicates. With fast-check v4, use `fc.property` for synchronous predicates and `fc.asyncProperty` for asynchronous predicates.
+
+**✅ Do** always await `fc.assert(...)` when using `fast-check` directly, in both v4 and v5+, even when the predicate is synchronous. Make the surrounding test callback `async` so property failures are reported by the test runner.
 
 **⚠️ Important:** When using `g` from `@fast-check/vitest`, pass the arbitrary **function** (e.g., `fc.string`, `fc.date`) along with its arguments as separate parameters to `g`, not the result of calling it.  
 Correct: `g(fc.string)`, `g(fc.date, { min: new Date('2010-01-01') })`  
@@ -267,7 +269,7 @@ it('should resolve in call order', async () => {
 });
 ```
 
-Into:
+Into (fast-check v5+; use `fc.asyncProperty` instead of `fc.property` in v4):
 
 ```ts
 it('should resolve in call order', async () => {
@@ -382,7 +384,7 @@ it('...', async () => {
 });
 ```
 
-Example 3. Use `fc.property` for asynchronous predicates too, and await `fc.assert` just as in the synchronous examples above.
+Example 3. For asynchronous predicates, use `fc.property` in fast-check v5+ (as shown below) and `fc.asyncProperty` in v4. Always await `fc.assert`, just as in the synchronous examples above.
 
 ```ts
 // with @fast-check/vitest
