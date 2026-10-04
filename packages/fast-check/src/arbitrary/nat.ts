@@ -45,7 +45,7 @@ function nat(constraints: NatConstraints): Arbitrary<number>;
  *
  * @param arg - Either a maximum number or constraints to apply when building instances
  *
- * @remarks Since 2.6.0
+ * @remarks Since 4.3.0
  * @public
  */
 function nat(arg?: number | NatConstraints): Arbitrary<number>;
