@@ -59,6 +59,11 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
   }
 
+  // Required by fast-check v4 to await predicates and their lifecycle hooks.
+  isAsync(): true {
+    return true;
+  }
+
   generate(mrng: Random, runId?: number): Value<Ts> {
     // Extracting and cloning the state of Random before altering it
     const rawRngState = mrng.getState();

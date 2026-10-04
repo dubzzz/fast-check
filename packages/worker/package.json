@@ -36,6 +36,7 @@
   "devDependencies": {
     "@fast-check/worker": "workspace:*",
     "@types/node": "^24.19.0",
+    "fast-check-v4": "npm:fast-check@4.10.0",
     "typescript": "~7.0.2",
     "vitest": "^4.1.10"
   },
