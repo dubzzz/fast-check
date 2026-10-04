@@ -69,15 +69,10 @@ await fc.assert(
 );
 ```
 
-Both plugins accept synchronous or asynchronous functions. The `beforeEach` plugin runs before the predicate, and the `afterEach` plugin runs afterward, including when the predicate fails. A `beforeEach` function can also return a teardown function.
+Both plugins accept synchronous or asynchronous functions.
 
-:::info[Migration from property methods]
-The `.beforeEach(...)` and `.afterEach(...)` methods on properties were removed in fast-check v5. Replace method chaining with the plugins shown above. Plugin callbacks do not receive a previous hook to call; compose hooks by adding plugins to the array.
-:::
-
-:::info[Independent]
-Use either plugin on its own or combine both.
-:::
+- The `beforeEach` plugin runs before the predicate. The function it get passed can either return nothing or a teardown function that will be called after the predicate, whatever its status.
+- The `afterEach` plugin runs after the predicate, whatever its status.
 
 :::tip[Share them]
 Consider using `fc.installGlobalPlugin(fc.beforeEach(fn))` to share your hooks across multiple properties.
