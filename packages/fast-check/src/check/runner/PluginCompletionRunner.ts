@@ -1,10 +1,8 @@
 import type { PluginInstance } from '../plugin/Plugin.js';
 import type { RunDetails } from './reporter/RunDetails.js';
+import { runAllCallbacksAndReturn } from './utils/AllCallbacksThenReturnRunner.js';
 
-export function pluginCompletionRunner<Ts>(
-  pluginInstances: PluginInstance<Ts>[],
-  runDetails: Promise<RunDetails<Ts>> | RunDetails<Ts>,
-): Promise<RunDetails<Ts>> {
+function extractFollowUps<Ts>(pluginInstances: PluginInstance<Ts>[]) {
   const followUps: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] = [];
   for (let index = 0; index !== pluginInstances.length; ++index) {
     const instance = pluginInstances[index];
@@ -20,37 +18,22 @@ export function pluginCompletionRunner<Ts>(
       followUps.push(() => instance.afterAll!());
     }
   }
-  if (followUps.length === 0) {
-    return Promise.resolve(runDetails);
-  }
-  return 'then' in runDetails
-    ? Promise.resolve(runDetails).then((details) => runFollowUps(details, followUps))
-    : runFollowUps(runDetails, followUps);
+  return followUps;
 }
 
-// Helpers
-
-async function runFollowUps<Ts>(
-  details: RunDetails<Ts>,
-  followUps: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[],
-) {
-  let interceptedOnce = false;
-  let interceptedError: unknown = undefined;
-  for (const followUp of followUps) {
-    try {
-      const out = followUp(details);
-      if (out !== undefined) {
-        await out;
-      }
-    } catch (error) {
-      if (!interceptedOnce) {
-        interceptedOnce = true;
-        interceptedError = error;
-      }
-    }
+/**
+ * Run clean-up and post-completion plugins' methods
+ * This function never throw synchronously but may reject asynchronously
+ */
+export function pluginCompletionRunner<Ts>(
+  pluginInstances: PluginInstance<Ts>[],
+  runDetails: Promise<RunDetails<Ts>> | RunDetails<Ts>,
+): Promise<RunDetails<Ts>> | RunDetails<Ts> {
+  const followUps = extractFollowUps(pluginInstances);
+  if (followUps.length === 0) {
+    return runDetails;
   }
-  if (interceptedOnce) {
-    throw interceptedError;
-  }
-  return details;
+  return 'then' in runDetails
+    ? Promise.resolve(runDetails).then((details) => runAllCallbacksAndReturn(details, followUps))
+    : runAllCallbacksAndReturn(runDetails, followUps);
 }
