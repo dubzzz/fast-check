@@ -5,7 +5,6 @@ import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import type { RunDetails } from './reporter/RunDetails.js';
-import { pluginCompletionRunner } from './PluginCompletionRunner.js';
 import { propertyRunner } from './PropertyRunner.js';
 import { RunnerIterator } from './RunnerIterator.js';
 import { SourceValuesIterator } from './SourceValuesIterator.js';
@@ -14,6 +13,8 @@ import { pathWalk } from './utils/PathWalker.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
+import { runAllCallbacksAndReturn } from './utils/AllCallbacksThenReturnRunner.js';
+import { extractFollowUpsFromPlugins } from './utils/PluginExtractors.js';
 
 /**
  * Run the property, do not throw contrary to {@link assert}
@@ -76,13 +77,20 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     qParams.verbose,
   );
   const propertyRunnerOut = propertyRunner(runnerIterator, run);
-  const out =
-    propertyRunnerOut === undefined
-      ? runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
-      : propertyRunnerOut.then(() =>
+  const followUps = extractFollowUpsFromPlugins(pluginInstances);
+  return propertyRunnerOut === undefined
+    ? Promise.resolve(
+        runAllCallbacksAndReturn(
           runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-        );
-  return Promise.resolve(pluginCompletionRunner(pluginInstances, out));
+          followUps,
+        ),
+      )
+    : propertyRunnerOut.then(() =>
+        runAllCallbacksAndReturn(
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+          followUps,
+        ),
+      );
 }
 
 /**
