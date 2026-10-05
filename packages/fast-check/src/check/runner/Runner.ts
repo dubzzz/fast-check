@@ -77,18 +77,18 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     qParams.verbose,
   );
   const propertyRunnerOut = propertyRunner(runnerIterator, run);
-  const followUps = extractPluginCompletionCallbacks(pluginInstances);
+  const completionCallbacks = extractPluginCompletionCallbacks(pluginInstances);
   return propertyRunnerOut === undefined
     ? Promise.resolve(
         runAllCallbacksAndReturn(
           runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-          followUps,
+          completionCallbacks,
         ),
       )
     : propertyRunnerOut.then(() =>
         runAllCallbacksAndReturn(
           runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-          followUps,
+          completionCallbacks,
         ),
       );
 }
