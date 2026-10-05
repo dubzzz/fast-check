@@ -14,7 +14,7 @@ import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
 import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
 import { runAllCallbacksAndReturn } from './utils/AllCallbacksThenReturnRunner.js';
-import { extractPluginCompletionCallbacks } from './utils/PluginExtractors.js';
+import { extractPluginCompletionCallbacks } from './utils/PluginIntegration.js';
 
 /**
  * Run the property, do not throw contrary to {@link assert}
