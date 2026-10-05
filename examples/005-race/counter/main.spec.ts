@@ -6,7 +6,7 @@ import { CasCounter as Counter } from './src/CasCounter.js';
 describe('Counter', () => {
   it('should handle two concurrent calls to inc', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.scheduler(), async (s) => {
+      fc.property(fc.scheduler(), async (s) => {
         // Arrange
         let dbValue = 0;
         const db = {
@@ -34,7 +34,7 @@ describe('Counter', () => {
 
   it('should correctly count N concurrent increments', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.scheduler(), fc.nat(64), async (s, numCalls) => {
+      fc.property(fc.scheduler(), fc.nat(64), async (s, numCalls) => {
         // Arrange
         let dbValue = 0;
         const db = {
@@ -63,7 +63,7 @@ describe('Counter', () => {
 
   it('should correctly count concurrent increments across multiple counters', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.scheduler(), fc.array(fc.nat(64)), async (s, numCallsByCounter) => {
+      fc.property(fc.scheduler(), fc.array(fc.nat(64)), async (s, numCallsByCounter) => {
         // Arrange
         let dbValue = 0;
         const db = {

@@ -61,7 +61,7 @@ describe('patternsToStringUnmapperFor', () => {
 
   it('should be able to split strings built out of chunks into chunks', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         // Defining chunks, we allow "" to be part of the chunks as we do not request any minimal length for the 'split into chunks'
         fc.array(fc.string({ unit: 'binary' }), { minLength: 1 }),
         // Array of random natural numbers to help building the source string
@@ -88,9 +88,19 @@ describe('patternsToStringUnmapperFor', () => {
       ),
     ));
 
+  it('should avoid exponential backtracking when a suffix cannot be split', () => {
+    const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
+    canShrinkWithoutContext.mockImplementation((value): value is string => value === 'a' || value === 'aa');
+    const source = 'a'.repeat(20) + 'b';
+    const unmapper = patternsToStringUnmapperFor(instance, {});
+
+    expect(() => unmapper(source)).toThrowError();
+    expect(canShrinkWithoutContext.mock.calls.length).toBeLessThan(source.length ** 3);
+  });
+
   it('should be able to split strings built out of chunks into chunks while respecting constraints in size', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(fc.string({ unit: 'binary', minLength: 1 }), { minLength: 1 }),
         fc.array(fc.nat()),
         fc.nat(),

@@ -7,7 +7,7 @@ import type { UniversalPlugin } from './Plugin.js';
  * @example
  * ```ts
  * await fc.assert(
- *   fc.asyncProperty(..., (...) => {...}),
+ *   fc.property(..., (...) => {...}),
  *   { plugins: [fc.unbiased()] }
  * )
  * ```

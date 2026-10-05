@@ -5,7 +5,7 @@ import { segmentsToPathMapper, segmentsToPathUnmapper } from './SegmentsToPath.j
 describe('segmentsToPathUnmapper', () => {
   it('should be able to unmap any mapped value', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.array(fc.webSegment()), (segments) => {
+      fc.property(fc.array(fc.webSegment()), (segments) => {
         // Arrange
         const mapped = segmentsToPathMapper(segments);
 

@@ -87,7 +87,7 @@ export type InterruptAfterTimeLimitOptions = {
  * @example
  * ```ts
  * fc.assert(
- *   fc.asyncProperty(..., async (...) => {...}),
+ *   fc.property(..., async (...) => {...}),
  *   { plugins: [fc.interruptAfterTimeLimit(1000)] }
  * )
  * ```

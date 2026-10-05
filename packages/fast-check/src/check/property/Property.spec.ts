@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { asyncProperty } from './AsyncProperty.js';
+import { property } from './Property.js';
 import { pre } from '../precondition/Pre.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 
@@ -10,9 +10,9 @@ import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers
 import type { PropertyFailure } from './types/PropertyFailure.js';
 import * as fc from 'fast-check';
 
-describe('AsyncProperty', () => {
+describe('Property', () => {
   it('Should fail if predicate fails', async () => {
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+    const p = property(stubArb.single(8), async (_arg: number) => {
       return false;
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null); // property fails
@@ -20,7 +20,7 @@ describe('AsyncProperty', () => {
   it('Should fail if predicate throws an Error', async () => {
     // Arrange
     let originalError: Error | null = null;
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+    const p = property(stubArb.single(8), async (_arg: number) => {
       originalError = new Error('predicate throws');
       throw originalError;
     });
@@ -33,7 +33,7 @@ describe('AsyncProperty', () => {
   });
   it('Should fail if predicate throws a raw string', async () => {
     // Arrange
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+    const p = property(stubArb.single(8), async (_arg: number) => {
       throw 'predicate throws';
     });
 
@@ -47,10 +47,10 @@ describe('AsyncProperty', () => {
   });
   it('Should fail if predicate throws anything', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.anything(), async (stuff) => {
+      fc.property(fc.anything(), async (stuff) => {
         // Arrange
         fc.pre(stuff === null || typeof stuff !== 'object' || !('toString' in stuff));
-        const p = asyncProperty(stubArb.single(8), (_arg: number) => {
+        const p = property(stubArb.single(8), (_arg: number) => {
           throw stuff;
         });
 
@@ -64,7 +64,7 @@ describe('AsyncProperty', () => {
   });
   it('Should forward failure of runs with failing precondition', async () => {
     let doNotResetThisValue = false;
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+    const p = property(stubArb.single(8), async (_arg: number) => {
       pre(false);
       doNotResetThisValue = true;
       return false;
@@ -74,18 +74,18 @@ describe('AsyncProperty', () => {
     expect(doNotResetThisValue).toBe(false); // does not run code after the failing precondition
   });
   it('Should succeed if predicate is true', async () => {
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+    const p = property(stubArb.single(8), async (_arg: number) => {
       return true;
     });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should succeed if predicate does not return anything', async () => {
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {});
+    const p = property(stubArb.single(8), async (_arg: number) => {});
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should behave synchronously on run when predicate is synchronous', () => {
     let called = false;
-    const p = asyncProperty(stubArb.single(8), (_arg: number) => {
+    const p = property(stubArb.single(8), (_arg: number) => {
       called = true;
     });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
@@ -93,7 +93,7 @@ describe('AsyncProperty', () => {
   });
   it('Should behave asynchronously on run when predicate is asynchronous', async () => {
     let called = false;
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+    const p = property(stubArb.single(8), async (_arg: number) => {
       called = true;
     });
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
@@ -107,7 +107,7 @@ describe('AsyncProperty', () => {
 
     let runnerHasCompleted = false;
     let resolvePromise: (t: boolean) => void = null as any as (t: boolean) => void;
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {
+    const p = property(stubArb.single(8), async (_arg: number) => {
       return await new Promise<boolean>(function (resolve) {
         resolvePromise = resolve;
       });
@@ -130,7 +130,7 @@ describe('AsyncProperty', () => {
     generate.mockReturnValue(new Value(69, undefined));
     const mrng = stubRng.mutable.nocall();
 
-    const p = asyncProperty(instance, async () => {});
+    const p = property(instance, async () => {});
     expect(generate).not.toHaveBeenCalled();
 
     expect(p.generate(mrng).value).toEqual([69]);
@@ -142,7 +142,7 @@ describe('AsyncProperty', () => {
     generate.mockReturnValue(new Value(42, undefined));
     const mrng = stubRng.mutable.nocall();
 
-    const p = asyncProperty(instance, async () => {});
+    const p = property(instance, async () => {});
     expect(generate).not.toHaveBeenCalled();
 
     const runId1 = 0;
@@ -164,7 +164,7 @@ describe('AsyncProperty', () => {
     const value = Symbol();
 
     // Act
-    const p = asyncProperty(arb, vi.fn());
+    const p = property(arb, vi.fn());
     const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
     expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
     const shrinks = [...shrinksStream];
@@ -185,7 +185,7 @@ describe('AsyncProperty', () => {
     const value = Symbol();
 
     // Act
-    const p = asyncProperty(arb, vi.fn());
+    const p = property(arb, vi.fn());
     const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
     expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
     expect(shrink).not.toHaveBeenCalled();

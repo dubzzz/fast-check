@@ -6,7 +6,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
   describe('func', () => {
     it('Should be able to generate multiple values', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)),
+        fc.property(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)),
         {
           seed: seed,
         },
@@ -16,7 +16,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
     it('Should print the values and corresponding outputs', async () => {
       await expect(
         fc.assert(
-          fc.asyncProperty(fc.func(fc.nat()), (f) => {
+          fc.property(fc.func(fc.nat()), (f) => {
             f(0, 8);
             f(42, 1);
             return false;
@@ -29,7 +29,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
   describe('compareFunc', () => {
     it('Should be able to find equivalence between distinct values', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
+        fc.property(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
           fc.pre(a !== b);
           return f(a, b) !== 0;
         }),

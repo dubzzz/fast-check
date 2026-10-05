@@ -10,7 +10,7 @@ import {
 describe('timeToDateUnmapper', () => {
   it('should be able to revert any mapped date correctly even invalid ones', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.date(), (d) => {
+      fc.property(fc.date(), (d) => {
         // Arrange / Act
         const rev = timeToDateUnmapper(d);
         const revRev = timeToDateMapper(rev);
@@ -25,7 +25,7 @@ describe('timeToDateUnmapper', () => {
 describe('timeToDateUnmapperWithNaN', () => {
   it('should be able to revert any mapped date correctly even invalid once', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.date(), fc.integer({ min: -8640000000000000, max: 8640000000000001 }), (d, nanValue) => {
+      fc.property(fc.date(), fc.integer({ min: -8640000000000000, max: 8640000000000001 }), (d, nanValue) => {
         // Arrange / Act
         const rev = timeToDateUnmapperWithNaN(nanValue)(d);
         const revRev = timeToDateMapperWithNaN(nanValue)(rev);

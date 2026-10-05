@@ -91,7 +91,7 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
 export interface RunDetailsCommon<Ts> {
   /**
    * Does the property failed during the execution of {@link check}?
-   * @remarks Since 0.0.7
+   * @remarks Since 0.0.1
    */
   failed: boolean;
   /**
@@ -126,12 +126,12 @@ export interface RunDetailsCommon<Ts> {
    * Seed that have been used by the run
    *
    * It can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
-   * @remarks Since 0.0.7
+   * @remarks Since 0.0.1
    */
   seed: number;
   /**
    * In case of failure: the counterexample contains the minimal failing case (first failure after shrinking)
-   * @remarks Since 0.0.7
+   * @remarks Since 0.0.1
    */
   counterexample: Ts | null;
   /**

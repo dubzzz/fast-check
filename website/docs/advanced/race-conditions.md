@@ -249,7 +249,7 @@ const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
 
 ```js
 fc.assert(
-  fc.asyncProperty(fc.scheduler({ act }), async s => () {
+  fc.property(fc.scheduler({ act }), async s => () {
     // Pushing tasks into the scheduler ...
     // ....................................
     await s.waitIdle();

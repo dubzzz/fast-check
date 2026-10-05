@@ -16,7 +16,7 @@ Counterexample: [0]
 Shrunk 1 time(s)
 Got TypeError: v is not a function
     at packages/fast-check/test/NoRegressionStack.spec.ts:?:?
-    at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
+    at PropertyImplem.predicate (packages/fast-check/src/check/property/Property.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at propertyRunner (packages/fast-check/src/check/runner/PropertyRunner.ts:?:?)
@@ -49,7 +49,6 @@ Got error: Property failed by returning false
     at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at packages/fast-check/test/__test-helpers__/StackSanitizer.ts:?:?
-    at _Assertion.propertyGetter (node_modules/.pnpm/chai@<version>/node_modules/chai/index.js:?:?)
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
 `;
@@ -70,7 +69,7 @@ Counterexample: [0,1]
 Shrunk 32 time(s)
 Got error: a must be >= b
     at packages/fast-check/test/NoRegressionStack.spec.ts:?:?
-    at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
+    at PropertyImplem.predicate (packages/fast-check/src/check/property/Property.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at propertyRunner (packages/fast-check/src/check/runner/PropertyRunner.ts:?:?)

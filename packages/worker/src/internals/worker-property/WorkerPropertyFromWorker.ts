@@ -6,6 +6,8 @@ import type { Payload } from '../worker-pool/IWorkerPool.js';
 import * as fc from 'fast-check';
 import { generateValueFromState } from '../ValueFromState.js';
 
+const property = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
+
 const WorkerPropertyFromWorkerCache = new WeakMap<object, ValueState>();
 
 class WorkerPropertyFromWorkerError extends Error {
@@ -56,7 +58,12 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.numArbitraries = arbitraries.length;
-    this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
+    this.internalProperty = property<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
+  }
+
+  // Required by fast-check v4 to await predicates and their lifecycle hooks.
+  isAsync(): true {
+    return true;
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {

@@ -28,7 +28,7 @@ describe('Tosser', () => {
   describe('toss', () => {
     it('Should offset the random number generator between calls', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(100), (seed, start) => {
+        fc.property(fc.integer(), fc.nat(100), (seed, start) => {
           const s = toss(wrap(stubArb.forwardArray(4)), seed, rngProducer, []);
           const [g1, g2] = [
             ...s
@@ -42,7 +42,7 @@ describe('Tosser', () => {
       ));
     it('Should produce the same sequence for the same seed', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(20), (seed, num) => {
+        fc.property(fc.integer(), fc.nat(20), (seed, num) => {
           expect([
             ...toss(wrap(stubArb.forward()), seed, rngProducer, [])
               .take(num)
@@ -56,7 +56,7 @@ describe('Tosser', () => {
       ));
     it('Should not depend on the order of iteration', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(20), (seed, num) => {
+        fc.property(fc.integer(), fc.nat(20), (seed, num) => {
           const onGoingItems1 = [...toss(wrap(stubArb.forward()), seed, rngProducer, []).take(num)];
           const onGoingItems2 = [...toss(wrap(stubArb.forward()), seed, rngProducer, []).take(num)];
           expect(
@@ -69,7 +69,7 @@ describe('Tosser', () => {
       ));
     it('Should offset toss with the provided examples', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(20), fc.array(fc.integer()), (seed, num, examples) => {
+        fc.property(fc.integer(), fc.nat(20), fc.array(fc.integer()), (seed, num, examples) => {
           const noExamplesProvided = [...toss(wrap(stubArb.forward()), seed, rngProducer, []).take(num)].map(
             (f) => f.value,
           );

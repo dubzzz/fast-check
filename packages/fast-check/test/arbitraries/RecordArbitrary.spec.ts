@@ -11,7 +11,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         cc: fc.string(),
       };
       const out = await fc.check(
-        fc.asyncProperty(fc.record(recordModel), (obj) => obj.cc.length <= 2),
+        fc.property(fc.record(recordModel), (obj) => obj.cc.length <= 2),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -24,7 +24,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         cc: fc.string(),
       };
       const out = await fc.check(
-        fc.asyncProperty(fc.record(recordModel, { requiredKeys: [] }), (obj) => obj.bb == null),
+        fc.property(fc.record(recordModel, { requiredKeys: [] }), (obj) => obj.bb == null),
         {
           seed: seed,
         },
@@ -42,7 +42,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         forceNegativeOutput: fc.boolean(),
       };
       const out = await fc.check(
-        fc.asyncProperty(fc.record(recordModel, { requiredKeys: [] }), (obj) => {
+        fc.property(fc.record(recordModel, { requiredKeys: [] }), (obj) => {
           if (obj.forcePositiveOutput === true && obj.forceNegativeOutput === true) return false;
           return true;
         }),

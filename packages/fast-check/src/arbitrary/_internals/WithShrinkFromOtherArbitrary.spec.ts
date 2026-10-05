@@ -9,7 +9,7 @@ describe('WithShrinkFromOtherArbitrary', () => {
   describe('generate', () => {
     it('should only use the first arbitrary to generate values', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.anything(),
           fc.anything(),
@@ -91,7 +91,7 @@ describe('WithShrinkFromOtherArbitrary', () => {
   describe('shrink', () => {
     it('should only use the first arbitrary for values it generated (coming with the context)', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.anything(),
           fc.anything(),
@@ -139,7 +139,7 @@ describe('WithShrinkFromOtherArbitrary', () => {
 
     it('should only use the first arbitrary for values it shrunk (coming with the context)', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.anything(),
           fc.anything(),
@@ -193,7 +193,7 @@ describe('WithShrinkFromOtherArbitrary', () => {
 
     it('should only use the second arbitrary for values coming without any context', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.anything(),
           fc.anything(),
           fc.anything(),
@@ -236,7 +236,7 @@ describe('WithShrinkFromOtherArbitrary', () => {
 
     it('should only use the second arbitrary for values shrunk by it (coming with the context)', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.anything(),
           fc.anything(),

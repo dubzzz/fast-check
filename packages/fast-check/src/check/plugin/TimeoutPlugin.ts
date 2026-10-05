@@ -48,7 +48,7 @@ function timeoutRunner(
  * @example
  * ```ts
  * fc.assert(
- *   fc.asyncProperty(..., async (...) => {...}),
+ *   fc.property(..., async (...) => {...}),
  *   { plugins: [fc.timeout(1000)] }
  * )
  * ```

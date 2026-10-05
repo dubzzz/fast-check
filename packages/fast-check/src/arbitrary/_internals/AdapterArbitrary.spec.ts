@@ -10,7 +10,7 @@ describe('AdapterArbitrary', () => {
   describe('generate', () => {
     it('should directly pass the values not needing any adaptation', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.anything(),
           fc.anything(),
@@ -41,7 +41,7 @@ describe('AdapterArbitrary', () => {
 
     it('should return an adapted value when needing adaptations', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.anything(),
           fc.anything(),
@@ -104,7 +104,7 @@ describe('AdapterArbitrary', () => {
   describe('shrink', () => {
     it('should be able to shrink any value it generated if not adapted or shrinkable adapted', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.anything(),
           fc.anything(),
@@ -169,7 +169,7 @@ describe('AdapterArbitrary', () => {
 
     it('should be able to shrink any value it shrunk if not adapted or shrinkable adapted', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.anything(),
           fc.anything(),
@@ -272,7 +272,7 @@ describe('AdapterArbitrary', () => {
 
     it('should forward missing context as-is to the underlying arbitrary', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.anything(),
           fc.anything(),
           fc.anything(),

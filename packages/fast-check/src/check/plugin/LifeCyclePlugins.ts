@@ -118,8 +118,7 @@ function lifeCycleHooksRunner(
           if (typeof out === 'object') {
             wrappedRunContinuation = out.then(
               () => wrappedRunOutput,
-              // TODO Switch to ?? when the node range defined by fast-check accepts it
-              (error) => wrappedRunOutput || { error },
+              (error) => wrappedRunOutput ?? { error },
             );
           }
         } catch (error) {
@@ -132,14 +131,12 @@ function lifeCycleHooksRunner(
             if (typeof out === 'object') {
               return out.then(
                 () => previous,
-                // TODO Switch to ?? when the node range defined by fast-check accepts it
-                (error) => previous || { error },
+                (error) => previous ?? { error },
               );
             }
             return previous;
           } catch (error) {
-            // TODO Switch to ?? when the node range defined by fast-check accepts it
-            return previous || { error };
+            return previous ?? { error };
           }
         });
       }
@@ -160,12 +157,10 @@ function lifeCycleHooksRunner(
               ? previous
               : out.then(
                   () => previous,
-                  // TODO Switch to ?? when the node range defined by fast-check accepts it
-                  (error) => previous || { error },
+                  (error) => previous ?? { error },
                 );
           } catch (error) {
-            // TODO Switch to ?? when the node range defined by fast-check accepts it
-            return previous || { error };
+            return previous ?? { error };
           }
         });
       }
@@ -183,7 +178,7 @@ function lifeCycleHooksRunner(
  * @example
  * ```ts
  * await fc.assert(
- *   fc.asyncProperty(..., (...) => {...}),
+ *   fc.property(..., (...) => {...}),
  *   { plugins: [fc.beforeEach(() => {...})] }
  * )
  * ```
@@ -221,7 +216,7 @@ export function beforeEach(fn: BeforeEachHook): UniversalPlugin {
  * @example
  * ```ts
  * await fc.assert(
- *   fc.asyncProperty(..., (...) => {...}),
+ *   fc.property(..., (...) => {...}),
  *   { plugins: [fc.afterEach(() => {...})] }
  * )
  * ```
