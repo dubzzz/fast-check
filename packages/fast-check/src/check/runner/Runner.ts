@@ -1,4 +1,3 @@
-import { nil } from '../../utils/iterator.js';
 import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
@@ -6,10 +5,7 @@ import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 import { propertyRunner } from './PropertyRunner.js';
-import { RunnerIterator } from './RunnerIterator.js';
-import { SourceValuesIterator } from './SourceValuesIterator.js';
-import { lazyToss, toss } from './Tosser.js';
-import { pathWalk } from './utils/PathWalker.js';
+import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import { runAllCallbacksAndReturn } from './utils/AllCallbacksThenReturnRunner.js';
 import {
@@ -39,18 +35,8 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
   const pluginInstances = instantiatePlugins(qParams.plugins);
   const { generator, run } = applyPluginDecorators(property, pluginInstances);
 
-  const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const shrink: typeof property.shrink = (...args) => property.shrink(...args);
-  const initialValues =
-    qParams.path.length === 0
-      ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
-  const runnerIterator = new RunnerIterator(
-    new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips),
-    !qParams.endOnFailure ? shrink : () => nil,
-    qParams.verbose,
-  );
+  const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
   const propertyRunnerOut = propertyRunner(runnerIterator, run);
   const followUps = extractPluginCompletionCallbacks(pluginInstances);
   return propertyRunnerOut === undefined
