@@ -1,6 +1,6 @@
 import type { PluginInstance } from '../../plugin/Plugin.js';
 
-export function extractFollowUpsFromPlugins<Ts>(
+export function extractPluginCompletionCallbacks<Ts>(
   pluginInstances: PluginInstance<Ts>[],
 ): NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] {
   const followUps: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] = [];
