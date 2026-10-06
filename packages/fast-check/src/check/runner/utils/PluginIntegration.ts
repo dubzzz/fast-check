@@ -60,7 +60,7 @@ export function runPluginCompletionCallbacks<Ts>(
     (index) =>
       index < pluginInstances.length
         ? pluginInstances[index].onAllRunsComplete?.(runDetails)
-        : pluginInstances[index].afterAll?.(),
+        : pluginInstances[index - pluginInstances.length].afterAll?.(),
     2 * pluginInstances.length,
   );
 }
