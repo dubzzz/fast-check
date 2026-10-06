@@ -55,12 +55,14 @@ export function runPluginCompletionCallbacks<Ts>(
   if (pluginInstances.length === 0) {
     return runDetails;
   }
+  const halfCount = pluginInstances.length;
+  const count = halfCount * 2;
   return runAllCallbacksAndReturn(
     runDetails,
     (index) =>
-      index < pluginInstances.length
+      index < halfCount
         ? pluginInstances[index].onAllRunsComplete?.(runDetails)
-        : pluginInstances[2 * pluginInstances.length - index - 1].afterAll?.(),
-    2 * pluginInstances.length,
+        : pluginInstances[count - index - 1].afterAll?.(),
+    count,
   );
 }
