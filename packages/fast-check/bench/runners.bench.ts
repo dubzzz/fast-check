@@ -40,8 +40,8 @@ function emptyPlugin(): UniversalPlugin {
 
 function fullPlugin(): UniversalPlugin {
   return (): Required<PluginInstance<any>> => ({
-    decorateGenerate: (nestedGenerate) => nestedGenerate,
-    decorateRun: (nestedRun) => nestedRun,
+    decorateGenerate: (nestedGenerate) => (mrng, runId) => nestedGenerate(mrng, runId),
+    decorateRun: (nestedRun) => (v) => nestedRun(v),
     onAllRunsComplete: () => {},
     afterAll: () => {},
   });
@@ -49,7 +49,7 @@ function fullPlugin(): UniversalPlugin {
 
 function fullAsyncPlugin(): UniversalPlugin {
   return (): Required<PluginInstance<any>> => ({
-    decorateGenerate: (nestedGenerate) => nestedGenerate,
+    decorateGenerate: (nestedGenerate) => (mrng, runId) => nestedGenerate(mrng, runId),
     decorateRun: (nestedRun) => async (v) => nestedRun(v),
     onAllRunsComplete: async () => {},
     afterAll: async () => {},
