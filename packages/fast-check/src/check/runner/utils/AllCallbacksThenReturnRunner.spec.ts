@@ -37,7 +37,7 @@ describe('runAllCallbacksAndReturn', () => {
           const value = null;
 
           // Act
-          await runAllCallbacksAndReturn(value, callbacks)?.catch(() => {});
+          await runAllCallbacksAndReturn(value, (index) => callbacks[index](), callbacks.length)?.catch(() => {});
 
           // Assert
           expect(numCalls).toBe(callbacks.length);
@@ -70,7 +70,9 @@ describe('runAllCallbacksAndReturn', () => {
           const value = null;
 
           // Act / Assert
-          expect(() => runAllCallbacksAndReturn(value, callbacks)?.catch(() => {})).not.toThrow();
+          expect(() =>
+            runAllCallbacksAndReturn(value, (index) => callbacks[index](), callbacks.length)?.catch(() => {}),
+          ).not.toThrow();
         },
       ),
     );
@@ -80,11 +82,10 @@ describe('runAllCallbacksAndReturn', () => {
     'should return the value synchonously if all callbacks are synchronous and successful (callbacks count: $callbacksCount)',
     async ({ callbacksCount }) => {
       // Arrange
-      const callbacks = Array(callbacksCount).fill(() => {});
       const value = Symbol();
 
       // Act / Assert
-      const out = runAllCallbacksAndReturn(value, callbacks);
+      const out = runAllCallbacksAndReturn(value, () => {}, callbacksCount);
 
       // Assert
       expect(out).toBe(value);
