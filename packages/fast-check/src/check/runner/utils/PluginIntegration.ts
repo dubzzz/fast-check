@@ -1,6 +1,8 @@
 import type { Plugin, PluginInstance } from '../../plugin/Plugin.js';
 import type { Property } from '../../property/types/Property.js';
 import { readInstalledGlobalPlugins } from '../configuration/GlobalPlugins.js';
+import type { RunDetails } from '../reporter/RunDetails.js';
+import { runAllCallbacksAndReturn } from './AllCallbacksThenReturnRunner.js';
 
 export function instantiatePlugins<Ts>(localPlugins: Plugin<Ts>[]): PluginInstance<Ts>[] {
   const globalPlugins = readInstalledGlobalPlugins();
@@ -15,12 +17,11 @@ export function instantiatePlugins<Ts>(localPlugins: Plugin<Ts>[]): PluginInstan
   return pluginInstances;
 }
 
-export function applyPluginDecorators<Ts>(
+export function applyPluginGeneratorDecorators<Ts>(
   property: Property<Ts>,
   pluginInstances: PluginInstance<Ts>[],
-): { generator: Pick<Property<Ts>, 'generate'>; run: Property<Ts>['run'] } {
+): Pick<Property<Ts>, 'generate'> {
   let decoratedGenerate: typeof property.generate | undefined = undefined;
-  let run: typeof property.run = (v) => property.run(v);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateGenerate !== undefined) {
@@ -29,31 +30,37 @@ export function applyPluginDecorators<Ts>(
       }
       decoratedGenerate = pluginInstance.decorateGenerate(decoratedGenerate);
     }
+  }
+  return decoratedGenerate === undefined ? property : { generate: decoratedGenerate };
+}
+
+export function applyPluginRunDecorators<Ts>(
+  property: Property<Ts>,
+  pluginInstances: PluginInstance<Ts>[],
+): Property<Ts>['run'] {
+  let run: typeof property.run = (v) => property.run(v);
+  for (let index = pluginInstances.length - 1; index >= 0; --index) {
+    const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateRun !== undefined) {
       run = pluginInstance.decorateRun(run);
     }
   }
-  const generator = decoratedGenerate === undefined ? property : { generate: decoratedGenerate };
-  return { generator, run };
+  return run;
 }
 
-export function extractPluginCompletionCallbacks<Ts>(
+export function runPluginCompletionCallbacks<Ts>(
   pluginInstances: PluginInstance<Ts>[],
-): NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] {
-  const completionCallbacks: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] = [];
-  for (let index = 0; index !== pluginInstances.length; ++index) {
-    const instance = pluginInstances[index];
-    if (instance.onAllRunsComplete !== undefined) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      completionCallbacks.push((runDetails) => instance.onAllRunsComplete!(runDetails));
-    }
+  runDetails: RunDetails<Ts>,
+): RunDetails<Ts> | Promise<RunDetails<Ts>> {
+  if (pluginInstances.length === 0) {
+    return runDetails;
   }
-  for (let index = pluginInstances.length - 1; index >= 0; --index) {
-    const instance = pluginInstances[index];
-    if (instance.afterAll !== undefined) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      completionCallbacks.push(() => instance.afterAll!());
-    }
-  }
-  return completionCallbacks;
+  return runAllCallbacksAndReturn(
+    runDetails,
+    (index) =>
+      index < pluginInstances.length
+        ? pluginInstances[index].onAllRunsComplete?.(runDetails)
+        : pluginInstances[index].afterAll?.(),
+    2 * pluginInstances.length,
+  );
 }
