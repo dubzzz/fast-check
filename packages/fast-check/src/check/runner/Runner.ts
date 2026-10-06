@@ -7,12 +7,12 @@ import type { RunDetails } from './reporter/RunDetails.js';
 import { propertyRunner } from './PropertyRunner.js';
 import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
-import { runAllCallbacksAndReturn } from './utils/AllCallbacksThenReturnRunner.js';
 import {
   applyPluginDecorators,
   extractPluginCompletionCallbacks,
   instantiatePlugins,
 } from './utils/PluginIntegration.js';
+import { runAllCallbacksAndReturn } from './utils/AllCallbacksThenReturnRunner.js';
 
 /**
  * Run the property, do not throw contrary to {@link assert}
@@ -38,18 +38,18 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
   const propertyRunnerOut = propertyRunner(runnerIterator, run);
-  const followUps = extractPluginCompletionCallbacks(pluginInstances);
+  const completionCallbacks = extractPluginCompletionCallbacks(pluginInstances);
   return propertyRunnerOut === undefined
     ? Promise.resolve(
         runAllCallbacksAndReturn(
           runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-          followUps,
+          completionCallbacks,
         ),
       )
     : propertyRunnerOut.then(() =>
         runAllCallbacksAndReturn(
           runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-          followUps,
+          completionCallbacks,
         ),
       );
 }
