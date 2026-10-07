@@ -1,4 +1,5 @@
-import { describe, bench } from 'vitest';
+import { describe } from 'vitest';
+import { bench } from './__test-helpers__/Bench.js';
 import { fc } from './__test-helpers__/Imports.js';
 
 // Benchmark

@@ -3,7 +3,7 @@ import {
   type PoolToWorkerMessage,
   type WorkerToPoolMessage,
 } from '../../../src/internals/worker-pool/IWorkerPool.js';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import type { MockedObject, MockedFunction } from 'vitest';
 import { BasicPool } from '../../../src/internals/worker-pool/BasicPool.js';
 import * as WorkerThreadsMock from 'node:worker_threads';
@@ -11,10 +11,6 @@ import * as WorkerThreadsMock from 'node:worker_threads';
 vi.mock('node:worker_threads', () => ({
   Worker: vi.fn(),
 }));
-
-beforeEach(() => {
-  vi.resetAllMocks();
-});
 
 describe('BasicPool', () => {
   it('should instantly register handlers when spawning workers', () => {

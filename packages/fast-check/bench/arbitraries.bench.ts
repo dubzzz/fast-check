@@ -1,5 +1,6 @@
-import { describe, bench } from 'vitest';
+import { describe } from 'vitest';
 import type { Arbitrary, Memo } from '../src/fast-check.js';
+import { bench } from './__test-helpers__/Bench.js';
 import { fc, mrng } from './__test-helpers__/Imports.js';
 
 type BenchCase = {
