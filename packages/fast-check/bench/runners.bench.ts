@@ -1,6 +1,10 @@
-import { describe, bench } from 'vitest';
+import { describe } from 'vitest';
 import type { PluginInstance, UniversalPlugin } from '../src/fast-check.js';
-import { fc } from './__test-helpers__/Imports.js';
+import { bench } from './__test-helpers__/Bench.js';
+import { fc as fcModule } from './__test-helpers__/Imports.js';
+
+// Resolve module export getters before entering the measured callbacks.
+const fc = { ...fcModule };
 
 describe('runner', () => {
   bench('assert on successful synchronous predicate', () => {

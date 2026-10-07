@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`LimitedShrinkArbitrary (integration) > should be able to shrink 251 given constraints maxShrinks:+0 1`] = `"251"`;
+exports[`LimitedShrinkArbitrary (integration) > should be able to shrink 251 given constraints maxShrinks:0 1`] = `"251"`;
 
 exports[`LimitedShrinkArbitrary (integration) > should be able to shrink 251 given constraints maxShrinks:1 1`] = `
 "251
