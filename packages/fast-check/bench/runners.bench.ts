@@ -11,6 +11,15 @@ describe('runner', () => {
     return fc.assert(fc.property(fc.constant(1), (_c) => true));
   });
 
+  for (const numRuns of [1000, 10000]) {
+    bench(`assert on successful synchronous predicate with ${numRuns} runs`, () => {
+      return fc.assert(
+        fc.property(fc.constant(1), (_c) => true),
+        { numRuns },
+      );
+    });
+  }
+
   for (const { plugin, name } of [
     { plugin: emptyPlugin(), name: 'empty' },
     { plugin: fullPlugin(), name: 'full' },
