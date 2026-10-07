@@ -78,6 +78,39 @@ describe('runAllCallbacksAndReturn', () => {
     );
   });
 
+  it('should always reject with first error', async () => {
+    await fc.assert(
+      fc.property(
+        fc.array(fc.record({ isSync: fc.boolean(), isSuccess: fc.boolean() })),
+        fc.record({ isSync: fc.boolean(), isSuccess: fc.constant(false) }),
+        fc.array(fc.record({ isSync: fc.boolean(), isSuccess: fc.boolean() })),
+        async (callbacksResponsesBefore, callbackFailure, callbacksResponsesAfter) => {
+          // Arrange
+          const callbacksResponses = [...callbacksResponsesBefore, callbackFailure, ...callbacksResponsesAfter];
+          const callbacks = callbacksResponses.map((response, index) => () => {
+            if (response.isSync) {
+              if (response.isSuccess) {
+                return;
+              }
+              throw new Error(`Failure on #${index}`);
+            }
+            if (response.isSuccess) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error(`Failure on #${index}`));
+          });
+          const expectedErrorIndex = callbacksResponses.findIndex((response) => !response.isSuccess);
+          const value = null;
+
+          // Act / Assert
+          await expect(
+            runAllCallbacksAndReturn(value, (index) => callbacks[index](), callbacks.length),
+          ).rejects.toThrow(new Error(`Failure on #${expectedErrorIndex}`));
+        },
+      ),
+    );
+  });
+
   it.each([{ callbacksCount: 0 }, { callbacksCount: 1 }, { callbacksCount: 5 }])(
     'should return the value synchonously if all callbacks are synchronous and successful (callbacks count: $callbacksCount)',
     async ({ callbacksCount }) => {

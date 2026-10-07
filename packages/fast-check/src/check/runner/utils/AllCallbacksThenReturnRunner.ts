@@ -11,20 +11,37 @@ function runAllCallbacksAndReturnInternal<T>(
       const out = runCallbackAtIndex(index);
       if (out !== undefined) {
         return out.then(
-          () => runAllCallbacksAndReturnInternal(value, runCallbackAtIndex, index + 1, callbacksCount),
+          () => {
+            const nested = runAllCallbacksAndReturnInternal(value, runCallbackAtIndex, index + 1, callbacksCount);
+            if (interceptedOnce) {
+              if (!Object.is(nested, value)) {
+                return Promise.resolve(nested).then(
+                  () => {
+                    throw interceptedError;
+                  },
+                  () => {
+                    throw interceptedError;
+                  },
+                );
+              }
+              throw interceptedError;
+            }
+            return nested;
+          },
           (error) => {
             const next = runAllCallbacksAndReturnInternal(value, runCallbackAtIndex, index + 1, callbacksCount);
+            const finalError = interceptedOnce ? interceptedError : error;
             if (!Object.is(next, value)) {
               return Promise.resolve(next).then(
                 () => {
-                  throw error;
+                  throw finalError;
                 },
                 () => {
-                  throw error;
+                  throw finalError;
                 },
               );
             }
-            throw error;
+            throw finalError;
           },
         );
       }
