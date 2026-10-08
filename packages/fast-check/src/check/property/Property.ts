@@ -6,7 +6,7 @@ import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShri
 import type { PredicateExecutionContext } from './types/PredicateExecutionContext.js';
 
 /**
- * Instantiate a new {@link fast-check#Property} with a synchronous or asynchronous predicate *
+ * Instantiate a new {@link fast-check#Property} with a synchronous or asynchronous predicate
  * @param predicate - Assess the success of the property. Would be considered falsy if it throws or if its output evaluates to false
  * @remarks Since 0.0.1 (asynchronous predicates supported since 5.0.0, previously via `asyncProperty` since 0.0.7)
  * @public
