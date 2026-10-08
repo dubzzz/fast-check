@@ -1,9 +1,14 @@
 import type { it as itJest } from '@jest/globals';
-import type { Arbitrary, property, assert, readConfigureGlobal, interruptAfterTimeLimit } from 'fast-check';
+import type { Arbitrary, Property, property, assert, readConfigureGlobal, interruptAfterTimeLimit } from 'fast-check';
+
+// Worker predicates only receive generated values, without an execution context.
+type WorkerPropertyBuilder = <Ts extends [unknown, ...unknown[]]>(
+  ...args: [...arbitraries: ArbitraryTuple<Ts>, predicate: (...args: Ts) => boolean | void | Promise<boolean | void>]
+) => Property<Ts>;
 
 export type FcExtra = {
   asyncProperty?: typeof property;
-  property: typeof property;
+  property: typeof property | WorkerPropertyBuilder;
   assert: typeof assert;
   readConfigureGlobal: typeof readConfigureGlobal;
   interruptAfterTimeLimit: typeof interruptAfterTimeLimit;

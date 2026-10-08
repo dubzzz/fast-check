@@ -56,7 +56,10 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
   private readonly numArbitraries: number;
   private readonly internalProperty: LegacyPropertyWithHooks<Ts>;
 
-  constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
+  constructor(
+    arbitraries: PropertyArbitraries<Ts>,
+    predicate: NoInfer<(...args: [...Ts, PredicateExecutionContext]) => Promise<boolean | void>>,
+  ) {
     this.numArbitraries = arbitraries.length;
     this.internalProperty = property<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
   }

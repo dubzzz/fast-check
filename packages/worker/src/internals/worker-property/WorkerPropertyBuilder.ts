@@ -2,6 +2,7 @@ import type { LegacyPropertyWithHooks, PropertyArbitraries } from '../SharedType
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
 import * as fc from 'fast-check';
+import type { PredicateExecutionContext } from 'fast-check';
 import { WorkerPropertyFromWorker } from './WorkerPropertyFromWorker.js';
 
 const property = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
@@ -20,7 +21,7 @@ type WorkerProperty<Ts> = LegacyPropertyWithHooks<Ts> & { getPayload: (_inputs: 
  */
 export function buildWorkerProperty<Ts extends [unknown, ...unknown[]]>(
   arbitraries: PropertyArbitraries<Ts>,
-  predicate: (...args: Ts) => Promise<boolean | void>,
+  predicate: NoInfer<(...args: [...Ts, PredicateExecutionContext]) => Promise<boolean | void>>,
   generateValuesInMainThread: boolean,
 ): WorkerProperty<Ts> {
   if (!generateValuesInMainThread) {
