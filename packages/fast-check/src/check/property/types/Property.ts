@@ -1,7 +1,7 @@
 import type { Random } from '../../../random/generator/Random.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 import type { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
-import { PredicateExecutionContext } from './PredicateExecutionContext.js';
+import type { PredicateExecutionContext } from './PredicateExecutionContext.js';
 import type { PropertyFailure } from './PropertyFailure.js';
 
 /**

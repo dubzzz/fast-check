@@ -16,16 +16,17 @@ describe('TimeoutPlugin', () => {
     // Arrange
     const nestedRun = vi.fn<Property<unknown>['run']>().mockResolvedValueOnce(null);
     const expectedRunInput = { anything: Symbol('something') };
+    const executionContext = { signal: new AbortController().signal };
 
     // Act
     const finalRun = await timeoutPluginRun(10, nestedRun);
-    const runPromise = finalRun(expectedRunInput);
+    const runPromise = finalRun(expectedRunInput, executionContext);
     vi.advanceTimersByTime(10);
     await runPromise;
 
     // Assert
     expect(nestedRun).toHaveBeenCalledTimes(1);
-    expect(nestedRun).toHaveBeenCalledWith(expectedRunInput);
+    expect(nestedRun).toHaveBeenCalledWith(expectedRunInput, executionContext);
   });
 
   it.each([
@@ -42,7 +43,7 @@ describe('TimeoutPlugin', () => {
 
     // Act
     const finalRun = await timeoutPluginRun(100, nestedRun);
-    const runPromise = finalRun({});
+    const runPromise = finalRun({}, {});
     vi.advanceTimersByTime(10);
     await runPromise;
 
@@ -62,7 +63,7 @@ describe('TimeoutPlugin', () => {
 
     // Act
     const finalRun = await timeoutPluginRun(100, nestedRun);
-    await finalRun({});
+    await finalRun({}, {});
 
     // Assert
     expect(setTimeout).toBeCalledTimes(1);
@@ -84,7 +85,7 @@ describe('TimeoutPlugin', () => {
 
     // Act
     const finalRun = await timeoutPluginRun(10, nestedRun);
-    const runPromise = finalRun({});
+    const runPromise = finalRun({}, {});
     vi.advanceTimersByTime(10);
 
     // Assert
@@ -103,7 +104,7 @@ describe('TimeoutPlugin', () => {
 
     // Act
     const finalRun = await timeoutPluginRun(100, nestedRun);
-    const out = finalRun({});
+    const out = finalRun({}, {});
 
     // Assert
     expect(out).toBe(output); // sync run, sync output: nothing to race against the timeout

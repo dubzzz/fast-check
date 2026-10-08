@@ -10,7 +10,7 @@ import {
 } from '../../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
 import type { PropertyFailure } from '../types/PropertyFailure.js';
 import type { Property } from '../types/Property.js';
-import { PredicateExecutionContext } from '../types/PredicateExecutionContext.js';
+import type { PredicateExecutionContext } from '../types/PredicateExecutionContext.js';
 
 function outputToPropertyAnswer(output: boolean | void) {
   return output === undefined || output === true ? null : { error: new Error('Property failed by returning false') };
