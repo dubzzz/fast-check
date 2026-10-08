@@ -30,6 +30,18 @@ fc.property(fc.nat(), fc.string(), async (_a: number) => {}); // missing _b
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
 // "property" handles tuples
 expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<fc.Property<[number, string]>>();
+// "property" accepts predicates expecting a trailing execution context
+expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a, _b, _ctx) => {})).toMatchTypeOf<
+  fc.Property<[number, string]>
+>();
+// "property" accepts predicates being fully typed expecting a trailing execution context
+expectTypeOf(
+  fc.property(fc.nat(), fc.string(), async (_a: number, _b: string, _ctx: fc.PredicateExecutionContext) => {}),
+).toMatchTypeOf<fc.Property<[number, string]>>();
+// "property" accepts predicates being fully typed not expecting any trailing execution context
+expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a: number, _b: string) => {})).toMatchTypeOf<
+  fc.Property<[number, string]>
+>();
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.property(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate

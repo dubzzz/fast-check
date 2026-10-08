@@ -3,6 +3,7 @@ import { tuple } from '../../arbitrary/tuple.js';
 import type { Property } from './types/Property.js';
 import { PropertyImplem } from './_internals/PropertyImplem.js';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary.js';
+import type { PredicateExecutionContext } from './types/PredicateExecutionContext.js';
 
 /**
  * Instantiate a new {@link fast-check#Property} with a synchronous or asynchronous predicate
@@ -15,11 +16,25 @@ function property<Ts extends [unknown, ...unknown[]]>(
     ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
     predicate: (...args: Ts) => Promise<boolean | void> | boolean | void,
   ]
+): Property<Ts>;
+function property<Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    predicate: (...args: [...Ts, PredicateExecutionContext]) => Promise<boolean | void> | boolean | void,
+  ]
+): Property<Ts>;
+function property<Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    predicate:
+      | ((...args: Ts) => Promise<boolean | void> | boolean | void)
+      | ((...args: [...Ts, PredicateExecutionContext]) => Promise<boolean | void> | boolean | void),
+  ]
 ): Property<Ts> {
   const arbs = args.slice(0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
-  const p = args[args.length - 1] as (...args: Ts) => Promise<boolean | void>;
+  const p = args[args.length - 1] as (...args: Ts | [...Ts, PredicateExecutionContext]) => Promise<boolean | void>;
   const mappedArbs = arbs.map((arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
-  return new PropertyImplem(tuple<Ts>(...mappedArbs), (t) => p(...t));
+  return new PropertyImplem(tuple<Ts>(...mappedArbs), (t, executionContext) => p(...t, executionContext));
 }
 
 export { property };

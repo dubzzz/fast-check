@@ -10,6 +10,7 @@ import {
 } from '../../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
 import type { PropertyFailure } from '../types/PropertyFailure.js';
 import type { Property } from '../types/Property.js';
+import { PredicateExecutionContext } from '../types/PredicateExecutionContext.js';
 
 function outputToPropertyAnswer(output: boolean | void) {
   return output === undefined || output === true ? null : { error: new Error('Property failed by returning false') };
@@ -30,7 +31,10 @@ function errorToPropertyAnswer(err: unknown) {
 export class PropertyImplem<Ts> implements Property<Ts> {
   constructor(
     readonly arb: Arbitrary<Ts>,
-    readonly predicate: (t: Ts) => Promise<boolean | void> | boolean | void,
+    readonly predicate: (
+      t: Ts,
+      executionContext: PredicateExecutionContext,
+    ) => Promise<boolean | void> | boolean | void,
   ) {}
 
   generate(mrng: Random, runId?: number): Value<Ts> {
@@ -48,9 +52,12 @@ export class PropertyImplem<Ts> implements Property<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
+  run(
+    v: Ts,
+    executionContext: PredicateExecutionContext,
+  ): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
     try {
-      const syncOutput = this.predicate(v);
+      const syncOutput = this.predicate(v, executionContext);
       if (typeof syncOutput !== 'object') {
         return outputToPropertyAnswer(syncOutput);
       }
