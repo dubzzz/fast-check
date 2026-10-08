@@ -7,8 +7,12 @@ import type { PredicateExecutionContext } from './types/PredicateExecutionContex
 
 /**
  * Instantiate a new {@link fast-check#Property} with a synchronous or asynchronous predicate
+ *
+ * The predicate receives the generated values in order, followed by a {@link PredicateExecutionContext}.
+ * Declare a parameter after all generated values to access context supplied by plugins.
+ *
  * @param predicate - Assess the success of the property. Would be considered falsy if it throws or if its output evaluates to false
- * @remarks Since 0.0.1 (asynchronous predicates supported since 5.0.0, previously via `asyncProperty` since 0.0.7)
+ * @remarks Since 0.0.1 (asynchronous predicates supported since 5.0.0, previously via `asyncProperty` since 0.0.7; execution context since 5.0.0)
  * @public
  */
 function property<Ts extends [unknown, ...unknown[]]>(
@@ -17,6 +21,12 @@ function property<Ts extends [unknown, ...unknown[]]>(
     predicate: (...args: Ts) => Promise<boolean | void> | boolean | void,
   ]
 ): Property<Ts>;
+/**
+ * Instantiate a new {@link fast-check#Property} with a synchronous or asynchronous predicate
+ * @param predicate - Assess the success of the property. Would be considered falsy if it throws or if its output evaluates to false
+ * @remarks Since 5.0.0
+ * @public
+ */
 function property<Ts extends [unknown, ...unknown[]]>(
   ...args: [
     ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
