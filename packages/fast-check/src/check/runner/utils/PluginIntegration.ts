@@ -38,7 +38,7 @@ export function applyPluginRunDecorators<Ts>(
   property: Property<Ts>,
   pluginInstances: PluginInstance<Ts>[],
 ): Property<Ts>['run'] {
-  let run: typeof property.run = (v) => property.run(v);
+  let run: typeof property.run = (v, executionContext) => property.run(v, executionContext);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
     if (pluginInstance.decorateRun !== undefined) {

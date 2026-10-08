@@ -199,10 +199,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
-          decorateRun: (nestedRun) => (value) => {
+          decorateRun: (nestedRun) => (value, executionContext) => {
             probes.push(`${pluginName}::run started`);
             try {
-              return nestedRun(value);
+              return nestedRun(value, executionContext);
             } finally {
               probes.push(`${pluginName}::run done`);
             }
@@ -248,10 +248,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       return () => {
         return {
           asyncOnly: true,
-          decorateRun: (nestedRun) => async (value) => {
+          decorateRun: (nestedRun) => async (value, executionContext) => {
             probes.push(`${pluginName}::run started`);
             await Promise.resolve();
-            const out = await nestedRun(value);
+            const out = await nestedRun(value, executionContext);
             await Promise.resolve();
             probes.push(`${pluginName}::run done`);
             return out;

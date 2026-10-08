@@ -29,11 +29,28 @@ fc.property(fc.nat(), fc.string(), async (_a: number) => {}); // missing _b
 // "property" instantiates instances compatible with Property
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
 // "property" handles tuples
-expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<fc.Property<[number, string]>>();
+expectTypeOf(
+  fc.property(fc.nat(), fc.string(), async (a, b) => {
+    expectTypeOf(a).toEqualTypeOf<number>();
+    expectTypeOf(b).toEqualTypeOf<string>();
+  }),
+).toEqualTypeOf<fc.Property<[number, string]>>();
 // "property" accepts predicates expecting a trailing execution context
-expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a, _b, _ctx) => {})).toMatchTypeOf<
-  fc.Property<[number, string]>
->();
+expectTypeOf(
+  fc.property(fc.nat(), fc.string(), async (a, b, ctx) => {
+    expectTypeOf(a).toEqualTypeOf<number>();
+    expectTypeOf(b).toEqualTypeOf<string>();
+    expectTypeOf(ctx).toEqualTypeOf<fc.PredicateExecutionContext>();
+  }),
+).toEqualTypeOf<fc.Property<[number, string]>>();
+// "property" also infers the trailing execution context for synchronous predicates
+expectTypeOf(
+  fc.property(fc.nat(), (a, ctx) => {
+    expectTypeOf(a).toEqualTypeOf<number>();
+    expectTypeOf(ctx).toEqualTypeOf<fc.PredicateExecutionContext>();
+    return true;
+  }),
+).toEqualTypeOf<fc.Property<[number]>>();
 // "property" accepts predicates being fully typed expecting a trailing execution context
 expectTypeOf(
   fc.property(fc.nat(), fc.string(), async (_a: number, _b: string, _ctx: fc.PredicateExecutionContext) => {}),
@@ -44,6 +61,8 @@ expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a: number, _b: string) =
 >();
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.property(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
+// @ts-expect-error - Trailing execution context must be compatible with PredicateExecutionContext
+fc.property(fc.nat(), async (_a: number, _ctx: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
 fc.property(fc.nat(), fc.string(), async (_a: number) => {});
 // @ts-expect-error - Expect at least one arbitrary to be provided
