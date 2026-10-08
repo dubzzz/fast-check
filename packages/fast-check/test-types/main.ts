@@ -22,8 +22,6 @@ expectTypeOf(
 // prettier-ignore
 // @ts-expect-error - Reporter must be compatible with generated values
 fc.assert(fc.property(fc.nat(), fc.string(), (_a, _b) => {}), { reporter: (_out: fc.RunDetails<[number]>) => {} });
-// @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.property(fc.nat(), fc.string(), async (_a: number) => {}); // missing _b
 
 // property
 // "property" instantiates instances compatible with Property
@@ -63,8 +61,28 @@ expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a: number, _b: string) =
 fc.property(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Trailing execution context must be compatible with PredicateExecutionContext
 fc.property(fc.nat(), async (_a: number, _ctx: number) => {});
-// @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.property(fc.nat(), fc.string(), async (_a: number) => {});
+// "property" infers all generated values even when a typed predicate ignores trailing arguments
+expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a: number) => {})).toEqualTypeOf<
+  fc.Property<[number, string]>
+>();
+// "property" preserves the full generated tuple when its predicate ignores every argument
+expectTypeOf(fc.property(fc.nat(), fc.string(), () => true)).toEqualTypeOf<fc.Property<[number, string]>>();
+// "property" infers destructured context fields without an annotation
+expectTypeOf(
+  fc.property(fc.nat(), (_a, { signal }) => {
+    expectTypeOf(signal).toEqualTypeOf<AbortSignal | undefined>();
+  }),
+).toEqualTypeOf<fc.Property<[number]>>();
+// @ts-expect-error - Predicates cannot require a value narrower than the arbitrary produces
+fc.property(fc.nat(), (_a: 42) => true);
+// @ts-expect-error - Predicates cannot require another argument after the execution context
+fc.property(fc.nat(), (_a: number, _ctx: fc.PredicateExecutionContext, _extra: string) => true);
+fc.property(
+  fc.nat(),
+  fc.string(),
+  // @ts-expect-error - Two arbitraries only provide two generated values and one execution context
+  (_a: number, _b: string, _ctx: fc.PredicateExecutionContext, _extra: unknown) => true,
+);
 // @ts-expect-error - Expect at least one arbitrary to be provided
 fc.property(() => {});
 
