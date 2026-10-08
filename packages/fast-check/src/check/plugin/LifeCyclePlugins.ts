@@ -1,3 +1,4 @@
+import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import type { Property } from '../property/types/Property.js';
 import type { UniversalPlugin } from './Plugin.js';
 
@@ -40,6 +41,7 @@ function lifeCycleHooksRunner(
   hooks: LifeCycleHooks,
   nestedRun: Property<unknown>['run'],
   value: unknown,
+  executionContext: PredicateExecutionContext,
 ): ReturnType<typeof nestedRun> {
   let wrappedRunOutput: Awaited<ReturnType<typeof nestedRun>> = null; // null means success
   let wrappedRunContinuation: Promise<Awaited<ReturnType<typeof nestedRun>>> | undefined = undefined;
@@ -92,7 +94,7 @@ function lifeCycleHooksRunner(
   if (wrappedRunOutput === null) {
     if (wrappedRunContinuation === undefined) {
       // We are currently into a sync flow
-      const out = nestedRun(value);
+      const out = nestedRun(value, executionContext);
       if (out !== null && 'then' in out) {
         wrappedRunContinuation = out;
       } else {
@@ -101,7 +103,7 @@ function lifeCycleHooksRunner(
     } else {
       // We switched to an async flow
       wrappedRunContinuation = wrappedRunContinuation.then(
-        () => nestedRun(value),
+        () => nestedRun(value, executionContext),
         (error) => ({ error }), // beforeEach flows do not catch anything, they always result into succes being null or throw
       );
     }
@@ -205,7 +207,10 @@ export function beforeEach(fn: BeforeEachHook): UniversalPlugin {
       afterHooksIndices: [],
     };
     pluginStore.set(LifeCyclePluginSymbol, lifeCycleHooks);
-    return { decorateRun: (nestedRun) => (value) => lifeCycleHooksRunner(lifeCycleHooks, nestedRun, value) };
+    return {
+      decorateRun: (nestedRun) => (value, executionContext) =>
+        lifeCycleHooksRunner(lifeCycleHooks, nestedRun, value, executionContext),
+    };
   };
 }
 
@@ -243,6 +248,9 @@ export function afterEach(fn: AfterEachHook): UniversalPlugin {
       afterHooksIndices: [pluginIndex],
     };
     pluginStore.set(LifeCyclePluginSymbol, lifeCycleHooks);
-    return { decorateRun: (nestedRun) => (value) => lifeCycleHooksRunner(lifeCycleHooks, nestedRun, value) };
+    return {
+      decorateRun: (nestedRun) => (value, executionContext) =>
+        lifeCycleHooksRunner(lifeCycleHooks, nestedRun, value, executionContext),
+    };
   };
 }

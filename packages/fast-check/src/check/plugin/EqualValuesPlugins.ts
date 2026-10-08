@@ -3,6 +3,7 @@ import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import { stringify } from '../../utils/stringify.js';
 import type { UniversalPlugin } from './Plugin.js';
+import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 
 type RunOutput = ReturnType<Property<unknown>['run']>;
 
@@ -25,6 +26,7 @@ function equalValuesRunner(
   coveredCases: Map<string, RunOutput>,
   nestedRun: Property<unknown>['run'],
   value: unknown,
+  executionContext: PredicateExecutionContext,
   skipRuns: boolean,
 ): ReturnType<typeof nestedRun> {
   // TODO(v5) - Switch to possiblyAsyncStringify and await to support asynchronous values as inputs
@@ -33,7 +35,7 @@ function equalValuesRunner(
     const lastOutput = coveredCases.get(stringifiedValue) as RunOutput;
     return skipRuns ? fromCached(lastOutput) : lastOutput;
   }
-  const out = nestedRun(value);
+  const out = nestedRun(value, executionContext);
   coveredCases.set(stringifiedValue, out);
   return out;
 }
@@ -61,7 +63,8 @@ export function ignoreEqualValues(): UniversalPlugin {
   return () => {
     const coveredCases = new Map<string, RunOutput>();
     return {
-      decorateRun: (nestedRun) => (value) => equalValuesRunner(coveredCases, nestedRun, value, false),
+      decorateRun: (nestedRun) => (value, executionContext) =>
+        equalValuesRunner(coveredCases, nestedRun, value, executionContext, false),
     };
   };
 }
@@ -91,7 +94,8 @@ export function skipEqualValues(): UniversalPlugin {
   return () => {
     const coveredCases = new Map<string, RunOutput>();
     return {
-      decorateRun: (nestedRun) => (value) => equalValuesRunner(coveredCases, nestedRun, value, true),
+      decorateRun: (nestedRun) => (value, executionContext) =>
+        equalValuesRunner(coveredCases, nestedRun, value, executionContext, true),
     };
   };
 }
