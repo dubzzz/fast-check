@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { propertyRunner } from './PropertyRunner.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import * as fc from 'fast-check';
 
 describe('propertyRunner', () => {
@@ -25,7 +26,7 @@ describe('propertyRunner', () => {
     expect(out).toBe(undefined);
     expect(out).not.toBeInstanceOf(Promise);
     expect(run).toHaveBeenCalledTimes(expectedValues.length);
-    expect(run.mock.calls).toEqual(expectedValues.map((v) => [v]));
+    expect(run.mock.calls).toEqual(expectedValues.map((v) => [v, {}]));
     expect(handleResult).toHaveBeenCalledTimes(expectedValues.length);
   });
 
@@ -55,10 +56,29 @@ describe('propertyRunner', () => {
       expect(handleResult).not.toHaveBeenCalledTimes(expectedValues.length);
       await out;
       expect(run).toHaveBeenCalledTimes(expectedValues.length);
-      expect(run.mock.calls).toEqual(expectedValues.map((v) => [v]));
+      expect(run.mock.calls).toEqual(expectedValues.map((v) => [v, {}]));
       expect(handleResult).toHaveBeenCalledTimes(expectedValues.length);
     },
   );
+
+  it('should pass a fresh execution context to every run', async () => {
+    // Arrange
+    function* generator() {
+      yield* [1, 2, 3, 4];
+    }
+    const iterator = Object.assign(generator(), { handleResult: vi.fn() });
+    const contexts = new Set<PredicateExecutionContext>();
+    const run = (_value: number, executionContext: PredicateExecutionContext) => {
+      contexts.add(executionContext);
+      return null;
+    };
+
+    // Act
+    await propertyRunner(iterator, run);
+
+    // Assert
+    expect(contexts).toHaveLength(4);
+  });
 
   it('should always batch together in the same micro-tasks all consecutive synchronous runs', async () => {
     let getCount: () => number = () => -1;

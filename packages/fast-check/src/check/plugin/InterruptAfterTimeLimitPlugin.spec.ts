@@ -19,16 +19,17 @@ describe('TimeLimitPlugins', () => {
       const { interruptAfterTimeLimit } = await import('./InterruptAfterTimeLimitPlugin.js');
       const nestedRun = vi.fn<Property<unknown>['run']>(() => null);
       const expectedRunInput = Symbol('something');
+      const executionContext = { signal: new AbortController().signal };
 
       // Act
       const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
       const finalRun = instance.decorateRun!(nestedRun);
-      const out = finalRun(expectedRunInput);
+      const out = finalRun(expectedRunInput, executionContext);
 
       // Assert
       expect(out).toBe(null);
       expect(nestedRun).toHaveBeenCalledTimes(1);
-      expect(nestedRun).toHaveBeenCalledWith(expectedRunInput);
+      expect(nestedRun).toHaveBeenCalledWith(expectedRunInput, executionContext);
     });
 
     it('should interrupt executions started after the time limit without calling run', async () => {
@@ -40,7 +41,7 @@ describe('TimeLimitPlugins', () => {
       const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
       const finalRun = instance.decorateRun!(nestedRun);
       vi.advanceTimersByTime(100);
-      const out = finalRun({});
+      const out = finalRun({}, {});
 
       // Assert
       expect(nestedRun).not.toHaveBeenCalled();
@@ -56,7 +57,7 @@ describe('TimeLimitPlugins', () => {
       // Act
       const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
       const finalRun = instance.decorateRun!(nestedRun);
-      const runPromise = finalRun({});
+      const runPromise = finalRun({}, {});
       vi.advanceTimersByTime(10);
 
       // Assert
@@ -86,7 +87,7 @@ describe('TimeLimitPlugins', () => {
         const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
         const finalRun = instance.decorateRun!(nestedRun);
         for (let i = 0; i !== numRuns; ++i) {
-          await finalRun({});
+          await finalRun({}, {});
         }
         await instance.onAllRunsComplete!({} as RunDetails<unknown>);
 

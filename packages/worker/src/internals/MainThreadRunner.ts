@@ -45,7 +45,10 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
           reject(new Error('Badly initialized worker, unable to run the property'));
           return;
         }
-        worker.register(predicateId, property.getPayload(inputs), resolve, reject, () =>
+        const generatedInputs = (
+          inputs.length === arbitraries.length ? inputs : inputs.slice(0, arbitraries.length)
+        ) as Ts;
+        worker.register(predicateId, property.getPayload(generatedInputs), resolve, reject, () =>
           reject(new PreconditionFailure()),
         );
       });

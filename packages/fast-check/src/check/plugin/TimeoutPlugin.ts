@@ -1,3 +1,4 @@
+import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { UniversalPlugin } from './Plugin.js';
@@ -24,9 +25,10 @@ function timeoutRunner(
   timeMs: number,
   nestedRun: Property<unknown>['run'],
   value: unknown,
+  executionContext: PredicateExecutionContext,
 ): ReturnType<typeof nestedRun> {
   const t = timeoutAfter(timeMs);
-  const runOut = nestedRun(value);
+  const runOut = nestedRun(value, executionContext);
   if (runOut === null || !('then' in runOut)) {
     // synchronous run: it already came to an end, nothing to race against the timeout
     t.clear();
@@ -61,7 +63,8 @@ function timeoutRunner(
 export function timeout(timeMs: number): UniversalPlugin {
   return () => {
     return {
-      decorateRun: (nestedRun) => (value) => timeoutRunner(timeMs, nestedRun, value),
+      decorateRun: (nestedRun) => (value, executionContext) =>
+        timeoutRunner(timeMs, nestedRun, value, executionContext),
     };
   };
 }

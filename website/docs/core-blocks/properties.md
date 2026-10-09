@@ -38,7 +38,7 @@ The syntax is the following:
 fc.property(...arbitraries, (...args) => {});
 ```
 
-When passing N arbitraries, the predicate will receive N arguments: first argument being produced by the first arbitrary, second argument by the second arbitrary...
+When passing N arbitraries, the predicate receives N generated values in the same order, followed by an execution context. You can omit the context parameter when you do not need it.
 
 The predicate can:
 

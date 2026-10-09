@@ -15,7 +15,7 @@ describe('Property', () => {
     const p = property(stubArb.single(8), async (_arg: number) => {
       return false;
     });
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null); // property fails
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value, {})).not.toBe(null); // property fails
   });
   it('Should fail if predicate throws an Error', async () => {
     // Arrange
@@ -26,7 +26,7 @@ describe('Property', () => {
     });
 
     // Act
-    const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
+    const out = await p.run(p.generate(stubRng.mutable.nocall()).value, {});
 
     // Assert
     expect((out as PropertyFailure).error).toBe(originalError);
@@ -38,7 +38,7 @@ describe('Property', () => {
     });
 
     // Act
-    const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
+    const out = await p.run(p.generate(stubRng.mutable.nocall()).value, {});
 
     // Assert
     expect(out).toEqual({
@@ -55,7 +55,7 @@ describe('Property', () => {
         });
 
         // Act
-        const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
+        const out = await p.run(p.generate(stubRng.mutable.nocall()).value, {});
 
         // Assert
         expect(out).toEqual({ error: stuff });
@@ -69,7 +69,7 @@ describe('Property', () => {
       doNotResetThisValue = true;
       return false;
     });
-    const out = await p.run(p.generate(stubRng.mutable.nocall()).value);
+    const out = await p.run(p.generate(stubRng.mutable.nocall()).value, {});
     expect(PreconditionFailure.isFailure(out)).toBe(true);
     expect(doNotResetThisValue).toBe(false); // does not run code after the failing precondition
   });
@@ -77,18 +77,18 @@ describe('Property', () => {
     const p = property(stubArb.single(8), async (_arg: number) => {
       return true;
     });
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value, {})).toBe(null);
   });
   it('Should succeed if predicate does not return anything', async () => {
     const p = property(stubArb.single(8), async (_arg: number) => {});
-    expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    expect(await p.run(p.generate(stubRng.mutable.nocall()).value, {})).toBe(null);
   });
   it('Should behave synchronously on run when predicate is synchronous', () => {
     let called = false;
     const p = property(stubArb.single(8), (_arg: number) => {
       called = true;
     });
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value, {})).toBe(null);
     expect(called).toBe(true);
   });
   it('Should behave asynchronously on run when predicate is asynchronous', async () => {
@@ -96,7 +96,7 @@ describe('Property', () => {
     const p = property(stubArb.single(8), async (_arg: number) => {
       called = true;
     });
-    const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+    const out = p.run(p.generate(stubRng.mutable.nocall()).value, {});
     expect(out).not.toBe(null);
     expect(called).toBe(true);
     expect(out).toBeInstanceOf(Promise);
@@ -112,7 +112,7 @@ describe('Property', () => {
         resolvePromise = resolve;
       });
     });
-    const runner = p.run(p.generate(stubRng.mutable.nocall()).value);
+    const runner = p.run(p.generate(stubRng.mutable.nocall()).value, {});
     expect(runner).toBeInstanceOf(Promise); // run is linked to an async predicate
     (runner as Promise<unknown>).then(() => (runnerHasCompleted = true));
 

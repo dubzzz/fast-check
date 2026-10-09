@@ -1,4 +1,4 @@
-import type { Property, Random, Value } from 'fast-check';
+import type { PredicateExecutionContext, Property, Random, Value } from 'fast-check';
 import type { LegacyPropertyHookFunction, LegacyPropertyWithHooks, PropertyArbitraries } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
@@ -56,7 +56,10 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
   private readonly numArbitraries: number;
   private readonly internalProperty: LegacyPropertyWithHooks<Ts>;
 
-  constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
+  constructor(
+    arbitraries: PropertyArbitraries<Ts>,
+    predicate: NoInfer<(...args: [...Ts, PredicateExecutionContext]) => Promise<boolean | void>>,
+  ) {
     this.numArbitraries = arbitraries.length;
     this.internalProperty = property<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
   }
@@ -82,8 +85,8 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return Iterator.from([]);
   }
 
-  run(v: Ts): ReturnType<LegacyPropertyWithHooks<Ts>['run']> {
-    return this.internalProperty.run(v);
+  run(v: Ts, executionContext: PredicateExecutionContext): ReturnType<LegacyPropertyWithHooks<Ts>['run']> {
+    return this.internalProperty.run(v, executionContext);
   }
 
   beforeEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts> {

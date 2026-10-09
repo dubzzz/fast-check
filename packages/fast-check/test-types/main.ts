@@ -22,18 +22,67 @@ expectTypeOf(
 // prettier-ignore
 // @ts-expect-error - Reporter must be compatible with generated values
 fc.assert(fc.property(fc.nat(), fc.string(), (_a, _b) => {}), { reporter: (_out: fc.RunDetails<[number]>) => {} });
-// @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.property(fc.nat(), fc.string(), async (_a: number) => {}); // missing _b
 
 // property
 // "property" instantiates instances compatible with Property
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
 // "property" handles tuples
-expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<fc.Property<[number, string]>>();
+expectTypeOf(
+  fc.property(fc.nat(), fc.string(), async (a, b) => {
+    expectTypeOf(a).toEqualTypeOf<number>();
+    expectTypeOf(b).toEqualTypeOf<string>();
+  }),
+).toEqualTypeOf<fc.Property<[number, string]>>();
+// "property" accepts predicates expecting a trailing execution context
+expectTypeOf(
+  fc.property(fc.nat(), fc.string(), async (a, b, ctx) => {
+    expectTypeOf(a).toEqualTypeOf<number>();
+    expectTypeOf(b).toEqualTypeOf<string>();
+    expectTypeOf(ctx).toEqualTypeOf<fc.PredicateExecutionContext>();
+  }),
+).toEqualTypeOf<fc.Property<[number, string]>>();
+// "property" also infers the trailing execution context for synchronous predicates
+expectTypeOf(
+  fc.property(fc.nat(), (a, ctx) => {
+    expectTypeOf(a).toEqualTypeOf<number>();
+    expectTypeOf(ctx).toEqualTypeOf<fc.PredicateExecutionContext>();
+    return true;
+  }),
+).toEqualTypeOf<fc.Property<[number]>>();
+// "property" accepts predicates being fully typed expecting a trailing execution context
+expectTypeOf(
+  fc.property(fc.nat(), fc.string(), async (_a: number, _b: string, _ctx: fc.PredicateExecutionContext) => {}),
+).toMatchTypeOf<fc.Property<[number, string]>>();
+// "property" accepts predicates being fully typed not expecting any trailing execution context
+expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a: number, _b: string) => {})).toMatchTypeOf<
+  fc.Property<[number, string]>
+>();
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.property(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
-// @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.property(fc.nat(), fc.string(), async (_a: number) => {});
+// @ts-expect-error - Trailing execution context must be compatible with PredicateExecutionContext
+fc.property(fc.nat(), async (_a: number, _ctx: number) => {});
+// "property" infers all generated values even when a typed predicate ignores trailing arguments
+expectTypeOf(fc.property(fc.nat(), fc.string(), async (_a: number) => {})).toEqualTypeOf<
+  fc.Property<[number, string]>
+>();
+// "property" preserves the full generated tuple when its predicate ignores every argument
+expectTypeOf(fc.property(fc.nat(), fc.string(), () => true)).toEqualTypeOf<fc.Property<[number, string]>>();
+// "property" infers destructured context fields without an annotation
+expectTypeOf(
+  fc.property(fc.nat(), (_a, { signal }) => {
+    expectTypeOf(signal).toEqualTypeOf<AbortSignal | undefined>();
+  }),
+).toEqualTypeOf<fc.Property<[number]>>();
+// @ts-expect-error - Predicates cannot require a value narrower than the arbitrary produces
+fc.property(fc.nat(), (_a: 42) => true);
+// @ts-expect-error - Predicates cannot require another argument after the execution context
+fc.property(fc.nat(), (_a: number, _ctx: fc.PredicateExecutionContext, _extra: string) => true);
+fc.property(
+  fc.nat(),
+  fc.string(),
+  // @ts-expect-error - Two arbitraries only provide two generated values and one execution context
+  (_a: number, _b: string, _ctx: fc.PredicateExecutionContext, _extra: unknown) => true,
+);
 // @ts-expect-error - Expect at least one arbitrary to be provided
 fc.property(() => {});
 

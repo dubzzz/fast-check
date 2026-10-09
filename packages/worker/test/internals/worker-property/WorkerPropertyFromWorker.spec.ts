@@ -26,12 +26,13 @@ describe('WorkerPropertyFromWorker', () => {
     const { arbitrary, generate } = buildTrackedArbitrary();
     const arbitraries: [fc.Arbitrary<unknown>] = [arbitrary];
     const predicate = vi.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
+    const executionContext = { signal: new AbortController().signal };
 
     // Act
     const property = new WorkerPropertyFromWorker(arbitraries, predicate);
     const value = property.generate(mrng, 0);
     property.runBeforeEach();
-    property.run(value.value_);
+    property.run(value.value_, executionContext);
     property.runAfterEach();
 
     // Assert

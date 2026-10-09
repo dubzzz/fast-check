@@ -64,7 +64,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           expect(probingFailed ? probes : undefined).toBe(undefined);
@@ -115,7 +115,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           expect(hasFailedStep ? seenSteps : undefined).toBe(undefined);
@@ -159,7 +159,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           const expectedBeforeEachs = hookTypes.flatMap(({ hookType }, index) =>
@@ -200,7 +200,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           let beforeEachFailureSpotted = false;
@@ -240,7 +240,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          const out = finalRun(null);
+          const out = finalRun(null, {});
 
           // Assert
           const expectsSync = !isAsyncRun && !hookTypes.some((hookType) => hookType.includes('async'));
@@ -273,7 +273,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          const out = await finalRun(null);
+          const out = await finalRun(null, {});
 
           // Assert
           expect(out).toBe(runValue);
@@ -304,7 +304,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          const out = await finalRun(null);
+          const out = await finalRun(null, {});
 
           // Assert
           expect(out).toMatchObject({ error: expect.any(Error) });
@@ -348,7 +348,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           expect(originalRun).not.toHaveBeenCalled(); // predicate not called

@@ -1,6 +1,7 @@
 import type { Random } from '../../../random/generator/Random.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 import type { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
+import type { PredicateExecutionContext } from './PredicateExecutionContext.js';
 import type { PropertyFailure } from './PropertyFailure.js';
 
 /**
@@ -36,7 +37,11 @@ export interface Property<Ts> {
   /**
    * Check the predicate for v
    * @param v - Value of which we want to check the predicate
-   * @remarks Since 0.0.1 (signature changed in 0.0.6; asynchronous support since 0.0.7)
+   * @param executionContext - Context passed to the predicate
+   * @remarks Since 0.0.1 (signature changed in 0.0.6; asynchronous support since 0.0.7; execution context since 5.0.0)
    */
-  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null;
+  run(
+    v: Ts,
+    executionContext: PredicateExecutionContext,
+  ): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null;
 }

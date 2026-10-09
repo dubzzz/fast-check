@@ -74,13 +74,13 @@ describe(`LifeCyclePlugins (seed: ${seed})`, () => {
     const probes: string[] = [];
     const retryTwice = (): fc.Plugin<unknown> => {
       return () => ({
-        decorateRun: (nestedRun) => (value) => {
-          const out = nestedRun(value);
+        decorateRun: (nestedRun) => (value, executionContext) => {
+          const out = nestedRun(value, executionContext);
           if (out === null) {
-            return nestedRun(value);
+            return nestedRun(value, executionContext);
           }
           if ('then' in out) {
-            return out.then((result) => (result === null ? nestedRun(value) : result));
+            return out.then((result) => (result === null ? nestedRun(value, executionContext) : result));
           }
           return out;
         },

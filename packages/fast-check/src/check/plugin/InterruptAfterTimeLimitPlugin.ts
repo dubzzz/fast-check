@@ -1,4 +1,5 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import type { Property } from '../property/types/Property.js';
 import type { RunDetailsFailureInterrupted, RunDetailsSuccess } from '../runner/reporter/RunDetails.js';
 import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
@@ -41,6 +42,7 @@ function timeLimitRunner(
   interrupt: Interrupt,
   nestedRun: Property<unknown>['run'],
   value: unknown,
+  executionContext: PredicateExecutionContext,
   probe: Probe,
 ): ReturnType<typeof nestedRun> {
   probe.running = true;
@@ -49,7 +51,7 @@ function timeLimitRunner(
     probe.running = false;
     return new PreconditionFailure(true);
   }
-  const runOut = nestedRun(value);
+  const runOut = nestedRun(value, executionContext);
   if (runOut === null || !('then' in runOut)) {
     probe.running = false;
     return runOut;
@@ -105,7 +107,8 @@ export function interruptAfterTimeLimit(
     const probe: Probe = { interruptedWhileRunning: false, running: false };
     const interrupt = interruptAfterDelay(timeLimitMs, probe);
     return {
-      decorateRun: (nestedRun) => (value) => timeLimitRunner(interrupt, nestedRun, value, probe),
+      decorateRun: (nestedRun) => (value, executionContext) =>
+        timeLimitRunner(interrupt, nestedRun, value, executionContext, probe),
       onAllRunsComplete: (runDetails) => {
         interrupt.clear();
         if (options.failOnInterrupt && !runDetails.failed && runDetails.interrupted && probe.interruptedWhileRunning) {
