@@ -18,9 +18,7 @@ export interface LegacyPropertyWithHooks<Ts> extends Property<Ts> {
 export type PropertyArbitraries<Ts extends unknown[]> = {
   [K in keyof Ts]: Arbitrary<Ts[K]>;
 };
-export type PropertyPredicate<Ts extends unknown[]> = NoInfer<(
-  ...args: [...Ts, PredicateExecutionContext]
-) => boolean | void | Promise<boolean | void>>;
+export type PropertyPredicate<Ts extends unknown[]> = (...args: [...Ts, PredicateExecutionContext]) => boolean | void | Promise<boolean | void>;
 export type WorkerProperty<Ts> = LegacyPropertyWithHooks<Ts>;
 
 export type MainThreadToWorkerMessage<Ts> = PoolToWorkerMessage<Ts>;
