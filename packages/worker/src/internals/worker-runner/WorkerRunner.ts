@@ -3,6 +3,7 @@ import type { MainThreadToWorkerMessage, PropertyPredicate, WorkerToMainThreadMe
 import type { ValueState } from '../ValueFromState.js';
 import { WorkerToPoolMessageStatus, type Payload } from '../worker-pool/IWorkerPool.js';
 import { PreconditionFailure } from 'fast-check';
+import type { PredicateExecutionContext } from 'fast-check';
 
 /**
  * Setup a worker listening to parentPort and able to run a single time for a given predicate
@@ -24,7 +25,7 @@ export function runWorker<Ts extends unknown[]>(
     }
     const inputs = payload.source === 'main' ? payload.value : buildInputs(payload);
     // oxlint-disable-next-line no-use-before-define
-    wrapAndRunAsPromise(predicate, inputs).then(
+    wrapAndRunAsPromise(predicate, inputs, {}).then(
       (output) => {
         const message: WorkerToMainThreadMessage = { status: WorkerToPoolMessageStatus.Success, output, runId };
         parentPort.postMessage(message);
@@ -43,13 +44,15 @@ export function runWorker<Ts extends unknown[]>(
  * Wrap and run the predicate within a safe instance of Promise not throwing synchronously but rejecting asynchronously
  * @param predicate - the predicate to assess
  * @param inputs - the inputs for the predicate
+ * @param executionContext - the execution context to pass to the predicate
  */
 function wrapAndRunAsPromise<Ts extends unknown[]>(
   predicate: PropertyPredicate<Ts>,
   inputs: Ts,
+  executionContext: PredicateExecutionContext,
 ): Promise<boolean | void> {
   try {
-    return Promise.resolve(predicate(...inputs));
+    return Promise.resolve(predicate(...inputs, executionContext));
   } catch (err) {
     return Promise.reject(err);
   }

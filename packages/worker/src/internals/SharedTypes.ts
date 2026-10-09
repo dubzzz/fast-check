@@ -1,4 +1,4 @@
-import type { Arbitrary, Property } from 'fast-check';
+import type { Arbitrary, Property, PredicateExecutionContext } from 'fast-check';
 import type { PoolToWorkerMessage, WorkerToPoolMessage } from './worker-pool/IWorkerPool.js';
 
 type LegacyGlobalPropertyHookFunction = (() => Promise<unknown>) | (() => void);
@@ -18,7 +18,9 @@ export interface LegacyPropertyWithHooks<Ts> extends Property<Ts> {
 export type PropertyArbitraries<Ts extends unknown[]> = {
   [K in keyof Ts]: Arbitrary<Ts[K]>;
 };
-export type PropertyPredicate<Ts extends unknown[]> = (...args: Ts) => boolean | void | Promise<boolean | void>;
+export type PropertyPredicate<Ts extends unknown[]> = (
+  ...args: NoInfer<[...Ts, PredicateExecutionContext]>
+) => boolean | void | Promise<boolean | void>;
 export type WorkerProperty<Ts> = LegacyPropertyWithHooks<Ts>;
 
 export type MainThreadToWorkerMessage<Ts> = PoolToWorkerMessage<Ts>;
