@@ -97,7 +97,7 @@ if (!isMainThread && parentPort !== null && workerData.fastcheckWorker === true)
 function workerProperty<Ts extends [unknown, ...unknown[]]>(
   url: URL,
   options: PropertyForOptions,
-  ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
+  ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: NoInfer<PropertyPredicate<Ts>>]
 ): WorkerProperty<Ts> {
   const currentPredicateId = ++lastPredicateId;
   if (isMainThread) {
