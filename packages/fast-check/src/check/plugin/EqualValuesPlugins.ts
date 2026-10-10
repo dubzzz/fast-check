@@ -1,7 +1,7 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
-import { stringify } from '../../utils/stringify.js';
+import { possiblyAsyncStringify } from '../../utils/stringify.js';
 import type { UniversalPlugin } from './Plugin.js';
 import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 
@@ -22,15 +22,14 @@ function fromCached(cachedValue: RunOutput): RunOutput {
   return new PreconditionFailure(); // already encountered with sync success, so skip it
 }
 
-function equalValuesRunner(
+function runWithCachedValue(
   coveredCases: Map<string, RunOutput>,
   nestedRun: Property<unknown>['run'],
   value: unknown,
   executionContext: PredicateExecutionContext,
   skipRuns: boolean,
+  stringifiedValue: string,
 ): ReturnType<typeof nestedRun> {
-  // TODO(v5) - Switch to possiblyAsyncStringify and await to support asynchronous values as inputs
-  const stringifiedValue = stringify(value);
   if (coveredCases.has(stringifiedValue)) {
     const lastOutput = coveredCases.get(stringifiedValue) as RunOutput;
     return skipRuns ? fromCached(lastOutput) : lastOutput;
@@ -38,6 +37,19 @@ function equalValuesRunner(
   const out = nestedRun(value, executionContext);
   coveredCases.set(stringifiedValue, out);
   return out;
+}
+
+function equalValuesRunner(
+  coveredCases: Map<string, RunOutput>,
+  nestedRun: Property<unknown>['run'],
+  value: unknown,
+  skipRuns: boolean,
+): ReturnType<typeof nestedRun> {
+  const stringifiedValue = possiblyAsyncStringify(value);
+  if (typeof stringifiedValue === 'string') {
+    return runWithCachedValue(coveredCases, nestedRun, value, skipRuns, stringifiedValue);
+  }
+  return stringifiedValue.then((resolved) => runWithCachedValue(coveredCases, nestedRun, value, skipRuns, resolved));
 }
 
 /**
