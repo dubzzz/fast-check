@@ -100,6 +100,22 @@ fc.check(fc.property(fc.nat(), (_n) => true)).then((out) => {
 // base arbitrary (chain)
 // Type of "chain" corresponds to the return type of the passed lambda
 expectTypeOf(fc.nat().chain((n) => fc.array(fc.string(), { maxLength: n }))).toEqualTypeOf<fc.Arbitrary<string[]>>();
+// "chain" accepts an unchainer receiving unknown and returning the source type
+expectTypeOf(
+  fc.nat().chain(
+    (n) => fc.constant(n.toString()),
+    (value) => {
+      expectTypeOf(value).toEqualTypeOf<unknown>();
+      if (typeof value !== 'string') throw new Error('Expected a string');
+      return Number(value);
+    },
+  ),
+).toEqualTypeOf<fc.Arbitrary<string>>();
+fc.nat().chain(
+  (n) => fc.constant(n.toString()),
+  // @ts-expect-error - The unchainer must return the source arbitrary's type
+  () => 'not a number',
+);
 // Type of "chain" corresponds to the return type of the passed lambda
 expectTypeOf(fc.constantFrom(1, 2, 3).chain((value) => fc.constant(value))).toEqualTypeOf<fc.Arbitrary<1 | 2 | 3>>();
 // Type of "chain" should not simplify the type to something more general (no "1 -> number" expected)
