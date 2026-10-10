@@ -21,7 +21,15 @@ describe('tokenizeRegex', () => {
     // @ts-expect-error Referencing non-existing group in Regex
     { regex: /\125/, invalidWithUnicode: true },
     { regex: /\x25/ },
+    { regex: new RegExp('\\x'), invalidWithUnicode: true },
+    { regex: new RegExp('\\xZ'), invalidWithUnicode: true },
+    { regex: new RegExp('\\x1'), invalidWithUnicode: true },
+    { regex: new RegExp('\\x1Z'), invalidWithUnicode: true },
     { regex: /\u0025/ },
+    { regex: new RegExp('\\u'), invalidWithUnicode: true },
+    { regex: new RegExp('\\uZ'), invalidWithUnicode: true },
+    { regex: new RegExp('\\u123'), invalidWithUnicode: true },
+    { regex: new RegExp('\\u123Z'), invalidWithUnicode: true },
     // @ts-expect-error Missing unicode mode on Regex
     { regex: /\u{1f431}/ },
     // @ts-expect-error Missing unicode mode on Regex
