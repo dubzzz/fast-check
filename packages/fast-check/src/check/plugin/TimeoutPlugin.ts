@@ -3,7 +3,7 @@ import type { PredicateExecutionContext } from '../property/types/PredicateExecu
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { UniversalPlugin } from './Plugin.js';
-import { mergeSignals } from './utils/Signals.js';
+import { mergeSignals, signalAsPromise } from './utils/Signals.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
@@ -45,8 +45,19 @@ function timeoutRunner(
     t.clear();
     return runOut;
   }
-  const propRun = Promise.race([runOut, t.promise]);
-  propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
+
+  if (executionContext.signal === undefined) {
+    const propRun = Promise.race([runOut, t.promise]);
+    propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
+    return propRun;
+  }
+  const sp = signalAsPromise(executionContext.signal);
+  const propRun = Promise.race([runOut, t.promise, sp.promise]);
+  const clear = () => {
+    t.clear();
+    sp.clear();
+  };
+  propRun.then(clear, clear); // always clear timeout handle - catch should never occur
   return propRun;
 }
 

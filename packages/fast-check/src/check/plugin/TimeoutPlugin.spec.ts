@@ -191,6 +191,33 @@ describe('TimeoutPlugin', () => {
     { outcome: 'failure', output: { error: new Error('plop') } },
     { outcome: 'precondition failure', output: new PreconditionFailure() },
   ])(
+    'should abort with $outcome from the original signal when it aborts before the timeout expires',
+    async ({ output }) => {
+      // Arrange
+      const controller = new AbortController();
+      const signalError = 'error' in output ? output.error : output;
+      const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValueOnce(
+        new Promise<null>((resolve) => {
+          setTimeout(() => resolve(null), 100); // predicate completes after 100 ms but ignores signals
+        }),
+      );
+      setTimeout(() => controller.abort(signalError), 10); // original signal aborts after 10 ms
+
+      // Act
+      const finalRun = await timeoutPluginRun(1000, nestedRun); // timeout fires after 1000 ms
+      const runPromise = finalRun({}, { signal: controller.signal });
+      vi.advanceTimersByTime(10); // trigger the orignal signal before the predicate completes or the timeout fires
+
+      // Assert
+      expect(nestedRun).toHaveBeenCalledTimes(1);
+      expect(await runPromise).toEqual(output);
+    },
+  );
+
+  it.each([
+    { outcome: 'failure', output: { error: new Error('plop') } },
+    { outcome: 'precondition failure', output: new PreconditionFailure() },
+  ])(
     'should preserve the original $outcome without executing the predicate when the signal is already aborted',
     async ({ output }) => {
       // Arrange
