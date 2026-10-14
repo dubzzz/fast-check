@@ -16,9 +16,10 @@ export function signalAsPromise(signal: AbortSignal): {
   clear: () => void;
 } {
   // oxlint-disable-next-line typescript/no-non-null-assertion
-  let onAbort: (value: unknown) => void = null!;
+  let onAbort: () => void = null!;
   const promise = new Promise<PreconditionFailure | PropertyFailure>((resolve) => {
-    onAbort = (reason: unknown) => {
+    onAbort = () => {
+      const reason = signal.reason;
       resolve(PreconditionFailure.isFailure(reason) ? reason : { error: reason });
       signal.removeEventListener('abort', onAbort);
     };
