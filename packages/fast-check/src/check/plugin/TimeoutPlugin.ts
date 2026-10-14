@@ -32,11 +32,12 @@ function timeoutRunner(
   executionContext: PredicateExecutionContext,
 ): ReturnType<typeof nestedRun> {
   const t = timeoutAfter(timeMs);
-  if (executionContext.signal !== undefined && executionContext.signal.aborted) {
-    if (PreconditionFailure.isFailure(executionContext.signal.reason)) {
-      return executionContext.signal.reason;
+  const signal = executionContext.signal;
+  if (signal !== undefined && signal.aborted) {
+    if (PreconditionFailure.isFailure(signal.reason)) {
+      return signal.reason;
     }
-    return { error: executionContext.signal.reason };
+    return { error: signal.reason };
   }
   const extendedExecutionContext = mergeSignals(executionContext, t.signal);
   const runOut = nestedRun(value, extendedExecutionContext);
@@ -46,12 +47,12 @@ function timeoutRunner(
     return runOut;
   }
 
-  if (executionContext.signal === undefined) {
+  if (signal === undefined) {
     const propRun = Promise.race([runOut, t.promise]);
     propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
     return propRun;
   }
-  const sp = signalAsPromise(executionContext.signal);
+  const sp = signalAsPromise(signal);
   const propRun = Promise.race([runOut, t.promise, sp.promise]);
   const clear = () => {
     t.clear();
