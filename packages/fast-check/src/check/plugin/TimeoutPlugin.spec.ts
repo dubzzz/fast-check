@@ -190,21 +190,24 @@ describe('TimeoutPlugin', () => {
   it.each([
     { outcome: 'failure', output: { error: new Error('plop') } },
     { outcome: 'precondition failure', output: new PreconditionFailure() },
-  ])('should forward the original $outcome signal and not execute the predicate', async ({ output }) => {
-    // Arrange
-    const controller = new AbortController();
-    const signalError = 'error' in output ? output.error : output;
-    const nestedRun = vi.fn<Property<unknown>['run']>();
+  ])(
+    'should preserve the original $outcome without executing the predicate when the signal is already aborted',
+    async ({ output }) => {
+      // Arrange
+      const controller = new AbortController();
+      const signalError = 'error' in output ? output.error : output;
+      const nestedRun = vi.fn<Property<unknown>['run']>();
 
-    // Act
-    controller.abort(signalError); // aborted before starting
-    const finalRun = await timeoutPluginRun(10, nestedRun);
-    const runPromise = finalRun({}, { signal: controller.signal });
+      // Act
+      controller.abort(signalError); // aborted before starting
+      const finalRun = await timeoutPluginRun(10, nestedRun);
+      const runPromise = finalRun({}, { signal: controller.signal });
 
-    // Assert
-    expect(nestedRun).not.toHaveBeenCalled();
-    expect(await runPromise).toEqual(output); // forward the signal: error is error, precondition issue is precondition issue
-  });
+      // Assert
+      expect(nestedRun).not.toHaveBeenCalled();
+      expect(await runPromise).toEqual(output); // forward the signal: error is error, precondition issue is precondition issue
+    },
+  );
 });
 
 // Helpers
