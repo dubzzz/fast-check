@@ -31,7 +31,6 @@ function timeoutRunner(
   value: unknown,
   executionContext: PredicateExecutionContext,
 ): ReturnType<typeof nestedRun> {
-  const t = timeoutAfter(timeMs);
   const signal = executionContext.signal;
   if (signal !== undefined && signal.aborted) {
     if (PreconditionFailure.isFailure(signal.reason)) {
@@ -39,6 +38,7 @@ function timeoutRunner(
     }
     return { error: signal.reason };
   }
+  const t = timeoutAfter(timeMs);
   const extendedExecutionContext = mergeSignals(executionContext, t.signal);
   const runOut = nestedRun(value, extendedExecutionContext);
   if (runOut === null || !('then' in runOut)) {
