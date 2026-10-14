@@ -26,7 +26,10 @@ describe('TimeoutPlugin', () => {
 
     // Assert
     expect(nestedRun).toHaveBeenCalledTimes(1);
-    expect(nestedRun).toHaveBeenCalledWith(expectedRunInput, executionContext);
+    expect(nestedRun).toHaveBeenCalledWith(
+      expectedRunInput,
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
   });
 
   it.each([
@@ -111,6 +114,87 @@ describe('TimeoutPlugin', () => {
     expect(setTimeout).toBeCalledTimes(1);
     expect(clearTimeout).toBeCalledTimes(1);
   });
+
+  it('should abort the signal as soon as we reach the timeout and consider the run as failed even if it ended at the same time', async () => {
+    // Arrange
+    const timeoutError = new Error(`Property timeout: exceeded limit of 10 milliseconds`);
+    const nestedRun = vi.fn<Property<unknown>['run']>(
+      (_, { signal }) =>
+        new Promise<null>((resolve) => {
+          if (signal !== undefined) {
+            const onAbort = () => {
+              resolve(null);
+              signal.removeEventListener('abort', onAbort);
+            };
+            signal.addEventListener('abort', onAbort);
+          }
+        }),
+    );
+
+    // Act
+    const finalRun = await timeoutPluginRun(10, nestedRun);
+    const runPromise = finalRun({}, {});
+    vi.advanceTimersByTime(10);
+
+    // Assert
+    expect(nestedRun).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    const signal = nestedRun.mock.calls[0][1].signal!;
+    expect(signal.aborted).toBe(true);
+    expect(signal.reason).toEqual(timeoutError);
+    expect(await runPromise).toEqual({ error: timeoutError });
+  });
+
+  it.each([
+    { outcome: 'failure', output: { error: new Error('plop') } },
+    { outcome: 'precondition failure', output: new PreconditionFailure() },
+  ])(
+    'should abort with $outcome from the original signal when it aborts before the timeout expires',
+    async ({ output }) => {
+      // Arrange
+      const controller = new AbortController();
+      const signalError = 'error' in output ? output.error : output;
+      const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValueOnce(
+        new Promise<null>((resolve) => {
+          setTimeout(() => resolve(null), 100); // predicate completes after 100 ms but ignores signals
+        }),
+      );
+      setTimeout(() => controller.abort(signalError), 10); // original signal aborts after 10 ms
+
+      // Act
+      const finalRun = await timeoutPluginRun(1000, nestedRun); // timeout fires after 1000 ms
+      const runPromise = finalRun({}, { signal: controller.signal });
+      vi.advanceTimersByTime(10); // trigger the orignal signal before the predicate completes or the timeout fires
+
+      // Assert
+      expect(nestedRun).toHaveBeenCalledTimes(1);
+      expect(await runPromise).toEqual(output);
+    },
+  );
+
+  it.each([
+    { outcome: 'failure', output: { error: new Error('plop') } },
+    { outcome: 'precondition failure', output: new PreconditionFailure() },
+  ])(
+    'should preserve the original $outcome without executing the predicate when the signal is already aborted',
+    async ({ output }) => {
+      // Arrange
+      const controller = new AbortController();
+      const signalError = 'error' in output ? output.error : output;
+      const nestedRun = vi.fn<Property<unknown>['run']>();
+
+      // Act
+      controller.abort(signalError); // aborted before starting
+      const finalRun = await timeoutPluginRun(10, nestedRun);
+      const runPromise = finalRun({}, { signal: controller.signal });
+
+      // Assert
+      expect(nestedRun).not.toHaveBeenCalled();
+      expect(await runPromise).toEqual(output); // forward the signal: error is error, precondition issue is precondition issue
+    },
+  );
 });
 
 // Helpers
