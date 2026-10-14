@@ -2,22 +2,25 @@ import type { PredicateExecutionContext } from '../property/types/PredicateExecu
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { UniversalPlugin } from './Plugin.js';
+import { mergeSignals } from './utils/Signals.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
 
 function timeoutAfter(timeMs: number) {
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
+  const abortController = new AbortController();
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = safeSetTimeout(() => {
-      resolve({
-        error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`),
-      });
+      const error = new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
+      resolve({ error });
+      abortController.abort(error);
     }, timeMs);
   });
   return {
     clear: () => safeClearTimeout(timeoutHandle),
     promise,
+    signal: abortController.signal,
   };
 }
 
@@ -28,7 +31,11 @@ function timeoutRunner(
   executionContext: PredicateExecutionContext,
 ): ReturnType<typeof nestedRun> {
   const t = timeoutAfter(timeMs);
-  const runOut = nestedRun(value, executionContext);
+  if (executionContext.signal !== undefined && executionContext.signal.aborted) {
+    return { error: executionContext.signal.reason };
+  }
+  const extendedExecutionContext = mergeSignals(executionContext, t.signal);
+  const runOut = nestedRun(value, extendedExecutionContext);
   if (runOut === null || !('then' in runOut)) {
     // synchronous run: it already came to an end, nothing to race against the timeout
     t.clear();
