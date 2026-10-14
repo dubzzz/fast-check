@@ -186,6 +186,25 @@ describe('TimeoutPlugin', () => {
       expect(await runPromise).toEqual(output); // same as the underying run
     },
   );
+
+  it.each([
+    { outcome: 'failure', output: { error: new Error('plop') } },
+    { outcome: 'precondition failure', output: new PreconditionFailure() },
+  ])('should forward the original $outcome signal and not execute the predicate', async ({ output }) => {
+    // Arrange
+    const controller = new AbortController();
+    const signalError = 'error' in output ? output.error : output;
+    const nestedRun = vi.fn<Property<unknown>['run']>();
+
+    // Act
+    controller.abort(signalError); // aborted before starting
+    const finalRun = await timeoutPluginRun(10, nestedRun);
+    const runPromise = finalRun({}, { signal: controller.signal });
+
+    // Assert
+    expect(nestedRun).not.toHaveBeenCalled();
+    expect(await runPromise).toEqual(output); // forward the signal: error is error, precondition issue is precondition issue
+  });
 });
 
 // Helpers

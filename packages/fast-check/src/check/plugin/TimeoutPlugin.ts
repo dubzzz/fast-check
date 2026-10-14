@@ -1,3 +1,4 @@
+import { PreconditionFailure } from 'fast-check';
 import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
@@ -32,6 +33,9 @@ function timeoutRunner(
 ): ReturnType<typeof nestedRun> {
   const t = timeoutAfter(timeMs);
   if (executionContext.signal !== undefined && executionContext.signal.aborted) {
+    if (PreconditionFailure.isFailure(executionContext.signal.reason)) {
+      return executionContext.signal.reason;
+    }
     return { error: executionContext.signal.reason };
   }
   const extendedExecutionContext = mergeSignals(executionContext, t.signal);
