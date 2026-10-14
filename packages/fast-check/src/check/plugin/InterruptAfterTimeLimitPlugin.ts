@@ -4,6 +4,7 @@ import type { Property } from '../property/types/Property.js';
 import type { RunDetailsFailureInterrupted, RunDetailsSuccess } from '../runner/reporter/RunDetails.js';
 import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
 import type { PluginInstance, UniversalPlugin } from './Plugin.js';
+import { mergeSignals, signalAsPromise } from './utils/Signals.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
@@ -18,23 +19,28 @@ type Interrupt = {
   expired: () => boolean;
   clear: () => void;
   promise: Promise<PreconditionFailure>;
+  signal: AbortSignal;
 };
 
 function interruptAfterDelay(timeMs: number, probe: Probe): Interrupt {
   const limitTime = safePerformanceNow() + timeMs;
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
+  const abortController = new AbortController();
   const promise = new Promise<PreconditionFailure>((resolve) => {
     timeoutHandle = safeSetTimeout(() => {
       if (probe.running) {
         probe.interruptedWhileRunning = true;
       }
-      resolve(new PreconditionFailure(true));
+      const preconditionFailure = new PreconditionFailure(true);
+      resolve(preconditionFailure);
+      abortController.abort(preconditionFailure);
     }, timeMs);
   });
   return {
     expired: () => safePerformanceNow() >= limitTime,
     clear: () => safeClearTimeout(timeoutHandle),
     promise,
+    signal: abortController.signal,
   };
 }
 
@@ -45,19 +51,33 @@ function timeLimitRunner(
   executionContext: PredicateExecutionContext,
   probe: Probe,
 ): ReturnType<typeof nestedRun> {
+  const signal = executionContext.signal;
+  if (signal !== undefined && signal.aborted) {
+    if (PreconditionFailure.isFailure(signal.reason)) {
+      return signal.reason;
+    }
+    return { error: signal.reason };
+  }
   probe.running = true;
   if (interrupt.expired()) {
     probe.interruptedWhileRunning = true;
     probe.running = false;
     return new PreconditionFailure(true);
   }
-  const runOut = nestedRun(value, executionContext);
+  const extendedExecutionContext = mergeSignals(executionContext, interrupt.signal);
+  const runOut = nestedRun(value, extendedExecutionContext);
   if (runOut === null || !('then' in runOut)) {
     probe.running = false;
     return runOut;
   }
   void runOut.finally(() => (probe.running = false));
-  return Promise.race([runOut, interrupt.promise]);
+  if (signal === undefined) {
+    return Promise.race([runOut, interrupt.promise]);
+  }
+  const sp = signalAsPromise(signal);
+  const raced = Promise.race([runOut, interrupt.promise, sp.promise]);
+  void runOut.finally(sp.clear);
+  return raced;
 }
 
 /**
