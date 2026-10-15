@@ -41,7 +41,7 @@ function defaultToggleCase(rawChar: string) {
  * @public
  */
 export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseConstraints): Arbitrary<string> {
-  const toggleCase = (constraints && constraints.toggleCase) || defaultToggleCase;
-  const untoggleAll = constraints && constraints.untoggleAll;
+  const toggleCase = constraints?.toggleCase ?? defaultToggleCase;
+  const untoggleAll = constraints?.untoggleAll;
   return new MixedCaseArbitrary(stringArb, toggleCase, untoggleAll);
 }

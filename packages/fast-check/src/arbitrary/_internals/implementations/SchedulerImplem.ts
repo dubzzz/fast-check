@@ -129,7 +129,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   }
 
   schedule<T>(task: Promise<T>, label?: string, metadata?: TMetaData, customAct?: SchedulerAct): Promise<T> {
-    return this.scheduleInternal('promise', label || '', task, metadata, customAct || defaultSchedulerAct);
+    return this.scheduleInternal('promise', label ?? '', task, metadata, customAct ?? defaultSchedulerAct);
   }
 
   scheduleFunction<TArgs extends any[], T>(
@@ -142,7 +142,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         `${asyncFunction.name}(${args.map(stringify).join(',')})`,
         asyncFunction(...args),
         undefined,
-        customAct || defaultSchedulerAct,
+        customAct ?? defaultSchedulerAct,
       );
   }
 
@@ -192,7 +192,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           label,
           dummyResolvedPromise,
           metadata,
-          customAct || defaultSchedulerAct,
+          customAct ?? defaultSchedulerAct,
           () => builder(),
         );
         registerNextBuilder(index + 1, scheduled);
@@ -231,7 +231,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   }
 
   waitOne(customAct?: SchedulerAct): Promise<void> {
-    const waitAct = customAct || defaultSchedulerAct;
+    const waitAct = customAct ?? defaultSchedulerAct;
     const waitOneResult: Promise<unknown> = this.act(() => waitAct(() => this.internalWaitOne()));
     return waitOneResult as Promise<void>;
   }

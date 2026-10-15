@@ -136,7 +136,7 @@ function simpleChar(char: string, escaped?: true): CharRegexToken {
     kind: 'simple',
     symbol: char,
     value: char,
-    codePoint: char.codePointAt(0) || -1,
+    codePoint: char.codePointAt(0) ?? -1,
     escaped,
   };
 }
@@ -150,7 +150,7 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
     kind: 'meta',
     symbol, // eg.: \t
     value: block, // eg.: \\t
-    codePoint: symbol.codePointAt(0) || -1,
+    codePoint: symbol.codePointAt(0) ?? -1,
   };
 }
 
@@ -262,7 +262,7 @@ function pushTokens(
         if (disjunctions === null) {
           disjunctions = [];
         }
-        disjunctions.push(toSingleToken(tokens.splice(0), true) || null);
+        disjunctions.push(toSingleToken(tokens.splice(0), true) ?? null);
         break;
       }
       case '.': {
@@ -429,7 +429,7 @@ function pushTokens(
           tokens.push({
             type: 'Backreference',
             kind: 'name',
-            number: groups.named.get(referenceRaw) || 0,
+            number: groups.named.get(referenceRaw) ?? 0,
             referenceRaw,
             reference: referenceRaw,
           });
@@ -441,7 +441,7 @@ function pushTokens(
     }
   }
   if (disjunctions !== null) {
-    disjunctions.push(toSingleToken(tokens.splice(0), true) || null);
+    disjunctions.push(toSingleToken(tokens.splice(0), true) ?? null);
     let currentDisjunction: DisjunctionRegexToken = {
       type: 'Disjunction',
       left: disjunctions[0],

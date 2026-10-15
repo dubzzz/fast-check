@@ -35,7 +35,7 @@ export function refineConstraintsForFloatingOnly(
     maxExcluded: maxExcluded || ((max !== Number.POSITIVE_INFINITY || maxExcluded) && Number.isInteger(effectiveMax)),
     min: Object.is(effectiveMin, -0) ? 0 : effectiveMin,
     max: Object.is(effectiveMax, 0) ? -0 : effectiveMax,
-    noNaN: constraints.noNaN || false,
+    noNaN: constraints.noNaN ?? false,
   };
   return fullConstraints;
 }

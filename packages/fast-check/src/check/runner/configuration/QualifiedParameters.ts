@@ -31,8 +31,7 @@ export class QualifiedParameters<T> {
   includeErrorInReport: boolean;
   plugins: Plugin<T>[];
 
-  constructor(op?: Parameters<T>) {
-    const p = op || {};
+  constructor(p: Parameters<T> = {}) {
     this.seed = readSeed(p);
     this.randomType = readRandomType(p);
     this.numRuns = readNumRuns(p);

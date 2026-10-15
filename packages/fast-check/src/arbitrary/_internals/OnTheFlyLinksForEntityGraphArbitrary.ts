@@ -249,7 +249,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
     const countInTargetType = lastProducedLinks[targetType].length;
     const linkOrLinksArbitrary = buildLinkIndexArbitrary(
       relation.arity,
-      relation.strategy || 'any',
+      relation.strategy ?? 'any',
       targetType === currentEntity.type ? currentEntity.indexInType : undefined,
       countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
       currentEntityDepth,

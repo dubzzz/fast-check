@@ -23,8 +23,7 @@ export interface SchedulerConstraints {
  * @public
  */
 export function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arbitrary<Scheduler<TMetaData>> {
-  const { act = (f: () => Promise<void>) => f() } = constraints || {};
-  return new SchedulerArbitrary<TMetaData>(act);
+  return new SchedulerArbitrary<TMetaData>(constraints?.act ?? ((f) => f()));
 }
 
 /**
@@ -92,8 +91,8 @@ function schedulerFor<TMetaData = unknown>(
 ): Scheduler<TMetaData> | ((_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>) {
   // Extract passed constraints
   const { act = (f: () => Promise<void>) => f() } = Array.isArray(customOrderingOrConstraints)
-    ? constraintsOrUndefined || {}
-    : customOrderingOrConstraints || {};
+    ? (constraintsOrUndefined ?? {})
+    : (customOrderingOrConstraints ?? {});
 
   if (Array.isArray(customOrderingOrConstraints)) {
     return buildSchedulerFor(act, customOrderingOrConstraints);

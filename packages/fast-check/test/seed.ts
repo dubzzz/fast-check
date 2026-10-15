@@ -1,7 +1,7 @@
 import * as process from 'process';
 import * as fc from 'fast-check';
 
-const globalConfig = fc.readConfigureGlobal() || {};
+const globalConfig = fc.readConfigureGlobal();
 const globalSeed = globalConfig.seed;
 
 if (process.env.CI && globalSeed === undefined) {

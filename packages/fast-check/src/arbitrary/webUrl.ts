@@ -60,22 +60,21 @@ export interface WebUrlConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
-  const c = constraints || {};
-  const resolvedSize = resolveSize(c.size);
+export function webUrl(constraints: WebUrlConstraints = {}): Arbitrary<string> {
+  const resolvedSize = resolveSize(constraints.size);
   const resolvedAuthoritySettingsSize =
-    c.authoritySettings !== undefined && c.authoritySettings.size !== undefined
-      ? relativeSizeToSize(c.authoritySettings.size, resolvedSize)
+    constraints.authoritySettings !== undefined && constraints.authoritySettings.size !== undefined
+      ? relativeSizeToSize(constraints.authoritySettings.size, resolvedSize)
       : resolvedSize;
-  const resolvedAuthoritySettings = { ...c.authoritySettings, size: resolvedAuthoritySettingsSize };
-  const validSchemes = c.validSchemes || ['http', 'https'];
+  const resolvedAuthoritySettings = { ...constraints.authoritySettings, size: resolvedAuthoritySettingsSize };
+  const validSchemes = constraints.validSchemes ?? ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);
   const authorityArb = webAuthority(resolvedAuthoritySettings);
   return tuple(
     schemeArb,
     authorityArb,
     webPath({ size: resolvedSize }),
-    c.withQueryParameters === true ? option(webQueryParameters({ size: resolvedSize })) : constant(null),
-    c.withFragments === true ? option(webFragments({ size: resolvedSize })) : constant(null),
+    constraints.withQueryParameters === true ? option(webQueryParameters({ size: resolvedSize })) : constant(null),
+    constraints.withFragments === true ? option(webFragments({ size: resolvedSize })) : constant(null),
   ).map(partsToUrlMapper, partsToUrlUnmapper);
 }

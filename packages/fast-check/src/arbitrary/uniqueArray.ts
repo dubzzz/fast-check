@@ -29,7 +29,7 @@ function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T,
       comparator(refinedSelector(nextA), refinedSelector(nextB));
     return () => new CustomEqualSet(isEqualForBuilder);
   }
-  const selector = constraints.selector || ((v) => v);
+  const selector = constraints.selector ?? ((v) => v);
   const refinedSelector = (next: Value<T>) => selector(next.value_);
   switch (constraints.comparator) {
     case 'IsStrictlyEqual':

@@ -117,7 +117,7 @@ export function maxGeneratedLengthFromSizeForArbitrary(
   maxLength: number,
   specifiedMaxLength: boolean,
 ): number {
-  const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified } = readConfigureGlobal() || {};
+  const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified } = readConfigureGlobal();
 
   // Resulting size is:
   // - If size has been defined, we use it,
@@ -143,7 +143,7 @@ export function depthBiasFromSizeForArbitrary(depthSizeOrSize: DepthSize, specif
   if (typeof depthSizeOrSize === 'number') {
     return 1 / depthSizeOrSize;
   }
-  const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified } = readConfigureGlobal() || {};
+  const { baseSize: defaultSize = DefaultSize, defaultSizeToMaxWhenMaxSpecified } = readConfigureGlobal();
   const definedSize =
     depthSizeOrSize !== undefined
       ? depthSizeOrSize
@@ -173,7 +173,7 @@ export function depthBiasFromSizeForArbitrary(depthSizeOrSize: DepthSize, specif
  * @param size - Size defined by the caller on the arbitrary
  */
 export function resolveSize(size: Exclude<SizeForArbitrary, 'max'> | undefined): Size {
-  const { baseSize: defaultSize = DefaultSize } = readConfigureGlobal() || {};
+  const { baseSize: defaultSize = DefaultSize } = readConfigureGlobal();
   if (size === undefined) {
     return defaultSize;
   }

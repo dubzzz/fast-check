@@ -120,8 +120,8 @@ export function entityGraph<TEntityFields, TEntityRelations extends EntityRelati
   constraints: EntityGraphConstraints<TEntityFields> = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
   const allKeys = Object.keys(arbitraries) as (keyof typeof arbitraries)[];
-  const initialPoolConstraints = constraints.initialPoolConstraints || Object.create(null);
-  const unicityConstraints = constraints.unicityConstraints || Object.create(null);
+  const initialPoolConstraints = constraints.initialPoolConstraints ?? Object.create(null);
+  const unicityConstraints = constraints.unicityConstraints ?? Object.create(null);
   const unlinkedContraints = { noNullPrototype: constraints.noNullPrototype };
 
   return (

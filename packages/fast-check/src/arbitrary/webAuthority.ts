@@ -95,18 +95,17 @@ export interface WebAuthorityConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<string> {
-  const c = constraints || {};
-  const size = c.size;
+export function webAuthority(constraints: WebAuthorityConstraints = {}): Arbitrary<string> {
+  const size = constraints.size;
   const hostnameArbs = [
     domain({ size }),
-    ...(c.withIPv4 === true ? [ipV4()] : []),
-    ...(c.withIPv6 === true ? [ipV6().map(bracketedMapper, bracketedUnmapper)] : []),
-    ...(c.withIPv4Extended === true ? [ipV4Extended()] : []),
+    ...(constraints.withIPv4 === true ? [ipV4()] : []),
+    ...(constraints.withIPv6 === true ? [ipV6().map(bracketedMapper, bracketedUnmapper)] : []),
+    ...(constraints.withIPv4Extended === true ? [ipV4Extended()] : []),
   ];
   return tuple(
-    c.withUserInfo === true ? option(hostUserInfo(size)) : constant(null),
+    constraints.withUserInfo === true ? option(hostUserInfo(size)) : constant(null),
     oneof(...hostnameArbs),
-    c.withPort === true ? option(nat(65535)) : constant(null),
+    constraints.withPort === true ? option(nat(65535)) : constant(null),
   ).map(userHostPortMapper, userHostPortUnmapper);
 }

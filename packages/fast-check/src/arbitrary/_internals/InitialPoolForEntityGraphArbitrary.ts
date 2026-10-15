@@ -12,7 +12,7 @@ function canHaveAtLeastOneItem<TEntityNames extends PropertyKey>(
   constraints: InitialPoolForEntityGraphConstraints<TEntityNames>,
 ): boolean {
   for (const key of keys) {
-    const constraintsOnKey = constraints[key] || {};
+    const constraintsOnKey = constraints[key] ?? {};
     if (constraintsOnKey.maxLength === undefined || constraintsOnKey.maxLength > 0) {
       return true;
     }

@@ -95,7 +95,7 @@ function statistics<Ts>(
     const out = classify(g);
     const categories: string[] = Array.isArray(out) ? out : [out];
     for (const c of categories) {
-      recorded[c] = (recorded[c] || 0) + 1;
+      recorded[c] = (recorded[c] ?? 0) + 1;
     }
   }
   const data = Object.entries(recorded)
