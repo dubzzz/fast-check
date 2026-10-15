@@ -6,7 +6,7 @@ import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
 import { PreconditionFailure } from 'fast-check';
-import type { UniversalPlugin } from 'fast-check';
+import type { PredicateExecutionContext, UniversalPlugin } from 'fast-check';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -37,21 +37,44 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Payload<Ts>> | undefined = undefined;
+  let removeAbortListener: (() => void) | undefined = undefined;
   const property = buildWorkerProperty(
     arbitraries,
     async (...inputs) => {
-      return new Promise((resolve, reject) => {
-        if (worker === undefined) {
-          reject(new Error('Badly initialized worker, unable to run the property'));
-          return;
+      const executionContext = inputs[arbitraries.length] as PredicateExecutionContext | undefined;
+      const signal = executionContext?.signal;
+      let onAbort: (() => void) | undefined = undefined;
+      const clearAbortListener = () => {
+        if (signal !== undefined && onAbort !== undefined) {
+          signal.removeEventListener('abort', onAbort);
+          onAbort = undefined;
         }
-        const generatedInputs = (
-          inputs.length === arbitraries.length ? inputs : inputs.slice(0, arbitraries.length)
-        ) as Ts;
-        worker.register(predicateId, property.getPayload(generatedInputs), resolve, reject, () =>
-          reject(new PreconditionFailure()),
-        );
-      });
+      };
+      try {
+        return await new Promise<boolean | void>((resolve, reject) => {
+          if (worker === undefined) {
+            reject(new Error('Badly initialized worker, unable to run the property'));
+            return;
+          }
+          if (signal !== undefined) {
+            if (signal.aborted) {
+              reject(signal.reason);
+              return;
+            }
+            onAbort = () => reject(signal.reason);
+            signal.addEventListener('abort', onAbort, { once: true });
+            removeAbortListener = clearAbortListener;
+          }
+          const generatedInputs = (
+            inputs.length === arbitraries.length ? inputs : inputs.slice(0, arbitraries.length)
+          ) as Ts;
+          worker.register(predicateId, property.getPayload(generatedInputs), resolve, reject, () =>
+            reject(new PreconditionFailure()),
+          );
+        });
+      } finally {
+        clearAbortListener();
+      }
     },
     randomSource === 'worker',
   );
@@ -68,6 +91,10 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
         } catch (error) {
           return { error };
         } finally {
+          if (removeAbortListener !== undefined) {
+            removeAbortListener();
+            removeAbortListener = undefined;
+          }
           if (worker !== undefined) {
             worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
             worker = undefined;
