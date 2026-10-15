@@ -11,18 +11,6 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
-// assert (reporter)
-// Accept a reporter featuring the right types
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), fc.string(), (_a, _b) => {}),
-    { reporter: (_out: fc.RunDetails<[number, string]>) => {} },
-  ),
-).toEqualTypeOf<Promise<void>>();
-// prettier-ignore
-// @ts-expect-error - Reporter must be compatible with generated values
-fc.assert(fc.property(fc.nat(), fc.string(), (_a, _b) => {}), { reporter: (_out: fc.RunDetails<[number]>) => {} });
-
 // property
 // "property" instantiates instances compatible with Property
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
@@ -444,12 +432,6 @@ expectTypeOf(fc.falsy({ withBigInt: false })).toEqualTypeOf<
 expectTypeOf(fc.falsy({ withBigInt: true })).toEqualTypeOf<
   fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>
 >();
-
-// configureGlobal
-// "configureGlobal" with custom reporter
-expectTypeOf(fc.configureGlobal({ reporter: (_out: fc.RunDetails<unknown>) => {} })).toEqualTypeOf<void>();
-// FIXME // @ts-expect-error - reporter cannot be defined with precise type on configureGlobal
-//fc.configureGlobal({ reporter: (out: fc.RunDetails<[number]>) => {} });
 
 // plugins
 declare function universalPlugin(): fc.UniversalPlugin;

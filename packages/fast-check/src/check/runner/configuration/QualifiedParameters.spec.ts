@@ -21,7 +21,6 @@ const parametersArbitrary = fc.record(
     verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
     examples: fc.array(fc.nat()),
     endOnFailure: fc.boolean(),
-    reporter: fc.func(fc.constant(Promise.resolve(undefined))),
     includeErrorInReport: fc.boolean(),
     plugins: fc.constant([] satisfies Plugin<any>[]),
   },
