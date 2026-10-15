@@ -27,12 +27,13 @@ function adaptParametersForRecord<Ts>(
   const parametersV3OrV4: FcParameters<[Ts]> & { errorWithCause?: boolean } = parameters;
   const enrichedParameters: FcParameters<Ts> & {
     errorWithCause: boolean;
+    reporter: ((runDetails: RunDetails<Ts>) => void) | undefined;
     asyncReporter: ((runDetails: RunDetails<Ts>) => Promise<void>) | undefined;
   } = {
     ...(parameters as Required<FcParameters<[Ts]>>),
     errorWithCause: parametersV3OrV4.errorWithCause !== undefined ? parametersV3OrV4.errorWithCause : true,
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
-    reporter: originalParamaters.reporter,
+    reporter: (originalParamaters as any).reporter,
     asyncReporter: (originalParamaters as any).asyncReporter,
     plugins: originalParamaters.plugins,
   };
@@ -129,7 +130,10 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     return (testName: string, prop: Prop<Ts>, timeout?: number) => {
       const recordArb = record<Ts>(arbitraries);
       const recordParams:
-        | (FcParameters<[TsParameters]> & { asyncReporter?: (runDetails: RunDetails<[TsParameters]>) => Promise<void> })
+        | (FcParameters<[TsParameters]> & {
+            reporter?: (runDetails: RunDetails<[TsParameters]>) => void;
+            asyncReporter?: (runDetails: RunDetails<[TsParameters]>) => Promise<void>;
+          })
         | undefined =
         params !== undefined
           ? {
@@ -139,9 +143,9 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
               examples:
                 params.examples !== undefined ? params.examples.map((example): [TsParameters] => [example]) : undefined,
               reporter:
-                params.reporter !== undefined
+                (params as any).reporter !== undefined
                   ? // oxlint-disable-next-line typescript/no-non-null-assertion
-                    (runDetails) => params.reporter!(adaptRunDetailsForRecord(runDetails, params))
+                    (runDetails) => (params as any).reporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
               asyncReporter:
                 (params as any).asyncReporter !== undefined

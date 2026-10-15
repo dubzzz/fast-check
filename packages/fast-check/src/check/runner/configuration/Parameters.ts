@@ -1,5 +1,4 @@
 import type { VerbosityLevel } from './VerbosityLevel.js';
-import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from '../../../random/generator/RandomGenerator.js';
 import type { Plugin } from '../../plugin/Plugin.js';
 
@@ -88,31 +87,6 @@ export interface Parameters<T = void> {
    * @remarks Since 1.11.0
    */
   endOnFailure?: boolean;
-  /**
-   * Replace the default reporter handling errors by a custom one
-   *
-   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
-   * But you may want to change this behaviour in yours.
-   *
-   * Only used when calling {@link assert}
-   *
-   * @example
-   * ```typescript
-   * // Prefer a plugin relying on the `onAllRunsComplete` hook.
-   * const reporterPlugin: fc.Plugin<unknown> = () => ({
-   *   onAllRunsComplete: (runDetails) => {
-   *     if (runDetails.failed) {
-   *       throw new Error(fc.defaultReportMessage(runDetails));
-   *     }
-   *   },
-   * });
-   * fc.assert(property, { plugins: [reporterPlugin] });
-   * ```
-   *
-   * @remarks Since 1.25.0
-   * @deprecated Prefer a plugin relying on the `onAllRunsComplete` hook: `fc.assert(property, { plugins: [reporterPlugin] })`
-   */
-  reporter?: (runDetails: RunDetails<T>) => Promise<void> | void;
   /**
    * By default the Error causing the failure of the predicate will not be directly exposed within the message
    * of the Error thown by fast-check. It will be exposed by a cause field attached to the Error.

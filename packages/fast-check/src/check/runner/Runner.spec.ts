@@ -13,14 +13,6 @@ import type { Property } from '../property/types/Property.js';
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
-    it('Should not throw if reporter is specified on asynchronous properties', () => {
-      const p: Property<[number]> = {
-        generate: () => new Value([0], undefined),
-        shrink: () => nil,
-        run: () => null,
-      };
-      expect(() => check(p, { reporter: () => {} })).not.toThrowError(); // no sync throw
-    });
     it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
