@@ -101,7 +101,7 @@ jobs:
       - name: Create bundles
         run: node --run pack
       - name: Upload production packages
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -206,7 +206,7 @@ jobs:
             pnpm run test --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           fi
       - name: Upload coverage
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: env.ENABLE_COVERAGE == 'true'
         with:
           name: 'coverage-${{matrix.shard-id}}'
@@ -316,7 +316,7 @@ jobs:
       - name: Copy raw logo within documentation
         run: cp website/static/img/logo.png website/build/assets/images/logo.png
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: website
           path: website/build/
@@ -492,7 +492,7 @@ jobs:
           export DEFAULT_SEED="0"
           node --run bench:ci 2>&1 | tee bench-output.txt
       - name: Upload bench results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bench-output
           path: bench-output.txt
