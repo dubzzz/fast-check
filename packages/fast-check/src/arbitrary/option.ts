@@ -5,6 +5,8 @@ import { FrequencyArbitrary } from './_internals/FrequencyArbitrary.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength.js';
 
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
+
 /**
  * Constraints to be applied on {@link option}
  * @remarks Since 2.2.0
@@ -62,6 +64,9 @@ export function option<T, TNil = null>(
 ): Arbitrary<T | TNil> {
   const freq = constraints.freq === undefined ? 6 : constraints.freq;
   const nilValue = Object.prototype.hasOwnProperty.call(constraints, 'nil') ? constraints.nil : (null as any);
+  if (freq === safePositiveInfinity) {
+    return arb as Arbitrary<T | TNil>;
+  }
   const nilArb = constant(nilValue);
   const weightedArbs = [
     { arbitrary: nilArb, weight: 1, fallbackValue: { default: nilValue } },
