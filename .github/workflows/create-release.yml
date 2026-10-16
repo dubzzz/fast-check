@@ -55,13 +55,29 @@ jobs:
             core.setOutput('changelog', changelog);
       - name: Create GitHub Release
         if: ${{ github.event.inputs.dry_run != 'true' }}
-        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
-        with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: ${{ steps.changelog.outputs.release_name }}
-          body: ${{ steps.changelog.outputs.changelog }}
-          draft: true
-          make_latest: "${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}"
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ steps.changelog.outputs.tag }}
+          RELEASE_NAME: ${{ steps.changelog.outputs.release_name }}
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
+          MAKE_LATEST: "${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}"
+        run: |
+          error_file="$(mktemp)"
+          trap 'rm -f "$error_file"' EXIT
+          if gh release view "$TAG" --json tagName > /dev/null 2>"$error_file"; then
+            release_command=edit
+            release_args=()
+          elif grep -Fxq 'release not found' "$error_file"; then
+            release_command=create
+            release_args=(--draft)
+          else
+            cat "$error_file" >&2
+            exit 1
+          fi
+          printf '%s' "$CHANGELOG" | gh release "$release_command" "$TAG" "${release_args[@]}" \
+            --title "$RELEASE_NAME" --notes-file - --latest="$MAKE_LATEST"
       - name: Push tag
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
