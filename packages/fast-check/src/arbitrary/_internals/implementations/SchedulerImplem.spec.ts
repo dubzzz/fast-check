@@ -1719,7 +1719,11 @@ describe('SchedulerImplem', () => {
       const act = (f: () => Promise<void>) => f();
       const nextTaskIndex1 = vi.fn().mockReturnValueOnce(2).mockReturnValueOnce(1).mockReturnValueOnce(0);
       const nextTaskIndex2 = vi.fn().mockReturnValueOnce(2).mockReturnValueOnce(1).mockReturnValueOnce(0);
-      const taskSelector2: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: nextTaskIndex2 };
+      const taskSelector3: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: nextTaskIndex2 };
+      const taskSelector2: TaskSelector<unknown> = {
+        clone: vi.fn().mockReturnValueOnce(taskSelector3),
+        nextTaskIndex: vi.fn(),
+      };
       const taskSelector1: TaskSelector<unknown> = {
         clone: vi.fn().mockReturnValueOnce(taskSelector2),
         nextTaskIndex: nextTaskIndex1,
@@ -1742,6 +1746,7 @@ describe('SchedulerImplem', () => {
 
       // Assert
       expect(then1Function.mock.calls).toEqual(then2Function.mock.calls);
+      expect(taskSelector2.nextTaskIndex).not.toHaveBeenCalled();
     });
 
     it('should attach passed metadata into the report', async () => {

@@ -54,7 +54,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     (this as unknown as WithCloneMethod<unknown>)[cloneMethod] = function (
       this: SchedulerImplem<TMetaData>,
     ): Scheduler<TMetaData> {
-      return new SchedulerImplem(this.act, this.sourceTaskSelector);
+      return new SchedulerImplem(this.act, this.sourceTaskSelector.clone());
     };
   }
 
