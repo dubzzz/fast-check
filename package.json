@@ -56,7 +56,7 @@
     "oxlint": "^1.86.0",
     "oxlint-tsgolint": "^7.0.2003",
     "pkg-pr-new": "^0.0.88",
-    "publint": "^0.3.24",
+    "publint": "^0.3.25",
     "rolldown": "^1.2.11",
     "rolldown-plugin-dts": "^0.28.6",
     "typescript": "~7.0.2",
