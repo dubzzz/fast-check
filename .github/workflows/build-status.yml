@@ -7,7 +7,7 @@ on:
       - 'next-*_*_*'
       - 'fix-v*'
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [opened, synchronize, reopened]
     branches:
       - main
       - 'next-*_*_*'
@@ -24,7 +24,6 @@ jobs:
   # Root jobs
   warmup_pnpm_cache:
     name: 'Warm up pnpm cache (Linux)'
-    if: &warmup_condition github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
     runs-on: ubuntu-latest
     steps: &warmup_steps
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -43,12 +42,10 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
   warmup_pnpm_cache_macos:
     name: 'Warm up pnpm cache (macOS)'
-    if: *warmup_condition
     runs-on: macos-latest
     steps: *warmup_steps
   warmup_pnpm_cache_windows:
     name: 'Warm up pnpm cache (Windows)'
-    if: *warmup_condition
     runs-on: windows-latest
     steps: *warmup_steps
 
