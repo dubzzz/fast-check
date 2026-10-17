@@ -223,7 +223,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   examples:
     devDependencies:
@@ -249,8 +249,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/fast-check
       happy-dom:
-        specifier: ^20.14.6
-        version: 20.14.6
+        specifier: ^21.0.3
+        version: 21.0.3
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -268,7 +268,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/ava:
     dependencies:
@@ -299,7 +299,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/fast-check:
     dependencies:
@@ -330,7 +330,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/jest:
     dependencies:
@@ -373,7 +373,7 @@ importers:
         version: 8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/packaged:
     dependencies:
@@ -398,7 +398,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/poisoning:
     devDependencies:
@@ -416,7 +416,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/vitest:
     dependencies:
@@ -441,7 +441,7 @@ importers:
         version: 8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)
       vitest:
         specifier: ^5.0.0
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   packages/worker:
     dependencies:
@@ -463,7 +463,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   website:
     dependencies:
@@ -551,7 +551,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+        version: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
 packages:
 
@@ -6215,8 +6215,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happy-dom@20.14.6:
-    resolution: {integrity: sha512-5DDsf4QmEIlRL6NkCv/fxSjYHHkZceL/IaYQdJc2h3G7DRTEai++VTjbfL0LB9geW2VrA3+vrjF3Efx+OTtX0Q==}
+  happy-dom@21.0.3:
+    resolution: {integrity: sha512-PesNgu5BnIEmAwzKGewB3K1ORFeznFZJ4JrRz89ea1wkHnxskdpzX9sN/+zb4KO6k8oSMhyJSj/cwXAFrYBBNA==}
     engines: {node: '>=20.0.0'}
 
   has-bigints@1.1.0:
@@ -14888,7 +14888,7 @@ snapshots:
       obug: 2.2.1
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
+      vitest: 5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
 
   '@vitest/istanbul-lib-coverage@1.0.2': {}
 
@@ -17093,7 +17093,7 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happy-dom@20.14.6:
+  happy-dom@21.0.3:
     dependencies:
       '@types/node': 24.19.2
       '@types/whatwg-mimetype': 3.0.2
@@ -21430,7 +21430,7 @@ snapshots:
       terser: 5.46.2
       yaml: 2.9.0
 
-  vitest@5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.6)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)):
+  vitest@5.0.3(@types/node@24.19.2)(@vitest/coverage-v8@5.0.3)(happy-dom@21.0.3)(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0)):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/mocker': 5.0.3(vite@8.3.1(@types/node@24.19.2)(jiti@1.21.7)(terser@5.46.2)(yaml@2.9.0))
@@ -21449,7 +21449,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.19.2
       '@vitest/coverage-v8': 5.0.3(vitest@5.0.3)
-      happy-dom: 20.14.6
+      happy-dom: 21.0.3
     transitivePeerDependencies:
       - msw
 
