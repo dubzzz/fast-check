@@ -419,7 +419,7 @@ function pushTokens(
           tokens.push({ type: 'Assertion', kind: block });
         } else if (block[0] === '\\' && isDigit(block[1])) {
           const reference = Number(block.substring(1));
-          if (unicodeMode || reference <= groups.lastIndex) {
+          if (reference !== 0 && (unicodeMode || reference <= groups.lastIndex)) {
             tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
           } else {
             tokens.push(blockToCharToken(block));

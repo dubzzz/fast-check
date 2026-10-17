@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from './stringMatching.js';
 
@@ -14,6 +14,17 @@ describe('stringMatching (integration)', () => {
 
   // isCorrect has to clone the instance of RegExp to make sure not to depend on its internal state
   const isCorrect = (value: string, extra: Extra) => new RegExp(extra.regex.source, extra.regex.flags).test(value);
+
+  it.each([
+    { source: '^\\0$', expected: '\0' },
+    { source: '^(a)\\0$', expected: 'a\0' },
+  ])('should generate $expected from a NUL escape in $source', ({ source, expected }) => {
+    for (const flags of ['', 'u']) {
+      const arb = stringMatching(new RegExp(source, flags));
+
+      expect(fc.sample(arb, { seed: 42, numRuns: 10 })).toEqual(Array(10).fill(expected));
+    }
+  });
 
   it('should produce the same values given the same seed', async () => {
     await assertProduceSameValueGivenSameSeed(stringMatchingBuilder, { extraParameters });
