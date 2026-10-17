@@ -136,46 +136,18 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
             if (!unicodeMode) {
               return from + 2;
             }
-            if (text[from + 4] === '}') {
-              if (isHexaDigit(text[from + 3])) {
-                return from + 5;
-              }
-              throw new Error(`Unexpected token '${text.substring(from, from + 5)}' found`);
-            }
-            if (text[from + 5] === '}') {
-              if (isHexaDigit(text[from + 3]) && isHexaDigit(text[from + 4])) {
-                return from + 6;
-              }
-              throw new Error(`Unexpected token '${text.substring(from, from + 6)}' found`);
-            }
-            if (text[from + 6] === '}') {
-              if (isHexaDigit(text[from + 3]) && isHexaDigit(text[from + 4]) && isHexaDigit(text[from + 5])) {
-                return from + 7;
-              }
-              throw new Error(`Unexpected token '${text.substring(from, from + 7)}' found`);
-            }
-            if (text[from + 7] === '}') {
-              if (
-                isHexaDigit(text[from + 3]) &&
-                isHexaDigit(text[from + 4]) &&
-                isHexaDigit(text[from + 5]) &&
-                isHexaDigit(text[from + 6])
-              ) {
-                return from + 8;
-              }
-              throw new Error(`Unexpected token '${text.substring(from, from + 8)}' found`);
+            let end = from + 3;
+            while (isHexaDigit(text[end])) {
+              ++end;
             }
             if (
-              text[from + 8] === '}' &&
-              isHexaDigit(text[from + 3]) &&
-              isHexaDigit(text[from + 4]) &&
-              isHexaDigit(text[from + 5]) &&
-              isHexaDigit(text[from + 6]) &&
-              isHexaDigit(text[from + 7])
+              end === from + 3 ||
+              text[end] !== '}' ||
+              Number.parseInt(text.substring(from + 3, end), 16) > 0x10ffff
             ) {
-              return from + 9;
+              throw new Error(`Unexpected token '${text.substring(from, end + 1)}' found`);
             }
-            throw new Error(`Unexpected token '${text.substring(from, from + 9)}' found`);
+            return end + 1;
           }
           if (
             isHexaDigit(text[from + 2]) &&
