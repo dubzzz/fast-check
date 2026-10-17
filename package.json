@@ -54,7 +54,7 @@
     "cross-env": "^10.1.0",
     "oxfmt": "^0.71.0",
     "oxlint": "^1.86.0",
-    "oxlint-tsgolint": "^7.0.2003",
+    "oxlint-tsgolint": "^7.0.2004",
     "pkg-pr-new": "^0.0.88",
     "publint": "^0.3.25",
     "rolldown": "^1.2.11",
