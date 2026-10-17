@@ -22,6 +22,9 @@ describe('tokenizeRegex', () => {
     { regex: /\125/, invalidWithUnicode: true },
     { regex: /\x25/ },
     { regex: /\u0025/ },
+    { regex: /\uD83D\uDC31/ },
+    { regex: /\uD83D\uDC31+/ },
+    { regex: /[\uD83D\uDC31-\uD83D\uDC34]/u },
     // @ts-expect-error Missing unicode mode on Regex
     { regex: /\u{1f431}/ },
     // @ts-expect-error Missing unicode mode on Regex
