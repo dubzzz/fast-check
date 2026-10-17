@@ -136,7 +136,7 @@ function simpleChar(char: string, escaped?: true): CharRegexToken {
     kind: 'simple',
     symbol: char,
     value: char,
-    codePoint: char.codePointAt(0) || -1,
+    codePoint: char.codePointAt(0) ?? -1,
     escaped,
   };
 }
@@ -150,7 +150,7 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
     kind: 'meta',
     symbol, // eg.: \t
     value: block, // eg.: \\t
-    codePoint: symbol.codePointAt(0) || -1,
+    codePoint: symbol.codePointAt(0) ?? -1,
   };
 }
 
