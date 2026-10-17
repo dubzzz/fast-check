@@ -13,9 +13,9 @@ import { SchedulerImplem } from './implementations/SchedulerImplem.js';
 function buildNextTaskIndex<TMetaData>(mrng: Random): TaskSelector<TMetaData> {
   const clonedMrng = mrng.clone();
   return {
-    clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(clonedMrng),
+    clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(mrng),
     nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]): number => {
-      return mrng.nextInt(0, scheduledTasks.length - 1);
+      return clonedMrng.nextInt(0, scheduledTasks.length - 1);
     },
   };
 }

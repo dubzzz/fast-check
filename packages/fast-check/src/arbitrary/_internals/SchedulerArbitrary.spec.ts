@@ -47,8 +47,8 @@ describe('SchedulerArbitrary', () => {
       const act = vi.fn();
       const scheduledTasks = [{}, {}, {}, {}, {}, {}, {}, {}] as ScheduledTask<unknown>[];
       const { instance: mrng, clone } = fakeRandom();
-      const { instance: mrng1, clone: clone1, nextInt } = fakeRandom();
-      const { instance: mrng2 } = fakeRandom();
+      const { instance: mrng1, clone: clone1 } = fakeRandom();
+      const { instance: mrng2, nextInt } = fakeRandom();
       clone.mockReturnValueOnce(mrng1);
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
@@ -73,18 +73,11 @@ describe('SchedulerArbitrary', () => {
       const act = vi.fn();
       const scheduledTasks = [{}, {}, {}, {}, {}, {}, {}, {}] as ScheduledTask<unknown>[];
       const { instance: mrng, clone } = fakeRandom();
-      const { instance: mrng1, clone: clone1, nextInt } = fakeRandom();
-      const { instance: mrng2, clone: clone2, nextInt: nextIntBis } = fakeRandom();
-      const { instance: mrng3 } = fakeRandom();
+      const { instance: mrng1, clone: clone1, nextInt: nextIntOnSource } = fakeRandom();
+      const { instance: mrng2, nextInt } = fakeRandom();
+      const { instance: mrng3, nextInt: nextIntBis } = fakeRandom();
       clone.mockReturnValueOnce(mrng1);
-      clone1.mockImplementationOnce(() => {
-        expect(nextInt).not.toHaveBeenCalled(); // if we pulled values clone is not a clone of the source
-        return mrng2;
-      });
-      clone2.mockImplementationOnce(() => {
-        expect(nextIntBis).not.toHaveBeenCalled(); // if we pulled values clone is not a clone of the source
-        return mrng3;
-      });
+      clone1.mockReturnValueOnce(mrng2).mockReturnValueOnce(mrng3);
       nextInt.mockReturnValueOnce(5).mockReturnValueOnce(2);
       nextIntBis.mockReturnValueOnce(5).mockReturnValueOnce(2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
@@ -108,6 +101,8 @@ describe('SchedulerArbitrary', () => {
       expect(nextInt).toHaveBeenCalledWith(0, scheduledTasks.length - 1);
       expect(nextIntBis).toHaveBeenCalledTimes(2);
       expect(nextIntBis).toHaveBeenCalledWith(0, scheduledTasks.length - 1);
+      expect(nextIntOnSource).not.toHaveBeenCalled(); // the source Random must stay pristine to produce identical clones
+      expect(clone1).toHaveBeenCalledTimes(2);
       expect(v1).toBe(u1);
       expect(v2).toBe(u2);
     });
