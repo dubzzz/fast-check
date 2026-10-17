@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from './stringMatching.js';
 
@@ -21,6 +21,26 @@ describe('stringMatching (integration)', () => {
 
   it('should only produce correct values', async () => {
     await assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
+  });
+});
+
+describe('stringMatching character ranges', () => {
+  it.each([/^[🐱-🐴]$/u, /^[\u{1f431}-\u{1f434}]$/u])(
+    'should shrink astral characters without a generation context for %s',
+    (regex) => {
+      const arb = stringMatching(regex);
+
+      expect(arb.canShrinkWithoutContext('🐴')).toBe(true);
+      const shrinks = [...arb.shrink('🐴', undefined)].map((value) => value.value);
+      expect(shrinks).toContain('🐱');
+      expect(shrinks.every((value) => regex.test(value))).toBe(true);
+    },
+  );
+
+  it.each(['🐰', '🐵', '🐱🐴', '\ud83d'])('should reject %s outside an astral character range', (value) => {
+    const arb = stringMatching(/^[🐱-🐴]$/u);
+
+    expect(arb.canShrinkWithoutContext(value)).toBe(false);
   });
 });
 

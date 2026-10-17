@@ -179,7 +179,7 @@ function toMatchingArbitrary(
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');
           // oxlint-disable-next-line typescript/no-non-null-assertion
-          return c.charCodeAt(0)!;
+          return c.codePointAt(0)!;
         },
       );
     }
