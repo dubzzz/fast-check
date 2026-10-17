@@ -115,6 +115,13 @@ describe('tokenizeRegex', () => {
     { regex: /[\p{Letter}-]/u },
   ];
 
+  it.each(['', 'u'])('should tokenize backspace inside a character class with flags "%s"', (flags) => {
+    expect(tokenizeRegex(new RegExp('[\\b]', flags))).toEqual({
+      type: 'CharacterClass',
+      expressions: [{ type: 'Char', kind: 'meta', value: '\\b', symbol: '\b', codePoint: 8 }],
+    });
+  });
+
   describe('non-unicode regex', () => {
     it.each(allRegexes.filter((i) => !i.regex.flags.includes('u')))(
       'should properly tokenize the regex $regex',

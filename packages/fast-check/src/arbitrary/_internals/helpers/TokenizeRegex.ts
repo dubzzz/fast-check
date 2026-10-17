@@ -331,7 +331,7 @@ function pushTokens(
             negative = true;
             continue;
           }
-          const newToken = blockToCharToken(subBlock);
+          const newToken = subBlock === '\\b' ? metaEscapedChar(subBlock, '\b') : blockToCharToken(subBlock);
           if (subBlock === '-') {
             subTokens.push(newToken);
             previousWasSimpleDash = true;
