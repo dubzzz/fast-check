@@ -13,7 +13,6 @@ import {
 const noKeyValue: unique symbol = Symbol('no-key');
 type NoKeyType = typeof noKeyValue;
 
-/** @internal */
 export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   requiredKeys: TKeys[] | undefined,

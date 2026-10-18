@@ -9,7 +9,6 @@ import { createSlicesForStringLegacy } from './_internals/helpers/SlicesForStrin
 import { integer } from './integer.js';
 export type { StringSharedConstraints } from './_shared/StringSharedConstraints.js';
 
-/** @internal */
 function base64Mapper(v: number) {
   if (v < 26) return String.fromCharCode(v + 65); // A-Z
   if (v < 52) return String.fromCharCode(v + 97 - 26); // a-z
@@ -17,7 +16,6 @@ function base64Mapper(v: number) {
   return v === 62 ? '+' : '/'; // 43, 47
 }
 
-/** @internal */
 function base64Unmapper(s: unknown) {
   if (typeof s !== 'string' || s.length !== 1) {
     throw new Error('Invalid entry');
@@ -29,7 +27,6 @@ function base64Unmapper(s: unknown) {
   return v === 43 ? 62 : v === 47 ? 63 : -1; // +/
 }
 
-/** @internal */
 function base64() {
   return integer({ min: 0, max: 63 }).map(base64Mapper, base64Unmapper);
 }

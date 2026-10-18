@@ -3,7 +3,6 @@ import { getOrCreateAlphaNumericPercentArbitrary } from './CharacterRangeArbitra
 import { string } from '../../string.js';
 import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength.js';
 
-/** @internal */
 export function buildUriQueryOrFragmentArbitrary(size: Exclude<SizeForArbitrary, 'max'>): Arbitrary<string> {
   // query         = *( pchar / "/" / "?" )
   // fragment      = *( pchar / "/" / "?" )

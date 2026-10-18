@@ -20,12 +20,10 @@ import {
 } from './_internals/mappers/EntitiesToIPv6.js';
 import { integer } from './integer.js';
 
-/** @internal */
 function h16sTol32Mapper([a, b]: [string, string]): string {
   return `${a}:${b}`;
 }
 
-/** @internal */
 function h16sTol32Unmapper(value: unknown): [string, string] {
   if (typeof value !== 'string') throw new Error('Invalid type');
   if (!value.includes(':')) throw new Error('Invalid value');
@@ -34,7 +32,6 @@ function h16sTol32Unmapper(value: unknown): [string, string] {
 
 const items = '0123456789abcdef';
 let cachedHexa: Arbitrary<string> | undefined = undefined;
-/** @internal */
 function hexa(): Arbitrary<string> {
   if (cachedHexa === undefined) {
     cachedHexa = integer({ min: 0, max: 15 }).map(

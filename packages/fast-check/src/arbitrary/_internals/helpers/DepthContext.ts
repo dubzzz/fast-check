@@ -1,6 +1,5 @@
 /**
  * Internal symbol used to declare an opaque type for DepthIdentifier
- * @internal
  */
 declare const depthIdentifierSymbol: unique symbol;
 
@@ -38,7 +37,6 @@ export type DepthContext = {
 
 /**
  * Internal cache for depth contexts
- * @internal
  */
 const depthContextCache = new Map<string, DepthContext>();
 

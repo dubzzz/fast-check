@@ -6,7 +6,6 @@ import type {
   UnlinkedEntities,
 } from '../interfaces/EntityGraphTypes.js';
 
-/** @internal */
 function withTargetStringifiedValue(stringifiedValue: string) {
   return Object.defineProperty(Object.create(null), toStringMethod, {
     configurable: false,
@@ -16,12 +15,10 @@ function withTargetStringifiedValue(stringifiedValue: string) {
   });
 }
 
-/** @internal */
 function withReferenceStringifiedValue(type: string | symbol | number, index: number) {
   return withTargetStringifiedValue(`<${String(type)}#${index}>`);
 }
 
-/** @internal */
 export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   unlinkedEntities: UnlinkedEntities<TEntityFields>,
   producedLinks: ProducedLinks<TEntityFields, TEntityRelations>,

@@ -47,7 +47,6 @@ export type LetrecLooselyTypedTie = (key: string) => Arbitrary<unknown>;
  */
 export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => LetrecValue<T>;
 
-/** @internal */
 function createLazyArbsPool<T>() {
   const lazyArbsPool = new Map<keyof T, LazyArbitrary<unknown>>();
   const getLazyFromPool = (key: keyof T): LazyArbitrary<unknown> => {

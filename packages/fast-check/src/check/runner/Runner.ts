@@ -12,10 +12,9 @@ import { RunnerIterator } from './RunnerIterator.js';
 import { SourceValuesIterator } from './SourceValuesIterator.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
-import { asyncReportRunDetails } from './utils/RunDetailsFormatter.js';
+import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 
-/** @internal */
 async function runIt<Ts>(
   property: Property<Ts>,
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
@@ -92,7 +91,7 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
  */
 function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
   const out = check(property, params);
-  return out.then(asyncReportRunDetails);
+  return out.then(reportRunDetails);
 }
 
 export { check, assert };

@@ -23,7 +23,6 @@ export interface IntegerConstraints {
 
 /**
  * Build fully set IntegerConstraints from a partial data
- * @internal
  */
 function buildCompleteIntegerConstraints(constraints: IntegerConstraints): Required<IntegerConstraints> {
   const min = constraints.min !== undefined ? constraints.min : -0x80000000;

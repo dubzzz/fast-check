@@ -3,7 +3,6 @@ import type { Value } from '../../arbitrary/definition/Value.js';
 import { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
 import type { Property } from '../types/Property.js';
 
-/** @internal */
 function interruptAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clearTimeoutSafe: typeof clearTimeout) {
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
   const promise = new Promise<PreconditionFailure>((resolve) => {
@@ -20,7 +19,6 @@ function interruptAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clear
   };
 }
 
-/** @internal */
 export class SkipAfterProperty<Ts> implements Property<Ts> {
   private skipAfterTime: number;
 

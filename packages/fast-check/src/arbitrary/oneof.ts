@@ -86,9 +86,6 @@ export type OneOfConstraints = {
   depthIdentifier?: DepthIdentifier | string;
 };
 
-/**
- * @internal
- */
 function isOneOfContraints(
   param: OneOfConstraints | MaybeWeightedArbitrary<unknown> | undefined,
 ): param is OneOfConstraints {
@@ -103,9 +100,6 @@ function isOneOfContraints(
   );
 }
 
-/**
- * @internal
- */
 function toWeightedArbitrary<T>(maybeWeightedArbitrary: MaybeWeightedArbitrary<T>): WeightedArbitrary<T> {
   if (isArbitrary(maybeWeightedArbitrary)) {
     return { arbitrary: maybeWeightedArbitrary, weight: 1 };

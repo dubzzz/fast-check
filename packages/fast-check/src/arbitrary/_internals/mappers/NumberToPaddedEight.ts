@@ -1,9 +1,7 @@
-/** @internal */
 export function numberToPaddedEightMapper(n: number): string {
   return n.toString(16).padStart(8, '0');
 }
 
-/** @internal */
 export function numberToPaddedEightUnmapper(value: unknown): number {
   if (typeof value !== 'string') {
     throw new Error('Unsupported type');

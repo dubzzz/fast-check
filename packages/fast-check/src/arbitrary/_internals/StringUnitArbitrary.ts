@@ -10,20 +10,15 @@ import {
 import type { GraphemeRangeEntry } from './helpers/GraphemeRangesHelpers.js';
 import { convertGraphemeRangeToMapToConstantEntry, intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers.js';
 
-/** @internal */
 type StringUnitType = 'grapheme' | 'composite' | 'binary';
-/** @internal */
 type StringUnitAlphabet = 'full' | 'ascii';
-/** @internal */
 type StringUnitMapKey = `${StringUnitType}:${StringUnitAlphabet}`;
 
 /**
  * Caching all already instanciated variations of stringUnit
- * @internal
  */
 const registeredStringUnitInstancesMap: Partial<Record<StringUnitMapKey, Arbitrary<string>>> = Object.create(null);
 
-/** @internal */
 function getAlphabetRanges(alphabet: StringUnitAlphabet): GraphemeRange[] {
   switch (alphabet) {
     case 'full':
@@ -33,7 +28,6 @@ function getAlphabetRanges(alphabet: StringUnitAlphabet): GraphemeRange[] {
   }
 }
 
-/** @internal */
 function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUnitAlphabet): Arbitrary<string> {
   const key: StringUnitMapKey = `${type}:${alphabet}`;
   const registered = registeredStringUnitInstancesMap[key];
@@ -61,7 +55,6 @@ function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUni
   return stringUnitInstance;
 }
 
-/** @internal */
 export function stringUnit(type: StringUnitType, alphabet: StringUnitAlphabet): Arbitrary<string> {
   return getOrCreateStringUnitInstance(type, alphabet);
 }

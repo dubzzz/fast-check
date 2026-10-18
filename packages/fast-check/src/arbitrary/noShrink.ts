@@ -5,7 +5,6 @@ import { nil } from '../utils/iterator.js';
 
 const stableObjectGetPrototypeOf = Object.getPrototypeOf;
 
-/** @internal */
 class NoShrinkArbitrary<T> extends Arbitrary<T> {
   constructor(readonly arb: Arbitrary<T>) {
     super();

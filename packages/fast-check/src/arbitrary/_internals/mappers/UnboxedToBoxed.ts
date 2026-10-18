@@ -1,4 +1,3 @@
-/** @internal */
 export function unboxedToBoxedMapper(value: unknown): unknown {
   switch (typeof value) {
     case 'boolean':
@@ -15,7 +14,6 @@ export function unboxedToBoxedMapper(value: unknown): unknown {
   }
 }
 
-/** @internal */
 export function unboxedToBoxedUnmapper(value: unknown): unknown {
   if (typeof value !== 'object' || value === null || !('constructor' in value)) {
     return value;

@@ -61,7 +61,6 @@ type RegexFlags = {
 
 /**
  * Convert an AST of tokens into an arbitrary able to produce the requested pattern
- * @internal
  */
 function toMatchingArbitrary(
   astNode: RegexToken,

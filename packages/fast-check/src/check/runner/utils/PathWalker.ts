@@ -1,12 +1,10 @@
 import type { Value } from '../../arbitrary/definition/Value.js';
 import { getNthOrLast } from '../../../utils/iterator.js';
 
-/** @internal */
 function produce<Ts>(producer: () => Value<Ts>): Value<Ts> {
   return producer();
 }
 
-/** @internal */
 export function pathWalk<Ts>(
   path: string,
   initialProducers: IteratorObject<() => Value<Ts>>,

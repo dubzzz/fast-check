@@ -1,4 +1,3 @@
-/** @internal */
 export function natToStringifiedNatMapper(options: ['dec' | 'oct' | 'hex', number]): string {
   const [style, v] = options;
   switch (style) {
@@ -12,7 +11,6 @@ export function natToStringifiedNatMapper(options: ['dec' | 'oct' | 'hex', numbe
   }
 }
 
-/** @internal */
 export function tryParseStringifiedNat(stringValue: string, radix: number): number {
   const parsedNat = Number.parseInt(stringValue, radix);
   if (parsedNat.toString(radix) !== stringValue) {
@@ -21,7 +19,6 @@ export function tryParseStringifiedNat(stringValue: string, radix: number): numb
   return parsedNat;
 }
 
-/** @internal */
 export function natToStringifiedNatUnmapper(value: unknown): ['dec' | 'oct' | 'hex', number] {
   if (typeof value !== 'string') {
     throw new Error('Invalid type');

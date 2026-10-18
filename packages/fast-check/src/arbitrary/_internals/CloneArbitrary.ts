@@ -4,7 +4,6 @@ import { cloneMethod } from '../../check/symbols.js';
 import type { Random } from '../../random/generator/Random.js';
 import { nil } from '../../utils/iterator.js';
 
-/** @internal */
 export class CloneArbitrary<T> extends Arbitrary<T[]> {
   constructor(
     readonly arb: Arbitrary<T>,

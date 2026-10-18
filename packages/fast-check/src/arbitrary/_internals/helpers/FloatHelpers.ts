@@ -1,18 +1,12 @@
-/** @internal */
 export const MIN_VALUE_32: number = 2 ** -126 * 2 ** -23;
-/** @internal */
 export const MAX_VALUE_32: number = 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23);
-/** @internal */
 export const EPSILON_32: number = 2 ** -23;
 
-/** @internal */
 const INDEX_POSITIVE_INFINITY = 2139095040; // floatToIndex(MAX_VALUE_32) + 1;
-/** @internal */
 const INDEX_NEGATIVE_INFINITY = -2139095041; // floatToIndex(-MAX_VALUE_32) - 1
 
 const f32 = new Float32Array(1);
 const u32 = new Uint32Array(f32.buffer, f32.byteOffset);
-/** @internal */
 function bitCastFloatToUInt32(f: number): number {
   f32[0] = f;
   return u32[0];
@@ -31,8 +25,6 @@ function bitCastFloatToUInt32(f: number): number {
  * - Number.EPSILON   = 2**(-52)
  *
  * @param f - 32-bit floating point number to be decomposed into (significand, exponent)
- *
- * @internal
  */
 export function decomposeFloat(f: number): { exponent: number; significand: number } {
   const bits = bitCastFloatToUInt32(f);
@@ -48,7 +40,6 @@ export function decomposeFloat(f: number): { exponent: number; significand: numb
   return { exponent, significand };
 }
 
-/** @internal */
 function indexInFloatFromDecomp(exponent: number, significand: number) {
   // WARNING: significand >= 0
 
@@ -72,8 +63,6 @@ function indexInFloatFromDecomp(exponent: number, significand: number) {
  * Rq: Produces negative indexes for negative floats
  *
  * @param f - 32-bit floating point number
- *
- * @internal
  */
 export function floatToIndex(f: number): number {
   if (f === Number.POSITIVE_INFINITY) {
@@ -96,8 +85,6 @@ export function floatToIndex(f: number): number {
  * Compute the 32-bit floating point number corresponding to the provided indexes
  *
  * @param n - index of the float
- *
- * @internal
  */
 export function indexToFloat(index: number): number {
   if (index < 0) {

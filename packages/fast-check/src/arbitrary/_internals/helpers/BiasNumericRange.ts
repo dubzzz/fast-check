@@ -1,15 +1,12 @@
-/** @internal */
 export function integerLogLike(v: number): number {
   return Math.floor(Math.log(v) / Math.log(2));
 }
 
-/** @internal */
 export function bigIntLogLike(v: bigint): bigint {
   if (v === 0n) return 0n;
   return BigInt(String(v).length);
 }
 
-/** @internal */
 function biasNumericRange(min: number, max: number, logLike: (n: number) => number): { min: number; max: number }[];
 function biasNumericRange(min: bigint, max: bigint, logLike: (n: bigint) => bigint): { min: bigint; max: bigint }[];
 function biasNumericRange<NType extends number | bigint>(

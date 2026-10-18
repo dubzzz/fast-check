@@ -1,4 +1,3 @@
-/** @internal */
 export function countToggledBits(n: bigint): number {
   let count = 0;
   while (n > 0n) {
@@ -8,7 +7,6 @@ export function countToggledBits(n: bigint): number {
   return count;
 }
 
-/** @internal */
 export function computeNextFlags(flags: bigint, nextSize: number): bigint {
   // whenever possible we want to preserve the same number of toggled positions
   // whenever possible we want to keep them at the same place
@@ -26,7 +24,6 @@ export function computeNextFlags(flags: bigint, nextSize: number): bigint {
   return nFlags;
 }
 
-/** @internal */
 export function computeTogglePositions(chars: string[], toggleCase: (rawChar: string) => string): number[] {
   const positions: number[] = [];
   for (let idx = chars.length - 1; idx !== -1; --idx) {
@@ -41,8 +38,6 @@ export function computeTogglePositions(chars: string[], toggleCase: (rawChar: st
  * @param untoggledChars - Original string split into characters
  * @param toggledChars - Toggled version of the string
  * @param togglePositions - Array referencing all case sensitive indexes in chars
- *
- * @internal
  */
 export function computeFlagsFromChars(
   untoggledChars: string[],
@@ -65,8 +60,6 @@ export function computeFlagsFromChars(
  * @param flags - One flag/bit per entry in togglePositions - 1 means change case of the character
  * @param togglePositions - Array referencing all case sensitive indexes in chars
  * @param toggleCase - Toggle one char
- *
- * @internal
  */
 export function applyFlagsOnChars(
   chars: string[],

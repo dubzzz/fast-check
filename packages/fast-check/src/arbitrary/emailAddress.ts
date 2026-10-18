@@ -8,7 +8,6 @@ import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLeng
 import type { AdapterOutput } from './_internals/AdapterArbitrary.js';
 import { adapter } from './_internals/AdapterArbitrary.js';
 
-/** @internal */
 function dotAdapter(a: string[]): AdapterOutput<string[]> {
   // According to RFC 2821:
   //    The maximum total length of a user name or other local-part is 64 characters.
@@ -21,22 +20,18 @@ function dotAdapter(a: string[]): AdapterOutput<string[]> {
   }
   return { adapted: false, value: a };
 }
-/** @internal */
 function dotMapper(a: string[]): string {
   return a.join('.');
 }
-/** @internal */
 function dotUnmapper(value: unknown): string[] {
   if (typeof value !== 'string') {
     throw new Error('Unsupported');
   }
   return value.split('.');
 }
-/** @internal */
 function atMapper(data: [string, string]): string {
   return `${data[0]}@${data[1]}`;
 }
-/** @internal */
 function atUnmapper(value: unknown): [string, string] {
   if (typeof value !== 'string') {
     throw new Error('Unsupported');

@@ -1,6 +1,5 @@
 /**
  * The interface for CustomSet
- * @internal
  */
 export interface CustomSet<T> {
   /**
@@ -22,6 +21,5 @@ export interface CustomSet<T> {
 
 /**
  * Create an empty instance of CustomSet
- * @internal
  */
 export type CustomSetBuilder<T> = () => CustomSet<T>;

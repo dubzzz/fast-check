@@ -1,7 +1,6 @@
 type KeyValuePairs<K extends PropertyKey, V> = [K, V][];
 type ObjectDefinition<K extends PropertyKey, V> = [/*items*/ KeyValuePairs<K, V>, /*null prototype*/ boolean];
 
-/** @internal */
 export function keyValuePairsToObjectMapper<K extends PropertyKey, V>(
   definition: ObjectDefinition<K, V>,
 ): Record<K, V> {
@@ -23,7 +22,6 @@ export function keyValuePairsToObjectMapper<K extends PropertyKey, V>(
   return obj;
 }
 
-/** @internal */
 function isValidPropertyNameFilter(descriptor: PropertyDescriptor): boolean {
   return (
     descriptor !== undefined &&
@@ -35,7 +33,6 @@ function isValidPropertyNameFilter(descriptor: PropertyDescriptor): boolean {
   );
 }
 
-/** @internal */
 export function keyValuePairsToObjectUnmapper<K extends PropertyKey, V>(value: unknown): ObjectDefinition<K, V> {
   // (partially) Equivalent to Object.entries
   if (typeof value !== 'object' || value === null) {

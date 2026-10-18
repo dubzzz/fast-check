@@ -18,14 +18,11 @@ export type ModelRunSetup<Model, Real> = () => { model: Model; real: Real };
  */
 export type ModelRunAsyncSetup<Model, Real> = () => Promise<{ model: Model; real: Real }>;
 
-/** @internal */
 type SetupFun<Model, Real, P> = (s: { model: Model; real: Real }) => P;
-/** @internal */
 interface SetupProducer<Model, Real, P> {
   then: (fun: SetupFun<Model, Real, P>) => P;
 }
 
-/** @internal */
 const genericModelRun = <Model extends object, Real, P, CheckAsync extends boolean>(
   s: SetupProducer<Model, Real, P>,
   cmds: Iterable<ICommand<Model, Real, P, CheckAsync>>,
@@ -47,7 +44,6 @@ const genericModelRun = <Model extends object, Real, P, CheckAsync extends boole
   });
 };
 
-/** @internal */
 const internalModelRun = <Model extends object, Real>(
   s: ModelRunSetup<Model, Real>,
   cmds: Iterable<Command<Model, Real>>,
@@ -72,14 +68,12 @@ const internalModelRun = <Model extends object, Real>(
   );
 };
 
-/** @internal */
 const isAsyncSetup = <Model, Real>(
   s: ReturnType<ModelRunSetup<Model, Real>> | ReturnType<ModelRunAsyncSetup<Model, Real>>,
 ): s is ReturnType<ModelRunAsyncSetup<Model, Real>> => {
   return typeof (s as any).then === 'function';
 };
 
-/** @internal */
 const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: ModelRunSetup<Model, Real> | ModelRunAsyncSetup<Model, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,

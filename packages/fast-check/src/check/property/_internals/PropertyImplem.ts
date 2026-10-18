@@ -17,12 +17,10 @@ import type { PropertyWithHooks, PropertyHookFunction } from '../types/PropertyW
 // oxlint-disable-next-line no-empty-function
 const dummyHook: GlobalPropertyHookFunction = () => {};
 
-/** @internal */
 function outputToPropertyAnswer(output: boolean | void) {
   return output === undefined || output === true ? null : { error: new Error('Property failed by returning false') };
 }
 
-/** @internal */
 function errorToPropertyAnswer(err: unknown) {
   // precondition failure considered as success for the first version
   if (PreconditionFailure.isFailure(err)) return err;
@@ -34,8 +32,6 @@ function errorToPropertyAnswer(err: unknown) {
  * Asynchronous property, see {@link Property}
  *
  * Prefer using {@link asyncProperty} instead
- *
- * @internal
  */
 export class PropertyImplem<Ts> implements PropertyWithHooks<Ts> {
   private beforeEachHook: GlobalPropertyHookFunction;

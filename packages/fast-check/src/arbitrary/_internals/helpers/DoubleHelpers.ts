@@ -1,6 +1,4 @@
-/** @internal */
 const INDEX_POSITIVE_INFINITY = 9218868437227405312n; // doubleToIndex(Number.MAX_VALUE) + 1 = 2146435072 * 4294967296
-/** @internal */
 const INDEX_NEGATIVE_INFINITY = -INDEX_POSITIVE_INFINITY - 1n; // doubleToIndex(-Number.MAX_VALUE) - 1
 
 const num2Pow52 = 0x10000000000000; // Equivalent to 2 ** 52
@@ -9,7 +7,6 @@ const big2Pow53 = 9007199254740992n; // Equivalent to 2n ** 53n = 90071992547409
 
 const f64 = new Float64Array(1);
 const u32 = new Uint32Array(f64.buffer, f64.byteOffset);
-/** @internal */
 function bitCastDoubleToUInt64(f: number): [number, number] {
   f64[0] = f;
   return [u32[1], u32[0]];
@@ -26,8 +23,6 @@ function bitCastDoubleToUInt64(f: number): [number, number] {
  * - Number.EPSILON   = 2**(-52)
  *
  * @param d - 64-bit floating point number to be decomposed into (significand, exponent)
- *
- * @internal
  */
 export function decomposeDouble(d: number): { exponent: number; significand: number } {
   const { 0: hi, 1: lo } = bitCastDoubleToUInt64(d);
@@ -43,7 +38,6 @@ export function decomposeDouble(d: number): { exponent: number; significand: num
   return { exponent, significand };
 }
 
-/** @internal */
 function indexInDoubleFromDecomp(exponent: number, significand: number): bigint {
   // WARNING: significand >= 0
 
@@ -71,8 +65,6 @@ function indexInDoubleFromDecomp(exponent: number, significand: number): bigint 
  * Rq: Produces negative indexes for negative doubles
  *
  * @param d - 64-bit floating point number, anything except NaN
- *
- * @internal
  */
 export function doubleToIndex(d: number): bigint {
   if (d === Number.POSITIVE_INFINITY) {
@@ -95,8 +87,6 @@ export function doubleToIndex(d: number): bigint {
  * Compute the 64-bit floating point number corresponding to the provided indexes
  *
  * @param n - index of the double
- *
- * @internal
  */
 export function indexToDouble(index: bigint): number {
   if (index < 0) {

@@ -8,11 +8,9 @@ const defaultSchedulerAct: SchedulerAct = (f: () => Promise<void>) => f();
 
 /**
  * Number of ticks we perform before scheduling anything in waitFor
- * @internal
  */
 export const numTicksBeforeScheduling = 50;
 
-/** @internal */
 type TriggeredTask<TMetaData> = {
   status: 'resolved' | 'rejected';
   schedulingType: 'promise' | 'function' | 'sequence';
@@ -22,7 +20,6 @@ type TriggeredTask<TMetaData> = {
   outputValue: string | undefined;
 };
 
-/** @internal */
 export type ScheduledTask<TMetaData> = {
   original: PromiseLike<unknown>;
   trigger: () => Promise<unknown>;
@@ -33,13 +30,11 @@ export type ScheduledTask<TMetaData> = {
   customAct: SchedulerAct;
 };
 
-/** @internal */
 export type TaskSelector<TMetaData> = {
   clone: () => TaskSelector<TMetaData>;
   nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]) => number;
 };
 
-/** @internal */
 export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   private lastTaskId: number;
   private readonly sourceTaskSelector: TaskSelector<TMetaData>;

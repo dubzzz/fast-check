@@ -205,26 +205,21 @@ export type EntityGraphValue<TEntityFields, TEntityRelations extends EntityRelat
 
 // Internal types
 
-/** @internal */
 export type EntityLinks<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = Record<
   keyof TEntityRelations[keyof TEntityFields],
   { type: keyof TEntityFields; index: number[] | number | undefined }
 >;
-/** @internal */
 export type ProducedLinks<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = Record<
   keyof TEntityFields,
   EntityLinks<TEntityFields, TEntityRelations>[]
 >;
-/** @internal */
 export type ReadonlyEntityLinks<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = Readonly<
   Record<
     keyof TEntityRelations[keyof TEntityFields],
     { type: keyof TEntityFields; index: ReadonlyArray<number> | number | undefined }
   >
 >;
-/** @internal */
 export type ReadonlyProducedLinks<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = Readonly<
   Record<keyof TEntityFields, ReadonlyArray<ReadonlyEntityLinks<TEntityFields, TEntityRelations>>>
 >;
-/** @internal */
 export type UnlinkedEntities<TEntityFields> = { [K in keyof TEntityFields]: TEntityFields[K][] };

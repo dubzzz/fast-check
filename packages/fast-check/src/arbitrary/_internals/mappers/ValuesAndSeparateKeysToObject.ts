@@ -3,7 +3,6 @@ import type { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor.js';
 type OrderedValues<T, TNoKey> = (T[keyof T] | TNoKey)[];
 type ObjectDefinition<T, TNoKey> = [/*items*/ ...OrderedValues<T, TNoKey>, /*null prototype*/ boolean];
 
-/** @internal */
 export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: EnumerableKeyOf<T>[], noKeyValue: TNoKey) {
   return function valuesAndSeparateKeysToObjectMapper(
     definition: ObjectDefinition<T, TNoKey>,
@@ -30,7 +29,6 @@ export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: Enumer
   };
 }
 
-/** @internal */
 export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: EnumerableKeyOf<T>[], noKeyValue: TNoKey) {
   return function valuesAndSeparateKeysToObjectUnmapper(value: unknown): ObjectDefinition<T, TNoKey> {
     if (typeof value !== 'object' || value === null) {

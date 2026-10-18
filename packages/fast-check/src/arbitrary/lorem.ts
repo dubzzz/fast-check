@@ -46,7 +46,6 @@ export interface LoremConstraints {
 
 /**
  * Helper function responsible to build the entries for oneof
- * @internal
  */
 const h = (v: string, w: number): MaybeWeightedArbitrary<string> => {
   return { arbitrary: constant(v), weight: w };
@@ -69,8 +68,6 @@ const h = (v: string, w: number): MaybeWeightedArbitrary<string> => {
  * >  .sort(([w1, n1], [w2, n2]) => n2 - n1)
  * >  .reduce((acc, [w, n]) => acc.concat([`h(${JSON.stringify(w)}, ${n})`]), [])
  * >  .join(',')
- *
- * @internal
  */
 function loremWord() {
   return oneof(

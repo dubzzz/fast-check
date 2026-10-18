@@ -2,12 +2,10 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
 
-/** @internal */
 function isSafeContext(context: unknown): context is { generatorContext: unknown } | { shrinkerContext: unknown } {
   return context !== undefined;
 }
 
-/** @internal */
 function toGeneratorValue<T>(value: Value<T>): Value<T> {
   if (value.hasToBeCloned) {
     return new Value(value.value_, { generatorContext: value.context }, () => value.value);
@@ -15,7 +13,6 @@ function toGeneratorValue<T>(value: Value<T>): Value<T> {
   return new Value(value.value_, { generatorContext: value.context });
 }
 
-/** @internal */
 function toShrinkerValue<T>(value: Value<T>): Value<T> {
   if (value.hasToBeCloned) {
     return new Value(value.value_, { shrinkerContext: value.context }, () => value.value);
@@ -23,7 +20,6 @@ function toShrinkerValue<T>(value: Value<T>): Value<T> {
   return new Value(value.value_, { shrinkerContext: value.context });
 }
 
-/** @internal */
 export class WithShrinkFromOtherArbitrary<T> extends Arbitrary<T> {
   constructor(
     private readonly generatorArbitrary: Arbitrary<T>,

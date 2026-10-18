@@ -10,13 +10,11 @@ const safeDateNow = Date.now;
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
 
-/** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
   QualifiedParameters<Ts>,
   'unbiased' | 'timeout' | 'skipAllAfterTimeLimit' | 'interruptAfterTimeLimit' | 'skipEqualValues' | 'ignoreEqualValues'
 >;
 
-/** @internal */
 export function decorateProperty<Ts>(rawProperty: Property<Ts>, qParams: MinimalQualifiedParameters<Ts>): Property<Ts> {
   let prop = rawProperty;
   if (qParams.timeout !== undefined) {

@@ -11,8 +11,6 @@ import type { SlicedGenerator } from '../interfaces/SlicedGenerator.js';
  * @param mrng - Random number generator
  * @param slices - Slices to be used (WARNING: while we accept no slices, slices themselves must never empty)
  * @param biasFactor - The current bias factor
- *
- * @internal
  */
 export function buildSlicedGenerator<T>(
   arb: Arbitrary<T>,

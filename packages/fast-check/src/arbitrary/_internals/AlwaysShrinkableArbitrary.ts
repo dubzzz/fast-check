@@ -8,7 +8,6 @@ import { noUndefinedAsContext, UndefinedContextPlaceholder } from './helpers/NoU
  * Arbitrary considering any value as shrinkable whatever the received context.
  * In case the context corresponds to nil, it will be checked when calling shrink:
  * valid would mean stream coming from shrink, otherwise empty stream
- * @internal
  */
 export class AlwaysShrinkableArbitrary<Ts> extends Arbitrary<Ts> {
   constructor(readonly arb: Arbitrary<Ts>) {

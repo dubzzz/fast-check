@@ -103,6 +103,7 @@ export type {
 export { uniqueArray } from './arbitrary/uniqueArray.js';
 export type { SetConstraints } from './arbitrary/set.js';
 export { set } from './arbitrary/set.js';
+export type { IteratorConstraints } from './arbitrary/iterator.js';
 export { iterator } from './arbitrary/iterator.js';
 export { base64String } from './arbitrary/base64String.js';
 export type { StringSharedConstraints, StringConstraints } from './arbitrary/string.js';
@@ -165,7 +166,7 @@ export type {
   SchedulerConstraints,
 } from './arbitrary/scheduler.js';
 export { scheduler, schedulerFor } from './arbitrary/scheduler.js';
-export { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter.js';
+export { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter.js';
 export type { CommandsContraints } from './check/model/commands/CommandsContraints.js';
 export { PreconditionFailure } from './check/precondition/PreconditionFailure.js';
 export type { IntArrayConstraints } from './arbitrary/int8Array.js';

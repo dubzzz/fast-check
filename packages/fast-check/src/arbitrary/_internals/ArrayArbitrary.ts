@@ -10,7 +10,6 @@ import { getDepthContextFor } from './helpers/DepthContext.js';
 import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator.js';
 import { joinAll, nil } from '../../utils/iterator.js';
 
-/** @internal */
 type ArrayArbitraryContext = {
   shrunkOnce: boolean;
   lengthContext: unknown;
@@ -18,7 +17,6 @@ type ArrayArbitraryContext = {
   startIndex: number;
 };
 
-/** @internal */
 function biasedMaxLength(minLength: number, maxLength: number): number {
   if (minLength === maxLength) {
     return minLength;
@@ -26,7 +24,6 @@ function biasedMaxLength(minLength: number, maxLength: number): number {
   return minLength + Math.floor(Math.log(maxLength - minLength) / Math.log(2));
 }
 
-/** @internal */
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly depthContext: DepthContext;

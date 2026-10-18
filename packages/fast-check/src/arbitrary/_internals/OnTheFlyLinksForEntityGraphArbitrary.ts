@@ -18,7 +18,6 @@ import type {
   Strategy,
 } from './interfaces/EntityGraphTypes.js';
 
-/** @internal */
 function produceLinkUnitaryIndexArbitrary(
   strategy: Strategy,
   currentIndexIfSameType: number | undefined,
@@ -36,7 +35,6 @@ function produceLinkUnitaryIndexArbitrary(
   }
 }
 
-/** @internal */
 function buildLinkIndexArbitrary(
   arity: Exclude<Arity, 'inverse'>,
   strategy: Strategy,
@@ -63,7 +61,6 @@ function buildLinkIndexArbitrary(
   }
 }
 
-/** @internal */
 function createEmptyLinksInstanceFor<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
   targetType: keyof TEntityFields,
@@ -79,7 +76,6 @@ function createEmptyLinksInstanceFor<TEntityFields, TEntityRelations extends Ent
   return emptyLinksInstance;
 }
 
-/** @internal */
 function assertAcceptableRelations<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
 ): void {
@@ -114,17 +110,14 @@ function assertAcceptableRelations<TEntityFields, TEntityRelations extends Entit
   }
 }
 
-/** @internal */
 type ToBeProducedEntity<TEntityFields> = { type: keyof TEntityFields; indexInType: number; depth: number };
 
-/** @internal */
 type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
   readonly producedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations>;
   readonly toBeProducedEntities: ReadonlyArray<Readonly<ToBeProducedEntity<TEntityFields>>>;
   readonly nextIndex: number;
 };
 
-/** @internal */
 function draftNextProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   state: ProductionState<TEntityFields, TEntityRelations>,
   offset: number,
@@ -211,7 +204,6 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
   };
 }
 
-/** @internal */
 function buildInitialProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
   defaultEntities: (keyof TEntityFields)[],
@@ -230,7 +222,6 @@ function buildInitialProductionState<TEntityFields, TEntityRelations extends Ent
   return { producedLinks, toBeProducedEntities, nextIndex: 0 };
 }
 
-/** @internal */
 function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
   inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
@@ -299,7 +290,6 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   });
 }
 
-/** @internal */
 export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
   defaultEntities: (keyof TEntityFields)[],

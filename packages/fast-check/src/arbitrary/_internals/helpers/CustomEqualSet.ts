@@ -2,8 +2,6 @@ import type { CustomSet } from '../interfaces/CustomSet.js';
 
 /**
  * CustomSet based on a fully custom equality function
- *
- * @internal
  */
 export class CustomEqualSet<T> implements CustomSet<T> {
   private readonly data: T[];

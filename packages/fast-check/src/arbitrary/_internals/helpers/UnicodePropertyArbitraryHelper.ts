@@ -4,7 +4,6 @@ import type { GraphemeRange } from '../data/GraphemeRanges.js';
 import { convertGraphemeRangeToMapToConstantEntry } from './GraphemeRangesHelpers.js';
 import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
 
-/** @internal */
 function getPropertySpec(astNode: ResolvedUnicodeProperty): string {
   if (astNode.binary || astNode.shorthand) {
     return astNode.canonicalValue;
@@ -12,7 +11,6 @@ function getPropertySpec(astNode: ResolvedUnicodeProperty): string {
   return `${astNode.canonicalName}=${astNode.canonicalValue}`;
 }
 
-/** @internal */
 export function appendRangesForRegex(regex: RegExp, from: number, to: number, ranges: GraphemeRange[]): void {
   let currentRangeStart = -1;
   for (let cp = from; cp <= to; ++cp) {
@@ -31,7 +29,6 @@ export function appendRangesForRegex(regex: RegExp, from: number, to: number, ra
   }
 }
 
-/** @internal */
 function extractRangesForProperty(propertySpec: string, negative: boolean): GraphemeRange[] {
   const escape = negative ? 'P' : 'p';
   const regex = new RegExp(`^\\${escape}{${propertySpec}}$`, 'u');
@@ -41,10 +38,8 @@ function extractRangesForProperty(propertySpec: string, negative: boolean): Grap
   return ranges;
 }
 
-/** @internal */
 const cache = new Map<string, GraphemeRange[]>();
 
-/** @internal */
 function extractRangesForPropertyOrFromCache(propertySpec: string, negative: boolean): GraphemeRange[] {
   const cacheKey = `${negative ? 'P' : 'p'}:${propertySpec}`;
   const cachedRanges = cache.get(cacheKey);
@@ -58,7 +53,6 @@ function extractRangesForPropertyOrFromCache(propertySpec: string, negative: boo
 
 /**
  * Build an arbitrary producing characters matching a Unicode property (`\p{…}` / `\P{…}`).
- * @internal
  */
 export function unicodePropertyArbitrary(astNode: ResolvedUnicodeProperty): Arbitrary<string> {
   const spec = getPropertySpec(astNode);

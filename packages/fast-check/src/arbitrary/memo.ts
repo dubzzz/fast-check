@@ -7,7 +7,6 @@ import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
  */
 export type Memo<T> = (maxDepth?: number) => Arbitrary<T>;
 
-/** @internal */
 let contextRemainingDepth = 10;
 
 /**

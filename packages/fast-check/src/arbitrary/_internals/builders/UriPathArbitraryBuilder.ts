@@ -5,7 +5,6 @@ import { array } from '../../array.js';
 import { segmentsToPathMapper, segmentsToPathUnmapper } from '../mappers/SegmentsToPath.js';
 import { oneof } from '../../oneof.js';
 
-/** @internal */
 function sqrtSize(size: Size): [Size, Size] {
   switch (size) {
     case 'xsmall':
@@ -21,7 +20,6 @@ function sqrtSize(size: Size): [Size, Size] {
   }
 }
 
-/** @internal */
 function buildUriPathArbitraryInternal(segmentSize: Size, numSegmentSize: Size): Arbitrary<string> {
   return array(webSegment({ size: segmentSize }), { size: numSegmentSize }).map(
     segmentsToPathMapper,
@@ -29,7 +27,6 @@ function buildUriPathArbitraryInternal(segmentSize: Size, numSegmentSize: Size):
   );
 }
 
-/** @internal */
 export function buildUriPathArbitrary(resolvedSize: Size): Arbitrary<string> {
   const [segmentSize, numSegmentSize] = sqrtSize(resolvedSize);
   if (segmentSize === numSegmentSize) {

@@ -35,6 +35,7 @@ export function hasToStringMethod<T>(instance: T): instance is T & WithToStringM
  * Please note that:
  * 1. It will only be useful for asynchronous properties.
  * 2. It has to return barely instantly.
+ * 3. When not defined using an async function, it should not throw synchronously.
  *
  * @remarks Since 2.17.0
  * @public
@@ -62,16 +63,13 @@ export function hasAsyncToStringMethod<T>(instance: T): instance is T & WithAsyn
   );
 }
 
-/** @internal */
 const findSymbolNameRegex = /^Symbol\((.*)\)$/;
 
-/** @internal */
 type AsyncContent = { state: 'fulfilled' | 'rejected' | 'pending' | 'unknown'; value: unknown };
 
 /**
  * Only called with symbol produced by Symbol(string | undefined)
  * Not Symbol.for(string)
- * @internal
  */
 function getSymbolDescription(s: symbol): string | null {
   if (s.description !== undefined) return s.description;
@@ -83,7 +81,6 @@ function getSymbolDescription(s: symbol): string | null {
   return m && m[1].length ? m[1] : null;
 }
 
-/** @internal */
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
@@ -97,7 +94,6 @@ function stringifyNumber(numValue: number) {
   }
 }
 
-/** @internal */
 function isSparseArray(arr: unknown[]): boolean {
   let previousNumberedIndex = -1;
   // oxlint-disable-next-line typescript/no-for-in-array
@@ -109,18 +105,19 @@ function isSparseArray(arr: unknown[]): boolean {
   return previousNumberedIndex + 1 !== arr.length; // we've got a hole if length does not match
 }
 
-/** @internal */
 export function stringifyInternal<Ts>(
   value: Ts,
-  previousValues: any[],
+  previousValues: Set<unknown>,
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
 ): string {
-  const currentValues = [...previousValues, value];
+  let currentValues = previousValues;
   if (typeof value === 'object') {
     // early cycle detection for objects
-    if (previousValues.indexOf(value) !== -1) {
+    if (previousValues.has(value)) {
       return '[cyclic]';
     }
+    currentValues = new Set(previousValues);
+    currentValues.add(value);
   }
 
   if (hasAsyncToStringMethod(value)) {
@@ -315,6 +312,10 @@ export function stringifyInternal<Ts>(
   }
 }
 
+const emptySet = new Set();
+
+const unknownAsyncContentGetter = () => ({ state: 'unknown', value: undefined }) satisfies AsyncContent;
+
 /**
  * Convert any value to its fast-check string representation
  *
@@ -324,7 +325,31 @@ export function stringifyInternal<Ts>(
  * @public
  */
 export function stringify<Ts>(value: Ts): string {
-  return stringifyInternal(value, [], () => ({ state: 'unknown', value: undefined }));
+  return stringifyInternal(value, emptySet, unknownAsyncContentGetter);
+}
+
+const stillPendingMarker = Symbol();
+
+function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
+  let handleId: ReturnType<typeof setTimeout> | null = null;
+  const cancel = () => {
+    if (handleId !== null) {
+      clearTimeout(handleId);
+    }
+  };
+  const delay = new Promise<typeof stillPendingMarker>((resolve) => {
+    // setTimeout allows to keep higher priority on any already resolved Promise (or close to)
+    // including nested ones like:
+    // >  (async () => {
+    // >    await Promise.resolve();
+    // >    await Promise.resolve();
+    // >  })()
+    handleId = setTimeout(() => {
+      handleId = null;
+      resolve(stillPendingMarker);
+    }, 0);
+  });
+  return { delay, cancel };
 }
 
 /**
@@ -334,65 +359,28 @@ export function stringify<Ts>(value: Ts): string {
  * Otherwise, it tries to go further in investigations and return a Promise<string>.
  *
  * Not publicly exposed yet!
- *
- * @internal
  */
 export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
-  const stillPendingMarker = Symbol();
-  const pendingPromisesForCache: Promise<void>[] = [];
+  const pendingPromisesForCache = new Map<unknown, Promise<unknown>>();
   const cache = new Map<unknown, AsyncContent>();
-
-  function createDelay0(): { delay: Promise<typeof stillPendingMarker>; cancel: () => void } {
-    let handleId: ReturnType<typeof setTimeout> | null = null;
-    const cancel = () => {
-      if (handleId !== null) {
-        clearTimeout(handleId);
-      }
-    };
-    const delay = new Promise<typeof stillPendingMarker>((resolve) => {
-      // setTimeout allows to keep higher priority on any already resolved Promise (or close to)
-      // including nested ones like:
-      // >  (async () => {
-      // >    await Promise.resolve();
-      // >    await Promise.resolve();
-      // >  })()
-      handleId = setTimeout(() => {
-        handleId = null;
-        resolve(stillPendingMarker);
-      }, 0);
-    });
-    return { delay, cancel };
-  }
 
   const unknownState = { state: 'unknown', value: undefined } as const;
   const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithAsyncToStringMethod): AsyncContent {
     const cacheKey = data;
-    if (cache.has(cacheKey)) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      return cache.get(cacheKey)!;
+    const match = cache.get(cacheKey);
+    if (match !== undefined) {
+      return match;
     }
 
-    const delay0 = createDelay0();
-    const p: Promise<unknown> =
-      asyncToStringMethod in data
-        ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
-        : (data as Promise<unknown>);
-    // oxlint-disable-next-line no-empty-function
-    p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
-
-    pendingPromisesForCache.push(
-      // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
-      // > If the iterable contains one or more non-promise value and/or an already settled promise,
-      // > then Promise.race will resolve to the first of these values found in the iterable.
-      Promise.race([p, delay0.delay]).then(
+    const p: Promise<unknown> = asyncToStringMethod in data ? data[asyncToStringMethod]() : data;
+    pendingPromisesForCache.set(
+      cacheKey,
+      p.then(
         (successValue) => {
-          if (successValue === stillPendingMarker) cache.set(cacheKey, { state: 'pending', value: undefined });
-          else cache.set(cacheKey, { state: 'fulfilled', value: successValue });
-          delay0.cancel();
+          cache.set(cacheKey, { state: 'fulfilled', value: successValue });
         },
         (errorValue) => {
           cache.set(cacheKey, { state: 'rejected', value: errorValue });
-          delay0.cancel();
         },
       ),
     );
@@ -406,11 +394,34 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
     //      a single loop (or two) will must of the time be enough for most of the values.
     //      Nested Promise will be a sub-optimal case, but given the fact that it barely never
     //      happens in real world, we may pay the cost for it for time to time.
-    const stringifiedValue = stringifyInternal(value, [], getAsyncContent);
-    if (pendingPromisesForCache.length === 0) {
+    const stringifiedValue = stringifyInternal(value, emptySet, getAsyncContent);
+    if (pendingPromisesForCache.size === 0) {
       return stringifiedValue;
     }
-    return Promise.all(pendingPromisesForCache.splice(0)).then(loop);
+    const allKeys = Array.from(pendingPromisesForCache.keys());
+    const allPromises = Array.from(pendingPromisesForCache.values());
+    const delay0 = createDelay0();
+    pendingPromisesForCache.clear();
+    return (
+      Promise.race([Promise.all(allPromises), delay0.delay])
+        // Can only be a success given we catch all errors at Map::set-time
+        .then((successValue) => {
+          if (successValue !== stillPendingMarker) {
+            // Awaited promises resolve before we reach the time limit of delay0
+            delay0.cancel(); // fast cancel to avoid dangling timeout from staying longer than suitable
+            return loop();
+          }
+          // At least one of the awaited promises got slower than our delay0
+          // As such we must mark the still awaited ones as pending
+          for (const cacheKey of allKeys) {
+            const inCache = cache.get(cacheKey);
+            if (inCache === undefined || inCache.state === 'unknown') {
+              cache.set(cacheKey, { state: 'pending', value: undefined });
+            }
+          }
+          return loop();
+        })
+    );
   }
   return loop();
 }

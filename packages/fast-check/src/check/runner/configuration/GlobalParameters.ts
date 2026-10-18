@@ -1,7 +1,6 @@
 import type { Size } from '../../../arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
 import type { Parameters } from './Parameters.js';
 
-/** @internal */
 let globalParameters: GlobalParameters = {};
 
 /**

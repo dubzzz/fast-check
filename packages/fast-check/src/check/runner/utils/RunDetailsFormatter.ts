@@ -7,9 +7,9 @@ import type {
   RunDetailsFailureInterrupted,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
+  RunDetailsSuccess,
 } from '../reporter/RunDetails.js';
 
-/** @internal */
 function formatHints(hints: string[]): string {
   if (hints.length === 1) {
     return `Hint: ${hints[0]}`;
@@ -17,12 +17,10 @@ function formatHints(hints: string[]): string {
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
 }
 
-/** @internal */
 function formatFailures<Ts>(failures: Ts[], stringifyOne: (value: Ts) => string): string {
   return `Encountered failures were:\n- ${failures.map(stringifyOne).join('\n- ')}`;
 }
 
-/** @internal */
 function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringifyOne: (value: Ts) => string): string {
   const summaryLines: string[] = [];
   const remainingTreesAndDepth: { depth: number; tree: ExecutionTree<Ts> }[] = [];
@@ -55,7 +53,6 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringi
   return `Execution summary:\n${summaryLines.join('\n')}`;
 }
 
-/** @internal */
 function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, stringifyOne: (value: Ts) => string) {
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
   let details: string | null = null;
@@ -75,7 +72,6 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
   return { message, details, hints };
 }
 
-/** @internal */
 function prettyError(errorInstance: unknown) {
   // Print the Error message and its associated stacktrace
   if (errorInstance instanceof Error && errorInstance.stack !== undefined) {
@@ -111,7 +107,6 @@ function prettyError(errorInstance: unknown) {
   return 'Failed to serialize errorInstance';
 }
 
-/** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
   const includeErrorInReport = out.runConfiguration.includeErrorInReport;
   const messageErrorPart = includeErrorInReport
@@ -136,7 +131,6 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
   return { message, details, hints };
 }
 
-/** @internal */
 function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, stringifyOne: (value: Ts) => string) {
   const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
   let details: string | null = null;
@@ -153,7 +147,6 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, st
   return { message, details, hints };
 }
 
-/** @internal */
 function defaultReportMessageInternal<Ts>(
   out: RunDetails<Ts>,
   stringifyOne: (value: Ts) => string,
@@ -182,7 +175,9 @@ function defaultReportMessageInternal<Ts>(
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): undefined;
+function defaultReportMessage<Ts>(
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
+): Promise<string> | string;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}
  *
@@ -192,7 +187,7 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): unde
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): string;
+function defaultReportMessage<Ts>(out: RunDetailsSuccess<Ts>): Promise<undefined> | undefined;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}
  *
@@ -202,42 +197,8 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): strin
  * @remarks Since 1.25.0
  * @public
  */
-function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined;
-function defaultReportMessage<Ts>(out: RunDetails<Ts>): string | undefined {
-  return defaultReportMessageInternal(out, stringify);
-}
-
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: false }): Promise<undefined>;
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts> & { failed: true }): Promise<string>;
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 2.17.0
- * @public
- */
-function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined>;
-async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> {
+function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined;
+function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined {
   // The asynchronous version might require two passes:
   // - the first one will register the asynchronous values that will need to be stringified
   // - the second one will take the computed values
@@ -259,21 +220,25 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
   }
 
   // Retry with async stringified versions in mind
-  const registeredValues = new Map(await Promise.all(pendingStringifieds));
-  function stringifySecond(value: unknown): string {
-    const asyncStringifiedIfRegistered = registeredValues.get(value);
-    if (asyncStringifiedIfRegistered !== undefined) {
-      return asyncStringifiedIfRegistered;
+  return Promise.all(pendingStringifieds).then((rawRegisteredValues) => {
+    const registeredValues = new Map(rawRegisteredValues);
+    function stringifySecond(value: unknown): string {
+      const asyncStringifiedIfRegistered = registeredValues.get(value);
+      if (asyncStringifiedIfRegistered !== undefined) {
+        return asyncStringifiedIfRegistered;
+      }
+      // Here we ALWAYS recompute sync versions to avoid putting a cost penalty
+      // on usual paths, the ones not having any async generated values
+      return stringify(value);
     }
-    // Here we ALWAYS recompute sync versions to avoid putting a cost penalty
-    // on usual paths, the ones not having any async generated values
-    return stringify(value);
-  }
-  return defaultReportMessageInternal(out, stringifySecond);
+    return defaultReportMessageInternal(out, stringifySecond);
+  });
 }
 
-/** @internal */
-function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
+function buildError<Ts>(
+  errorMessage: string | undefined,
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
+) {
   if (out.runConfiguration.includeErrorInReport) {
     throw new Error(errorMessage);
   }
@@ -284,22 +249,25 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & 
   return error;
 }
 
-/** @internal */
-function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+function throwIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (!out.failed) {
     return;
   }
-  return asyncDefaultReportMessage(out).then((message) => {
+  const messageOrThenable: Promise<string> | string = defaultReportMessage(out);
+  if (typeof messageOrThenable === 'string') {
+    // Synchrounous handling for non-Promise values for faster throughput
+    throw buildError<Ts>(messageOrThenable, out);
+  }
+  return messageOrThenable.then((message) => {
     throw buildError<Ts>(message, out);
   });
 }
 
-/** @internal */
-export function asyncReportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (out.runConfiguration.reporter !== undefined) {
     return out.runConfiguration.reporter(out);
   }
-  return asyncThrowIfFailed(out);
+  return throwIfFailed(out);
 }
 
-export { defaultReportMessage, asyncDefaultReportMessage };
+export { defaultReportMessage };

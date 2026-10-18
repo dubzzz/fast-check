@@ -1,17 +1,14 @@
 import { Value } from '../../../check/arbitrary/definition/Value.js';
 
-/** @internal */
 function halvePosInteger(n: number): number {
   return Math.floor(n / 2);
 }
-/** @internal */
 function halveNegInteger(n: number): number {
   return Math.ceil(n / 2);
 }
 
 /**
  * Compute shrunk values to move from current to target
- * @internal
  */
 export function shrinkInteger(current: number, target: number, tryTargetAsap: boolean): IteratorObject<Value<number>> {
   const realGap = current - target;
