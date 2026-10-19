@@ -1,6 +1,7 @@
 export const RegexesOfInterest: {
   regex: RegExp;
   invalidWithUnicode?: boolean;
+  notSuitableForGenrateTests?: boolean; // either not implemented or broken regexes leading to no generate doable
 }[] = [
   // Regexes declared with the /u flag,
   // will not be executed against non-unicode tests
@@ -80,23 +81,23 @@ export const RegexesOfInterest: {
   { regex: /\1/, invalidWithUnicode: true },
   // @ts-expect-error Referencing non-existing group in Regex
   { regex: /\1000/, invalidWithUnicode: true }, // in non-unicode: \100 then 0
-  { regex: /(a)\1/ },
+  { regex: /(a)\1/, notSuitableForGenrateTests: true },
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
   { regex: /(a)\2/, invalidWithUnicode: true }, // in non-unicode: \2 is considered as an octal
-  { regex: /(?=a)/ },
-  { regex: /(?!a)/ },
-  { regex: /(?<=a)/ },
-  { regex: /(?<!a)/ },
-  { regex: /(?=(a+))/ },
-  { regex: /(?!(a+)b)/ },
-  { regex: /(?<=([ab]+)([bc]+))/ },
+  { regex: /(?=a)/, notSuitableForGenrateTests: true },
+  { regex: /(?!a)/, notSuitableForGenrateTests: true },
+  { regex: /(?<=a)/, notSuitableForGenrateTests: true },
+  { regex: /(?<!a)/, notSuitableForGenrateTests: true },
+  { regex: /(?=(a+))/, notSuitableForGenrateTests: true },
+  { regex: /(?!(a+)b)/, notSuitableForGenrateTests: true },
+  { regex: /(?<=([ab]+)([bc]+))/, notSuitableForGenrateTests: true },
   { regex: /a(2|)b/ },
   { regex: /a(|2)b/ },
   { regex: /(a(b)c)/ },
   { regex: /(?<la>a(?<lb>b)c)/ },
-  { regex: /(?<label>[A-Z][a-z]*) \k<label>/ },
-  { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/ },
+  { regex: /(?<label>[A-Z][a-z]*) \k<label>/, notSuitableForGenrateTests: true },
+  { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/, notSuitableForGenrateTests: true },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\P{Emoji_Presentation}/ },
   // @ts-expect-error Missing unicode mode on Regex
