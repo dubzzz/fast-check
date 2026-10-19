@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from './stringMatching.js';
 
@@ -6,6 +6,7 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions.js';
+import { RegexesOfInterest } from './_internals/helpers/__test-helpers__/RegexesOfInterest.js';
 
 describe('stringMatching (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc.oneof(hardcodedRegex(), regexBasedOnChunks());
@@ -23,14 +24,24 @@ describe('stringMatching (integration)', () => {
     await assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
   });
 
-  it.each([
-    { name: 'literal', character: '\0' },
-    { name: 'escaped', character: '\\0' },
-  ])('should generate NUL from a $name NUL character range', ({ character }) => {
-    const arb = stringMatching(new RegExp(`^[${character}-${character}]$`));
+  it.each(RegexesOfInterest.filter((i) => !i.regex.flags.includes('u')))(
+    'should only produce correct values for the regex $regex',
+    async ({ regex }) => {
+      const arb = stringMatching(regex);
+      const isCorrect = (value: unknown) => typeof value === 'string' && regex.test(value);
+      await assertProduceCorrectValues(() => arb, isCorrect, { extraParameters, assertParameters: { numRuns: 1 } });
+    },
+  );
 
-    expect(fc.sample(arb, { seed: 42, numRuns: 10 })).toEqual(Array(10).fill('\0'));
-  });
+  it.each(RegexesOfInterest.filter((i) => !i.invalidWithUnicode))(
+    'should only produce correct values for the regex $regex in unicode mode',
+    async ({ regex }) => {
+      const unicodeRegex = new RegExp(regex, 'u');
+      const arb = stringMatching(unicodeRegex);
+      const isCorrect = (value: unknown) => typeof value === 'string' && unicodeRegex.test(value);
+      await assertProduceCorrectValues(() => arb, isCorrect, { extraParameters, assertParameters: { numRuns: 1 } });
+    },
+  );
 });
 
 // Helpers
