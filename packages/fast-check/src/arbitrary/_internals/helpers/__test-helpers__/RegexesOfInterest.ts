@@ -42,7 +42,7 @@ export const RegexesOfInterest: {
   { regex: /[a\-z]/ },
   { regex: /[\wz]/ },
   { regex: /[.-f]/ },
-  { regex: /[\w-z]/, invalidWithUnicode: true,notSuitableForGenerateTests:true }, // supposed to be suitable, it matches any character from A–Z, a–z, 0–9, _ or -
+  { regex: /[\w-z]/, invalidWithUnicode: true, notSuitableForGenerateTests: true }, // supposed to be suitable, it matches any character from A–Z, a–z, 0–9, _ or -
   { regex: /[^abc]/ },
   { regex: /[^a-z]/ },
   { regex: /[abc^def]/ },
