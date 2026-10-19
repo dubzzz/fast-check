@@ -51,7 +51,7 @@ function buildLinkIndexArbitrary(
     case 'many': {
       let randomUnicity = 0;
       return uniqueArray(linkArbitrary, {
-        depthIdentifier: currentEntityDepth, // the deeper we go, the more likely we are to link to no entity at all
+        depthIdentifier: currentEntityDepth,
         selector: (v) => (v === countInTargetType ? v + ++randomUnicity : v),
       }).map((values) => {
         let offset = 0;
@@ -110,7 +110,11 @@ function assertAcceptableRelations<TEntityFields, TEntityRelations extends Entit
   }
 }
 
-type ToBeProducedEntity<TEntityFields> = { type: keyof TEntityFields; indexInType: number; depth: number };
+type ToBeProducedEntity<TEntityFields> = {
+  type: keyof TEntityFields;
+  indexInType: number;
+  depth: number;
+};
 
 type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
   readonly producedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations>;
@@ -234,7 +238,11 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
-  const linkContexts: { name: string; relation: Relationship<keyof TEntityFields>; sentinelLinkIndex: number }[] = [];
+  const linkContexts: {
+    name: string;
+    relation: Relationship<keyof TEntityFields>;
+    sentinelLinkIndex: number;
+  }[] = [];
   for (const name in currentRelations) {
     const relation = currentRelations[name];
     if (relation.arity === 'inverse') {

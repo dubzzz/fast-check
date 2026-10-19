@@ -74,7 +74,7 @@ export type UniqueArraySharedConstraints = {
    * then the generated items will tend to be less deep to avoid creating structures a lot
    * larger than expected.
    *
-   * The deeper the structure is the more chances the arbitrary will have to generate
+   * The deeper the structure is, the more chances the arbitrary will have to generate
    * an array having the minimal accepted length.
    *
    * @remarks Since 2.25.0
