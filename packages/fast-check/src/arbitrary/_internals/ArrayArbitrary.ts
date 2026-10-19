@@ -170,14 +170,11 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     return new Value(vs, context);
   }
 
-  /** Compute the benefit for the current depth, the higher the more chances to fallback to minimal-length arrays */
   private computeDepthBenefit(): number {
     const depth = this.depthContext.depth;
     if (depth <= 0 || this.depthBias <= 0) {
       return 0;
     }
-    // We use a pow-based biased benefit as the deeper we go the more chance we have
-    // to encounter thousands of instances of the current arbitrary.
     const depthBenefit = Math.floor(Math.pow(1 + this.depthBias, depth)) - 1;
     return Math.min(depthBenefit, Number.MAX_SAFE_INTEGER);
   }
