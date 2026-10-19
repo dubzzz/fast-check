@@ -24,7 +24,7 @@ describe('stringMatching (integration)', () => {
     await assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
   });
 
-  it.each(RegexesOfInterest.filter((i) => !i.notSuitableForGenrateTests && !i.regex.flags.includes('u')))(
+  it.each(RegexesOfInterest.filter((i) => !i.notSuitableForGenerateTests && !i.regex.flags.includes('u')))(
     'should only produce correct values for the regex $regex',
     async ({ regex }) => {
       const arb = stringMatching(regex);
@@ -33,7 +33,7 @@ describe('stringMatching (integration)', () => {
     },
   );
 
-  it.each(RegexesOfInterest.filter((i) => !i.notSuitableForGenrateTests && !i.invalidWithUnicode))(
+  it.each(RegexesOfInterest.filter((i) => !i.notSuitableForGenerateTests && !i.invalidWithUnicode))(
     'should only produce correct values for the regex $regex in unicode mode',
     async ({ regex }) => {
       const unicodeRegex = new RegExp(regex, 'u');

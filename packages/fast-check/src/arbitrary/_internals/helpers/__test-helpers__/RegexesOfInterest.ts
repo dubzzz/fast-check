@@ -1,7 +1,7 @@
 export const RegexesOfInterest: {
   regex: RegExp;
   invalidWithUnicode?: boolean;
-  notSuitableForGenrateTests?: boolean; // either not implemented or broken regexes leading to no generate doable
+  notSuitableForGenerateTests?: boolean; // either not implemented or broken regexes leading to no generate doable
 }[] = [
   // Regexes declared with the /u flag,
   // will not be executed against non-unicode tests
@@ -18,7 +18,7 @@ export const RegexesOfInterest: {
   { regex: /a/ },
   { regex: /🐱/, invalidWithUnicode: true }, // handled separately
   // @ts-expect-error Referencing non-existing group in Regex
-  { regex: /\125/, invalidWithUnicode: true },
+  { regex: /\125/, invalidWithUnicode: true, notSuitableForGenerateTests: true }, // supposed to be suitable, it matches 'U'
   { regex: /\x25/ },
   { regex: /\u0025/ },
   // @ts-expect-error Missing unicode mode on Regex
@@ -42,7 +42,7 @@ export const RegexesOfInterest: {
   { regex: /[a\-z]/ },
   { regex: /[\wz]/ },
   { regex: /[.-f]/ },
-  { regex: /[\w-z]/, invalidWithUnicode: true }, // equivalent to [w-z]
+  { regex: /[\w-z]/, invalidWithUnicode: true,notSuitableForGenerateTests:true }, // supposed to be suitable, it matches any character from A–Z, a–z, 0–9, _ or -
   { regex: /[^abc]/ },
   { regex: /[^a-z]/ },
   { regex: /[abc^def]/ },
@@ -73,31 +73,31 @@ export const RegexesOfInterest: {
   { regex: /[a^][$b]/ },
   { regex: /(^|a)(b|$)/ },
   { regex: /(a|^)($|b)/ },
-  { regex: /a^$b/ },
-  { regex: /a*^$b*/ }, // matches '', but not 'aa', seems equivalent to /^$/
+  { regex: /a^$b/, notSuitableForGenerateTests: true }, // no match possible!
+  { regex: /a*^$b*/, notSuitableForGenerateTests: true }, // matches '', but not 'aa', seems equivalent to /^$/ ; not supported for now, considered to be a malformed regex
   { regex: /\^ab\$/ },
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
   { regex: /\1/, invalidWithUnicode: true },
   // @ts-expect-error Referencing non-existing group in Regex
-  { regex: /\1000/, invalidWithUnicode: true }, // in non-unicode: \100 then 0
-  { regex: /(a)\1/, notSuitableForGenrateTests: true },
+  { regex: /\1000/, invalidWithUnicode: true, notSuitableForGenerateTests: true }, // in non-unicode: \100 then 0 ; supposed to be suitable, it matches '@0'
+  { regex: /(a)\1/, notSuitableForGenerateTests: true },
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
   { regex: /(a)\2/, invalidWithUnicode: true }, // in non-unicode: \2 is considered as an octal
-  { regex: /(?=a)/, notSuitableForGenrateTests: true },
-  { regex: /(?!a)/, notSuitableForGenrateTests: true },
-  { regex: /(?<=a)/, notSuitableForGenrateTests: true },
-  { regex: /(?<!a)/, notSuitableForGenrateTests: true },
-  { regex: /(?=(a+))/, notSuitableForGenrateTests: true },
-  { regex: /(?!(a+)b)/, notSuitableForGenrateTests: true },
-  { regex: /(?<=([ab]+)([bc]+))/, notSuitableForGenrateTests: true },
+  { regex: /(?=a)/, notSuitableForGenerateTests: true },
+  { regex: /(?!a)/, notSuitableForGenerateTests: true },
+  { regex: /(?<=a)/, notSuitableForGenerateTests: true },
+  { regex: /(?<!a)/, notSuitableForGenerateTests: true },
+  { regex: /(?=(a+))/, notSuitableForGenerateTests: true },
+  { regex: /(?!(a+)b)/, notSuitableForGenerateTests: true },
+  { regex: /(?<=([ab]+)([bc]+))/, notSuitableForGenerateTests: true },
   { regex: /a(2|)b/ },
   { regex: /a(|2)b/ },
   { regex: /(a(b)c)/ },
   { regex: /(?<la>a(?<lb>b)c)/ },
-  { regex: /(?<label>[A-Z][a-z]*) \k<label>/, notSuitableForGenrateTests: true },
-  { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/, notSuitableForGenrateTests: true },
+  { regex: /(?<label>[A-Z][a-z]*) \k<label>/, notSuitableForGenerateTests: true },
+  { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/, notSuitableForGenerateTests: true },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\P{Emoji_Presentation}/ },
   // @ts-expect-error Missing unicode mode on Regex
