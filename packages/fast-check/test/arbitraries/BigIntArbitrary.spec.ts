@@ -15,7 +15,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
   describe('bitIntN', () => {
     it('Should be able to generate bigint above the highest positive double', async () => {
       const out = await fc.check(
-        fc.asyncProperty(bigInt1030(), (v) => Number(v) !== Number.POSITIVE_INFINITY),
+        fc.property(bigInt1030(), (v) => Number(v) !== Number.POSITIVE_INFINITY),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -26,7 +26,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     });
     it('Should be able to generate bigint below the smallest negative double', async () => {
       const out = await fc.check(
-        fc.asyncProperty(bigInt1030(), (v) => Number(v) !== Number.NEGATIVE_INFINITY),
+        fc.property(bigInt1030(), (v) => Number(v) !== Number.NEGATIVE_INFINITY),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -37,10 +37,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     });
     it('Should be able to generate small bigint (relatively to maximal bigint asked)', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
-          bigInt1030(),
-          (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER,
-        ),
+        fc.property(bigInt1030(), (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -52,10 +49,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     });
     it('Should be able to generate close to min or max bigints (relatively to the asked range)', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
-          bigInt1030(),
-          (v) => v >= (-1n << BigInt(1030 - 1)) + 500n && v <= (1n << BigInt(1030 - 1)) - 500n,
-        ),
+        fc.property(bigInt1030(), (v) => v >= (-1n << BigInt(1030 - 1)) + 500n && v <= (1n << BigInt(1030 - 1)) - 500n),
         { seed: seed },
       );
       expect(out.failed).toBe(true); // It found something quite close to min/max
@@ -66,7 +60,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     });
     it('Should not be able to generate small bigint if not biased (very improbable)', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.noBias(bigInt1030()),
           (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER,
         ),
@@ -76,7 +70,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     });
     it('Should not be able to generate close to min or max bigints if not biased (very improbable)', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.noBias(bigInt1030()),
           (v) => v >= (-1n << BigInt(1030 - 1)) + 500n && v <= (1n << BigInt(1030 - 1)) - 500n,
         ),

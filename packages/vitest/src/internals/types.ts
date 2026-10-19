@@ -1,7 +1,7 @@
 import type { TestAPI } from 'vitest';
 import type {
   Arbitrary,
-  asyncProperty,
+  property,
   assert,
   readConfigureGlobal,
   GeneratorValue,
@@ -10,7 +10,8 @@ import type {
 } from 'fast-check';
 
 export type FcExtra = {
-  asyncProperty: typeof asyncProperty;
+  asyncProperty?: typeof property;
+  property: typeof property;
   assert: typeof assert;
   readConfigureGlobal: typeof readConfigureGlobal;
   beforeEach: typeof beforeEach;

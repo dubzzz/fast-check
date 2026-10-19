@@ -18,7 +18,7 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
     // Act / Assert
     await expect(
       fc.assert(
-        fc.asyncProperty(fc.integer(), async (_x) => {
+        fc.property(fc.integer(), async (_x) => {
           // first run will pass, but second one will be interrupted
           vi.advanceTimersByTime(80);
         }),
@@ -36,7 +36,7 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
     // Act / Assert
     await expect(
       fc.assert(
-        fc.asyncProperty(fc.integer(), async (_x) => {
+        fc.property(fc.integer(), async (_x) => {
           // first run will pass, but second one will be interrupted
           vi.advanceTimersByTime(80);
         }),
@@ -54,7 +54,7 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
     // Act / Assert
     await expect(
       fc.assert(
-        fc.asyncProperty(fc.integer(), async (_x) => {
+        fc.property(fc.integer(), async (_x) => {
           // first run will pass, but second one will be interrupted
           vi.advanceTimersByTime(80);
         }),
@@ -76,7 +76,7 @@ describe(`TimeLimitPlugins (seed: ${seed})`, () => {
     // Act / Assert
     await expect(
       fc.assert(
-        fc.asyncProperty(fc.integer(), async (_x) => {}),
+        fc.property(fc.integer(), async (_x) => {}),
         {
           plugins: [fc.interruptAfterTimeLimit(60_000, { failOnInterrupt: true })],
         },

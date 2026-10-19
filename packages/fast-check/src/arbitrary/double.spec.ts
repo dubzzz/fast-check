@@ -30,7 +30,7 @@ describe('double', () => {
 
   it('should accept any valid range of floating point numbers (including infinity)', async () => {
     await fc.assert(
-      fc.asyncProperty(doubleConstraints({ ...defaultDoubleRecordConstraints, noInteger: undefined }), (ct) => {
+      fc.property(doubleConstraints({ ...defaultDoubleRecordConstraints, noInteger: undefined }), (ct) => {
         // Arrange
         spyBigInt();
 
@@ -45,7 +45,7 @@ describe('double', () => {
 
   it('should accept any constraints defining min (not-NaN) equal to max', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         float64raw(),
         fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         (f, otherCt) => {
@@ -65,7 +65,7 @@ describe('double', () => {
 
   it('should reject any constraints defining min (not-NaN) equal to max if one is exclusive', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         float64raw(),
         fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         fc.constantFrom('min', 'max', 'both'),
@@ -109,7 +109,7 @@ describe('double', () => {
 
   it('should reject if specified min is strictly greater than max', async () => {
     await fc.assert(
-      fc.asyncProperty(float64raw(), float64raw(), (da, db) => {
+      fc.property(float64raw(), float64raw(), (da, db) => {
         // Arrange
         fc.pre(!Number.isNaN(da));
         fc.pre(!Number.isNaN(db));
@@ -144,7 +144,7 @@ describe('double', () => {
     };
 
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.option(doubleConstraints(withoutExcludedConstraints), { nil: undefined }),
         fc.bigInt({ min: 0n }),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -177,7 +177,7 @@ describe('double', () => {
 
     it('should ask for a range with one extra value (far from zero)', async () => {
       await fc.assert(
-        fc.asyncProperty(doubleConstraints(withNaNRecordConstraints), (ct) => {
+        fc.property(doubleConstraints(withNaNRecordConstraints), (ct) => {
           // Arrange
           const { max } = minMaxForConstraints(ct);
           const bigInt = spyBigInt();
@@ -218,7 +218,7 @@ describe('double', () => {
 
     it('should properly convert the extra value to NaN', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           doubleConstraints(withNaNRecordConstraints),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (ct, biasFactor) => {
@@ -261,7 +261,7 @@ describe('double', () => {
   describe('without NaN', () => {
     it('should ask integers between the indexes corresponding to min and max', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           doubleConstraints({ ...defaultDoubleRecordConstraints, noNaN: undefined, noInteger: undefined }),
           (ctDraft) => {
             // Arrange

@@ -242,14 +242,10 @@ function buildError<Ts>(
   if (out.runConfiguration.includeErrorInReport) {
     throw new Error(errorMessage);
   }
-  const error = new Error(errorMessage, { cause: out.errorInstance });
-  if (!('cause' in error)) {
-    Object.assign(error, { cause: out.errorInstance });
-  }
-  return error;
+  return new Error(errorMessage, { cause: out.errorInstance });
 }
 
-function throwIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (!out.failed) {
     return;
   }
@@ -261,13 +257,6 @@ function throwIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   return messageOrThenable.then((message) => {
     throw buildError<Ts>(message, out);
   });
-}
-
-export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
-  if (out.runConfiguration.reporter !== undefined) {
-    return out.runConfiguration.reporter(out);
-  }
-  return throwIfFailed(out);
 }
 
 export { defaultReportMessage };

@@ -10,7 +10,7 @@
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "12.5.1",
+      "version": "12.14.0",
       "onFail": "download"
     }
   },
@@ -28,9 +28,9 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "bench": "vitest bench",
-    "bench:ci": "vitest bench --outputJson benchmark.json --compare benchmark.json",
-    "bench:snap": "vitest bench --outputJson benchmark.json",
-    "bench:compare": "vitest bench --compare benchmark.json",
+    "bench:ci": "cross-env BENCH_WRITE=true BENCH_COMPARE=true vitest bench --run --reporter=default",
+    "bench:snap": "cross-env BENCH_WRITE=true vitest bench --run",
+    "bench:compare": "cross-env BENCH_COMPARE=true vitest bench --run",
     "typecheck": "pnpm --parallel run typecheck",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
@@ -44,22 +44,22 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/documentation"
   },
   "devDependencies": {
-    "@atproto/api": "^0.21.0",
+    "@atproto/api": "^0.28.0",
     "@changesets/cli": "^3.0.3",
     "@fast-check/packaged": "workspace:*",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.19.0",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@types/node": "^24.19.2",
+    "@vitest/coverage-v8": "^5.0.5",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
-    "oxfmt": "^0.71.0",
-    "oxlint": "^1.85.0",
-    "oxlint-tsgolint": "^7.0.2003",
-    "pkg-pr-new": "^0.0.88",
-    "publint": "^0.3.24",
-    "rolldown": "^1.2.11",
-    "rolldown-plugin-dts": "^0.28.6",
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.88.0",
+    "oxlint-tsgolint": "^7.0.2004",
+    "pkg-pr-new": "^0.0.91",
+    "publint": "^0.3.25",
+    "rolldown": "^1.2.14",
+    "rolldown-plugin-dts": "^0.28.8",
     "typescript": "~7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.5"
   }
 }

@@ -20,7 +20,7 @@ describe('IteratorArbitrary', () => {
   describe('generate', () => {
     it('should produce a cloneable instance of Iterator', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           const { instance: sourceArb } = fakeArbitrary();
@@ -45,7 +45,7 @@ describe('IteratorArbitrary', () => {
 
     it('should not call generate before we pull from the Iterator but decide bias', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           const { instance: sourceArb, generate } = fakeArbitrary();
@@ -71,7 +71,7 @@ describe('IteratorArbitrary', () => {
 
     it('should not check bias again for cloned instances', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           const { instance: sourceArb, generate } = fakeArbitrary();
@@ -102,7 +102,7 @@ describe('IteratorArbitrary', () => {
 
     it('should call generate with cloned instance of Random as we pull from the Iterator', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const numValuesToPull = 5;
           const biasFactor = 48;
@@ -137,7 +137,7 @@ describe('IteratorArbitrary', () => {
 
     it('should call generate with cloned instance of Random specific for each Iterator', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const numValuesToPullS1 = 5;
           const numValuesToPullS2 = 3;
@@ -190,7 +190,7 @@ describe('IteratorArbitrary', () => {
 
     it('should print pulled values if history is available', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.array(fc.integer()), (expectedValues) => {
+        fc.property(fc.array(fc.integer()), (expectedValues) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -230,7 +230,7 @@ describe('IteratorArbitrary', () => {
 
     it('should print count of pulled values if there is no history', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.array(fc.integer()), (expectedValues) => {
+        fc.property(fc.array(fc.integer()), (expectedValues) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -263,7 +263,7 @@ describe('IteratorArbitrary', () => {
 
     it('should create independent Iterator', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -315,7 +315,7 @@ describe('IteratorArbitrary', () => {
 
     it('should stop yielding values as soon as it reaches the drawn target length', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), fc.integer({ min: 0, max: 10 }), (history, targetLength) => {
+        fc.property(fc.boolean(), fc.integer({ min: 0, max: 10 }), (history, targetLength) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -343,7 +343,7 @@ describe('IteratorArbitrary', () => {
 
     it('should draw the target length with one extra slot and produce a never-ending iterator when reaching it', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -371,7 +371,7 @@ describe('IteratorArbitrary', () => {
 
     it('should not draw any target length when minLength is Number.POSITIVE_INFINITY', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -582,7 +582,7 @@ describe('IteratorArbitrary', () => {
 
     it('should return false even for its own values', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
           const { instance: mrng } = fakeRandom();
@@ -608,7 +608,7 @@ describe('IteratorArbitrary', () => {
   describe('shrink', () => {
     it('should always shrink to nil', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const { instance: sourceArb, generate, shrink } = fakeArbitrary<number>();
           generate.mockReturnValue(new Value(0, undefined));

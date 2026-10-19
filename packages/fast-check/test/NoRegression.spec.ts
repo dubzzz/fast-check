@@ -45,7 +45,7 @@ const settings = { seed: 42, verbose: 2 };
 describe(`NoRegression`, () => {
   it('.filter', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.nat().filter((n) => n % 3 !== 0),
         (v) => testFunc(v),
       ),
@@ -53,7 +53,7 @@ describe(`NoRegression`, () => {
   });
   it('.map', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.nat().map((n) => String(n)),
         (v) => testFunc(v),
       ),
@@ -61,7 +61,7 @@ describe(`NoRegression`, () => {
   });
   it('.chain', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.nat(20).chain((n) => fc.clone(fc.nat(n), n)),
         (v) => testFunc(v),
       ),
@@ -69,7 +69,7 @@ describe(`NoRegression`, () => {
   });
   it('chainUntil', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.chainUntil(
           fc.nat().map((n): number[] => [n]),
           (tuple) => (tuple[tuple.length - 1] > 10 ? fc.nat().map((n) => [...tuple, n]) : undefined),
@@ -79,11 +79,11 @@ describe(`NoRegression`, () => {
     );
   });
   it('float', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.float(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.float(), (v) => testFunc(v)));
   });
   it('gen', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.gen(), (gen) => {
+      fc.property(fc.gen(), (gen) => {
         const v1 = gen(fc.integer);
         const v2 = gen(fc.integer);
         return testFunc(`${v1}-${v2}`);
@@ -91,44 +91,44 @@ describe(`NoRegression`, () => {
     );
   });
   it('double', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.double(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.double(), (v) => testFunc(v)));
   });
   it('integer', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.integer(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.integer(), (v) => testFunc(v)));
   });
   it('nat', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.nat(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.nat(), (v) => testFunc(v)));
   });
   it('maxSafeInteger', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.maxSafeInteger(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.maxSafeInteger(), (v) => testFunc(v)));
   });
   it('maxSafeNat', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.maxSafeNat(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.maxSafeNat(), (v) => testFunc(v)));
   });
   it('string', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.string(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.string(), (v) => testFunc(v)));
   });
   it('stringMatching', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/), (v) => testFunc(v)),
+      fc.property(fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/), (v) => testFunc(v)),
     );
   });
   it('stringMatching({maxLength:10})', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 }), (v) =>
+      fc.property(fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 }), (v) =>
         testFunc(v),
       ),
     );
   });
   it('base64String', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.base64String(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.base64String(), (v) => testFunc(v)));
   });
   it('lorem', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.lorem(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.lorem(), (v) => testFunc(v)));
   });
   it('mapToConstant', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.mapToConstant({ num: 26, build: (v) => String.fromCharCode(v + 0x61) }),
         fc.mapToConstant({ num: 26, build: (v) => String.fromCharCode(v + 0x61) }),
         (a, b) => testFunc(a + b),
@@ -136,19 +136,18 @@ describe(`NoRegression`, () => {
     );
   });
   it('option', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.option(fc.nat()), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.option(fc.nat()), (v) => testFunc(v)));
   });
   it('oneof', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
-        fc.oneof<any>(fc.nat(), fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 })),
-        (v) => testFunc(v),
+      fc.property(fc.oneof<any>(fc.nat(), fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 })), (v) =>
+        testFunc(v),
       ),
     );
   });
   it('oneof[weighted]', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.oneof<any>(
           { weight: 1, arbitrary: fc.nat() },
           { weight: 5, arbitrary: fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 }) },
@@ -158,28 +157,28 @@ describe(`NoRegression`, () => {
     );
   });
   it('clone', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.clone(fc.nat(), 2), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.clone(fc.nat(), 2), (v) => testFunc(v)));
   });
   it('shuffledSubarray', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.shuffledSubarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
+      fc.property(fc.shuffledSubarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
         testFunc(v.join('')),
       ),
     );
   });
   it('subarray', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.subarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
+      fc.property(fc.subarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
         testFunc(v.join('')),
       ),
     );
   });
   it('array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.array(fc.nat()), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.array(fc.nat()), (v) => testFunc(v)));
   });
   it('sparseArray', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.sparseArray(fc.nat()),
         (v) =>
           // Sum of first element of each group should be less or equal to 10
@@ -193,7 +192,7 @@ describe(`NoRegression`, () => {
   });
   it('sparseArray({noTrailingHole:true})', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.sparseArray(fc.nat(), { noTrailingHole: true }),
         (v) =>
           // Sum of first element of each group should be less or equal to 10
@@ -206,127 +205,125 @@ describe(`NoRegression`, () => {
     );
   });
   it('iterator', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.iterator(fc.nat()), (s) => testFunc(s)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.iterator(fc.nat()), (s) => testFunc(s)));
   });
   it('iterator (noHistory)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.iterator(fc.nat(), { noHistory: true }), (s) => testFunc(s)),
+      fc.property(fc.iterator(fc.nat(), { noHistory: true }), (s) => testFunc(s)),
     );
   });
   it('uniqueArray', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.uniqueArray(fc.nat()), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.uniqueArray(fc.nat()), (v) => testFunc(v)));
   });
   it('uniqueArray', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.uniqueArray(fc.nat()), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.uniqueArray(fc.nat()), (v) => testFunc(v)));
   });
   it('tuple', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.tuple(fc.nat(), fc.nat()), (v) => testFunc(v)),
-    );
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.tuple(fc.nat(), fc.nat()), (v) => testFunc(v)));
   });
   it('limitShrink', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.limitShrink(fc.nat(), 4), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.limitShrink(fc.nat(), 4), (v) => testFunc(v)));
   });
   it('int8Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.int8Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.int8Array(), (v) => testFunc(v)));
   });
   it('uint8Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.uint8Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.uint8Array(), (v) => testFunc(v)));
   });
   it('uint8ClampedArray', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.uint8ClampedArray(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.uint8ClampedArray(), (v) => testFunc(v)));
   });
   it('int16Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.int16Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.int16Array(), (v) => testFunc(v)));
   });
   it('uint16Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.uint16Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.uint16Array(), (v) => testFunc(v)));
   });
   it('int32Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.int32Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.int32Array(), (v) => testFunc(v)));
   });
   it('uint32Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.uint32Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.uint32Array(), (v) => testFunc(v)));
   });
   it('float32Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.float32Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.float32Array(), (v) => testFunc(v)));
   });
   it('float64Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.float64Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.float64Array(), (v) => testFunc(v)));
   });
   it('record', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.record({ k1: fc.nat(), k2: fc.nat() }, { requiredKeys: [] }), (v) => testFunc(v)),
+      fc.property(fc.record({ k1: fc.nat(), k2: fc.nat() }, { requiredKeys: [] }), (v) => testFunc(v)),
     );
   });
   it('dictionary', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.dictionary(fc.string(), fc.nat()), (v) => testFunc(v)),
+      fc.property(fc.dictionary(fc.string(), fc.nat()), (v) => testFunc(v)),
     );
   });
   it('anything', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.anything(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.anything(), (v) => testFunc(v)));
   });
   it('object', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.object(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.object(), (v) => testFunc(v)));
   });
   it('json', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.json(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.json(), (v) => testFunc(v)));
   });
   it('jsonValue', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.jsonValue(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.jsonValue(), (v) => testFunc(v)));
   });
   it('compareFunc', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.compareFunc(), (f) => testFunc(f(1, 2))));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.compareFunc(), (f) => testFunc(f(1, 2))));
   });
   it('func', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.func(fc.nat()), (f) => testFunc(f())));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.func(fc.nat()), (f) => testFunc(f())));
   });
   it('ipV4', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.ipV4(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.ipV4(), (v) => testFunc(v)));
   });
   it('ipV4Extended', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.ipV4Extended(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.ipV4Extended(), (v) => testFunc(v)));
   });
   it('ipV6', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.ipV6(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.ipV6(), (v) => testFunc(v)));
   });
   it('domain', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.domain(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.domain(), (v) => testFunc(v)));
   });
   it('webAuthority', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.webAuthority(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.webAuthority(), (v) => testFunc(v)));
   });
   it('webSegment', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.webSegment(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.webSegment(), (v) => testFunc(v)));
   });
   it('webFragments', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.webFragments(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.webFragments(), (v) => testFunc(v)));
   });
   it('webQueryParameters', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.webQueryParameters(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.webQueryParameters(), (v) => testFunc(v)));
   });
   it('webPath', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.webPath(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.webPath(), (v) => testFunc(v)));
   });
   it('webUrl', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.webUrl(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.webUrl(), (v) => testFunc(v)));
   });
   it('emailAddress', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.emailAddress(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.emailAddress(), (v) => testFunc(v)));
   });
   it('date', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.date(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.date(), (v) => testFunc(v)));
   });
   it('ulid', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.ulid(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.ulid(), (v) => testFunc(v)));
   });
   it('uuid', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.uuid(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.uuid(), (v) => testFunc(v)));
   });
   it('letrec', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.letrec((tie) => ({
           // Trick to be able to shrink from node to leaf
           tree: fc.nat(1).chain((id) => (id === 0 ? tie('leaf') : tie('node'))),
@@ -339,7 +336,7 @@ describe(`NoRegression`, () => {
   });
   it('letrec (oneof:maxDepth)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.letrec((tie) => ({
           tree: fc.oneof({ withCrossShrink: true, maxDepth: 2 }, tie('leaf'), tie('node')),
           node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
@@ -351,7 +348,7 @@ describe(`NoRegression`, () => {
   });
   it('letrec (oneof:depthSize)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.letrec((tie) => ({
           tree: fc.oneof({ withCrossShrink: true, depthSize: 'small' }, tie('leaf'), tie('node')),
           node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
@@ -363,7 +360,7 @@ describe(`NoRegression`, () => {
   });
   it('commands', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.commands([
           fc.nat().map((n) => new IncreaseCommand(n)),
           fc.nat().map((n) => new DecreaseCommand(n)),
@@ -388,7 +385,7 @@ describe(`NoRegression`, () => {
   });
   it('context', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.context(), fc.nat(), (ctx, v) => {
+      fc.property(fc.context(), fc.nat(), (ctx, v) => {
         ctx.log(`Value was ${v}`);
         return testFunc(v);
       }),
@@ -397,7 +394,7 @@ describe(`NoRegression`, () => {
 
   it('Promise<number>', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         fc.integer().map((v) => [v, Promise.resolve(v)] as const),
         ([v, _p]) => testFunc(v),
       ),
@@ -405,13 +402,13 @@ describe(`NoRegression`, () => {
   });
   it('user defined examples', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.string(), (v) => testFunc(v)),
+      fc.property(fc.string(), (v) => testFunc(v)),
       { ...settings, examples: [['hi'], ['hello'], ['hey']] },
     );
   });
   it('user defined examples (including not shrinkable values)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(
+      fc.property(
         // Shrinkable: built-in
         fc.nat(),
         // Cannot shrinking: missing unmapper
@@ -438,37 +435,33 @@ describe(`NoRegression`, () => {
     );
   });
   it('bigInt', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.bigInt(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.bigInt(), (v) => testFunc(v)));
   });
   it('bigInt({min})', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.bigInt({ min: 1n << 16n }), (v) => testFunc(v)),
-    );
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.bigInt({ min: 1n << 16n }), (v) => testFunc(v)));
   });
   it('bigInt({max})', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.bigInt({ max: 1n << 64n }), (v) => testFunc(v)),
-    );
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.bigInt({ max: 1n << 64n }), (v) => testFunc(v)));
   });
   it('bigInt({min, max})', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.bigInt({ min: 1n << 16n, max: 1n << 64n }), (v) => testFunc(v)),
+      fc.property(fc.bigInt({ min: 1n << 16n, max: 1n << 64n }), (v) => testFunc(v)),
     );
   });
   it('bigInt64Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.bigInt64Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.bigInt64Array(), (v) => testFunc(v)));
   });
   it('bigUint64Array', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.bigUint64Array(), (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.bigUint64Array(), (v) => testFunc(v)));
   });
   it('mixedCase', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.mixedCase(fc.constant('cCbAabBAcaBCcCACcABaCAaAabBACaBcBb')), (v) => testFunc(v)),
+      fc.property(fc.mixedCase(fc.constant('cCbAabBAcaBCcCACcABaCAaAabBACaBcBb')), (v) => testFunc(v)),
     );
   });
   it('mixedCase(string(constantFrom))', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.mixedCase(fc.string({ unit: fc.constantFrom('a', 'b', 'c') })), (v) => testFunc(v)),
+      fc.property(fc.mixedCase(fc.string({ unit: fc.constantFrom('a', 'b', 'c') })), (v) => testFunc(v)),
     );
   });
 });
@@ -478,7 +471,7 @@ describe(`NoRegression (async)`, () => {
 
   it('scheduler', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.scheduler(), async (s) => {
+      fc.property(fc.scheduler(), async (s) => {
         const received = [] as string[];
         for (const v of ['a', 'b', 'c']) {
           s.schedule(Promise.resolve(v)).then((out) => {
@@ -494,28 +487,28 @@ describe(`NoRegression (async)`, () => {
     );
   });
   it('number', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(fc.integer(), async (v) => testFunc(v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(fc.integer(), async (v) => testFunc(v)));
   });
 
   it('.map (to Promise)', async () => {
-    await expectPropertyToThrowErrorMatchingSnapshot(fc.asyncProperty(asyncNumber, async (v) => testFunc(await v)));
+    await expectPropertyToThrowErrorMatchingSnapshot(fc.property(asyncNumber, async (v) => testFunc(await v)));
   });
 
   it('func (to Promise)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.func(asyncNumber), async (f) => testFunc(await f())),
+      fc.property(fc.func(asyncNumber), async (f) => testFunc(await f())),
     );
   });
 
   it('iterator (to Promise)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.iterator(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
+      fc.property(fc.iterator(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
     );
   });
 
   it('iterator (noHistory) (to Promise)', async () => {
     await expectPropertyToThrowErrorMatchingSnapshot(
-      fc.asyncProperty(fc.iterator(asyncNumber, { noHistory: true }), async (s) =>
+      fc.property(fc.iterator(asyncNumber, { noHistory: true }), async (s) =>
         testFunc(await Promise.all([...s.take(10)])),
       ),
     );

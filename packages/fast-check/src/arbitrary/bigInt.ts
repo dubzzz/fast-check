@@ -78,7 +78,7 @@ function bigInt(constraints: BigIntConstraints): Arbitrary<bigint>;
  *
  * @param args - Either min/max bounds as an object or constraints to apply when building instances
  *
- * @remarks Since 2.6.0
+ * @remarks Since 4.3.0
  * @public
  */
 function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): Arbitrary<bigint>;

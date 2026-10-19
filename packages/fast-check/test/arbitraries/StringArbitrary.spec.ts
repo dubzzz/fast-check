@@ -6,7 +6,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
   describe('base64String', () => {
     it('Should shrink on base64 containing no equal signs', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.base64String(), (s: string) => /^\w*$/.exec(s) == null),
+        fc.property(fc.base64String(), (s: string) => /^\w*$/.exec(s) == null),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -14,7 +14,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink on base64 containing one equal signs', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.base64String(), (s: string) => /^\w+=$/.exec(s) == null),
+        fc.property(fc.base64String(), (s: string) => /^\w+=$/.exec(s) == null),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -22,7 +22,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink on base64 containing two equal signs', async () => {
       const out = await fc.check(
-        fc.asyncProperty(fc.base64String(), (s: string) => /^\w+==$/.exec(s) == null),
+        fc.property(fc.base64String(), (s: string) => /^\w+==$/.exec(s) == null),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -39,7 +39,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
   ])('string(unit:$unit)', ({ unit }) => {
     it('Should produce valid UTF-16 strings', async () => {
       await fc.assert(
-        fc.asyncProperty(fc.string({ unit }), (s: string) => encodeURIComponent(s) !== null),
+        fc.property(fc.string({ unit }), (s: string) => encodeURIComponent(s) !== null),
         { seed: seed },
       );
     });
