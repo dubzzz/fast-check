@@ -137,7 +137,7 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
               return from + 2;
             }
             let end = from + 3;
-            while (isHexaDigit(text[end])) {
+            while (isHexaDigit(text[end]) && end < text.length) {
               ++end;
             }
             if (
