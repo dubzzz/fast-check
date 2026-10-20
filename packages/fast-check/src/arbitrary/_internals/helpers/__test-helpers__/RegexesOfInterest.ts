@@ -114,11 +114,12 @@ export const RegexesOfInterest: {
   { regex: /[\p{Letter}\d]/u },
   { regex: /[\p{Letter}-]/u },
   // Proper handling of \0
+  { regex: /\0/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('\0') },
-  // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('[\0-\0]') },
+  { regex: new RegExp('\0') }, // not the same as /\0/
   { regex: /[\0-\0]/ },
+  // oxlint-disable-next-line no-control-regex
+  { regex: new RegExp('[\0-\0]') }, // not the same as /[\0-\0]/
   { regex: /^\0$/ },
   { regex: /^(a)\0$/ },
 ];
