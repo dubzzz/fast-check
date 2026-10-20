@@ -558,7 +558,7 @@ importers:
         version: 0.6.1(@docusaurus/core@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.16.18)(@swc/html@1.16.18)(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.30))(csso@5.0.5)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.30)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@8.1.1)(svgo@3.3.5))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.30))(csso@5.0.5)(html-minifier-terser@7.2.0)(postcss@8.5.30)(svgo@3.3.5))(@mdx-js/react@3.1.1(@types/react@19.3.0)(react@19.3.1))(@rspack/core@1.7.12)(@swc/core@1.16.18)(@swc/html@1.16.18)(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.30))(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.30)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@8.1.1)(svgo@3.3.5)(typescript@7.0.2))
       docusaurus-plugin-typedoc:
         specifier: ^1.4.3
-        version: 1.4.3(typedoc-plugin-markdown@4.14.0(typedoc@0.28.20))(typedoc@0.28.20)
+        version: 1.4.3(typedoc-plugin-markdown@4.14.1(typedoc@0.28.20))(typedoc@0.28.20)
       fast-check:
         specifier: workspace:*
         version: link:../packages/fast-check
@@ -569,8 +569,8 @@ importers:
         specifier: ^0.28.20
         version: 0.28.20
       typedoc-plugin-markdown:
-        specifier: ^4.14.0
-        version: 4.14.0(typedoc@0.28.20)
+        specifier: ^4.14.1
+        version: 4.14.1(typedoc@0.28.20)
       typescript:
         specifier: ~7.0.2
         version: 7.0.2
@@ -9681,8 +9681,8 @@ packages:
       typedoc: 0.28.x
       typedoc-plugin-markdown: '>=4.11.0'
 
-  typedoc-plugin-markdown@4.14.0:
-    resolution: {integrity: sha512-Y2a3oDV9ekrbkk6RBSGH8GyNkh0xIdemIOOTr3tiRN/33nvFGStOs9nw+6Q84gF1XFkcVZrgM4Ckcsf6e/YpKQ==}
+  typedoc-plugin-markdown@4.14.1:
+    resolution: {integrity: sha512-24XX0oqyBsjBIBNoSH4wbgQkouci/CmgmO1ZBSaVkrcflqXFL2PQ5zFOpkz+Ewow5xQ3q2You+wrcmilNepRKg==}
     engines: {node: '>= 18'}
     peerDependencies:
       typedoc: 0.28.x
@@ -16798,11 +16798,11 @@ snapshots:
       minimatch: 9.0.3
       yaml: 2.8.1
 
-  docusaurus-plugin-typedoc@1.4.3(typedoc-plugin-markdown@4.14.0(typedoc@0.28.20))(typedoc@0.28.20):
+  docusaurus-plugin-typedoc@1.4.3(typedoc-plugin-markdown@4.14.1(typedoc@0.28.20))(typedoc@0.28.20):
     dependencies:
       typedoc: 0.28.20
-      typedoc-docusaurus-theme: 1.4.3(typedoc-plugin-markdown@4.14.0(typedoc@0.28.20))(typedoc@0.28.20)
-      typedoc-plugin-markdown: 4.14.0(typedoc@0.28.20)
+      typedoc-docusaurus-theme: 1.4.3(typedoc-plugin-markdown@4.14.1(typedoc@0.28.20))(typedoc@0.28.20)
+      typedoc-plugin-markdown: 4.14.1(typedoc@0.28.20)
 
   dom-accessibility-api@0.5.16: {}
 
@@ -21631,12 +21631,12 @@ snapshots:
     dependencies:
       is-typedarray: 1.0.0
 
-  typedoc-docusaurus-theme@1.4.3(typedoc-plugin-markdown@4.14.0(typedoc@0.28.20))(typedoc@0.28.20):
+  typedoc-docusaurus-theme@1.4.3(typedoc-plugin-markdown@4.14.1(typedoc@0.28.20))(typedoc@0.28.20):
     dependencies:
       typedoc: 0.28.20
-      typedoc-plugin-markdown: 4.14.0(typedoc@0.28.20)
+      typedoc-plugin-markdown: 4.14.1(typedoc@0.28.20)
 
-  typedoc-plugin-markdown@4.14.0(typedoc@0.28.20):
+  typedoc-plugin-markdown@4.14.1(typedoc@0.28.20):
     dependencies:
       typedoc: 0.28.20
 
