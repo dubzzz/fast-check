@@ -17,8 +17,16 @@ export const RegexesOfInterest: {
   { regex: /.{1,}/ },
   { regex: /.?/ },
   { regex: /.*?/ },
+  { regex: /.+?/ },
   { regex: /.??/ },
+  { regex: /.{1}?/ },
   { regex: /.{1,4}?/ },
+  { regex: /.{1,}?/ },
+  { regex: /a{0}/ },
+  { regex: /a{0,0}/ },
+  { regex: /a{0,3}/ },
+  { regex: /(?:ab)+/ },
+  { regex: /(ab|cd){2,3}?/ },
   { regex: new RegExp('\\x1+'), invalidInUnicodeMode: true },
   { regex: new RegExp('\\u123+'), invalidInUnicodeMode: true },
   { regex: new RegExp('\\x{2}'), invalidInUnicodeMode: true },
@@ -45,6 +53,11 @@ export const RegexesOfInterest: {
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\u{1f43}/ },
   { regex: /\n/ },
+  { regex: /\t/ },
+  { regex: /\r/ },
+  { regex: /\f/ },
+  { regex: /\v/ },
+  { regex: /\\/ },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\u{1[81]}/, invalidInUnicodeMode: true },
   { regex: /\u{100000}/u },
@@ -65,6 +78,13 @@ export const RegexesOfInterest: {
 
   // Classes
   { regex: /\w/ },
+  { regex: /\W/ },
+  { regex: /\D/ },
+  { regex: /\S/ },
+  // oxlint-disable-next-line no-empty-character-class
+  { regex: /[]/, unmatchable: true },
+  { regex: /[^]/ },
+  { regex: /[\s\S]/ },
   { regex: /[abc]/ },
   { regex: /[{]/ },
   { regex: /[(]/ },
@@ -89,6 +109,8 @@ export const RegexesOfInterest: {
   { regex: /[a\-z]/ },
   { regex: /[.-f]/ },
   { regex: /[\w-z]/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches any character from A–Z, a–z, 0–9, _ or -
+  { regex: /[-az]/ },
+  { regex: /[\x41-\x5a]/ },
   { regex: /[\u{1f431}-\u{1f434}]/u },
   { regex: /[\u{100000}-\u{10ffff}]/u },
   { regex: /[\uD83D\uDC31-\uD83D\uDC34]/u },
@@ -118,6 +140,8 @@ export const RegexesOfInterest: {
   { regex: /(abc|def)/ },
   { regex: /a(2|)b/ },
   { regex: /a(|2)b/ },
+  { regex: /|/ },
+  { regex: /a||b/ },
 
   // Anchors
   { regex: /^ab$/ },
@@ -128,11 +152,13 @@ export const RegexesOfInterest: {
   { regex: /a^$b/, unmatchable: true }, // no match possible!
   { regex: /a*^$b*/, unsupportedByStringMatching: true }, // matches '', but not 'aa', seems equivalent to /^$/ ; not supported for now, considered to be a malformed regex
   { regex: /\^ab\$/ },
+  { regex: /^$/ },
 
   // Backreferences
   { regex: /(a)\1/, unsupportedByStringMatching: true },
   { regex: /(?<label>[A-Z][a-z]*) \k<label>/, unsupportedByStringMatching: true },
   { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/, unsupportedByStringMatching: true },
+  { regex: /(a(b))\2\1/, unsupportedByStringMatching: true },
 
   // Lookarounds
   { regex: /(?=a)/, unsupportedByStringMatching: true },
@@ -158,11 +184,20 @@ export const RegexesOfInterest: {
   { regex: /\p{sc=Latin}/u },
   { regex: /[\p{Letter}\d]/u },
   { regex: /[\p{Letter}-]/u },
+  { regex: /\p{General_Category=Letter}/u },
+  { regex: /\p{gc=L}/u },
+  { regex: /\p{scx=Latn}/u },
+  { regex: /\p{Alpha}/u },
+  { regex: /[\P{Letter}]/u },
+  { regex: /[^\p{Letter}]/u },
 
   // NUL
   { regex: /\0/ },
   // oxlint-disable-next-line no-control-regex
   { regex: new RegExp('\0') }, // not the same as /\0/
+  { regex: /[\0]/ },
+  // oxlint-disable-next-line no-control-regex
+  { regex: new RegExp('[\0]') }, // not the same as /[\0]/
   { regex: /[\0-\0]/ },
   // oxlint-disable-next-line no-control-regex
   { regex: new RegExp('[\0-\0]') }, // not the same as /[\0-\0]/
