@@ -27,10 +27,22 @@ export const RegexesOfInterest: {
   { regex: /a{0,3}/ },
   { regex: /(?:ab)+/ },
   { regex: /(ab|cd){2,3}?/ },
+  { regex: new RegExp('\\x1+'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u123+'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\x{2}'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u{2}') }, // matches 'uu' without /u, U+0002 with /u
 
   // Escapes
   { regex: /\x25/ },
+  { regex: new RegExp('\\x'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\xZ'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\x1'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\x1Z'), invalidInUnicodeMode: true },
   { regex: /\u0025/ },
+  { regex: new RegExp('\\u'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\uZ'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u123'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u123Z'), invalidInUnicodeMode: true },
   { regex: /\uD83D\uDC31/ },
   { regex: /\uD83D\uDC31+/ },
   { regex: /\uD83D\uDC31{2}/ },
@@ -85,6 +97,8 @@ export const RegexesOfInterest: {
   { regex: /[^a-z]/ },
   { regex: /[abc^def]/ },
   { regex: /[a-z^A-Z]/ },
+  { regex: new RegExp('[\\xZ]'), invalidInUnicodeMode: true },
+  { regex: new RegExp('[\\uZ]'), invalidInUnicodeMode: true },
 
   // Ranges
   { regex: /[a-z]/ },
