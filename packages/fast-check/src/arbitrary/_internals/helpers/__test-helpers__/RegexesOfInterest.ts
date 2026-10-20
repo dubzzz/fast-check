@@ -118,9 +118,7 @@ export const RegexesOfInterest: {
   { regex: new RegExp('\0') },
   // oxlint-disable-next-line no-control-regex
   { regex: new RegExp('[\0-\0]') },
-  // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('[\\0-\\0]') },
-
+  { regex: /[\0-\0]/ },
   { regex: /^\0$/ },
   { regex: /^(a)\0$/ },
 ];
