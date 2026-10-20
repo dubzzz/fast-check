@@ -20,7 +20,7 @@ describe('option', () => {
 
   it('should call FrequencyArbitrary.from with the right parameters when called with constraints', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.record(
           {
             depthIdentifier: fc.string(),

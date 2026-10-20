@@ -25,11 +25,12 @@ function adaptParametersForRecord<Ts>(
   originalParamaters: FcParameters<Ts>,
 ): FcParameters<Ts> {
   const enrichedParameters: FcParameters<Ts> & {
+    reporter: ((runDetails: RunDetails<Ts>) => void) | undefined;
     asyncReporter: ((runDetails: RunDetails<Ts>) => Promise<void>) | undefined;
   } = {
     ...(parameters as Required<FcParameters<[Ts]>>),
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
-    reporter: originalParamaters.reporter,
+    reporter: (originalParamaters as any).reporter,
     asyncReporter: (originalParamaters as any).asyncReporter,
     plugins: originalParamaters.plugins,
   };
@@ -87,8 +88,10 @@ function adaptPluginForRecord<Ts>(plugin: Plugin<Ts>, originalParamaters: FcPara
         instance.decorateRun !== undefined
           ? (nestedRun) => {
               // oxlint-disable-next-line typescript/no-non-null-assertion
-              const decorated = instance.decorateRun!((value) => nestedRun([value]));
-              return (value) => decorated(value[0]);
+              const decorated = instance.decorateRun!((value, executionContext) =>
+                nestedRun([value], executionContext),
+              );
+              return (value, executionContext) => decorated(value[0], executionContext);
             }
           : undefined,
       onAllRunsComplete:
@@ -127,7 +130,10 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     return (testName: string, prop: Prop<Ts>, timeout?: number) => {
       const recordArb = record<Ts>(arbitraries);
       const recordParams:
-        | (FcParameters<[TsParameters]> & { asyncReporter?: (runDetails: RunDetails<[TsParameters]>) => Promise<void> })
+        | (FcParameters<[TsParameters]> & {
+            reporter?: (runDetails: RunDetails<[TsParameters]>) => void;
+            asyncReporter?: (runDetails: RunDetails<[TsParameters]>) => Promise<void>;
+          })
         | undefined =
         params !== undefined
           ? {
@@ -137,9 +143,9 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
               examples:
                 params.examples !== undefined ? params.examples.map((example): [TsParameters] => [example]) : undefined,
               reporter:
-                params.reporter !== undefined
+                (params as any).reporter !== undefined
                   ? // oxlint-disable-next-line typescript/no-non-null-assertion
-                    (runDetails) => params.reporter!(adaptRunDetailsForRecord(runDetails, params))
+                    (runDetails) => (params as any).reporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
               asyncReporter:
                 (params as any).asyncReporter !== undefined

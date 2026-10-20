@@ -1,4 +1,3 @@
-import { nil } from '../../utils/iterator.js';
 import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
@@ -6,58 +5,14 @@ import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 import { propertyRunner } from './PropertyRunner.js';
-import { RunnerIterator } from './RunnerIterator.js';
-import { SourceValuesIterator } from './SourceValuesIterator.js';
-import { lazyToss, toss } from './Tosser.js';
-import { pathWalk } from './utils/PathWalker.js';
+import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
-import type { PluginInstance } from '../plugin/Plugin.js';
-import { readInstalledGlobalPlugins } from './configuration/GlobalPlugins.js';
-
-function runPluginCompletionHooks<Ts>(
-  pluginInstances: PluginInstance<Ts>[],
-  runDetailsPromise: Promise<RunDetails<Ts>>,
-): Promise<RunDetails<Ts>> {
-  const followUps: NonNullable<PluginInstance<Ts>['onAllRunsComplete']>[] = [];
-  for (let index = 0; index !== pluginInstances.length; ++index) {
-    const instance = pluginInstances[index];
-    if (instance.onAllRunsComplete !== undefined) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      followUps.push((runDetails) => instance.onAllRunsComplete!(runDetails));
-    }
-  }
-  for (let index = pluginInstances.length - 1; index >= 0; --index) {
-    const instance = pluginInstances[index];
-    if (instance.afterAll !== undefined) {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      followUps.push(() => instance.afterAll!());
-    }
-  }
-  if (followUps.length === 0) {
-    return runDetailsPromise;
-  }
-  return runDetailsPromise.then(async (details) => {
-    let interceptedOnce = false;
-    let interceptedError: unknown = undefined;
-    for (const followUp of followUps) {
-      try {
-        const out = followUp(details);
-        if (out !== undefined) {
-          await out;
-        }
-      } catch (error) {
-        if (!interceptedOnce) {
-          interceptedOnce = true;
-          interceptedError = error;
-        }
-      }
-    }
-    if (interceptedOnce) {
-      throw interceptedError;
-    }
-    return details;
-  });
-}
+import {
+  applyPluginGeneratorDecorators,
+  applyPluginRunDecorators,
+  instantiatePlugins,
+  runPluginCompletionCallbacks,
+} from './utils/PluginIntegration.js';
 
 /**
  * Run the property, do not throw contrary to {@link assert}
@@ -77,56 +32,26 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  const globalPlugins = readInstalledGlobalPlugins();
-  const localPlugins = qParams.plugins;
+  const pluginInstances = instantiatePlugins(qParams.plugins);
+  const generator = applyPluginGeneratorDecorators(property, pluginInstances);
+  const run = applyPluginRunDecorators(property, pluginInstances);
 
-  // Instantiate plugins
-  const pluginStore = new Map<symbol, any>();
-  const pluginInstances: PluginInstance<Ts>[] = [];
-  for (let index = 0; index !== globalPlugins.length; ++index) {
-    pluginInstances.push(globalPlugins[index](index, pluginStore));
-  }
-  for (let index = 0; index !== localPlugins.length; ++index) {
-    pluginInstances.push(localPlugins[index](globalPlugins.length + index, pluginStore));
-  }
-
-  // Apply and decorate with plugins
-  let surchargedGenerate: typeof property.generate | undefined = undefined;
-  let run: typeof property.run = (v) => property.run(v);
-  for (let index = pluginInstances.length - 1; index >= 0; --index) {
-    const pluginInstance = pluginInstances[index];
-    if (pluginInstance.decorateGenerate !== undefined) {
-      if (surchargedGenerate === undefined) {
-        surchargedGenerate = (mrng, runId) => property.generate(mrng, runId);
-      }
-      surchargedGenerate = pluginInstance.decorateGenerate(surchargedGenerate);
-    }
-    if (pluginInstance.decorateRun !== undefined) {
-      run = pluginInstance.decorateRun(run);
-    }
-  }
-
-  const generator = surchargedGenerate === undefined ? property : { generate: surchargedGenerate };
-  const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const shrink: typeof property.shrink = (...args) => property.shrink(...args);
-  const initialValues =
-    qParams.path.length === 0
-      ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
-  const runnerIterator = new RunnerIterator(
-    new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips),
-    !qParams.endOnFailure ? shrink : () => nil,
-    qParams.verbose,
-  );
+  const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
   const propertyRunnerOut = propertyRunner(runnerIterator, run);
-  const out =
-    propertyRunnerOut === undefined
-      ? runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
-      : propertyRunnerOut.then(() =>
+  return propertyRunnerOut === undefined
+    ? Promise.resolve(
+        runPluginCompletionCallbacks(
+          pluginInstances,
           runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-        );
-  return runPluginCompletionHooks(pluginInstances, Promise.resolve(out));
+        ),
+      )
+    : propertyRunnerOut.then(() =>
+        runPluginCompletionCallbacks(
+          pluginInstances,
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+        ),
+      );
 }
 
 /**

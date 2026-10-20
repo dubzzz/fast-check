@@ -55,7 +55,7 @@ describe('SameValueZeroSet', () => {
 
   it('should increase the size whenever tryAdd returns true', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.array(fc.anything(), { minLength: 1 }), (rawItems) => {
+      fc.property(fc.array(fc.anything(), { minLength: 1 }), (rawItems) => {
         // Arrange
         let expectedSize = 0;
         const s = new SameValueZeroSet((item) => item);
@@ -73,7 +73,7 @@ describe('SameValueZeroSet', () => {
 
   it('should never have two equivalent items in the Set', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.array(fc.anything(), { minLength: 2 }), (rawItems) => {
+      fc.property(fc.array(fc.anything(), { minLength: 2 }), (rawItems) => {
         // Arrange
         const s = new SameValueZeroSet((item) => item);
 
@@ -95,7 +95,7 @@ describe('SameValueZeroSet', () => {
 
   it('should preserve add order', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.array(fc.anything(), { minLength: 2 }), (rawItems) => {
+      fc.property(fc.array(fc.anything(), { minLength: 2 }), (rawItems) => {
         // Arrange
         const s = new SameValueZeroSet((item) => item);
 

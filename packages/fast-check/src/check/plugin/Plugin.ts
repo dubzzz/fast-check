@@ -38,6 +38,8 @@ export type PluginInstance<Ts> = {
   /**
    * Surcharge the original `generate` coming with the property with extra capabilities.
    *
+   * WARNING: `nestedGenerate` never throws and neither should the function returned by `decorateGenerate`.
+   *
    * @remarks Since 4.10.0
    */
   decorateGenerate?: (nestedGenerate: Property<Ts>['generate']) => Property<Ts>['generate'];
@@ -47,7 +49,6 @@ export type PluginInstance<Ts> = {
    * Called once per execution of the predicate.
    *
    * WARNING: `nestedRun` never throws and neither should the function returned by `decorateRun`.
-   * WARNING: If run returns synchronously, the decorated function must too.
    *
    * @remarks Since 4.10.0
    */

@@ -100,6 +100,32 @@ As fast-check supports race condition detection even for React code, it has to p
 
 Following snippet is an updated version of the code above with race condition detection backed by fast-check:
 
+<Tabs>
+  <TabItem value="v5" label="Since v5" default>
+
+```js
+test('should update to the value of the last promise', async () => {
+  await fc.assert(
+    fc.property(fc.scheduler(), async (s) => {
+      const promise1 = s.schedule(Promise.resolve(1), undefined, undefined, act);
+      const promise2 = s.schedule(Promise.resolve(2), undefined, undefined, act);
+
+      const { result, rerender } = renderHook((p) => usePromiseAsState(p), {
+        initialProps: promise1,
+      });
+      rerender(promise2);
+      expect(result.current).toBe(undefined);
+
+      await s.waitAll();
+      expect(result.current).toBe(2);
+    }),
+  );
+});
+```
+
+  </TabItem>
+  <TabItem value="v4" label="Until v4">
+
 ```js
 test('should update to the value of the last promise', async () => {
   await fc.assert(
@@ -119,6 +145,9 @@ test('should update to the value of the last promise', async () => {
   );
 });
 ```
+
+  </TabItem>
+</Tabs>
 
 This snippet specifies how to wrap each `Promise` when defining it. It lets the author of the test the ability to define for each scheduled task how to wrap it.
 

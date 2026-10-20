@@ -255,7 +255,7 @@ describe('SchedulerImplem', () => {
 
     it('should wrap waitAll call using act whenever specified', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
+        fc.property(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
           // Arrange
           let actCount = 0;
           const act = (f: () => Promise<void>) => {
@@ -284,7 +284,7 @@ describe('SchedulerImplem', () => {
 
     it('should wait the end of act before moving to the next task', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
+        fc.property(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
           // Arrange
           let locked = false;
           const updateLocked = (newLocked: boolean) => (locked = newLocked);
@@ -1159,7 +1159,7 @@ describe('SchedulerImplem', () => {
         });
       };
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           // Scheduler not being tested itself, it will be used to schedule when task will resolve
           fc.scheduler(),
           // Stream of positive integers used to tell which task should be selected by `nextTaskIndex`
@@ -1295,7 +1295,7 @@ describe('SchedulerImplem', () => {
     it('should only release the requested number of scheduled promises', async () => {
       const scheduledCount = 10;
       await fc.assert(
-        fc.asyncProperty(fc.nat({ max: scheduledCount }), fc.gen(), async (n, g) => {
+        fc.property(fc.nat({ max: scheduledCount }), fc.gen(), async (n, g) => {
           // Arrange
           const nextTaskIndex = vi.fn((tasks: ScheduledTask<unknown>[]) => g(fc.nat, { max: tasks.length - 1 }));
           const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
@@ -1316,7 +1316,7 @@ describe('SchedulerImplem', () => {
     it('should wait for more tasks if tasks are not all ready at invocation time', async () => {
       const scheduledCount = 10;
       await fc.assert(
-        fc.asyncProperty(fc.nat({ max: scheduledCount }), fc.gen(), async (n, g) => {
+        fc.property(fc.nat({ max: scheduledCount }), fc.gen(), async (n, g) => {
           // Arrange
           const seenValues: number[] = [];
           const nextTaskIndex = vi.fn((tasks: ScheduledTask<unknown>[]) => g(fc.nat, { max: tasks.length - 1 }));
@@ -1540,7 +1540,7 @@ describe('SchedulerImplem', () => {
 
     it('should be able to waitAll promises scheduling others', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
+        fc.property(fc.iterator(fc.nat(), { minLength: Number.POSITIVE_INFINITY }), async (seeds) => {
           // Arrange
           const status = { done: false };
           const nothingResolved = {
@@ -1784,7 +1784,7 @@ describe('SchedulerImplem', () => {
     type ExecutionPlan = { name: string; children: ExecutionPlan[] };
     it('should be able to schedule new tasks from other tasks and wait them all with waitAll', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.array(
             fc.letrec((tie) => ({
               self: fc.record({

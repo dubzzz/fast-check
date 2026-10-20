@@ -30,7 +30,7 @@ describe('ConstantArbitrary', () => {
 
     it('should call Random to generate any integer in [0, length-1] when provided multiple values', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.array(fc.anything(), { minLength: 2 }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           fc.nat(),
@@ -53,7 +53,7 @@ describe('ConstantArbitrary', () => {
 
     it('should be able to generate any of the requested values', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.array(fc.anything(), { minLength: 2 }),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (values, biasFactor) => {
@@ -115,7 +115,7 @@ describe('ConstantArbitrary', () => {
   describe('canShrinkWithoutContext', () => {
     it("should mark value as 'canShrinkWithoutContext' whenever one of the original values is equal regarding Object.is", async () => {
       await fc.assert(
-        fc.asyncProperty(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
+        fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
           // Arrange
           const selectedValue = values[mod % values.length];
 
@@ -131,7 +131,7 @@ describe('ConstantArbitrary', () => {
 
     it("should not mark value as 'canShrinkWithoutContext' if none of the original values is equal regarding Object.is", async () => {
       await fc.assert(
-        fc.asyncProperty(fc.uniqueArray(fc.anything(), { minLength: 2, comparator: 'SameValue' }), (values) => {
+        fc.property(fc.uniqueArray(fc.anything(), { minLength: 2, comparator: 'SameValue' }), (values) => {
           // Arrange
           const [selectedValue, ...acceptedValues] = values;
 
@@ -200,7 +200,7 @@ describe('ConstantArbitrary', () => {
   describe('shrink', () => {
     it('should shrink towards the first value if it was not already this one and to nil otherwise', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
+        fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
           // Arrange
           const { instance: mrng, nextInt } = fakeRandom();
           nextInt.mockImplementation((a, b) => a + (mod % (b - a + 1)));
@@ -221,7 +221,7 @@ describe('ConstantArbitrary', () => {
 
     it('should shrink towards the first value if it was not already this one and to nil otherwise even without any context', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
+        fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
           // Arrange
           const { instance: mrng, nextInt } = fakeRandom();
           nextInt.mockImplementation((a, b) => a + (mod % (b - a + 1)));

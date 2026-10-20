@@ -95,7 +95,7 @@ fc.configureGlobal({ baseSize: 'medium' });
 // Size 'medium' will be used by a and c, while b will be 'large' (=medium+1).
 test('should always contain its substrings', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.string(), fc.string({ size: '+1' }), fc.string(), (a, b, c) => {
+    fc.property(fc.string(), fc.string({ size: '+1' }), fc.string(), (a, b, c) => {
       expect(contains(a + b + c, b)).toBe(true);
     }),
   );

@@ -54,7 +54,7 @@ export type SizeForArbitrary = RelativeSize | Size | 'max' | undefined;
  *
  * Using `max` or `Number.POSITIVE_INFINITY` is fully equivalent.
  *
- * @remarks Since 2.25.0
+ * @remarks Since 3.0.0 (previously called `DepthFactorSizeForArbitrary` in 2.25.0)
  * @public
  */
 export type DepthSize = RelativeSize | Size | 'max' | number | undefined;
