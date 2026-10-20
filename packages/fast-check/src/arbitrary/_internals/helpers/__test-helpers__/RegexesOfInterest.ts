@@ -25,6 +25,9 @@ export const RegexesOfInterest: {
   { regex: /\u0025/ },
   { regex: /\uD83D\uDC31/ },
   { regex: /\uD83D\uDC31+/ },
+  { regex: /\uD83D\uDC31{2}/ },
+  { regex: /\uD800\uDC00{2}/u },
+  { regex: /\uDBFF\uDFFF{2}/u },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\u{1f431}/ },
   // @ts-expect-error Missing unicode mode on Regex
@@ -71,6 +74,7 @@ export const RegexesOfInterest: {
   { regex: /[\w-z]/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches any character from A–Z, a–z, 0–9, _ or -
   { regex: /[\u{1f431}-\u{1f434}]/u },
   { regex: /[\uD83D\uDC31-\uD83D\uDC34]/u },
+  { regex: /^[\uD83D\uDC31-\uD83D\uDC34]$/u },
 
   // Groups
   { regex: /(foo)/ }, // capturing group
