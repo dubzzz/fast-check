@@ -23,7 +23,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.integer()', () => {
     it('Should be able to produce all integer values within the range', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(100), (from, gap) =>
+        fc.property(fc.integer(), fc.nat(100), (from, gap) =>
           lookForMissing(fc.integer({ min: from, max: from + gap }), gap + 1),
         ),
       ));
@@ -38,7 +38,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.uniqueArray(fc.string(), { minLength: 1, maxLength: 40 }), (csts) =>
+        fc.property(fc.uniqueArray(fc.string(), { minLength: 1, maxLength: 40 }), (csts) =>
           lookForMissing(fc.constantFrom(...csts), csts.length),
         ),
       ));

@@ -5,7 +5,7 @@ import { zipIterableIterators } from './ZipIterableIterators.js';
 describe('zipIterableIterators', () => {
   it('should zip two iterators having the same size together', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.array(fc.tuple(fc.anything(), fc.anything())), (entries) => {
+      fc.property(fc.array(fc.tuple(fc.anything(), fc.anything())), (entries) => {
         // Arrange
         const entriesFirst = entries.map((es) => es[0]);
         const entriesSecond = entries.map((es) => es[1]);
@@ -21,7 +21,7 @@ describe('zipIterableIterators', () => {
 
   it('should zip two iterators with first maybe longer together by ignoring extra values of the first one', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(fc.tuple(fc.anything(), fc.anything())),
         fc.array(fc.anything()),
         (entries, extraValueFirst) => {
@@ -41,7 +41,7 @@ describe('zipIterableIterators', () => {
 
   it('should zip two iterators with second maybe longer together by ignoring extra values of the second one', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(fc.tuple(fc.anything(), fc.anything())),
         fc.array(fc.anything()),
         (entries, extraValueSecond) => {

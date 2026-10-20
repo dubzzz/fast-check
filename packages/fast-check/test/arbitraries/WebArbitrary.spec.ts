@@ -6,7 +6,7 @@ import { URL } from 'url';
 describe(`WebArbitrary (seed: ${seed})`, () => {
   it('Should produce valid domains', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.domain(), (domain) => {
+      fc.property(fc.domain(), (domain) => {
         const p = `http://user:pass@${domain}/path/?query#fragment`;
         const u = new URL(p);
         expect(u.hostname).toEqual(domain);
@@ -16,7 +16,7 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
   });
   it('Should produce valid authorities', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.webAuthority({
           withIPv4: false,
           withIPv6: false,
@@ -35,7 +35,7 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
   });
   it('Should produce valid URL parts', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.webAuthority({
           withIPv4: true,
           withIPv6: true,

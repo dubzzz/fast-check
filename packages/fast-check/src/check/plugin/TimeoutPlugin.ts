@@ -1,22 +1,27 @@
+import { PreconditionFailure } from 'fast-check';
+import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { UniversalPlugin } from './Plugin.js';
+import { mergeSignals, signalAsPromise } from './utils/Signals.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
 
 function timeoutAfter(timeMs: number) {
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
+  const abortController = new AbortController();
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = safeSetTimeout(() => {
-      resolve({
-        error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`),
-      });
+      const error = new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
+      resolve({ error });
+      abortController.abort(error);
     }, timeMs);
   });
   return {
     clear: () => safeClearTimeout(timeoutHandle),
     promise,
+    signal: abortController.signal,
   };
 }
 
@@ -24,16 +29,36 @@ function timeoutRunner(
   timeMs: number,
   nestedRun: Property<unknown>['run'],
   value: unknown,
+  executionContext: PredicateExecutionContext,
 ): ReturnType<typeof nestedRun> {
+  const signal = executionContext.signal;
+  if (signal !== undefined && signal.aborted) {
+    if (PreconditionFailure.isFailure(signal.reason)) {
+      return signal.reason;
+    }
+    return { error: signal.reason };
+  }
   const t = timeoutAfter(timeMs);
-  const runOut = nestedRun(value);
+  const extendedExecutionContext = mergeSignals(executionContext, t.signal);
+  const runOut = nestedRun(value, extendedExecutionContext);
   if (runOut === null || !('then' in runOut)) {
     // synchronous run: it already came to an end, nothing to race against the timeout
     t.clear();
     return runOut;
   }
-  const propRun = Promise.race([runOut, t.promise]);
-  propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
+
+  if (signal === undefined) {
+    const propRun = Promise.race([runOut, t.promise]);
+    propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
+    return propRun;
+  }
+  const sp = signalAsPromise(signal);
+  const propRun = Promise.race([runOut, t.promise, sp.promise]);
+  const clear = () => {
+    t.clear();
+    sp.clear();
+  };
+  propRun.then(clear, clear); // always clear timeout handle - catch should never occur
   return propRun;
 }
 
@@ -48,7 +73,7 @@ function timeoutRunner(
  * @example
  * ```ts
  * fc.assert(
- *   fc.asyncProperty(..., async (...) => {...}),
+ *   fc.property(..., async (...) => {...}),
  *   { plugins: [fc.timeout(1000)] }
  * )
  * ```
@@ -61,7 +86,8 @@ function timeoutRunner(
 export function timeout(timeMs: number): UniversalPlugin {
   return () => {
     return {
-      decorateRun: (nestedRun) => (value) => timeoutRunner(timeMs, nestedRun, value),
+      decorateRun: (nestedRun) => (value, executionContext) =>
+        timeoutRunner(timeMs, nestedRun, value, executionContext),
     };
   };
 }

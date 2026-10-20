@@ -19,7 +19,7 @@ Plugins are designed to support things such as:
 Plugins can be passed as part of the customizations accepted by the `fc.assert` runner.
 
 ```ts
-await fc.assert(fc.asyncProperty(...arbs, predicate), {
+await fc.assert(fc.property(...arbs, predicate), {
   plugins: [pluginA(...paramsForPluginA), pluginB(...paramsForPluginB)],
 });
 ```
@@ -42,7 +42,7 @@ Let's illustrate how plugins get combined on a property checking a search endpoi
 
 ```ts
 await fc.assert(
-  fc.asyncProperty(fc.string(), async (query) => {
+  fc.property(fc.string(), async (query) => {
     const results = await searchService.search(query);
     // ...assertions on the results...
   }),

@@ -54,8 +54,8 @@ export interface Scheduler<TMetaData = unknown> {
     sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
     customAct?: SchedulerAct,
   ): {
-    done: boolean;
-    faulty: boolean;
+    readonly done: boolean;
+    readonly faulty: boolean;
     task: Promise<{ done: boolean; faulty: boolean }>;
   };
 

@@ -38,13 +38,13 @@
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.59.2",
-    "@types/node": "^24.19.0",
+    "@microsoft/api-extractor": "^7.59.4",
+    "@types/node": "^24.19.2",
     "fast-check": "workspace:*",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "typescript": "~7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.5"
   },
   "keywords": [
     "property-based testing",

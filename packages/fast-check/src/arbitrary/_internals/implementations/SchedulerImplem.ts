@@ -150,8 +150,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
     customAct?: SchedulerAct,
   ): {
-    done: boolean;
-    faulty: boolean;
+    readonly done: boolean;
+    readonly faulty: boolean;
     task: Promise<{ done: boolean; faulty: boolean }>;
   } {
     // We run all the builders sequencially
@@ -201,13 +201,15 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 
     registerNextBuilder(0, dummyResolvedPromise);
 
-    // TODO Prefer getter instead of sharing the variable itself
-    //      Would need to stop supporting <es5
-    // return {
-    //   get done() { return status.done },
-    //   get faulty() { return status.faulty }
-    // };
-    return Object.assign(status, { task: sequenceTask });
+    return {
+      get done() {
+        return status.done;
+      },
+      get faulty() {
+        return status.faulty;
+      },
+      task: sequenceTask,
+    };
   }
 
   count(): number {

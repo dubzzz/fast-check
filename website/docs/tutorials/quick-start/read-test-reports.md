@@ -76,7 +76,7 @@ Given that line, the simplest option to re-run your predicate on the reported co
 ```js title="sort.test.mjs"
 test('should sort numeric elements from the smallest to the largest one', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.array(fc.integer()), (data) => {
+    fc.property(fc.array(fc.integer()), (data) => {
       /* code of the predicate */
     }),
     { seed: -1819918769, path: '0:...:3', endOnFailure: true }, // <-- added
@@ -104,7 +104,7 @@ But in some cases, it might be interesting to have much more details concerning 
 ```js title="sort.test.mjs"
 test('should sort numeric elements from the smallest to the largest one', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.array(fc.integer()), (data) => {
+    fc.property(fc.array(fc.integer()), (data) => {
       /* code of the predicate */
     }),
     { verbose: 2 }, // <-- added
