@@ -183,6 +183,9 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
     const next = block[1];
     switch (next) {
       case 'x': {
+        if (block === '\\x') {
+          return simpleChar('x', true);
+        }
         const allDigits = block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
         const symbol = safeStringFromCodePoint(codePoint);
