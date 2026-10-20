@@ -27,6 +27,9 @@ export const RegexesOfInterest: {
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\u{1f43}/ },
   { regex: /\n/ },
+  { regex: /\u{100000}/u },
+  { regex: /\u{10ffff}/u },
+  { regex: /\u{00000000000061}/u },
   { regex: /\w/ },
   { regex: /[abc]/ },
   { regex: /[{]/ },
@@ -51,6 +54,7 @@ export const RegexesOfInterest: {
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\u{1[81]}/, invalidInUnicodeMode: true },
   { regex: /[\u{1f431}-\u{1f434}]/u },
+  { regex: /[\u{100000}-\u{10ffff}]/u },
   { regex: /(foo)/ }, // capturing group
   { regex: /(foo) (bar) (baz)/ }, // multiple capturing groups
   { regex: /(?<named>x)/ }, // named capturing group
