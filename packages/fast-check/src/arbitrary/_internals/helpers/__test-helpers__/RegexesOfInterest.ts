@@ -35,6 +35,9 @@ export const RegexesOfInterest: {
   { regex: /\n/ },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\u{1[81]}/, invalidInUnicodeMode: true },
+  { regex: /\u{100000}/u },
+  { regex: /\u{10ffff}/u },
+  { regex: /\u{00000000000061}/u },
 
   // Octal
   // @ts-expect-error Referencing non-existing group in Regex
@@ -73,8 +76,8 @@ export const RegexesOfInterest: {
   { regex: /[.-f]/ },
   { regex: /[\w-z]/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches any character from A–Z, a–z, 0–9, _ or -
   { regex: /[\u{1f431}-\u{1f434}]/u },
+  { regex: /[\u{100000}-\u{10ffff}]/u },
   { regex: /[\uD83D\uDC31-\uD83D\uDC34]/u },
-  { regex: /^[\uD83D\uDC31-\uD83D\uDC34]$/u },
 
   // Groups
   { regex: /(foo)/ }, // capturing group
@@ -143,10 +146,12 @@ export const RegexesOfInterest: {
   { regex: /[\p{Letter}-]/u },
 
   // NUL
+  { regex: /\0/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('\0') },
+  { regex: new RegExp('\0') }, // not the same as /\0/
+  { regex: /[\0-\0]/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('[\0-\0]') },
-  // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('[\\0-\\0]') },
+  { regex: new RegExp('[\0-\0]') }, // not the same as /[\0-\0]/
+  { regex: /^\0$/ },
+  { regex: /^(a)\0$/ },
 ];
