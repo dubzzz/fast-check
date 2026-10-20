@@ -150,7 +150,8 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
     kind: 'meta',
     symbol, // eg.: \t
     value: block, // eg.: \\t
-    codePoint: symbol.codePointAt(0) ?? -1,
+    // oxlint-disable-next-line typescript/no-non-null-assertion
+    codePoint: symbol.codePointAt(0)!, // never unset by construct (see callers)
   };
 }
 
