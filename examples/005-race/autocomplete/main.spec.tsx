@@ -12,7 +12,7 @@ import { render, cleanup, fireEvent, act, getNodeText, screen } from '@testing-l
 describe('AutocompleteField', () => {
   it('should only show suggestions that match the current input', async () => {
     await fc.assert(
-      fc.asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
+      fc.property(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
         // Arrange
         const searchImplem = s.scheduleFunction(function search(query: string, maxResults: number) {
           return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
@@ -49,7 +49,7 @@ describe('AutocompleteField', () => {
 
   it('should show increasingly more suggestions as queries resolve', async () => {
     await fc.assert(
-      fc.asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
+      fc.property(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
         // Arrange
         const query = queries[queries.length - 1];
         const searchImplem = s.scheduleFunction(function search(query: string, maxResults: number) {

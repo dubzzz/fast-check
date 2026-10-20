@@ -33,7 +33,7 @@ function simulateSkips(svIt: SourceValuesIterator<number>, skippedValues: number
 describe('SourceValuesIterator', () => {
   it('Should only call the produce method when iterating on the value', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.nat(100), (askedValues) => {
+      fc.property(fc.nat(100), (askedValues) => {
         const generatedValues: number[] = [];
         const initialValues: IterableIterator<number> = iota()
           .map((v) => {
@@ -51,7 +51,7 @@ describe('SourceValuesIterator', () => {
   describe('Not enough skipped values', () => {
     it('Should return the first eligible askedValues values if infinite source', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.nat(100), fc.uniqueArray(fc.nat(100)), (askedValues, skippedValues) => {
+        fc.property(fc.nat(100), fc.uniqueArray(fc.nat(100)), (askedValues, skippedValues) => {
           const svIt = new SourceValuesIterator(source(), askedValues, skippedValues.length);
           const svValues = simulateSkips(svIt, skippedValues);
 
@@ -66,7 +66,7 @@ describe('SourceValuesIterator', () => {
       ));
     it('Should return the first eligible askedValues values if larger source', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.nat(100),
           fc.nat(100),
           fc.uniqueArray(fc.nat(100)),
@@ -87,7 +87,7 @@ describe('SourceValuesIterator', () => {
       ));
     it('Should return the first eligible values among sourceValues values if smaller source', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.nat(100),
           fc.nat(100),
           fc.uniqueArray(fc.nat(100)),
@@ -111,7 +111,7 @@ describe('SourceValuesIterator', () => {
   describe('Too many skipped values', () => {
     it('Should stop as soon as it passes maxSkips skipped values', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.uniqueArray(fc.nat(100), { minLength: 1, maxLength: 20 }),
           fc.integer({ min: 1, max: 100 }),
           (skippedValues, missingValues) => {

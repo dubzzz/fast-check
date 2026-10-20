@@ -36,7 +36,7 @@ Although the previous test successfully generates random users and checks that o
 ```js
 test('sort users by ascending age', async () => {
   await fc.assert(
-    fc.asyncProperty(
+    fc.property(
       fc
         .record({
           firstName: firstNameArb(),
@@ -69,7 +69,7 @@ This challenge has been addressed with the introduction of `gen` in fast-check. 
 ```js
 test('sort users by ascending age', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.gen(), (g) => {
+    fc.property(fc.gen(), (g) => {
       const userA = {
         firstName: g(firstName),
         lastName: g(lastName),

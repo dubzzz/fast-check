@@ -12,11 +12,13 @@ describe('EqualValuesPlugins', () => {
     it('should not call run twice when run on the same value', () => {
       // Arrange
       const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
+      const firstContext = { signal: new AbortController().signal };
+      const secondContext = { signal: new AbortController().signal };
 
       // Act
       const finalRun = equalValuesPluginRun(factory, nestedRun);
-      finalRun(1);
-      finalRun(1);
+      finalRun(1, firstContext);
+      finalRun(1, secondContext);
 
       // Assert
       expect(nestedRun).toHaveBeenCalledTimes(1);
@@ -25,16 +27,18 @@ describe('EqualValuesPlugins', () => {
     it('should call run again when run on another value', () => {
       // Arrange
       const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
+      const firstContext = { signal: new AbortController().signal };
+      const secondContext = { signal: new AbortController().signal };
 
       // Act
       const finalRun = equalValuesPluginRun(factory, nestedRun);
-      finalRun(1);
-      finalRun(2);
+      finalRun(1, firstContext);
+      finalRun(2, secondContext);
 
       // Assert
       expect(nestedRun).toHaveBeenCalledTimes(2);
-      expect(nestedRun).toHaveBeenCalledWith(1);
-      expect(nestedRun).toHaveBeenCalledWith(2);
+      expect(nestedRun).toHaveBeenNthCalledWith(1, 1, firstContext);
+      expect(nestedRun).toHaveBeenNthCalledWith(2, 2, secondContext);
     });
 
     it('should not share covered cases across instances of the plugin', () => {
@@ -43,12 +47,13 @@ describe('EqualValuesPlugins', () => {
       const store: PluginStore = new Map<symbol, any>();
       const nestedRunA = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
       const nestedRunB = vi.fn<Property<unknown>['run']>().mockReturnValue(null);
+      const firstContext = { signal: new AbortController().signal };
 
       // Act
       const instanceA = factory()(pluginIndex++, store);
       const instanceB = factory()(pluginIndex++, store);
-      instanceA.decorateRun!(nestedRunA)(1);
-      instanceB.decorateRun!(nestedRunB)(1);
+      instanceA.decorateRun!(nestedRunA)(1, firstContext);
+      instanceB.decorateRun!(nestedRunB)(1, firstContext);
 
       // Assert
       expect(instanceA.decorateRun).not.toBe(instanceB.decorateRun); // no instance merging
@@ -68,7 +73,7 @@ describe('EqualValuesPlugins', () => {
 
         // Act
         const finalRun = equalValuesPluginRun(factory, nestedRun);
-        const out = finalRun(1);
+        const out = finalRun(1, {});
 
         // Assert
         expect(out).not.toBeInstanceOf(Promise); // sync run, sync output even on covered cases
@@ -85,8 +90,8 @@ describe('EqualValuesPlugins', () => {
 
       // Act
       const finalRun = equalValuesPluginRun(factory, nestedRun);
-      finalRun(1);
-      const out = finalRun(1);
+      finalRun(1, {});
+      const out = finalRun(1, {});
 
       // Assert
       expect(out).not.toBeInstanceOf(Promise); // sync run, sync output even on covered cases
@@ -113,8 +118,8 @@ describe('EqualValuesPlugins', () => {
 
       // Act
       const finalRun = equalValuesPluginRun(ignoreEqualValues, nestedRun);
-      const initialRunOutput = finalRun(null);
-      const secondRunOutput = finalRun(null);
+      const initialRunOutput = finalRun(null, {});
+      const secondRunOutput = finalRun(null, {});
 
       // Assert
       expect(secondRunOutput).toBe(initialRunOutput);
@@ -141,8 +146,8 @@ describe('EqualValuesPlugins', () => {
 
       // Act
       const finalRun = equalValuesPluginRun(skipEqualValues, nestedRun);
-      const initialRunOutput = await finalRun(null);
-      const secondRunOutput = await finalRun(null);
+      const initialRunOutput = await finalRun(null, {});
+      const secondRunOutput = await finalRun(null, {});
 
       // Assert
       if (initialRunOutput === null) {

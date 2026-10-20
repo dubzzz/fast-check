@@ -36,7 +36,7 @@ const fc = require('fast-check');
 
 test('should follow the rule: fibo(n) = fibo(n-1) + fibo(n-2)', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.integer({ min: 2, max: 78 }), (n) => {
+    fc.property(fc.integer({ min: 2, max: 78 }), (n) => {
       assert.equal(fibo(n), fibo(n - 1) + fibo(n - 2));
     }),
   );

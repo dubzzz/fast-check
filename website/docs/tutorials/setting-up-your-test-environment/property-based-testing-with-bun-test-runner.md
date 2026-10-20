@@ -36,7 +36,7 @@ import * as fc from 'fast-check';
 describe('decompose', () => {
   it('should produce an array such that the product equals the input', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.integer({ min: 2, max: 2 ** 31 - 1 }), (n) => {
+      fc.property(fc.integer({ min: 2, max: 2 ** 31 - 1 }), (n) => {
         const factors = decompose(n);
         const productOfFactors = factors.reduce((a, b) => a * b, 1);
         return productOfFactors === n;

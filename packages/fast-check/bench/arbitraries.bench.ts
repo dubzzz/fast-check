@@ -1,6 +1,11 @@
-import { describe, bench } from 'vitest';
+import { describe } from 'vitest';
 import type { Arbitrary, Memo } from '../src/fast-check.js';
-import { fc, mrng } from './__test-helpers__/Imports.js';
+import { bench } from './__test-helpers__/Bench.js';
+import { fc as fcModule, mrng as mrngModule } from './__test-helpers__/Imports.js';
+
+// Resolve module export getters before entering the measured callbacks.
+const fc = { ...fcModule };
+const mrng = mrngModule;
 
 type BenchCase = {
   name: string;

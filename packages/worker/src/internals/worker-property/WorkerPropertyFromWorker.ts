@@ -1,10 +1,12 @@
-import type { Property, Random, Value } from 'fast-check';
+import type { PredicateExecutionContext, Property, Random, Value } from 'fast-check';
 import type { LegacyPropertyHookFunction, LegacyPropertyWithHooks, PropertyArbitraries } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
 import * as fc from 'fast-check';
 import { generateValueFromState } from '../ValueFromState.js';
+
+const property = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
 
 const WorkerPropertyFromWorkerCache = new WeakMap<object, ValueState>();
 
@@ -54,9 +56,17 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
   private readonly numArbitraries: number;
   private readonly internalProperty: LegacyPropertyWithHooks<Ts>;
 
-  constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
+  constructor(
+    arbitraries: PropertyArbitraries<Ts>,
+    predicate: NoInfer<(...args: [...Ts, PredicateExecutionContext]) => Promise<boolean | void>>,
+  ) {
     this.numArbitraries = arbitraries.length;
-    this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
+    this.internalProperty = property<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
+  }
+
+  // Required by fast-check v4 to await predicates and their lifecycle hooks.
+  isAsync(): true {
+    return true;
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
@@ -75,8 +85,8 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return Iterator.from([]);
   }
 
-  run(v: Ts): ReturnType<LegacyPropertyWithHooks<Ts>['run']> {
-    return this.internalProperty.run(v);
+  run(v: Ts, executionContext: PredicateExecutionContext): ReturnType<LegacyPropertyWithHooks<Ts>['run']> {
+    return this.internalProperty.run(v, executionContext);
   }
 
   beforeEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts> {

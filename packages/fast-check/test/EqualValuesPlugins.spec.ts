@@ -7,7 +7,7 @@ describe(`IgnoreEqualValues (seed: ${seed})`, () => {
     it('should not run more than 4 times', async () => {
       let numRuns = 0;
       const out = await fc.check(
-        fc.asyncProperty(fc.boolean(), fc.boolean(), () => {
+        fc.property(fc.boolean(), fc.boolean(), () => {
           ++numRuns;
         }),
         { plugins: [fc.ignoreEqualValues()] },
@@ -25,7 +25,7 @@ describe(`IgnoreEqualValues (seed: ${seed})`, () => {
     it('should not run more than 4 times but mark run as failed due to too many skipped values', async () => {
       let numRuns = 0;
       const out = await fc.check(
-        fc.asyncProperty(fc.boolean(), fc.boolean(), () => {
+        fc.property(fc.boolean(), fc.boolean(), () => {
           ++numRuns;
         }),
         { plugins: [fc.skipEqualValues()] },

@@ -6,7 +6,7 @@ import { shrinkInteger } from './ShrinkInteger.js';
 describe('shrinkInteger', () => {
   it('should always return empty stream when current equals target', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.boolean(), (value, tryAsap) => {
+      fc.property(fc.maxSafeInteger(), fc.boolean(), (value, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkInteger(value, value, tryAsap)];
 
@@ -17,7 +17,7 @@ describe('shrinkInteger', () => {
 
   it('should always starts stream with target when try asap is requested (when current not target)', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), (current, target) => {
+      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), (current, target) => {
         // Arrange
         fc.pre(current !== target);
 
@@ -33,7 +33,7 @@ describe('shrinkInteger', () => {
 
   it('should only include values between current and target in the stream', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
+      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkInteger(current, target, tryAsap)];
         const values = shrinks.map((v) => v.value);
@@ -48,7 +48,7 @@ describe('shrinkInteger', () => {
 
   it('should never include current in the stream', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
+      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkInteger(current, target, tryAsap)];
         const values = shrinks.map((v) => v.value);
@@ -60,7 +60,7 @@ describe('shrinkInteger', () => {
 
   it('should never include target in the stream when try asap is not requested', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), (current, target) => {
+      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), (current, target) => {
         // Arrange / Act
         const shrinks = [...shrinkInteger(current, target, false)];
         const values = shrinks.map((v) => v.value);
@@ -72,7 +72,7 @@ describe('shrinkInteger', () => {
 
   it('should always set context to be the value of previous entry in the stream', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
+      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkInteger(current, target, tryAsap)];
 
@@ -85,7 +85,7 @@ describe('shrinkInteger', () => {
 
   it('should specify first context of the stream to target if and only if no try asap, undefined otherwise', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
+      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange
         const expectedFirstContext = tryAsap ? undefined : target;
 
@@ -101,7 +101,7 @@ describe('shrinkInteger', () => {
 
   it('should always strictly increase distance from target as we move in the stream', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
+      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkInteger(current, target, tryAsap)];
         const absDiff = (a: number, b: number): bigint => {

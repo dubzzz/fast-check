@@ -5,7 +5,7 @@ import { numberToPaddedEightMapper, numberToPaddedEightUnmapper } from './Number
 describe('numberToPaddedEightUnmapper', () => {
   it('should be able to unmap any mapped value', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.nat({ max: 0xffffffff }), (n) => {
+      fc.property(fc.nat({ max: 0xffffffff }), (n) => {
         // Arrange
         const mapped = numberToPaddedEightMapper(n);
 

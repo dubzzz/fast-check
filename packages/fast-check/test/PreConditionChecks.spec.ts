@@ -5,7 +5,7 @@ import { seed } from './seed.js';
 describe(`PreConditionChecks (seed: ${seed})`, () => {
   it('should skip property execution whenever pre fails', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.integer(), fc.integer(), (x, y) => {
+      fc.property(fc.integer(), fc.integer(), (x, y) => {
         fc.pre(x < y);
         return x < y;
       }),
@@ -13,7 +13,7 @@ describe(`PreConditionChecks (seed: ${seed})`, () => {
   });
   it('should consider run as failure on too many pre failures', async () => {
     const out = await fc.check(
-      fc.asyncProperty(fc.integer(), fc.integer(), (_x, _y) => {
+      fc.property(fc.integer(), fc.integer(), (_x, _y) => {
         fc.pre(false);
         return true;
       }),
@@ -22,7 +22,7 @@ describe(`PreConditionChecks (seed: ${seed})`, () => {
   });
   it('should not failed when no skips on no skips allowed', async () => {
     const out = await fc.check(
-      fc.asyncProperty(fc.integer(), fc.integer(), (_x, _y) => true),
+      fc.property(fc.integer(), fc.integer(), (_x, _y) => true),
       { maxSkipsPerRun: 0 },
     );
     expect(out.failed).toBe(false);

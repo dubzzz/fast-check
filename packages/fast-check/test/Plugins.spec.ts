@@ -31,7 +31,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act
     probes.push('assert started');
     await fc.assert(
-      fc.asyncProperty(fc.integer(), async (_x) => true),
+      fc.property(fc.integer(), async (_x) => true),
       { plugins: [buildPlugin('a'), buildPlugin('b')] },
     );
     probes.push('assert done');
@@ -74,7 +74,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act / Assert
     await expect(
       fc.assert(
-        fc.asyncProperty(fc.integer(), async (_x) => true),
+        fc.property(fc.integer(), async (_x) => true),
         { plugins: [buildPlugin('a'), buildPlugin('b'), buildPlugin('c')] },
       ),
     ).rejects.toThrow(/^error from a::onAllRunsComplete$/);
@@ -99,7 +99,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act / Assert
     await expect(() =>
       fc.assert(
-        fc.asyncProperty(fc.integer(), (x) => x < 42),
+        fc.property(fc.integer(), (x) => x < 42),
         { plugins: [reporterPlugin], seed },
       ),
     ).rejects.toThrow(/^boom!$/);
@@ -118,7 +118,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act / Assert
     await expect(() =>
       fc.assert(
-        fc.asyncProperty(fc.integer(), (x) => x < 42),
+        fc.property(fc.integer(), (x) => x < 42),
         { plugins: [reporterPlugin], seed },
       ),
     ).rejects.toThrow(/^Custom report for counterexample \[42\]$/);
@@ -136,7 +136,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act / Assert
     await expect(() =>
       fc.assert(
-        fc.asyncProperty(fc.integer(), (x) => x < 42),
+        fc.property(fc.integer(), (x) => x < 42),
         { plugins: [reporterPlugin], seed },
       ),
     ).rejects.toThrow(/Property failed after/);
@@ -165,7 +165,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act
     probes.push('assert started');
     await fc.assert(
-      fc.asyncProperty(fc.integer(), (_x) => {
+      fc.property(fc.integer(), (_x) => {
         probes.push('predicate called');
         return true;
       }),
@@ -199,10 +199,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
-          decorateRun: (nestedRun) => (value) => {
+          decorateRun: (nestedRun) => (value, executionContext) => {
             probes.push(`${pluginName}::run started`);
             try {
-              return nestedRun(value);
+              return nestedRun(value, executionContext);
             } finally {
               probes.push(`${pluginName}::run done`);
             }
@@ -214,7 +214,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act
     probes.push('assert started');
     await fc.assert(
-      fc.asyncProperty(fc.integer(), (_x) => {
+      fc.property(fc.integer(), (_x) => {
         probes.push('predicate called');
         return true;
       }),
@@ -248,10 +248,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       return () => {
         return {
           asyncOnly: true,
-          decorateRun: (nestedRun) => async (value) => {
+          decorateRun: (nestedRun) => async (value, executionContext) => {
             probes.push(`${pluginName}::run started`);
             await Promise.resolve();
-            const out = await nestedRun(value);
+            const out = await nestedRun(value, executionContext);
             await Promise.resolve();
             probes.push(`${pluginName}::run done`);
             return out;
@@ -262,7 +262,7 @@ describe(`Plugins (seed: ${seed})`, () => {
 
     // Act
     await fc.assert(
-      fc.asyncProperty(fc.integer(), async (_x) => {
+      fc.property(fc.integer(), async (_x) => {
         probes.push('predicate called');
         return true;
       }),
@@ -313,7 +313,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act
     probes.push('assert started');
     await fc.assert(
-      fc.asyncProperty(fc.integer(), async (_x) => true),
+      fc.property(fc.integer(), async (_x) => true),
       {
         plugins: [
           buildPlugin('a', true),
@@ -376,7 +376,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act
     probes.push('assert started');
     await fc.assert(
-      fc.asyncProperty(fc.integer(), (_x) => {
+      fc.property(fc.integer(), (_x) => {
         probes.push('predicate');
         return true;
       }),

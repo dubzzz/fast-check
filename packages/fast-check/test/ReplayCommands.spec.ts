@@ -30,7 +30,7 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
   const buildProp = (replayPath?: string, mrng?: fc.Random) => {
     let alreadyFailed = false;
     let skipAllRuns = false;
-    return fc.asyncProperty(
+    return fc.property(
       fc.commands(
         [fc.nat().map((v) => new IncBy(v)), fc.nat().map((v) => new DecPosBy(v)), fc.constant(new AlwaysPos())],
         {

@@ -1,6 +1,5 @@
 import type { Parameters } from './Parameters.js';
 import { VerbosityLevel } from './VerbosityLevel.js';
-import type { RunDetails } from '../reporter/RunDetails.js';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.js';
 
@@ -27,7 +26,6 @@ export class QualifiedParameters<T> {
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
-  reporter: ((runDetails: RunDetails<T>) => Promise<void> | void) | undefined;
   includeErrorInReport: boolean;
   plugins: Plugin<T>[];
 
@@ -48,7 +46,6 @@ export class QualifiedParameters<T> {
     this.path = p.path !== undefined ? p.path : '';
     this.examples = p.examples !== undefined ? p.examples : [];
     this.endOnFailure = p.endOnFailure === true;
-    this.reporter = p.reporter;
     this.includeErrorInReport = p.includeErrorInReport === true;
     this.plugins = p.plugins !== undefined ? p.plugins : [];
   }
@@ -64,7 +61,6 @@ export class QualifiedParameters<T> {
       verbose: this.verbose,
       examples: this.examples,
       endOnFailure: this.endOnFailure,
-      reporter: this.reporter,
       includeErrorInReport: this.includeErrorInReport,
       plugins: this.plugins,
     };

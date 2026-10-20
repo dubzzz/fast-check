@@ -10,7 +10,7 @@ describe(`NoRegressionStack`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.nat(), fc.nat(), (a, b) => {
+            fc.property(fc.nat(), fc.nat(), (a, b) => {
               return a >= b;
             }),
             { ...settings, includeErrorInReport: true },
@@ -24,7 +24,7 @@ describe(`NoRegressionStack`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.nat(), fc.nat(), (a, b) => {
+            fc.property(fc.nat(), fc.nat(), (a, b) => {
               return a >= b;
             }),
             settings,
@@ -37,7 +37,7 @@ describe(`NoRegressionStack`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.nat(), fc.nat(), (a, b) => {
+            fc.property(fc.nat(), fc.nat(), (a, b) => {
               if (a < b) {
                 throw new Error('a must be >= b');
               }
@@ -53,7 +53,7 @@ describe(`NoRegressionStack`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.nat(), fc.nat(), (a, b) => {
+            fc.property(fc.nat(), fc.nat(), (a, b) => {
               if (a < b) {
                 throw new Error('a must be >= b');
               }
@@ -69,7 +69,7 @@ describe(`NoRegressionStack`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.nat(), (v) => {
+            fc.property(fc.nat(), (v) => {
               (v as any)();
             }),
             { ...settings, includeErrorInReport: true },
@@ -83,7 +83,7 @@ describe(`NoRegressionStack`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.nat(), (v) => {
+            fc.property(fc.nat(), (v) => {
               (v as any)();
             }),
             settings,

@@ -27,7 +27,7 @@ export interface OptionConstraints<TNil = null> {
    * While going deeper and deeper within a recursive structure (see {@link letrec}),
    * this factor will be used to increase the probability to generate nil.
    *
-   * @remarks Since 2.14.0
+   * @remarks Since 3.0.0 (previously called `depthFactor` in 2.14.0)
    */
   depthSize?: DepthSize;
   /**
