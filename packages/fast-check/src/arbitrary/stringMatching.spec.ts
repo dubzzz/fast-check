@@ -25,23 +25,22 @@ describe('stringMatching (integration)', () => {
   });
 
   it.each(
-    RegexesOfInterest.filter(
-      (i) => !i.unmatchable && !i.unsupportedByStringMatching && !i.regex.flags.includes('u'),
-    ),
+    RegexesOfInterest.filter((i) => !i.unmatchable && !i.unsupportedByStringMatching && !i.regex.flags.includes('u')),
   )('should only produce correct values for the regex $regex', async ({ regex }) => {
     const arb = stringMatching(regex);
     const isCorrect = (value: unknown) => typeof value === 'string' && regex.test(value);
     await assertProduceCorrectValues(() => arb, isCorrect, { extraParameters, assertParameters: { numRuns: 1 } });
   });
 
-  it.each(
-    RegexesOfInterest.filter((i) => !i.unmatchable && !i.unsupportedByStringMatching && !i.invalidInUnicodeMode),
-  )('should only produce correct values for the regex $regex in unicode mode', async ({ regex }) => {
-    const unicodeRegex = new RegExp(regex, 'u');
-    const arb = stringMatching(unicodeRegex);
-    const isCorrect = (value: unknown) => typeof value === 'string' && unicodeRegex.test(value);
-    await assertProduceCorrectValues(() => arb, isCorrect, { extraParameters, assertParameters: { numRuns: 1 } });
-  });
+  it.each(RegexesOfInterest.filter((i) => !i.unmatchable && !i.unsupportedByStringMatching && !i.invalidInUnicodeMode))(
+    'should only produce correct values for the regex $regex in unicode mode',
+    async ({ regex }) => {
+      const unicodeRegex = new RegExp(regex, 'u');
+      const arb = stringMatching(unicodeRegex);
+      const isCorrect = (value: unknown) => typeof value === 'string' && unicodeRegex.test(value);
+      await assertProduceCorrectValues(() => arb, isCorrect, { extraParameters, assertParameters: { numRuns: 1 } });
+    },
+  );
 });
 
 // Helpers
