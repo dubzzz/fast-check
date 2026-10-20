@@ -1,7 +1,8 @@
 export const RegexesOfInterest: {
   regex: RegExp;
-  invalidWithUnicode?: boolean;
-  notSuitableForGenerateTests?: boolean; // either not implemented or broken regexes leading to no generate doable
+  invalidInUnicodeMode?: boolean; // invalid with the /u flag
+  unmatchable?: boolean; // no string can match
+  unsupportedByStringMatching?: boolean; // unsupported by `fc.stringMatching`
 }[] = [
   // Regexes declared with the /u flag,
   // will not be executed against non-unicode tests
@@ -16,9 +17,9 @@ export const RegexesOfInterest: {
   { regex: /.??/ },
   { regex: /.{1,4}?/ },
   { regex: /a/ },
-  { regex: /🐱/, invalidWithUnicode: true }, // handled separately
+  { regex: /🐱/, invalidInUnicodeMode: true }, // handled separately
   // @ts-expect-error Referencing non-existing group in Regex
-  { regex: /\125/, invalidWithUnicode: true, notSuitableForGenerateTests: true }, // supposed to be suitable, it matches 'U'
+  { regex: /\125/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches 'U'
   { regex: /\x25/ },
   { regex: /\u0025/ },
   // @ts-expect-error Missing unicode mode on Regex
@@ -42,13 +43,13 @@ export const RegexesOfInterest: {
   { regex: /[a\-z]/ },
   { regex: /[\wz]/ },
   { regex: /[.-f]/ },
-  { regex: /[\w-z]/, invalidWithUnicode: true, notSuitableForGenerateTests: true }, // supposed to be suitable, it matches any character from A–Z, a–z, 0–9, _ or -
+  { regex: /[\w-z]/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches any character from A–Z, a–z, 0–9, _ or -
   { regex: /[^abc]/ },
   { regex: /[^a-z]/ },
   { regex: /[abc^def]/ },
   { regex: /[a-z^A-Z]/ },
   // @ts-expect-error Missing unicode mode on Regex
-  { regex: /\u{1[81]}/, invalidWithUnicode: true },
+  { regex: /\u{1[81]}/, invalidInUnicodeMode: true },
   { regex: /[\u{1f431}-\u{1f434}]/u },
   { regex: /(foo)/ }, // capturing group
   { regex: /(foo) (bar) (baz)/ }, // multiple capturing groups
@@ -73,37 +74,37 @@ export const RegexesOfInterest: {
   { regex: /[a^][$b]/ },
   { regex: /(^|a)(b|$)/ },
   { regex: /(a|^)($|b)/ },
-  { regex: /a^$b/, notSuitableForGenerateTests: true }, // no match possible!
-  { regex: /a*^$b*/, notSuitableForGenerateTests: true }, // matches '', but not 'aa', seems equivalent to /^$/ ; not supported for now, considered to be a malformed regex
+  { regex: /a^$b/, unmatchable: true }, // no match possible!
+  { regex: /a*^$b*/, unsupportedByStringMatching: true }, // matches '', but not 'aa', seems equivalent to /^$/ ; not supported for now, considered to be a malformed regex
   { regex: /\^ab\$/ },
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
-  { regex: /\1/, invalidWithUnicode: true },
+  { regex: /\1/, invalidInUnicodeMode: true },
   // @ts-expect-error Referencing non-existing group in Regex
-  { regex: /\1000/, invalidWithUnicode: true, notSuitableForGenerateTests: true }, // in non-unicode: \100 then 0 ; supposed to be suitable, it matches '@0'
-  { regex: /(a)\1/, notSuitableForGenerateTests: true },
+  { regex: /\1000/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // in non-unicode: \100 then 0 ; matches '@0'
+  { regex: /(a)\1/, unsupportedByStringMatching: true },
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
-  { regex: /(a)\2/, invalidWithUnicode: true }, // in non-unicode: \2 is considered as an octal
-  { regex: /(?=a)/, notSuitableForGenerateTests: true },
-  { regex: /(?!a)/, notSuitableForGenerateTests: true },
-  { regex: /(?<=a)/, notSuitableForGenerateTests: true },
-  { regex: /(?<!a)/, notSuitableForGenerateTests: true },
-  { regex: /(?=(a+))/, notSuitableForGenerateTests: true },
-  { regex: /(?!(a+)b)/, notSuitableForGenerateTests: true },
-  { regex: /(?<=([ab]+)([bc]+))/, notSuitableForGenerateTests: true },
+  { regex: /(a)\2/, invalidInUnicodeMode: true }, // in non-unicode: \2 is considered as an octal
+  { regex: /(?=a)/, unsupportedByStringMatching: true },
+  { regex: /(?!a)/, unsupportedByStringMatching: true },
+  { regex: /(?<=a)/, unsupportedByStringMatching: true },
+  { regex: /(?<!a)/, unsupportedByStringMatching: true },
+  { regex: /(?=(a+))/, unsupportedByStringMatching: true },
+  { regex: /(?!(a+)b)/, unsupportedByStringMatching: true },
+  { regex: /(?<=([ab]+)([bc]+))/, unsupportedByStringMatching: true },
   { regex: /a(2|)b/ },
   { regex: /a(|2)b/ },
   { regex: /(a(b)c)/ },
   { regex: /(?<la>a(?<lb>b)c)/ },
-  { regex: /(?<label>[A-Z][a-z]*) \k<label>/, notSuitableForGenerateTests: true },
-  { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/, notSuitableForGenerateTests: true },
+  { regex: /(?<label>[A-Z][a-z]*) \k<label>/, unsupportedByStringMatching: true },
+  { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/, unsupportedByStringMatching: true },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\P{Emoji_Presentation}/ },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\P{Script_Extensions=Thaana}/ },
   // @ts-expect-error Missing unicode mode on Regex
-  { regex: /[a-\p{Letter}]/, invalidWithUnicode: true },
+  { regex: /[a-\p{Letter}]/, invalidInUnicodeMode: true },
   // Unicode property escapes
   { regex: /\p{Letter}/u },
   { regex: /\p{L}/u },

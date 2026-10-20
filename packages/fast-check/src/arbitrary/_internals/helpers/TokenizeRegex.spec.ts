@@ -15,7 +15,7 @@ describe('tokenizeRegex', () => {
   });
 
   describe('unicode regex', () => {
-    it.each(RegexesOfInterest.filter((i) => !i.invalidWithUnicode))(
+    it.each(RegexesOfInterest.filter((i) => !i.invalidInUnicodeMode))(
       'should properly tokenize the regex $regex in unicode mode',
       ({ regex }) => {
         const unicodeRegex = new RegExp(regex, 'u');
