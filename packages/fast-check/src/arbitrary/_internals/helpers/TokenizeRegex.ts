@@ -28,6 +28,7 @@ type CharRegexToken = {
   value: string;
   codePoint: number;
   escaped?: true;
+  isSurrogatePair?: true;
 };
 type RepetitionRegexToken = {
   type: 'Repetition';
@@ -187,6 +188,13 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
       case 'u': {
         if (block === '\\u') {
           return simpleChar('u', true);
+        }
+        if (block[2] !== '{' && block.length === 12) {
+          const lead = Number.parseInt(block.substring(2, 6), 16);
+          const trail = Number.parseInt(block.substring(8), 16);
+          const codePoint = (lead - 0xd800) * 0x400 + (trail - 0xdc00) + 0x10000;
+          const symbol = String.fromCodePoint(codePoint);
+          return { type: 'Char', kind: 'unicode', symbol, value: block, codePoint, isSurrogatePair: true };
         }
         const allDigits = block[2] === '{' ? block.substring(3, block.length - 1) : block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
@@ -420,7 +428,7 @@ function pushTokens(
           tokens.push({ type: 'Assertion', kind: block });
         } else if (block[0] === '\\' && isDigit(block[1])) {
           const reference = Number(block.substring(1));
-          if (unicodeMode || reference <= groups.lastIndex) {
+          if (reference !== 0 && (unicodeMode || reference <= groups.lastIndex)) {
             tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
           } else {
             tokens.push(blockToCharToken(block));
