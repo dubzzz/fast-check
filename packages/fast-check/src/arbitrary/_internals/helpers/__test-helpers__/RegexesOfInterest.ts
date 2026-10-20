@@ -30,6 +30,9 @@ export const RegexesOfInterest: {
   { regex: /\n/ },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\u{1[81]}/, invalidInUnicodeMode: true },
+  { regex: /\u{100000}/u },
+  { regex: /\u{10ffff}/u },
+  { regex: /\u{00000000000061}/u },
 
   // Octal
   // @ts-expect-error Referencing non-existing group in Regex
@@ -68,6 +71,7 @@ export const RegexesOfInterest: {
   { regex: /[.-f]/ },
   { regex: /[\w-z]/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches any character from A–Z, a–z, 0–9, _ or -
   { regex: /[\u{1f431}-\u{1f434}]/u },
+  { regex: /[\u{100000}-\u{10ffff}]/u },
 
   // Groups
   { regex: /(foo)/ }, // capturing group
