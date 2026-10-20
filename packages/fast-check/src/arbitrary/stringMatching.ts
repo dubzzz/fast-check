@@ -1,6 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import {
-  safeCharCodeAt,
+  safeCodePointAt,
   safeEvery,
   safeJoin,
   safeSubstring,
@@ -193,7 +193,7 @@ function toMatchingArbitrary(
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');
           // oxlint-disable-next-line typescript/no-non-null-assertion
-          return safeCharCodeAt(c, 0)!;
+          return safeCodePointAt(c, 0)!;
         },
       );
     }
