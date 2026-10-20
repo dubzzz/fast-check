@@ -43,6 +43,7 @@ describe('array', () => {
           expect.any(Number),
           0x7fffffff,
           undefined,
+          expect.any(Number),
           undefined,
           [],
         );
@@ -76,6 +77,7 @@ describe('array', () => {
           expect.any(Number),
           maxLength,
           undefined,
+          expect.any(Number),
           undefined,
           [],
         );
@@ -84,7 +86,16 @@ describe('array', () => {
         expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(maxLength);
         expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
         if (config.defaultSizeToMaxWhenMaxSpecified) {
-          expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, undefined, undefined, []);
+          expect(ArrayArbitrary).toHaveBeenCalledWith(
+            childInstance,
+            0,
+            maxLength,
+            maxLength,
+            undefined,
+            0,
+            undefined,
+            [],
+          );
         }
         expect(arb).toBe(instance);
       }),
@@ -112,6 +123,7 @@ describe('array', () => {
           expect.any(Number),
           0x7fffffff,
           undefined,
+          expect.any(Number),
           undefined,
           [],
         );
@@ -154,6 +166,7 @@ describe('array', () => {
             expect.any(Number),
             maxLength,
             undefined,
+            expect.any(Number),
             undefined,
             [],
           );
@@ -168,6 +181,7 @@ describe('array', () => {
               maxLength,
               maxLength,
               undefined,
+              0,
               undefined,
               [],
             );
@@ -207,6 +221,7 @@ describe('array', () => {
             expect.any(Number),
             maxLength,
             depthIdentifier,
+            expect.any(Number),
             undefined,
             [],
           );
@@ -221,6 +236,7 @@ describe('array', () => {
               maxLength,
               maxLength,
               depthIdentifier,
+              0,
               undefined,
               [],
             );
