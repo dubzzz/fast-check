@@ -98,7 +98,10 @@ export const RegexesOfInterest: {
   { regex: /(a(b)c)/ },
   { regex: /(?<la>a(?<lb>b)c)/ },
   { regex: /(?<label>[A-Z][a-z]*) \k<label>/, unsupportedByStringMatching: true },
-  { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/, unsupportedByStringMatching: true },
+  {
+    regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/,
+    unsupportedByStringMatching: true,
+  },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /\P{Emoji_Presentation}/ },
   // @ts-expect-error Missing unicode mode on Regex
@@ -113,11 +116,14 @@ export const RegexesOfInterest: {
   { regex: /\p{sc=Latin}/u },
   { regex: /[\p{Letter}\d]/u },
   { regex: /[\p{Letter}-]/u },
-  // Proper handling of \0
+
+  // NUL
+  { regex: /\0/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('\0') },
+  { regex: new RegExp("\0") }, // not the same as /\0/
+  { regex: /[\0-\0]/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('[\0-\0]') },
-  // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('[\\0-\\0]') },
+  { regex: new RegExp("[\0-\0]") }, // not the same as /[\0-\0]/
+  { regex: /^\0$/ },
+  { regex: /^(a)\0$/ },
 ];
