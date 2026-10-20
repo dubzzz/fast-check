@@ -19,7 +19,7 @@ bun install -D fast-check
 
 Congratulations, everything is ready to start using Property-Based Tests with the Bun test runner 🚀
 
-:::info Runner-agnostic patterns
+:::info[Runner-agnostic patterns]
 fast-check does not ship a dedicated connector for Bun: you use it the same way you would with any other runner. For the generic sync and async patterns, along with tips on sharing configuration via `fc.configureGlobal`, refer to our [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/) page. The rest of this tutorial focuses on the Bun-specific bits.
 :::
 
@@ -36,7 +36,7 @@ import * as fc from 'fast-check';
 describe('decompose', () => {
   it('should produce an array such that the product equals the input', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.integer({ min: 2, max: 2 ** 31 - 1 }), (n) => {
+      fc.property(fc.integer({ min: 2, max: 2 ** 31 - 1 }), (n) => {
         const factors = decompose(n);
         const productOfFactors = factors.reduce((a, b) => a * b, 1);
         return productOfFactors === n;

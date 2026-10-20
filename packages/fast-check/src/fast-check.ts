@@ -1,8 +1,8 @@
 export { pre } from './check/precondition/Pre.js';
-export { asyncProperty } from './check/property/AsyncProperty.js';
+export { property } from './check/property/Property.js';
+export type { PredicateExecutionContext } from './check/property/types/PredicateExecutionContext.js';
 export type { PropertyFailure } from './check/property/types/PropertyFailure.js';
 export type { Property } from './check/property/types/Property.js';
-export type { PropertyWithHooks, PropertyHookFunction } from './check/property/types/PropertyWithHooks.js';
 export type { Parameters } from './check/runner/configuration/Parameters.js';
 export type {
   RunDetails,
@@ -138,7 +138,7 @@ export { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelR
 
 export { Random } from './random/generator/Random.js';
 
-export type { GlobalParameters, GlobalPropertyHookFunction } from './check/runner/configuration/GlobalParameters.js';
+export type { GlobalParameters } from './check/runner/configuration/GlobalParameters.js';
 export {
   configureGlobal,
   readConfigureGlobal,
@@ -198,6 +198,14 @@ export { noShrink } from './arbitrary/noShrink.js';
 export { noBias } from './arbitrary/noBias.js';
 export { limitShrink } from './arbitrary/limitShrink.js';
 export type { RandomGenerator } from './random/generator/RandomGenerator.js';
+export type { Plugin, PluginInstance, PluginStore, UniversalPlugin } from './check/plugin/Plugin.js';
+export { installGlobalPlugin } from './check/runner/configuration/GlobalPlugins.js';
+export { beforeEach, afterEach } from './check/plugin/LifeCyclePlugins.js';
+export { unbiased } from './check/plugin/UnbiasedPlugin.js';
+export { ignoreEqualValues, skipEqualValues } from './check/plugin/EqualValuesPlugins.js';
+export { interruptAfterTimeLimit } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
+export type { InterruptAfterTimeLimitOptions } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
+export { timeout } from './check/plugin/TimeoutPlugin.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**

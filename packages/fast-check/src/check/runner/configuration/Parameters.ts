@@ -1,10 +1,10 @@
 import type { VerbosityLevel } from './VerbosityLevel.js';
-import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from '../../../random/generator/RandomGenerator.js';
+import type { Plugin } from '../../plugin/Plugin.js';
 
 /**
  * Customization of the parameters used to run the properties
- * @remarks Since 0.0.6
+ * @remarks Since 0.0.7
  * @public
  */
 export interface Parameters<T = void> {
@@ -16,7 +16,7 @@ export interface Parameters<T = void> {
    * In theory, seeds are supposed to be 32-bit integers.
    * In case of double value, the seed will be rescaled into a valid 32-bit integer (eg.: values between 0 and 1 will be evenly spread into the range of possible seeds).
    *
-   * @remarks Since 0.0.6
+   * @remarks Since 0.0.1
    */
   seed?: number;
   /**
@@ -47,77 +47,6 @@ export interface Parameters<T = void> {
    */
   maxSkipsPerRun?: number;
   /**
-   * Maximum time in milliseconds for the predicate to answer: disabled by default
-   *
-   * WARNING: Only works for async code (see {@link asyncProperty}), will not interrupt a synchronous code.
-   * @remarks Since 0.0.11
-   */
-  timeout?: number;
-  /**
-   * Skip all runs after a given time limit: disabled by default
-   *
-   * NOTE: Relies on `Date.now()`.
-   *
-   * NOTE:
-   * Useful to stop too long shrinking processes.
-   * Replay capability (see `seed`, `path`) can resume the shrinking.
-   *
-   * WARNING:
-   * It skips runs. Thus test might be marked as failed.
-   * Indeed, it might not reached the requested number of successful runs.
-   *
-   * @remarks Since 1.15.0
-   */
-  skipAllAfterTimeLimit?: number;
-  /**
-   * Interrupt test execution after a given time limit: disabled by default
-   *
-   * NOTE: Relies on `Date.now()`.
-   *
-   * NOTE:
-   * Useful to avoid having too long running processes in your CI.
-   * Replay capability (see `seed`, `path`) can still be used if needed.
-   *
-   * WARNING:
-   * If the test got interrupted before any failure occured
-   * and before it reached the requested number of runs specified by `numRuns`
-   * it will be marked as success. Except if `markInterruptAsFailure` has been set to `true`
-   *
-   * @remarks Since 1.19.0
-   */
-  interruptAfterTimeLimit?: number;
-  /**
-   * Mark interrupted runs as failed runs if preceded by one success or more: disabled by default
-   * Interrupted with no success at all always defaults to failure whatever the value of this flag.
-   * @remarks Since 1.19.0
-   */
-  markInterruptAsFailure?: boolean;
-  /**
-   * Skip runs corresponding to already tried values.
-   *
-   * WARNING:
-   * Discarded runs will be retried. Under the hood they are simple calls to `fc.pre`.
-   * In other words, if you ask for 100 runs but your generator can only generate 10 values then the property will fail as 100 runs will never be reached.
-   * Contrary to `ignoreEqualValues` you always have the number of runs you requested.
-   *
-   * NOTE: Relies on `fc.stringify` to check the equality.
-   *
-   * @remarks Since 2.14.0
-   */
-  skipEqualValues?: boolean;
-  /**
-   * Discard runs corresponding to already tried values.
-   *
-   * WARNING:
-   * Discarded runs will not be replaced.
-   * In other words, if you ask for 100 runs and have 2 discarded runs you will only have 98 effective runs.
-   *
-   * NOTE: Relies on `fc.stringify` to check the equality.
-   *
-   * @remarks Since 2.14.0
-   */
-  ignoreEqualValues?: boolean;
-  /**
    * Way to replay a failing property directly with the counterexample.
    * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).
    * @remarks Since 1.0.0
@@ -128,11 +57,6 @@ export interface Parameters<T = void> {
    * @remarks Since 0.0.6
    */
   logger?(v: string): void;
-  /**
-   * Force the use of unbiased arbitraries: biased by default
-   * @remarks Since 1.1.0
-   */
-  unbiased?: boolean;
   /**
    * Enable verbose mode: {@link VerbosityLevel.None} by default
    *
@@ -164,17 +88,6 @@ export interface Parameters<T = void> {
    */
   endOnFailure?: boolean;
   /**
-   * Replace the default reporter handling errors by a custom one
-   *
-   * Reporter is responsible to throw in case of failure: default one throws whenever `runDetails.failed` is true.
-   * But you may want to change this behaviour in yours.
-   *
-   * Only used when calling {@link assert}
-   *
-   * @remarks Since 1.25.0
-   */
-  reporter?: (runDetails: RunDetails<T>) => Promise<void> | void;
-  /**
    * By default the Error causing the failure of the predicate will not be directly exposed within the message
    * of the Error thown by fast-check. It will be exposed by a cause field attached to the Error.
    *
@@ -186,4 +99,17 @@ export interface Parameters<T = void> {
    * as part of the message and not as a cause.
    */
   includeErrorInReport?: boolean;
+  /**
+   * Set of plugins extending the way the property gets executed by the runner
+   *
+   * Each plugin is instantiated once per run.
+   * They can be leveraged to control and enrich the execution flow of each predicate.
+   *
+   * They come after the plugins installed globally via {@link installGlobalPlugin}.
+   * At execution time, the first plugin of the resulting array is entered first while the last one is the closest to the predicate.
+   * Plugins are instantiated in order.
+   *
+   * @remarks Since 4.10.0
+   */
+  plugins?: Plugin<T>[];
 }

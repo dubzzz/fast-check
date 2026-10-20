@@ -1,46 +1,18 @@
-import { nil } from '../../utils/iterator.js';
 import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
-import { decorateProperty } from './DecorateProperty.js';
 import type { RunDetails } from './reporter/RunDetails.js';
-import type { RunExecution } from './reporter/RunExecution.js';
-import { RunnerIterator } from './RunnerIterator.js';
-import { SourceValuesIterator } from './SourceValuesIterator.js';
-import { lazyToss, toss } from './Tosser.js';
-import { pathWalk } from './utils/PathWalker.js';
+import { propertyRunner } from './PropertyRunner.js';
+import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
-import type { Value } from '../arbitrary/definition/Value.js';
-
-async function runIt<Ts>(
-  property: Property<Ts>,
-  shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
-  sourceValues: SourceValuesIterator<Value<Ts>>,
-  verbose: VerbosityLevel,
-  interruptedAsFailure: boolean,
-): Promise<RunExecution<Ts>> {
-  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
-  for (const v of runner) {
-    const beforeEachOut = property.runBeforeEach();
-    if (beforeEachOut !== undefined) {
-      await beforeEachOut;
-    }
-    const syncOut = property.run(v);
-    // Awaiting on an already resolved value brings a performance drop.
-    // As such we try to only await on Promises. Given the shape of the values produced by run
-    // we do a best effort check and drop unwanted await calls only on synchronous success cases.
-    const out = syncOut !== null ? await syncOut : syncOut;
-    const afterEachOut = property.runAfterEach();
-    if (afterEachOut !== undefined) {
-      await afterEachOut;
-    }
-    runner.handleResult(out);
-  }
-  return runner.runExecution;
-}
+import {
+  applyPluginGeneratorDecorators,
+  applyPluginRunDecorators,
+  instantiatePlugins,
+  runPluginCompletionCallbacks,
+} from './utils/PluginIntegration.js';
 
 /**
  * Run the property, do not throw contrary to {@link assert}
@@ -60,19 +32,26 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  const decoratedProperty = decorateProperty(property, qParams);
-  const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
+  const pluginInstances = instantiatePlugins(qParams.plugins);
+  const generator = applyPluginGeneratorDecorators(property, pluginInstances);
+  const run = applyPluginRunDecorators(property, pluginInstances);
+
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const shrink: typeof decoratedProperty.shrink = (...args) => decoratedProperty.shrink(...args);
-  const initialValues =
-    qParams.path.length === 0
-      ? toss(decoratedProperty, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, lazyToss(decoratedProperty, qParams.seed, qParams.randomType, qParams.examples), shrink);
-  const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
-  const finalShrink = !qParams.endOnFailure ? shrink : () => nil;
-  return runIt(decoratedProperty, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then(
-    (e) => e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-  );
+  const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
+  const propertyRunnerOut = propertyRunner(runnerIterator, run);
+  return propertyRunnerOut === undefined
+    ? Promise.resolve(
+        runPluginCompletionCallbacks(
+          pluginInstances,
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+        ),
+      )
+    : propertyRunnerOut.then(() =>
+        runPluginCompletionCallbacks(
+          pluginInstances,
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+        ),
+      );
 }
 
 /**

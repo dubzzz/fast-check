@@ -1,7 +1,6 @@
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
 import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
-import { UnbiasedProperty } from '../property/plugins/UnbiasedProperty.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
@@ -9,11 +8,11 @@ import type { QualifiedParameters } from './configuration/QualifiedParameters.js
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 
-function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters<Ts>): Property<Ts> {
+function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
     ? new PropertyImplem(generator as Arbitrary<Ts>, () => true)
     : (generator as Property<Ts>);
-  return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
+  return prop;
 }
 
 function streamSample<Ts>(
@@ -25,7 +24,7 @@ function streamSample<Ts>(
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
-  const nextProperty = toProperty(generator, qParams);
+  const nextProperty = toProperty(generator);
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues =
     qParams.path.length === 0
@@ -43,7 +42,7 @@ function streamSample<Ts>(
  * fc.sample(fc.nat(), {seed: 42}); // extract values from fc.nat() as if we were running fc.assert with seed=42
  * ```
  *
- * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
+ * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
  *
  * @remarks Since 0.0.6
@@ -74,7 +73,7 @@ function round2(n: number): string {
  * // The output will be sent line by line to the logger
  * ```
  *
- * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
+ * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
  *

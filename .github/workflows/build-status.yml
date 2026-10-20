@@ -7,7 +7,7 @@ on:
       - 'next-*_*_*'
       - 'fix-v*'
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [opened, synchronize, reopened]
     branches:
       - main
       - 'next-*_*_*'
@@ -23,17 +23,16 @@ permissions:
 jobs:
   # Root jobs
   warmup_pnpm_cache:
-    name: 'Warm up pnpm cache'
-    if: github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
+    name: 'Warm up pnpm cache (Linux)'
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    steps: &warmup_steps
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         id: pnpm-cache
         with:
           node-version: '24.x'
@@ -41,96 +40,65 @@ jobs:
       - name: Update pnpm cache
         if: steps.pnpm-cache.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile --ignore-scripts
-  warmup_pnpm_cache_others:
-    name: 'Warm up pnpm cache (others)'
-    if: github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        os: ['macos-latest', 'windows-latest']
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
-      - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        id: pnpm-cache
-        with:
-          node-version: '24.x'
-          cache: 'pnpm'
-      - name: Update pnpm cache
-        if: steps.pnpm-cache.outputs.cache-hit != 'true'
-        run: pnpm install --frozen-lockfile --ignore-scripts
-
-  # Jobs without any strong requirement on warmup_pnpm_cache
-  # except that they have to wait for it to avoid setting an empty cache that would replace the one pushed by warmup_pnpm_cache
-  no_dedupe_required:
-    name: 'No dedupe required'
-    needs: warmup_pnpm_cache
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
-      - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: '24.x'
-          cache: 'pnpm'
-      - name: Ensure no dedupe required
-        run: pnpm dedupe --check
+  warmup_pnpm_cache_macos:
+    name: 'Warm up pnpm cache (macOS)'
+    runs-on: macos-latest
+    steps: *warmup_steps
+  warmup_pnpm_cache_windows:
+    name: 'Warm up pnpm cache (Windows)'
+    runs-on: windows-latest
+    steps: *warmup_steps
 
   # Jobs requesting warmup_pnpm_cache
-  format_lint:
-    name: 'Format & Lint'
+  sanity_checks:
+    name: 'Sanity checks'
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter @fast-check/monorepo install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
       - parallel:
           - name: Check format
             run: node --run format:check
           - name: Check lint
             run: node --run lint:check
+          - name: Check dependency trust and deduplication
+            run: pnpm dedupe --check --ignore-scripts
+          - name: Typecheck
+            run: node --run typecheck
   production_packages:
     name: 'Build production packages'
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
           cache: ${{ github.event_name == 'push' && '' || 'pnpm' }}
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
       - name: Build production packages
-        run: node --run build-ci:all
+        run: node --run build-ci
       - name: Create bundles
-        run: node --run pack:all
+        run: node --run pack
       - name: Upload production packages
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -138,41 +106,6 @@ jobs:
           retention-days: 1
 
   # Jobs requesting warmup_pnpm_cache AND production_packages
-  typecheck:
-    name: 'Typecheck'
-    needs:
-      - warmup_pnpm_cache
-      - production_packages
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
-      - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: '24.x'
-          cache: 'pnpm'
-      - name: Install dependencies
-        id: install
-        run: pnpm install --frozen-lockfile --ignore-scripts
-        background: true
-      - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: bundles
-          path: packages/
-      - name: Wait for dependencies to be installed
-        wait: install
-      - name: Unpack production packages
-        run: node --run unpack:all
-      - parallel:
-          - name: Typecheck
-            run: node --run typecheck:all
-          - name: Check API surface (missing exports, inconsistent visibility, etc.)
-            run: pnpm --filter fast-check run api-extractor
   preview:
     name: 'Preview'
     needs:
@@ -180,29 +113,29 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
         background: true
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
       - name: Wait for dependencies to be installed
         wait: install
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       # These are not real npm publish commands, but pnpm exec pkg-pr-new publish
       # pkg-pr-new is a tool for creating preview deployments, not for publishing to npm
       - name: Preview (no comment) # zizmor: ignore[use-trusted-publishing]
@@ -215,61 +148,34 @@ jobs:
     name: 'Test'
     needs:
       - warmup_pnpm_cache
-      - warmup_pnpm_cache_others
       - production_packages
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
         node-version: [22.x, 24.x, latest]
         os: ['ubuntu-latest']
-        shard-id: ['1']
-        shard-count: ['1']
-        include:
-          - node-version: 24.x
-            os: 'macos-latest'
-            shard-id: 1
-            shard-count: 3
-          - node-version: 24.x
-            os: 'macos-latest'
-            shard-id: 2
-            shard-count: 3
-          - node-version: 24.x
-          - node-version: 24.x
-            os: 'macos-latest'
-            shard-id: 3
-            shard-count: 3
-          - node-version: 24.x
-            os: 'windows-latest'
-            shard-id: 1
-            shard-count: 3
-          - node-version: 24.x
-            os: 'windows-latest'
-            shard-id: 2
-            shard-count: 3
-          - node-version: 24.x
-            os: 'windows-latest'
-            shard-id: 3
-            shard-count: 3
-    env:
+        shard-id: ['1', '2']
+        shard-count: ['2']
+    env: &test_env
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_DOCUMENTATION: ${{ matrix.node-version != '24.x' || matrix.os == 'windows-latest' }}
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    steps: &test_steps
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{matrix.node-version}}
           cache: 'pnpm'
       - name: Install dependencies
         id: install
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
         background: true
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
@@ -277,11 +183,11 @@ jobs:
         wait: install
       - name: Unpack production packages
         if: matrix.os != 'windows-latest'
-        run: pnpm run unpack:all
+        run: pnpm run unpack
       - name: Unpack production packages (Windows only)
         if: matrix.os == 'windows-latest'
         # untar seems to fail on Windows when untaring already existing files
-        run: pnpm run unpack:all || true
+        run: pnpm run unpack || true
       - name: Unit tests
         shell: bash -l {0}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
@@ -297,29 +203,59 @@ jobs:
             pnpm run test --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           fi
       - name: Upload coverage
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: env.ENABLE_COVERAGE == 'true'
         with:
           name: 'coverage-${{matrix.shard-id}}'
           path: coverage/
           if-no-files-found: error
           retention-days: 1
+  test_macos:
+    name: 'Test'
+    needs:
+      - warmup_pnpm_cache_macos
+      - production_packages
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        node-version: [24.x]
+        os: ['macos-latest']
+        shard-id: ['1', '2', '3']
+        shard-count: ['3']
+    env: *test_env
+    steps: *test_steps
+  test_windows:
+    name: 'Test'
+    needs:
+      - warmup_pnpm_cache_windows
+      - production_packages
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        node-version: [24.x]
+        os: ['windows-latest']
+        shard-id: ['1', '2', '3']
+        shard-count: ['3']
+    env: *test_env
+    steps: *test_steps
   publish_test_coverage:
     name: 'Publish test coverage'
     needs:
       - test
+      - test_macos
+      - test_windows
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Download coverage
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: coverage-*
           path: coverage-reports/
       - name: Codecov
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           name: tests
           flags: tests
@@ -333,23 +269,23 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0 # all history in order to be able to show last-edited-at dates
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
-        run: pnpm --filter website install --frozen-lockfile --ignore-scripts
+        run: pnpm --filter website install --frozen-lockfile --ignore-scripts --trust-lockfile
         background: true
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         background: true
         with:
           name: bundles
@@ -371,13 +307,13 @@ jobs:
       - name: Wait for background steps to complete
         wait-all:
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       - name: Generate documentation
         run: pnpm --filter website run build
       - name: Copy raw logo within documentation
         run: cp website/static/img/logo.png website/build/assets/images/logo.png
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: website
           path: website/build/
@@ -390,34 +326,34 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
         background: true
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
       - name: Wait for dependencies to be installed
         wait: install
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-bundle
       - parallel:
           - name: Check publication lint
-            run: node --run publint:all
+            run: node --run publint
           - name: Check bundles
             run: pnpm --filter {./packages/**} --parallel run test-bundle
       - name: Check legacy bundles
@@ -446,45 +382,61 @@ jobs:
       - warmup_pnpm_cache
       - production_packages
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ts-version:
-          # Latest version of TypeScript
-          - 'latest'
-          # Various intermediate versions of Typescript (if any required)
-          # Minimal requirement for TypeScript
-          - '5.8'
-          # Other release channels for TypeScript
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
         background: true
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
       - name: Wait for dependencies to be installed
         wait: install
+      - name: Prepare CommonJS and ES module fixtures
+        id: prepare-fixtures
+        background: true
+        run: |
+          pnpm --filter '{./packages/**}' --parallel -c exec '
+            set -eu
+            cd test-types
+            for file in *.ts; do
+              cp "$file" "${file%.ts}.cts"
+              mv "$file" "${file%.ts}.mts"
+            done
+          '
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
+      - name: Check API surface (missing exports, inconsistent visibility, etc.)
+        run: pnpm --filter fast-check run api-extractor # WARNING! Must run before packaged
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
-      - name: Switch folder to CommonJS
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
-      - name: Switch folder to ES Modules
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+      - name: Wait for fixtures to be prepared
+        wait: prepare-fixtures
+      - parallel:
+          # Latest version of TypeScript
+          - name: Check types (TypeScript latest)
+            env:
+              TS_VERSION: latest
+            run: &check_types |
+              pnpm --package "typescript@${TS_VERSION}" dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext packages/*/test-types/*.cts packages/*/test-types/*.mts
+          # Various intermediate versions of Typescript (if any required)
+          # Minimal requirement for TypeScript
+          - name: Check types (TypeScript 5.8)
+            env:
+              TS_VERSION: '5.8'
+            run: *check_types
 
   # Optional jobs
   bench:
@@ -494,30 +446,30 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
         background: true
       - name: Restore results from last benchmark execution on main
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         background: true
         with:
-          path: benchmark.json
+          path: packages/fast-check/.test-artifacts/benchmarks
           # Non-matching key so restore-keys picks the most recent main cache
-          key: bench-main-will-not-match
-          restore-keys: bench-main-
+          key: bench-v5-main-will-not-match
+          restore-keys: bench-v5-main-
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         background: true
         with:
           name: bundles
@@ -525,18 +477,19 @@ jobs:
       - name: Wait for background steps to complete
         wait-all:
       - name: Unpack production packages
-        run: node --run unpack:all
+        run: node --run unpack
       - name: Benchmark
         id: bench
         shell: bash -l {0}
         # The DEFAULT_SEED has to be specified to make vitest.setup.mjs happy.
         # But we don't use it for benchmarks.
         run: |
+          set -o pipefail
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED="0"
-          node --run bench:ci | tee bench-output.txt
+          node --run bench:ci 2>&1 | tee bench-output.txt
       - name: Upload bench results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bench-output
           path: bench-output.txt
@@ -546,23 +499,24 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh cache list --key bench-main- --json key -q '.[].key' | xargs -rn1 gh cache delete || true
+        run: gh cache list --key bench-v5-main- --json key -q '.[].key' | xargs -rn1 gh cache delete || true
       - name: Cache last benchmark execution for main
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: benchmark.json
-          key: bench-main-${{ github.sha }}
+          path: packages/fast-check/.test-artifacts/benchmarks
+          key: bench-v5-main-${{ github.sha }}
   comment_bench:
     name: 'Comment bench results'
     needs: bench
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    # Fork pull requests have a read-only token and cannot post comments.
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
       - name: Download bench results
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bench-output
       - name: Comment bench results on PR
@@ -583,45 +537,36 @@ jobs:
             }
 
   # Job to confirm every required job passed
-  pre_all_checks_passed:
-    name: 'Pre All checks passed'
+  all_checks_passed:
+    name: 'All checks passed'
+    if: always()
     needs:
       - production_packages
       - documentation
-      - format_lint
-      - no_dedupe_required
-      - typecheck
+      - sanity_checks
       - test
+      - test_macos
+      - test_windows
       - test_bundle
       - test_types
     runs-on: ubuntu-latest
     steps:
-      - name: Success
-        run: echo "Success"
-  all_checks_passed:
-    name: 'All checks passed'
-    needs: pre_all_checks_passed
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - if: needs.pre_all_checks_passed.result == 'success'
-        name: Success
-        run: echo "Success"
-      - if: needs.pre_all_checks_passed.result != 'success'
-        name: Failure
-        run: exit 1
+      - name: Check required job results
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: jq -e 'all(.[]; .result == "success")' <<< "$NEEDS_JSON"
 
   # Publication jobs
   publish_documentation_netlify:
     name: 'Publish documentation on Netlify'
-    if: github.event_name == 'push'
+    if: false #github.event_name == 'push'
     needs: documentation
     runs-on: ubuntu-latest
     env:
       DRAFT_BUILD: ${{github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: website
           path: artifacts/
@@ -652,7 +597,7 @@ jobs:
     outputs:
       tag_count: ${{steps.tag_count.outputs.count}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -670,7 +615,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -690,17 +635,17 @@ jobs:
       # These are false positives - attestations ensure artifact integrity
       # setup-node actions in publish jobs followed by gh-release for attestation uploads
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: latest
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
@@ -713,7 +658,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/fast-check/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
@@ -744,7 +689,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -762,17 +707,17 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: latest
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
@@ -785,7 +730,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/ava/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
@@ -816,7 +761,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -834,17 +779,17 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: latest
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
@@ -857,7 +802,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/jest/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
@@ -888,7 +833,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -906,17 +851,17 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: latest
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
@@ -929,7 +874,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/packaged/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
@@ -960,7 +905,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -978,17 +923,17 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: latest
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
@@ -1001,7 +946,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/poisoning/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
@@ -1032,7 +977,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -1050,17 +995,17 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: latest
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
@@ -1073,7 +1018,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/vitest/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
@@ -1104,7 +1049,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -1122,17 +1067,17 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: latest
       - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bundles
           path: packages/
@@ -1145,7 +1090,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
         run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/worker/$TGZ_NAME"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         id: attest
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}

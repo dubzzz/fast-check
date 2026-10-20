@@ -15,7 +15,7 @@ fast-check can be installed into any existing project by running the following c
 npm install --save-dev fast-check
 ```
 
-:::tip Experimental versions
+:::tip[Experimental versions]
 
 All versions of fast-check, including experimental ones, are published to [pkg.pr.new](https://github.com/stackblitz-labs/pkg.pr.new). This means you can try out the latest features without waiting for an official release.
 
@@ -29,7 +29,7 @@ npm install --save-dev https://pkg.pr.new/fast-check@main
 
 :::
 
-:::info Integration with test runners
+:::info[Integration with test runners]
 fast-check is agnostic of the test runner you rely on. It works with any test runner without needing any specific change.
 :::
 
@@ -48,7 +48,7 @@ describe('properties', () => {
   // string text always contains itself
   it('should always contain itself', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.string(), (text) => {
+      fc.property(fc.string(), (text) => {
         return contains(text, text);
       }),
     );
@@ -57,7 +57,7 @@ describe('properties', () => {
   // string a + b + c always contains b, whatever the values of a, b and c
   it('should always contain its substrings', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+      fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // Alternatively: no return statement and direct usage of expect or assert
         return contains(a + b + c, b);
       }),
@@ -66,7 +66,7 @@ describe('properties', () => {
 });
 ```
 
-:::tip Hands on Property-Based Testing
+:::tip[Hands on Property-Based Testing]
 If you want to quickly get started with property-based testing, you may check our tutorials and our [quick start guide](/docs/tutorials/quick-start/basic-setup/).
 :::
 
@@ -87,12 +87,12 @@ A property describes:
 1. what the user wants to assess — _via a predicate_
 2. how to generate the inputs of the predicate — _via arbitraries_
 
-The snippet above declared properties by calling `fc.asyncProperty`. Properties can deal with both synchronous and asynchronous predicates.
+The snippet above declared properties by calling `fc.property`. Properties can deal with both synchronous and asynchronous predicates.
 
 The structure to declare a property is always the same:
 
 ```js
-fc.asyncProperty(
+fc.property(
   ...arbitraries // how to generate the values received as inputs of the predicate
   predicate // how to check if the code worked
 );

@@ -9,13 +9,17 @@ import { adaptRandomGenerator } from '../../random/generator/RandomGenerator.js'
 /**
  * Extracting tossNext out of toss was dropping some bailout reasons on v8 side
  */
-function tossNext<Ts>(generator: Property<Ts>, rng: QualifiedRandomGenerator, index: number): Value<Ts> {
+function tossNext<Ts>(
+  generator: Pick<Property<Ts>, 'generate'>,
+  rng: QualifiedRandomGenerator,
+  index: number,
+): Value<Ts> {
   rng.jump();
   return generator.generate(new Random(rng), index);
 }
 
 export function* toss<Ts>(
-  generator: Property<Ts>,
+  generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
   random: (seed: number) => QualifiedRandomGenerator,
   examples: Ts[],
@@ -28,12 +32,16 @@ export function* toss<Ts>(
   }
 }
 
-function lazyGenerate<Ts>(generator: Property<Ts>, rng: RandomGenerator, idx: number): () => Value<Ts> {
+function lazyGenerate<Ts>(
+  generator: Pick<Property<Ts>, 'generate'>,
+  rng: RandomGenerator,
+  idx: number,
+): () => Value<Ts> {
   return () => generator.generate(new Random(rng), idx);
 }
 
 export function* lazyToss<Ts>(
-  generator: Property<Ts>,
+  generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
   random: (seed: number) => RandomGenerator,
   examples: Ts[],

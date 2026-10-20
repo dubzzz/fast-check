@@ -13,16 +13,6 @@ import type { Property } from '../property/types/Property.js';
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
-    it('Should not throw if reporter is specified on asynchronous properties', () => {
-      const p: Property<[number]> = {
-        generate: () => new Value([0], undefined),
-        shrink: () => nil,
-        runBeforeEach: () => {},
-        run: () => null,
-        runAfterEach: () => {},
-      };
-      expect(() => check(p, { reporter: () => {} })).not.toThrowError(); // no sync throw
-    });
     it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
@@ -33,13 +23,11 @@ describe('Runner', () => {
           return new Value([numCallsGenerate] as [number], undefined);
         },
         shrink: () => nil,
-        runBeforeEach: () => {},
         run: (value: [number]) => {
           expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
           ++numCallsRun;
           return null;
         },
-        runAfterEach: () => {},
       };
       const out = await check(p);
       expect(numCallsGenerate).toEqual(100);
@@ -56,13 +44,11 @@ describe('Runner', () => {
           return new Value([numCallsGenerate] as [number], undefined);
         },
         shrink: () => nil,
-        runBeforeEach: () => {},
         run: (value: [number]) => {
           expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
           ++numCallsRun;
           return null;
         },
-        runAfterEach: () => {},
       };
       const out = await check(p, { path: '3002' });
       expect(numCallsGenerate).toEqual(100);
@@ -88,12 +74,10 @@ describe('Runner', () => {
           }
           return g();
         },
-        runBeforeEach: () => {},
         run: () => {
           ++numCallsRun;
           return null;
         },
-        runAfterEach: () => {},
       };
       const out = await check(p, { path: '3002:0' });
       expect(numCallsGenerate).toEqual(1);
@@ -109,20 +93,18 @@ describe('Runner', () => {
         }, []),
       );
       await fc.assert(
-        fc.asyncProperty(successfulRunIdsArb, fc.option(fc.nat(99)), async (successIds, failAtId) => {
+        fc.property(successfulRunIdsArb, fc.option(fc.nat(99)), async (successIds, failAtId) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: Property<[number]> = {
             generate: () => new Value([numCallsGenerate++] as [number], undefined),
             shrink: () => nil,
-            runBeforeEach: () => {},
             run: (value: [number]) => {
               ++numCallsRun;
               const successId = successIds.indexOf(value[0]);
               if (successId !== -1) return successId === failAtId ? { error: new Error('failed') } : null;
               return new PreconditionFailure();
             },
-            runAfterEach: () => {},
           };
           const out = await check(p);
           if (failAtId == null) {
@@ -147,7 +129,7 @@ describe('Runner', () => {
     });
     it('Should fail on too many precondition failures', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.nat(1000).chain((v) => fc.record({ maxSkipsPerRun: fc.constant(v), onlySuccessId: fc.nat(2 * v + 1) })),
           async (settings) => {
             let numCallsGenerate = 0;
@@ -155,13 +137,11 @@ describe('Runner', () => {
             const p: Property<[number]> = {
               generate: () => new Value([numCallsGenerate++] as [number], undefined),
               shrink: () => nil,
-              runBeforeEach: () => {},
               run: (value: [number]) => {
                 if (value[0] === settings.onlySuccessId) return null;
                 ++numPreconditionFailures;
                 return new PreconditionFailure();
               },
-              runAfterEach: () => {},
             };
             const out = await check(p, { numRuns: 2, maxSkipsPerRun: settings.maxSkipsPerRun });
             const expectedSkips = 2 * settings.maxSkipsPerRun + 1;
@@ -185,12 +165,10 @@ describe('Runner', () => {
         shrink: () => {
           throw 'Not implemented';
         },
-        runBeforeEach: () => {},
         run: (_value: [number]) => {
           ++numCallsRun;
           return null;
         },
-        runAfterEach: () => {},
       };
       const out = await check(p);
       expect(numCallsGenerate).toEqual(100);
@@ -199,7 +177,7 @@ describe('Runner', () => {
     });
     it('Should call the property 100 times by default (except on error)', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
+        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: Property<[number]> = {
@@ -208,11 +186,9 @@ describe('Runner', () => {
               return new Value([0], undefined);
             },
             shrink: () => nil,
-            runBeforeEach: () => {},
             run: (_value: [number]) => {
               return ++numCallsRun < num ? null : { error: new Error('error') };
             },
-            runAfterEach: () => {},
           };
           const out = await check(p, { seed: seed });
           expect(numCallsGenerate).toEqual(num); // stopped generate at first failing run
@@ -225,7 +201,7 @@ describe('Runner', () => {
       ));
     it('Should alter the number of runs when asked to', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.nat(MAX_NUM_RUNS), async (num) => {
+        fc.property(fc.nat(MAX_NUM_RUNS), async (num) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: Property<[number]> = {
@@ -234,12 +210,10 @@ describe('Runner', () => {
               return new Value([0], undefined);
             },
             shrink: () => nil,
-            runBeforeEach: () => {},
             run: (_value: [number]) => {
               ++numCallsRun;
               return null;
             },
-            runAfterEach: () => {},
           };
           const out = await check(p, { numRuns: num });
           expect(numCallsGenerate).toEqual(num);
@@ -250,19 +224,17 @@ describe('Runner', () => {
       ));
     it('Should generate the same values given the same seeds', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), async (seed) => {
+        fc.property(fc.integer(), async (seed) => {
           const buildPropertyFor = function (runOn: number[]) {
             const p: Property<[number]> = {
               generate: (rng: Random) => {
                 return new Value([rng.nextInt(-0x80000000, 0x7fffffff)], undefined);
               },
               shrink: () => nil,
-              runBeforeEach: () => {},
               run: (value: [number]) => {
                 runOn.push(value[0]);
                 return null;
               },
-              runAfterEach: () => {},
             };
             return p;
           };
@@ -282,11 +254,9 @@ describe('Runner', () => {
         shrink: () => {
           throw 'Not implemented';
         },
-        runBeforeEach: () => {},
         run: (_value: [number]) => {
           return { error: new Error('failure') };
         },
-        runAfterEach: () => {},
       };
       const out = await check(p, { endOnFailure: true });
       expect(out.failed).toBe(true);
@@ -303,11 +273,9 @@ describe('Runner', () => {
           }
           return Iterator.from([new Value([42], undefined)]);
         },
-        runBeforeEach: () => {},
         run: (value: [number]) => {
           return value[0] === 42 ? { error: new Error('failure') } : null;
         },
-        runAfterEach: () => {},
       };
       const out = await check(p, { path: '0:0', endOnFailure: true });
       expect(out.failed).toBe(true);
@@ -317,9 +285,7 @@ describe('Runner', () => {
       const p: Property<[number]> = {
         generate: () => new Value([42], undefined),
         shrink: () => nil,
-        runBeforeEach: () => {},
         run: () => ({ error: new Error('failure') }),
-        runAfterEach: () => {},
       };
       const out = await check(p);
       expect(out.failures).toHaveLength(0);
@@ -330,9 +296,7 @@ describe('Runner', () => {
         shrink: (value) => {
           return value.value[0] === 42 ? Iterator.from([new Value([48], undefined), new Value([12], undefined)]) : nil;
         },
-        runBeforeEach: () => {},
         run: () => ({ error: new Error('failure') }),
-        runAfterEach: () => {},
       };
       const out = await check(p, { verbose: true });
       expect(out.failures).not.toHaveLength(0);
@@ -340,7 +304,7 @@ describe('Runner', () => {
     });
     it('Should build the right counterexamplePath', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.integer(),
           fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }),
           async (seed, failurePoints) => {
@@ -363,13 +327,11 @@ describe('Runner', () => {
                 }
                 return g();
               },
-              runBeforeEach: () => {},
               run: (_value: [number]) => {
                 if (--remainingBeforeFailure >= 0) return null;
                 remainingBeforeFailure = failurePoints[++idx];
                 return { error: new Error('failure') };
               },
-              runAfterEach: () => {},
             };
             const expectedFailurePath = failurePoints.join(':');
             const out = await check(p, { seed: seed });
@@ -383,7 +345,7 @@ describe('Runner', () => {
       ));
     it('Should wait on async properties to complete', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
+        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
           let runnerHasCompleted = false;
@@ -398,14 +360,12 @@ describe('Runner', () => {
             shrink: (value) => {
               return value.value[0] === 1 ? Iterator.from([new Value([42], undefined)]) : nil;
             },
-            runBeforeEach: async () => {},
             run: async (_value: [number]) => {
               await new Promise<void>((resolve) => {
                 waitingResolve.push(resolve);
               });
               return ++numCallsRun < num ? null : { error: new Error('error') };
             },
-            runAfterEach: async () => {},
           };
           const checker = check(p, { seed: seed }) as Promise<RunDetails<[number]>>;
           checker.then(() => (runnerHasCompleted = true));
@@ -431,53 +391,6 @@ describe('Runner', () => {
           return true;
         }),
       ));
-    it('Should not timeout if no timeout defined', async () => {
-      const p: Property<[number]> = {
-        generate: () => new Value([1], undefined),
-        shrink: () => nil,
-        runBeforeEach: async () => {},
-        run: async (_value: [number]) => null,
-        runAfterEach: async () => {},
-      };
-      const out = await (check(p) as Promise<RunDetails<[number]>>);
-      expect(out.failed).toBe(false);
-    });
-    it('Should not timeout if timeout not reached', async () => {
-      const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
-      const p: Property<[number]> = {
-        generate: () => new Value([1], undefined),
-        shrink: () => nil,
-        runBeforeEach: async () => {},
-        run: async (_value: [number]) => await wait(0),
-        runAfterEach: async () => {},
-      };
-      const out = await (check(p, { timeout: 100 }) as Promise<RunDetails<[number]>>);
-      expect(out.failed).toBe(false);
-    });
-    it('Should timeout if it reached the timeout', async () => {
-      const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
-      const p: Property<[number]> = {
-        generate: () => new Value([1], undefined),
-        shrink: () => nil,
-        runBeforeEach: async () => {},
-        run: async (_value: [number]) => await wait(100),
-        runAfterEach: async () => {},
-      };
-      const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
-      expect(out.failed).toBe(true);
-    });
-    it('Should timeout if task never ends', async () => {
-      const neverEnds = () => new Promise<null>(() => {});
-      const p: Property<[number]> = {
-        generate: () => new Value([1], undefined),
-        shrink: () => nil,
-        runBeforeEach: async () => {},
-        run: async (_value: [number]) => await neverEnds(),
-        runAfterEach: async () => {},
-      };
-      const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
-      expect(out.failed).toBe(true);
-    });
   });
   describe('assert', () => {
     const v1 = { toString: () => 'toString(value#1)' };
@@ -485,23 +398,17 @@ describe('Runner', () => {
     const failingProperty: Property<[any, any]> = {
       generate: () => new Value([v1, v2], undefined),
       shrink: () => nil,
-      runBeforeEach: () => {},
       run: (_v: [any, any]) => ({ error: new Error('error in failingProperty') }),
-      runAfterEach: () => {},
     };
     const failingComplexProperty: Property<[any, any, any]> = {
       generate: () => new Value([[v1, v2], v2, v1], undefined),
       shrink: () => nil,
-      runBeforeEach: () => {},
       run: (_v: [any, any, any]) => ({ error: new Error('error in failingComplexProperty') }),
-      runAfterEach: () => {},
     };
     const successProperty: Property<[any, any]> = {
       generate: () => new Value([v1, v2], undefined),
       shrink: () => nil,
-      runBeforeEach: () => {},
       run: (_v: [any, any]) => null,
-      runAfterEach: () => {},
     };
 
     it('Should never throw if no failure occured', async () => {
@@ -551,9 +458,7 @@ describe('Runner', () => {
         shrink: (value) => {
           return value.value[0] === 42 ? Iterator.from([new Value([48], undefined), new Value([12], undefined)]) : nil;
         },
-        runBeforeEach: () => {},
         run: () => ({ error: new Error('failure') }),
-        runAfterEach: () => {},
       };
       it('Should throw with base message by default (no verbose)', async () => {
         await expect(rAssert(p)).rejects.toThrowError(baseErrorMessage);
@@ -592,9 +497,7 @@ describe('Runner', () => {
       const p: Property<[number]> = {
         generate: () => new Value([42], undefined),
         shrink: () => nil,
-        runBeforeEach: () => {},
         run: () => new PreconditionFailure(),
-        runAfterEach: () => {},
       };
       it('Should throw with base message by default (no verbose)', async () => {
         await expect(rAssert(p)).rejects.toThrowError(baseErrorMessage);

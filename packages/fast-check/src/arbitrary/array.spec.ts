@@ -24,7 +24,7 @@ describe('array', () => {
 
   it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a) for array(arb)', async () => {
     await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, (config) => {
+      fc.property(sizeRelatedGlobalConfigArb, (config) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -58,7 +58,7 @@ describe('array', () => {
 
   it('should instantiate ArrayArbitrary(arb, 0, ?, maxLength, n.a) for array(arb, {maxLength})', async () => {
     await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, maxLength) => {
+      fc.property(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, maxLength) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -104,7 +104,7 @@ describe('array', () => {
 
   it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff, n.a) for array(arb, {minLength})', async () => {
     await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, minLength) => {
+      fc.property(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, minLength) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -142,7 +142,7 @@ describe('array', () => {
 
   it('should instantiate ArrayArbitrary(arb, minLength, ?, maxLength, n.a) for array(arb, {minLength,maxLength})', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),
@@ -194,7 +194,7 @@ describe('array', () => {
 
   it('should instantiate ArrayArbitrary(arb, minLength, ?, maxLength, identifier) for array(arb, {minLength,maxLength, depthIdentifier})', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),
@@ -249,7 +249,7 @@ describe('array', () => {
 
   it('should throw when minimum length is greater than maximum one', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),

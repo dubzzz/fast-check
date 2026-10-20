@@ -9,7 +9,7 @@ sidebar_label: Manual setup
 
 fast-check is designed to be test runner agnostic. You can plug it into any existing test runner without needing a dedicated connector. This page walks through the generic setup that applies whatever runner you use — from runners that do not have a dedicated connector (such as the [Node.js test runner](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-nodejs-test-runner/), [Bun test runner](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-bun-test-runner/), [Deno test runner](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-deno-test-runner/), Mocha, AVA, …) to runners where you prefer full control over connectors like [@fast-check/jest](https://www.npmjs.com/package/@fast-check/jest) or [@fast-check/vitest](https://www.npmjs.com/package/@fast-check/vitest).
 
-:::tip Runner has a connector?
+:::tip[Runner has a connector?]
 If you use [Jest](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-jest/) or [Vitest](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-vitest/), we recommend starting with our dedicated connector library — it simplifies integration and handles timeouts and lifecycle for you. The manual setup described here remains a valid alternative whenever you need ultimate flexibility.
 :::
 
@@ -33,7 +33,7 @@ const fc = require('fast-check');
 
 test('should detect the substring', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+    fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
       const text = a + b + c;
       expect(isSubstring(text, b)).toBe(true);
     }),
@@ -50,13 +50,13 @@ You can now run your test with your usual test command.
 
 You've just written your first Property-Based Test 🚀
 
-:::info Where does `fc.asyncProperty` come from?
-`fc.asyncProperty` is the standard way to declare a property in fast-check. For a deeper dive into properties, arbitraries, and predicates, refer to the [Properties documentation](/docs/core-blocks/properties/).
+:::info[Where does `fc.property` come from?]
+`fc.property` is the standard way to declare a property in fast-check, whether its predicate is synchronous or asynchronous. For a deeper dive into properties, arbitraries, and predicates, refer to the [Properties documentation](/docs/core-blocks/properties/).
 :::
 
 ## Your first asynchronous test
 
-Now that we've covered synchronous predicates, let's explore how to write an asynchronous one. The only difference is that `fc.asyncProperty` will be passed an asynchronous predicate.
+Now that we've covered synchronous predicates, let's explore how to write an asynchronous one. The only difference is that `fc.property` will be passed an asynchronous predicate.
 
 ```js title="queue.spec.js"
 // test/expect come from your test runner — adjust the import to match it
@@ -65,7 +65,7 @@ const { queue } = require('./queue.js');
 
 test('should resolve in call order', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.scheduler(), async (s) => {
+    fc.property(fc.scheduler(), async (s) => {
       // Arrange
       const pendingQueries = [];
       const seenAnswers = [];
@@ -101,19 +101,24 @@ You've just written your first asynchronous Property-Based Test 🚀
 
 ## Share configuration across your tests
 
-Property-based tests often benefit from shared configuration: aligning time limits with the runner's default timeout, registering `beforeEach`/`afterEach` hooks, or fixing a seed to reproduce a failure. fast-check exposes `fc.configureGlobal` for this exact purpose:
+Property-based tests often benefit from shared configuration: aligning time limits with the runner's default timeout, registering `beforeEach`/`afterEach` hooks, or fixing a seed to reproduce a failure. fast-check exposes `fc.configureGlobal` and `fc.installGlobalPlugin` for this exact purpose:
 
 ```js
 const fc = require('fast-check');
 
 fc.configureGlobal({ interruptAfterTimeLimit: 5_000 });
+fc.installGlobalPlugin(
+  fc.beforeEach(() => {
+    console.log('run before');
+  }),
+);
 ```
 
 With this setup, fast-check will interrupt any property-based test that exceeds the configured time limit — a useful knob to make sure property-based tests fit within your runner's default timeout.
 
 How you hook this configuration call so it runs before your tests depends on your runner. The [Global settings documentation](/docs/configuration/global-settings/#integration-with-test-frameworks) covers the most common cases (Jest, Mocha, Vitest). Most other runners offer an equivalent mechanism (for example a `--require`/`--import` flag, or a preload option).
 
-:::warning Multiple time limits
+:::warning[Multiple time limits]
 The global setup documented above does not automatically adapt to command-line or test-level time limits. Unlike connector libraries such as `@fast-check/jest` or `@fast-check/vitest`, it will ignore any customized time limit passed via the runner's CLI or at individual test level.
 :::
 

@@ -4,32 +4,14 @@ import type { Parameters } from './Parameters.js';
 let globalParameters: GlobalParameters = {};
 
 /**
- * Type of legal hook function that can be used in the global parameter `beforeEach` and/or `afterEach`
- * @remarks Since 2.3.0
- * @public
- */
-export type GlobalPropertyHookFunction = (() => Promise<unknown>) | (() => void);
-
-/**
  * Type describing the global overrides
  * @remarks Since 1.18.0
  * @public
  */
-export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameters<unknown>, 'path' | 'examples'>> & {
-  /**
-   * Specify a function that will be called before each execution of a property.
-   * It behaves as-if you manually called `beforeEach` method on all the properties you execute with fast-check.
-   *
-   * @remarks Since 2.3.0
-   */
-  beforeEach?: GlobalPropertyHookFunction;
-  /**
-   * Specify a function that will be called after each execution of a property.
-   * It behaves as-if you manually called `afterEach` method on all the properties you execute with fast-check.
-   *
-   * @remarks Since 2.3.0
-   */
-  afterEach?: GlobalPropertyHookFunction;
+export type GlobalParameters = Pick<
+  Parameters<unknown>,
+  Exclude<keyof Parameters<unknown>, 'path' | 'examples' | 'plugins'>
+> & {
   /**
    * Define the base size to be used by arbitraries.
    *
@@ -60,7 +42,7 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
  * ```typescript
  * fc.configureGlobal({ numRuns: 10 });
  * //...
- * fc.assert(
+ * await fc.assert(
  *   fc.property(
  *     fc.nat(), fc.nat(),
  *     (a, b) => a + b === b + a

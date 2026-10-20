@@ -32,7 +32,7 @@ describe('iterator', () => {
 
   it('should instantiate IteratorArbitrary(arb, !noHistory, ...) for iterator(arb, { noHistory })', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.boolean(), (history) => {
+      fc.property(fc.boolean(), (history) => {
         // Arrange
         const { instance: sourceArbitrary } = fakeArbitrary();
         const { instance } = fakeArbitrary();

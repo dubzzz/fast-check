@@ -1,13 +1,15 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { assert as fcAssert, asyncProperty as fcProperty } from 'fast-check';
-import type { Property, Parameters } from 'fast-check';
+import * as fc from 'fast-check';
+import type { Property, Parameters, UniversalPlugin } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProperty.js';
 import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 import { generateValueFromState } from './internals/ValueFromState.js';
+
+const fcProperty = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
 
 let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<Property<unknown>, () => Promise<void>>();
@@ -18,6 +20,8 @@ async function clearAllWorkersFor(property: Property<unknown>): Promise<void> {
   }
   await terminateAllWorkers();
 }
+
+const allKnownWorkerPluginPerProperty = new Map<Property<unknown>, UniversalPlugin>();
 
 /**
  * Run the property, throw in case of failure.
@@ -37,7 +41,15 @@ export async function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>
   if (isMainThread) {
     // Main thread code
     try {
-      await fcAssert(property, params);
+      const workerPlugin = allKnownWorkerPluginPerProperty.get(property);
+      const refinedParams: typeof params =
+        workerPlugin !== undefined
+          ? {
+              ...params,
+              plugins: [workerPlugin, ...(params !== undefined && params.plugins !== undefined ? params.plugins : [])],
+            }
+          : params;
+      await fc.assert(property, refinedParams);
     } finally {
       await clearAllWorkersFor(property);
     }
@@ -85,7 +97,7 @@ if (!isMainThread && parentPort !== null && workerData.fastcheckWorker === true)
 function workerProperty<Ts extends [unknown, ...unknown[]]>(
   url: URL,
   options: PropertyForOptions,
-  ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
+  ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: NoInfer<PropertyPredicate<Ts>>]
 ): WorkerProperty<Ts> {
   const currentPredicateId = ++lastPredicateId;
   if (isMainThread) {
@@ -93,7 +105,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     const isolationLevel = options.isolationLevel || 'file';
     const randomSource = options.randomSource || 'main-thread';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
-    const { property, terminateAllWorkers } = runMainThread<Ts>(
+    const { property, workerPlugin, terminateAllWorkers } = runMainThread<Ts>(
       url,
       currentPredicateId,
       isolationLevel,
@@ -101,6 +113,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
       arbitraries,
     );
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
+    allKnownWorkerPluginPerProperty.set(property, workerPlugin);
     return property;
   } else if (parentPort !== null && workerData.fastcheckWorker === true) {
     // Worker code
@@ -117,7 +130,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
 
 /**
  * Create a builder for async properties backed by workers.
- * The output of this function can be used as `fc.property` or `fc.asyncProperty` except it must be executed by the `assert` of this package.
+ * The output of this function can be used as `fc.property` except it must be executed by the `assert` of this package.
  *
  * The properties build from this builder will ALWAYS run predicates in another worker and not within the main thread which will only deal
  * with the generation of the random values and orchestration.

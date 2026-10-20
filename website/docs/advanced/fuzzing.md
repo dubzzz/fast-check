@@ -24,7 +24,7 @@ For instance, if you intend to run the tests an infinite number of times, you ca
 fc.configureGlobal({ numRuns: Number.POSITIVE_INFINITY });
 ```
 
-:::warning Multi-process
+:::warning[Multi-process]
 Please note that if you intend to run multiple properties an infinite number of times, it may be necessary to run them via multiple processes. JavaScript being a single-threaded language, running multiple infinite loops in a single thread may result in only one property being executed.
 
 Therefore, to avoid this limitation and ensure that all properties are executed as intended, you should consider running them in separate processes.
@@ -49,13 +49,14 @@ let failureId = 0;
 function reportFailure(inputs, error) {
   const fileName = `failure-pid${process.pid}-${++failureId}.log`;
   const fileContent = `Counterexample: ${fc.stringify(inputs)}\n\nError: ${error}`;
-  fs.writeFile(fileName, fileContent);
+  fs.writeFileSync(fileName, fileContent);
 }
 
 function neverFailingPredicate(predicate) {
-  return (...inputs) => {
+  return (...args) => {
+    const inputs = args.slice(0, -1); // the last argument is the execution context
     try {
-      const out = predicate(...inputs);
+      const out = predicate(...args);
       if (out === false) {
         reportFailure(inputs, undefined);
       }
@@ -80,7 +81,7 @@ import * as fc from 'fast-check';
 fc.configureGlobal({ numRuns: 1_000_000 });
 
 test('fuzz predicate against arbitraries', async () => {
-  await fc.assert(fc.asyncProperty(...arbitraries, neverFailingPredicate(predicate)));
+  await fc.assert(fc.property(...arbitraries, neverFailingPredicate(predicate)));
 });
 ```
 
@@ -94,7 +95,7 @@ In contrast to normal runs, when using the `neverFailingPredicate` function, the
 
 ```js
 test('replay reported error and shrink it', async () => {
-  await fc.assert(fc.asyncProperty(...arbitraries, predicate), {
+  await fc.assert(fc.property(...arbitraries, predicate), {
     numRuns: 1,
     examples: [[/* reported error */]],
   });

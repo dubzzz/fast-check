@@ -8,7 +8,7 @@ sidebar_label: Ecosystem
 
 Bring additional capabilities to fast-check by leveraging its rich ecosystem of extensions and plugins
 
-:::warning Stability
+:::warning[Stability]
 This page provides a list of packages available in the fast-check ecosystem. It includes both official and third-party packages. While we can ensure the stability, usage, and maintenance of the official packages, we cannot provide any specific details or guarantees regarding the non-official packages.
 
 <details>
@@ -61,7 +61,7 @@ const personArbitrary = Arbitrary.make(Person)(fc);
 
 test('Only generating valid Person', async () => {
   await fc.assert(
-    fc.asyncProperty(personArbitrary, (person) => {
+    fc.property(personArbitrary, (person) => {
       expect(isPerson(person)).toBe(true);
     }),
   );
@@ -90,7 +90,7 @@ const userArbitrary = ZodFastCheck().inputOf(User);
 
 test("User's full name always contains their first and last names", async () => {
   await fc.assert(
-    fc.asyncProperty(userArbitrary, (user) => {
+    fc.property(userArbitrary, (user) => {
       const parsedUser = User.parse(user);
       const fullName = `${parsedUser.firstName} ${parsedUser.lastName}`;
       expect(fullName).toContain(user.firstName);
@@ -429,11 +429,11 @@ function poisoningAfterEach() {
     throw err;
   }
 }
-fc.configureGlobal({ afterEach: poisoningAfterEach });
+fc.installGlobalPlugin(fc.afterEach(poisoningAfterEach));
 
 test('should detect the substring', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+    fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
       expect(isSubstring(a + b + c, b)).toBe(true);
     }),
   );
@@ -465,12 +465,12 @@ const isSubstringProperty = property(fc.string(), fc.string(), fc.string(), (a, 
 
 if (isMainThread) {
   test('should detect the substring', async () => {
-    await assert(isSubstringProperty, { timeout: 1000 });
+    await assert(isSubstringProperty, { plugins: [fc.timeout(1000)] });
   });
 }
 ```
 
-:::info Integration with Jest runner
+:::info[Integration with Jest runner]
 `@fast-check/worker` is directly integrating with `@fast-check/jest`. Checkout the [official documentation of `@fast-check/jest`](https://www.npmjs.com/package/@fast-check/jest) for more details.
 :::
 

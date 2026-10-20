@@ -1,10 +1,10 @@
 import type { Parameters } from './Parameters.js';
 import { VerbosityLevel } from './VerbosityLevel.js';
-import type { RunDetails } from '../reporter/RunDetails.js';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.js';
 
 import type { RandomGenerator, RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
+import type { Plugin } from '../../plugin/Plugin.js';
 
 // This helper MUST capture the following globals to avoid test runners to mock our internals and defeat us
 const safeDateNow = Date.now;
@@ -21,20 +21,13 @@ export class QualifiedParameters<T> {
   randomType: (seed: number) => QualifiedRandomGenerator;
   numRuns: number;
   maxSkipsPerRun: number;
-  timeout: number | undefined;
   path: string;
   logger: (v: string) => void;
-  unbiased: boolean;
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
-  skipAllAfterTimeLimit: number | undefined;
-  interruptAfterTimeLimit: number | undefined;
-  markInterruptAsFailure: boolean;
-  skipEqualValues: boolean;
-  ignoreEqualValues: boolean;
-  reporter: ((runDetails: RunDetails<T>) => Promise<void> | void) | undefined;
   includeErrorInReport: boolean;
+  plugins: Plugin<T>[];
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
@@ -43,12 +36,6 @@ export class QualifiedParameters<T> {
     this.numRuns = readNumRuns(p);
     this.verbose = readVerbose(p);
     this.maxSkipsPerRun = p.maxSkipsPerRun !== undefined ? p.maxSkipsPerRun : 100;
-    this.timeout = safeTimeout(p.timeout);
-    this.skipAllAfterTimeLimit = safeTimeout(p.skipAllAfterTimeLimit);
-    this.interruptAfterTimeLimit = safeTimeout(p.interruptAfterTimeLimit);
-    this.markInterruptAsFailure = p.markInterruptAsFailure === true;
-    this.skipEqualValues = p.skipEqualValues === true;
-    this.ignoreEqualValues = p.ignoreEqualValues === true;
     this.logger =
       p.logger !== undefined
         ? p.logger
@@ -57,11 +44,10 @@ export class QualifiedParameters<T> {
             console.log(v);
           };
     this.path = p.path !== undefined ? p.path : '';
-    this.unbiased = p.unbiased === true;
     this.examples = p.examples !== undefined ? p.examples : [];
     this.endOnFailure = p.endOnFailure === true;
-    this.reporter = p.reporter;
     this.includeErrorInReport = p.includeErrorInReport === true;
+    this.plugins = p.plugins !== undefined ? p.plugins : [];
   }
 
   toParameters(): Parameters<T> {
@@ -70,20 +56,13 @@ export class QualifiedParameters<T> {
       randomType: this.randomType,
       numRuns: this.numRuns,
       maxSkipsPerRun: this.maxSkipsPerRun,
-      timeout: this.timeout,
-      skipAllAfterTimeLimit: this.skipAllAfterTimeLimit,
-      interruptAfterTimeLimit: this.interruptAfterTimeLimit,
-      markInterruptAsFailure: this.markInterruptAsFailure,
-      skipEqualValues: this.skipEqualValues,
-      ignoreEqualValues: this.ignoreEqualValues,
       path: this.path,
       logger: this.logger,
-      unbiased: this.unbiased,
       verbose: this.verbose,
       examples: this.examples,
       endOnFailure: this.endOnFailure,
-      reporter: this.reporter,
       includeErrorInReport: this.includeErrorInReport,
+      plugins: this.plugins,
     };
     return parameters;
   }
@@ -138,13 +117,6 @@ function readVerbose<T>(p: Parameters<T>): VerbosityLevel {
     return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
   }
   return p.verbose;
-}
-
-function safeTimeout(value: number | undefined): number | undefined {
-  if (value === undefined) {
-    return undefined;
-  }
-  return Math.min(value, 0x7fffffff);
 }
 
 /**

@@ -2,8 +2,6 @@ import type { Random } from '../../../random/generator/Random.js';
 import type { Arbitrary } from '../../arbitrary/definition/Arbitrary.js';
 import { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
 import { runIdToFrequency } from './ToFrequency.js';
-import type { GlobalPropertyHookFunction } from '../../runner/configuration/GlobalParameters.js';
-import { readConfigureGlobal } from '../../runner/configuration/GlobalParameters.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 import { nil } from '../../../utils/iterator.js';
 import {
@@ -11,11 +9,8 @@ import {
   UndefinedContextPlaceholder,
 } from '../../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
 import type { PropertyFailure } from '../types/PropertyFailure.js';
-import type { PropertyWithHooks, PropertyHookFunction } from '../types/PropertyWithHooks.js';
-
-// Default hook is a no-op
-// oxlint-disable-next-line no-empty-function
-const dummyHook: GlobalPropertyHookFunction = () => {};
+import type { Property } from '../types/Property.js';
+import type { PredicateExecutionContext } from '../types/PredicateExecutionContext.js';
 
 function outputToPropertyAnswer(output: boolean | void) {
   return output === undefined || output === true ? null : { error: new Error('Property failed by returning false') };
@@ -29,22 +24,18 @@ function errorToPropertyAnswer(err: unknown) {
 }
 
 /**
- * Asynchronous property, see {@link Property}
+ * Property with a synchronous or asynchronous predicate, see {@link Property}
  *
- * Prefer using {@link asyncProperty} instead
+ * Prefer using {@link property} instead
  */
-export class PropertyImplem<Ts> implements PropertyWithHooks<Ts> {
-  private beforeEachHook: GlobalPropertyHookFunction;
-  private afterEachHook: GlobalPropertyHookFunction;
+export class PropertyImplem<Ts> implements Property<Ts> {
   constructor(
     readonly arb: Arbitrary<Ts>,
-    readonly predicate: (t: Ts) => Promise<boolean | void> | boolean | void,
-  ) {
-    const { beforeEach, afterEach } = readConfigureGlobal() || {};
-
-    this.beforeEachHook = beforeEach || dummyHook;
-    this.afterEachHook = afterEach || dummyHook;
-  }
+    readonly predicate: (
+      t: Ts,
+      executionContext: PredicateExecutionContext,
+    ) => Promise<boolean | void> | boolean | void,
+  ) {}
 
   generate(mrng: Random, runId?: number): Value<Ts> {
     const value = this.arb.generate(mrng, runId !== undefined ? runIdToFrequency(runId) : undefined);
@@ -61,25 +52,12 @@ export class PropertyImplem<Ts> implements PropertyWithHooks<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  runBeforeEach(): Promise<void> | void {
-    const out = this.beforeEachHook();
-    if (out === undefined) {
-      return;
-    }
-    return Promise.resolve(out).then(() => undefined);
-  }
-
-  runAfterEach(): Promise<void> | void {
-    const out = this.afterEachHook();
-    if (out === undefined) {
-      return;
-    }
-    return Promise.resolve(out).then(() => undefined);
-  }
-
-  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
+  run(
+    v: Ts,
+    executionContext: PredicateExecutionContext,
+  ): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
     try {
-      const syncOutput = this.predicate(v);
+      const syncOutput = this.predicate(v, executionContext);
       if (typeof syncOutput !== 'object') {
         return outputToPropertyAnswer(syncOutput);
       }
@@ -87,24 +65,5 @@ export class PropertyImplem<Ts> implements PropertyWithHooks<Ts> {
     } catch (err) {
       return errorToPropertyAnswer(err);
     }
-  }
-
-  /**
-   * Define a function that should be called before all calls to the predicate
-   * @param hookFunction - Function to be called
-   */
-  beforeEach(hookFunction: PropertyHookFunction): PropertyImplem<Ts> {
-    const previousBeforeEachHook = this.beforeEachHook;
-    this.beforeEachHook = () => hookFunction(previousBeforeEachHook);
-    return this;
-  }
-  /**
-   * Define a function that should be called after all calls to the predicate
-   * @param hookFunction - Function to be called
-   */
-  afterEach(hookFunction: PropertyHookFunction): PropertyImplem<Ts> {
-    const previousAfterEachHook = this.afterEachHook;
-    this.afterEachHook = () => hookFunction(previousAfterEachHook);
-    return this;
   }
 }

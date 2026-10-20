@@ -1,6 +1,7 @@
 import type { Random } from '../../../random/generator/Random.js';
 import type { Value } from '../../arbitrary/definition/Value.js';
 import type { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
+import type { PredicateExecutionContext } from './PredicateExecutionContext.js';
 import type { PropertyFailure } from './PropertyFailure.js';
 
 /**
@@ -10,7 +11,7 @@ import type { PropertyFailure } from './PropertyFailure.js';
  * - Arbitraries: how to generate the inputs for the algorithm
  * - Predicate: how to confirm the algorithm succeeded?
  *
- * @remarks Since 5.0.0
+ * @remarks Since 5.0.0 (previously called `IAsyncProperty` in 1.19.0)
  * @public
  */
 export interface Property<Ts> {
@@ -20,7 +21,7 @@ export interface Property<Ts> {
    * @param mrng - Random number generator
    * @param runId - Id of the generation, starting at 0 - if set the generation might be biased
    *
-   * @remarks Since 5.0.0
+   * @remarks Since 0.0.6 (return type changed in 3.0.0)
    */
   generate(mrng: Random, runId?: number): Value<Ts>;
 
@@ -29,26 +30,18 @@ export interface Property<Ts> {
    *
    * @param value - The value to be shrunk, it can be context-less
    *
-   * @remarks Since 5.0.0
+   * @remarks Since 3.0.0 (return type changed in 5.0.0)
    */
   shrink(value: Value<Ts>): IteratorObject<Value<Ts>>;
 
   /**
    * Check the predicate for v
    * @param v - Value of which we want to check the predicate
-   * @remarks Since 5.0.0
+   * @param executionContext - Context passed to the predicate
+   * @remarks Since 0.0.1 (signature changed in 0.0.6; asynchronous support since 0.0.7; execution context since 5.0.0)
    */
-  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null;
-
-  /**
-   * Run before each hook
-   * @remarks Since 5.0.0
-   */
-  runBeforeEach: () => Promise<void> | void;
-
-  /**
-   * Run after each hook
-   * @remarks Since 5.0.0
-   */
-  runAfterEach: () => Promise<void> | void;
+  run(
+    v: Ts,
+    executionContext: PredicateExecutionContext,
+  ): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null;
 }

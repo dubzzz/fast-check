@@ -9,7 +9,7 @@ import { read } from '../configuration/QualifiedParameters.js';
 describe('RunExecution', () => {
   it('Should expose data coming from the last failure', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.integer(),
         fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
         fc.array(
@@ -22,7 +22,7 @@ describe('RunExecution', () => {
         ),
         (seed, verbosityLevel, failuresDesc) => {
           // Simulate the run
-          const run = new RunExecution<number>(verbosityLevel, false);
+          const run = new RunExecution<number>(verbosityLevel);
           for (let idx = 0; idx !== failuresDesc[0].failureId; ++idx) {
             run.success(idx);
           }
@@ -55,9 +55,9 @@ describe('RunExecution', () => {
     ));
   it('Should generate correct counterexamplePath with no initial offset', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
+      fc.property(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
         // Simulate the run
-        const run = new RunExecution<number>(VerbosityLevel.None, false);
+        const run = new RunExecution<number>(VerbosityLevel.None);
         for (let idx = 0; idx !== path[0]; ++idx) {
           run.success(idx);
         }
@@ -70,13 +70,13 @@ describe('RunExecution', () => {
     ));
   it('Should generate correct counterexamplePath given initial offset', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.integer(),
         fc.array(fc.nat(1000), { minLength: 1 }),
         fc.array(fc.nat(1000), { minLength: 1 }),
         (seed, offsetPath, addedPath) => {
           // Simulate the run
-          const run = new RunExecution<number>(VerbosityLevel.None, false);
+          const run = new RunExecution<number>(VerbosityLevel.None);
           for (let idx = 0; idx !== addedPath[0]; ++idx) {
             run.success(idx);
           }
@@ -95,7 +95,7 @@ describe('RunExecution', () => {
     ));
   it('Should produce an execution summary corresponding to the execution', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(
           fc.record({
             status: fc.constantFrom(ExecutionStatus.Success, ExecutionStatus.Failure, ExecutionStatus.Skipped),
@@ -108,14 +108,16 @@ describe('RunExecution', () => {
         ),
         (executionStatuses) => {
           // Simulate the run
-          const run = new RunExecution<number>(VerbosityLevel.VeryVerbose, false);
+          const run = new RunExecution<number>(VerbosityLevel.VeryVerbose);
           for (let idx = 0; idx !== executionStatuses.length; ++idx) {
             switch (executionStatuses[idx].status) {
               case ExecutionStatus.Success:
                 run.success(executionStatuses[idx].value);
                 break;
               case ExecutionStatus.Failure:
-                run.fail(executionStatuses[idx].value, idx, { error: new Error('no message') });
+                run.fail(executionStatuses[idx].value, idx, {
+                  error: new Error('no message'),
+                });
                 break;
               case ExecutionStatus.Skipped:
                 run.skip(executionStatuses[idx].value);

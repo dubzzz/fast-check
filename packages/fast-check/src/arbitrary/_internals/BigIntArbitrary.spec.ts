@@ -23,7 +23,7 @@ describe('BigIntArbitrary', () => {
   describe('generate', () => {
     it('should never bias and generate the full range when biasFactor is not specified', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.bigInt(), (a, b, c) => {
+        fc.property(fc.bigInt(), fc.bigInt(), fc.bigInt(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => Number(v1 - v2));
           const { instance: mrng, nextBigInt } = fakeRandom();
@@ -42,7 +42,7 @@ describe('BigIntArbitrary', () => {
 
     it('should not always bias values (expect 1 times over biasFreq) and still generate full range when unbiased', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.bigInt(), fc.maxSafeInteger(), (a, b, c, biasFactor) => {
+        fc.property(fc.bigInt(), fc.bigInt(), fc.bigInt(), fc.maxSafeInteger(), (a, b, c, biasFactor) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => Number(v1 - v2));
           const { instance: mrng, nextInt, nextBigInt } = fakeRandom();
@@ -64,7 +64,7 @@ describe('BigIntArbitrary', () => {
 
     it('should bias values (1 times over biasFreq) by using one of the ranges from biasNumericRange', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.bigInt(),
           fc.bigInt(),
           fc.bigInt(),
@@ -121,7 +121,7 @@ describe('BigIntArbitrary', () => {
   describe('canShrinkWithoutContext', () => {
     it('should always tells it can generate values included in the requested range', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.bigInt(), (a, b, c) => {
+        fc.property(fc.bigInt(), fc.bigInt(), fc.bigInt(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => Number(v1 - v2));
 
@@ -136,7 +136,7 @@ describe('BigIntArbitrary', () => {
 
     it('should always reject values outside of the requested range', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.bigInt(),
           fc.bigInt(),
           fc.bigInt(),
@@ -184,7 +184,7 @@ describe('BigIntArbitrary', () => {
   describe('shrink', () => {
     it('should always call shrink helper when no context provided', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.bigInt(), (a, b, c) => {
+        fc.property(fc.bigInt(), fc.bigInt(), fc.bigInt(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => Number(v1 - v2));
           const expectedShrinks = nil;
@@ -244,7 +244,7 @@ describe('BigIntArbitrary (integration)', () => {
   describe('shrink', () => {
     it('should build a mirrored version of the shrinking tree if we negate all the values', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.bigInt(),
           fc.bigInt({ min: 0n, max: 20n }), // larger trees might be too wide
           fc.bigInt({ min: 0n, max: 20n }),
@@ -275,7 +275,7 @@ describe('BigIntArbitrary (integration)', () => {
 
     it('should build an offset version of the shrinking tree if we offset all the values (keep every value >=0)', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.bigInt({ min: 0n }),
           fc.bigInt({ min: 0n, max: 20n }), // larger trees might be too wide
           fc.bigInt({ min: 0n, max: 20n }),

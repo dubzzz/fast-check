@@ -42,7 +42,7 @@ describe('float', () => {
 
   it('should accept any valid range of 32-bit floating point numbers (including infinity)', async () => {
     await fc.assert(
-      fc.asyncProperty(floatConstraints({ ...defaultFloatRecordConstraints, noInteger: undefined }), (ct) => {
+      fc.property(floatConstraints({ ...defaultFloatRecordConstraints, noInteger: undefined }), (ct) => {
         // Arrange
         spyInteger();
 
@@ -57,7 +57,7 @@ describe('float', () => {
 
   it('should accept any constraits defining min (32-bit float not-NaN) equal to max', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         float32raw(),
         fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         (f, otherCt) => {
@@ -77,7 +77,7 @@ describe('float', () => {
 
   it('should reject any constraints defining min (not-NaN) equal to max if one is exclusive', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         float32raw(),
         fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         fc.constantFrom('min', 'max', 'both'),
@@ -103,7 +103,7 @@ describe('float', () => {
 
   it('should reject non-32-bit or NaN floating point numbers if specified for min', async () => {
     await fc.assert(
-      fc.asyncProperty(float64raw(), (f64) => {
+      fc.property(float64raw(), (f64) => {
         // Arrange
         fc.pre(!isNotNaN32bits(f64));
         const integer = spyInteger();
@@ -117,7 +117,7 @@ describe('float', () => {
 
   it('should reject non-32-bit or NaN floating point numbers if specified for max', async () => {
     await fc.assert(
-      fc.asyncProperty(float64raw(), (f64) => {
+      fc.property(float64raw(), (f64) => {
         // Arrange
         fc.pre(!isNotNaN32bits(f64));
         const integer = spyInteger();
@@ -131,7 +131,7 @@ describe('float', () => {
 
   it('should reject if specified min is strictly greater than max', async () => {
     await fc.assert(
-      fc.asyncProperty(float32raw(), float32raw(), (fa32, fb32) => {
+      fc.property(float32raw(), float32raw(), (fa32, fb32) => {
         // Arrange
         fc.pre(isNotNaN32bits(fa32));
         fc.pre(isNotNaN32bits(fb32));
@@ -166,7 +166,7 @@ describe('float', () => {
     };
 
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.option(floatConstraints(withoutExcludedConstraints), { nil: undefined }),
         fc.maxSafeNat(),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -199,7 +199,7 @@ describe('float', () => {
 
     it('should ask for a range with one extra value (far from zero)', async () => {
       await fc.assert(
-        fc.asyncProperty(floatConstraints(withNaNRecordConstraints), (ct) => {
+        fc.property(floatConstraints(withNaNRecordConstraints), (ct) => {
           // Arrange
           const { max } = minMaxForConstraints(ct);
           const integer = spyInteger();
@@ -227,7 +227,7 @@ describe('float', () => {
 
     it('should properly convert the extra value to NaN', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           floatConstraints(withNaNRecordConstraints),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (ct, biasFactor) => {
@@ -259,7 +259,7 @@ describe('float', () => {
   describe('without NaN', () => {
     it('should ask integers between the indexes corresponding to min and max', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           floatConstraints({ ...defaultFloatRecordConstraints, noNaN: undefined, noInteger: undefined }),
           (ctDraft) => {
             // Arrange
