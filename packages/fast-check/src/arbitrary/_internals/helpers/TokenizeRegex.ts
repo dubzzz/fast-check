@@ -194,7 +194,7 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
       }
 
       case '0': {
-        return metaEscapedChar(block, '\0');
+        return { type: 'Char', kind: 'decimal', symbol: '\0', value: block, codePoint: 0 };
       }
       case 'n': {
         return metaEscapedChar(block, '\n');
