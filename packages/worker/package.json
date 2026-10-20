@@ -30,14 +30,14 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
   "dependencies": {
-    "fast-check": "^4.0.0",
+    "fast-check": "^4.10.0",
     "pure-rand": "^8.0.0"
   },
   "devDependencies": {
     "@fast-check/worker": "workspace:*",
-    "@types/node": "^24.13.3",
-    "typescript": "~6.0.3",
-    "vitest": "^4.1.10"
+    "@types/node": "^24.19.2",
+    "typescript": "~7.0.2",
+    "vitest": "^5.0.5"
   },
   "keywords": [
     "worker",

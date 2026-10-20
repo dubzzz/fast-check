@@ -128,7 +128,7 @@ import {queue} from './queue.js';
 import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => {
+  await fc.assert(fc.property(fc.scheduler(), async (s) => {
     // Arrange
     const pendingQueries = [];
     const seenAnswers = [];
@@ -152,7 +152,7 @@ import {queue} from './queue.js';
 import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => {
+  await fc.assert(fc.property(fc.scheduler(), async (s) => {
     // Arrange
     const seenAnswers = [];
     const call = vi.fn()
@@ -175,7 +175,7 @@ import {queue} from './queue.js';
 import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), fc.integer({min: 1, max: 10}), async (s, numCalls) => {
+  await fc.assert(fc.property(fc.scheduler(), fc.integer({min: 1, max: 10}), async (s, numCalls) => {
     // Arrange
     const pendingQueries = [];
     const seenAnswers = [];
@@ -202,7 +202,7 @@ import {queue} from './queue.js';
 import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), fc.integer({min: 1, max: 10}), async (s, numCalls) => {
+  await fc.assert(fc.property(fc.scheduler(), fc.integer({min: 1, max: 10}), async (s, numCalls) => {
     // Arrange
     const pendingQueries = [];
     const seenAnswers = [];
@@ -235,7 +235,7 @@ import {queue} from './queue.js';
 import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
+  await fc.assert(fc.property(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
     // Arrange
     const pendingQueries = [];
     const seenAnswers = [];
@@ -271,7 +271,7 @@ import {queue} from './queue.js';
 import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
+  await fc.assert(fc.property(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
     // Arrange
     const pendingQueries = [];
     const seenAnswers = [];
@@ -316,7 +316,7 @@ import {queue} from './queue.js';
 import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
+  await fc.assert(fc.property(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
     // Arrange
     const seenAnswers = [];
     const expectedAnswers = [];
@@ -362,7 +362,7 @@ import * as fc from "fast-check";
 
 test("should resolve in call order", async () => {
   await fc.assert(
-    fc.asyncProperty(
+    fc.property(
       fc.scheduler(),
       fc.array(fc.integer({ min: 1, max: 10 }), { minLength: 1 }),
       fc.func(fc.boolean()),

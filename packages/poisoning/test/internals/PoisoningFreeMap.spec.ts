@@ -4,10 +4,10 @@ import {
   GetSymbol,
   HasSymbol,
   SetSymbol,
-  PoisoningFreeMap,
+  toPoisoningFreeMap,
 } from '../../src/internals/PoisoningFreeMap.js';
 
-describe('PoisoningFreeMap', () => {
+describe('toPoisoningFreeMap', () => {
   it.each`
     originalName | symbol
     ${'entries'} | ${EntriesSymbol}
@@ -21,7 +21,7 @@ describe('PoisoningFreeMap', () => {
     try {
       // Act
       delete (Map as any).prototype[originalName]; // deleting original before calling toPoisoningFree*
-      const newMap = PoisoningFreeMap.from();
+      const newMap = toPoisoningFreeMap();
 
       // Assert
       expect(symbol in newMap).toBe(true); // check symbol exists on output...

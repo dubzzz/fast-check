@@ -13,7 +13,7 @@ In this tutorial, you'll need to have [Node.js](https://nodejs.org/en/download/)
 
 We will start from an already bootstrapped project to focus on our target: writing our first test.
 
-:::info Setup
+:::info[Setup]
 You may want to refer to our [Getting Started](/docs/introduction/getting-started/) section to setup fast-check in an existing project or without tutorial related code.
 :::
 
@@ -33,7 +33,7 @@ Our tutorial project is rather small, it contains the following files:
 
 This project is relying on [Vitest](https://vitest.dev/) to run the tests.
 
-:::tip Test runners
+:::tip[Test runners]
 Whether you prefer using [Jest](https://jestjs.io/), [Vitest](https://vitest.dev/), [Ava](https://github.com/avajs/ava#readme) or any other, choice is yours! fast-check is designed to be independent of the test runner you use, so you can choose the runner that works best for your project.
 :::
 

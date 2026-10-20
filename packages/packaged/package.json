@@ -33,15 +33,15 @@
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "@npmcli/arborist": "^9.0.0",
+    "@npmcli/arborist": "^10.0.0",
     "npm-packlist": "^10.0.0 || ^11.0.0"
   },
   "devDependencies": {
     "@types/npm-packlist": "^7.0.3",
     "@types/npmcli__arborist": "^6.3.3",
-    "rolldown": "^1.1.5",
-    "typescript": "~6.0.3",
-    "vitest": "^4.1.10"
+    "rolldown": "^1.2.14",
+    "typescript": "~7.0.2",
+    "vitest": "^5.0.5"
   },
   "keywords": [],
   "funding": [

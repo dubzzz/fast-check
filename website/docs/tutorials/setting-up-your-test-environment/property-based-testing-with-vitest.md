@@ -13,12 +13,12 @@ While fast-check is a standalone library that works with any test runner out of 
 
 Best of all, the connector simply provides an enriched version of Vitest's `test` and `it` functions. This means you can incrementally plug it into an existing test suite without any need to rewrite anything. You can just swap the import from vitest with the one from @fast-check/vitest and later start playing with adding `.prop` where it matters.
 
-:::note What the connector handles for you
+:::note[What the connector handles for you]
 
 Behind the scenes, the connector takes care of wiring up the timeout, `beforeEach`/`afterEach` hook integration and other Vitest-specific concerns so that property-based tests behave as expected out of the box.
 :::
 
-:::info You don't have Vitest yet?
+:::info[You don't have Vitest yet?]
 
 If you don't have Vitest yet, we recommend you to have a look at their official [Getting Started Guide](https://vitest.dev/guide/) first.
 :::
@@ -64,7 +64,7 @@ You can now run your test with your usual test command.
 
 You've connected your first Property-Based Test within Vitest 🚀
 
-:::info Changes compared to a usual test
+:::info[Changes compared to a usual test]
 
 In the above specification file, note that we didn't rely on the `it` or `test` functions from `vitest`. Instead, we imported them from `@fast-check/vitest`. These imported functions handle everything supported by Vitest's `it` and `test`, while also extending them with Property-Based Testing capabilities via `.prop`. Synchronous and asynchronous predicates are both supported without any extra helpers — just mark your predicate `async` when needed.
 :::
@@ -104,7 +104,7 @@ The `g` function accepts an arbitrary builder (note: passed without calling it) 
 fc.configureGlobal({ seed: <the-seed-from-the-error> });
 ```
 
-:::tip Integrating with Faker
+:::tip[Integrating with Faker]
 
 You can combine `g` with libraries like [Faker](https://fakerjs.dev/) to produce realistic test data while maintaining full control over randomness:
 

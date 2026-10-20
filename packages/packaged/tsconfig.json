@@ -1,6 +1,9 @@
 {
   "extends": "../../tsconfig.common.json",
   "compilerOptions": {
+    "types": ["node"],
+    "outDir": "lib/",
     "esModuleInterop": true
-  }
+  },
+  "include": ["src/", "test/"]
 }

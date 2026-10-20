@@ -1,5 +1,6 @@
 import { isMainThread } from 'node:worker_threads';
-import type { Parameters } from 'fast-check';
+import type { Parameters, UniversalPlugin } from 'fast-check';
+import { timeout } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it } from 'vitest';
 
@@ -11,7 +12,7 @@ if (isMainThread) {
   describe('@fast-check/worker', () => {
     const testTimeout = 30000;
     const assertTimeout = 5000;
-    const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
+    const defaultOptions: Parameters<unknown> = { plugins: [timeout(assertTimeout)] };
 
     it(
       'should timeout when predicate fully blocks the event loop',
@@ -25,5 +26,24 @@ if (isMainThread) {
       },
       testTimeout,
     );
+
+    it('should reject an aborted predicate', async () => {
+      // Arrange
+      const reason = new Error('Worker run aborted');
+      const abortPlugin: UniversalPlugin = () => ({
+        decorateRun: (nestedRun) => (value, executionContext) => {
+          const controller = new AbortController();
+          const result = nestedRun(value, { ...executionContext, signal: controller.signal });
+          controller.abort(reason);
+          return result;
+        },
+      });
+
+      // Act / Assert
+      await expectThrowWithCause(
+        assert(blockEventLoopProperty, { ...defaultOptions, endOnFailure: true, plugins: [abortPlugin] }),
+        reason, // Error linked to the signal
+      );
+    });
   });
 }

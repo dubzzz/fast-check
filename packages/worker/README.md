@@ -42,7 +42,7 @@ const p1 = property(fc.nat(), fc.nat(), (start, end) => {
 
 if (isMainThread) {
   test('should assess p1', async () => {
-    await assert(p1, { timeout: 1000 });
+    await assert(p1, { plugins: [fc.timeout(1000)] });
   });
 }
 ```

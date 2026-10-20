@@ -17,7 +17,7 @@ export interface ObjectConstraints {
   /**
    * Limit the depth of the object by increasing the probability to generate simple values (defined via values)
    * as we go deeper in the object.
-   * @remarks Since 2.20.0
+   * @remarks Since 3.0.0 (previously called `depthFactor` in 2.20.0)
    */
   depthSize?: DepthSize;
   /**

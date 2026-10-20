@@ -21,6 +21,12 @@
       "matchFileNames": ["package.json"],
       "matchDepTypes": ["pnpm.overrides"],
       "enabled": false
+    },
+    {
+      "matchDatasources": ["npm"],
+      "minimumReleaseAge": "24 hours",
+      "minimumReleaseAgeBehaviour": "timestamp-required",
+      "internalChecksFilter": "strict"
     }
   ],
   "vulnerabilityAlerts": {

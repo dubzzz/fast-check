@@ -119,7 +119,7 @@ The `exports` field represents the new syntax for declaring the structure of a p
 
 With our file structure and package definition in place, the next step is to generate the actual code and type files for fast-check. As fast-check is a TypeScript project, it means we have to compile it for two targets: CJS and ESM. As a consequence we have to publish twice the code and twice the types.
 
-:::info Type files also follow the CJS/ESM logic
+:::info[Type files also follow the CJS/ESM logic]
 Initially, We attempted to publish only one set of typing files and to reuse it for ESM. Instead of declaring `"types": "./lib/esm/fast-check.d.ts"` in the import part, we just reused the ones of the CJS target by specifying `"types": "./lib/fast-check.d.ts"`. It turned out to be problematic as TypeScript interprets `/lib/fast-check.d.ts` as a typing file linked to a CJS file.
 
 Thanks to [@AndaristRake](https://twitter.com/AndaristRake) for explaining the reasoning behind this logic in [this thread](https://twitter.com/AndaristRake/status/1695549037556949344).

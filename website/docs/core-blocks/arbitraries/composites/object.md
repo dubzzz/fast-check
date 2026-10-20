@@ -329,7 +329,7 @@ Generate objects (key/values).
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
 - `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters — shadowed by `stringUnit`_
 - `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
-- `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
+- `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root\* values - \*non-object ones_
 
 **Usages:**
 
@@ -441,7 +441,7 @@ Generate any kind of entities.
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
 - `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters_
 - `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary — shadowed by `stringUnit`_
-- `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
+- `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root\* values - \*non-object ones_
 
 **Usages:**
 

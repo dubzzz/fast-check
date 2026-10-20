@@ -42,7 +42,6 @@ Got error: Property failed by returning false
     at outputToPropertyAnswer (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at node_modules/.pnpm/@vitest+runner@<version>/node_modules/@vitest/runner/dist/chunk-artifact.js:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
 `;
@@ -66,7 +65,6 @@ Got error: a must be >= b
     at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
     at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at node_modules/.pnpm/@vitest+runner@<version>/node_modules/@vitest/runner/dist/chunk-artifact.js:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
 `;

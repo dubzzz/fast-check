@@ -54,9 +54,10 @@ type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; ex
 
 export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
   const fcExtra: FcExtra = {
-    asyncProperty: propertyFor(url, options),
+    property: propertyFor(url, options),
     assert: assert as FcExtra['assert'],
     readConfigureGlobal: fc.readConfigureGlobal,
+    interruptAfterTimeLimit: fc.interruptAfterTimeLimit,
   };
   if (typeof it !== 'undefined') {
     if (typeof jest !== 'undefined') {

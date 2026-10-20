@@ -1,4 +1,4 @@
-import { PoisoningFreeArray, PushSymbol } from './PoisoningFreeArray.js';
+import { toPoisoningFreeArray, PushSymbol } from './PoisoningFreeArray.js';
 import { EntriesSymbol, HasSymbol } from './PoisoningFreeMap.js';
 import type { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
@@ -24,7 +24,7 @@ export function trackDiffsOnGlobals(
   isEligibleProperty: (globalDetails: GlobalDetails, propertyName: string) => boolean,
 ): DiffOnGlobal[] {
   const allInitialGlobals = [...initialGlobals[EntriesSymbol]()];
-  const observedDiffs = PoisoningFreeArray.from<DiffOnGlobal>([]);
+  const observedDiffs = toPoisoningFreeArray<DiffOnGlobal>([]);
 
   for (let index = 0; index !== allInitialGlobals.length; ++index) {
     const instance = allInitialGlobals[index][0];

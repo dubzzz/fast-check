@@ -42,12 +42,12 @@ const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 // Properties
 describe('properties', () => {
   // string text always contains itself
-  it('should always contain itself', () => {
-    fc.assert(fc.property(fc.string(), (text) => contains(text, text)));
+  it('should always contain itself', async () => {
+    await fc.assert(fc.property(fc.string(), (text) => contains(text, text)));
   });
   // string a + b + c always contains b, whatever the values of a, b and c
-  it('should always contain its substrings', () => {
-    fc.assert(
+  it('should always contain its substrings', async () => {
+    await fc.assert(
       fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // Alternatively: no return statement and direct usage of expect or assert
         return contains(a + b + c, b);
@@ -243,6 +243,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://jneidel.com/"><img src="https://avatars.githubusercontent.com/u/25589715?v=4?s=100" width="100px;" alt="Jonathan Neidel"/><br /><sub><b>Jonathan Neidel</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=jneidel" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://jkomyno.dev/"><img src="https://avatars.githubusercontent.com/u/12381818?v=4?s=100" width="100px;" alt="Alberto Schiabel"/><br /><sub><b>Alberto Schiabel</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=jkomyno" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

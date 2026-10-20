@@ -1,8 +1,19 @@
 name: Announce Release on Bluesky
 
 on:
-  release:
-    types: [published]
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Tag of the release to announce'
+        required: true
+        type: string
+    secrets:
+      BLUESKY_URL:
+        required: true
+      BLUESKY_IDENTIFIER:
+        required: true
+      BLUESKY_APP_PASSWORD:
+        required: true
 
 permissions:
   contents: read
@@ -10,16 +21,15 @@ permissions:
 jobs:
   announce:
     name: 'Post release announcement on Bluesky'
-    if: github.event.release.discussion_url != ''
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v24.x
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
           package-manager-cache: false
@@ -30,6 +40,6 @@ jobs:
           BLUESKY_URL: ${{ secrets.BLUESKY_URL }}
           BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-          RELEASE_URL: ${{ github.event.release.html_url }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ inputs.tag }}
         run: node .github/workflows/scripts/post-bluesky.mjs

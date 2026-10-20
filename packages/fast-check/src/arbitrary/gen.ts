@@ -9,7 +9,7 @@ export type { GeneratorValue as GeneratorValue };
  *
  * @example
  * ```javascript
- * fc.assert(
+ * await fc.assert(
  *   fc.property(fc.gen(), gen => {
  *     const size = gen(fc.nat, {max: 10});
  *     const array = [];

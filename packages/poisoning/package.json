@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/poisoning",
   "description": "Set of utilities to ease detection and revert of poisoning",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
@@ -28,10 +28,10 @@
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@types/node": "^24.13.3",
-    "rolldown": "^1.1.5",
-    "typescript": "~6.0.3",
-    "vitest": "^4.1.10"
+    "@types/node": "^24.19.2",
+    "rolldown": "^1.2.14",
+    "typescript": "~7.0.2",
+    "vitest": "^5.0.5"
   },
   "keywords": [
     "poisoning",

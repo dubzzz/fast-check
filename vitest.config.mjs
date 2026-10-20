@@ -16,6 +16,11 @@ const testTimeout = 120_000; // 120s
 
 export default defineConfig({
   test: {
+    clearMocks: true,
+    mockReset: true,
+    restoreMocks: true,
+    unstubEnvs: true,
+    unstubGlobals: true,
     include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [...defaultExclude, '**/test-bundle/**', '**/.test-artifacts/**', '**/templates/*-tutorial/**'],
     coverage: {
@@ -31,6 +36,7 @@ export default defineConfig({
         test: {
           root: projectPath,
           name: projectName,
+          globalSetup: projectName === '@fast-check/jest' ? ['test/globalSetup.ts'] : [],
           setupFiles:
             projectName === 'examples' ? ['vitest.setup.ts'] : projectName === 'fast-check' ? ['vitest.setup.mjs'] : [],
         },
