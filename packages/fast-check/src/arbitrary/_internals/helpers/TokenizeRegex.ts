@@ -139,7 +139,7 @@ function simpleChar(char: string, escaped?: true): CharRegexToken {
     kind: 'simple',
     symbol: char,
     value: char,
-    codePoint: char.codePointAt(0) || -1,
+    codePoint: char.codePointAt(0) ?? -1,
     escaped,
   };
 }
@@ -153,7 +153,8 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
     kind: 'meta',
     symbol, // eg.: \t
     value: block, // eg.: \\t
-    codePoint: symbol.codePointAt(0) || -1,
+    // oxlint-disable-next-line typescript/no-non-null-assertion
+    codePoint: symbol.codePointAt(0)!, // never unset by construct (see callers)
   };
 }
 
@@ -197,7 +198,7 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
       }
 
       case '0': {
-        return metaEscapedChar(block, '\0');
+        return { type: 'Char', kind: 'decimal', symbol: '\0', value: block, codePoint: 0 };
       }
       case 'n': {
         return metaEscapedChar(block, '\n');
