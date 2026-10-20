@@ -16,7 +16,7 @@ export interface FloatConstraints {
   /**
    * Lower bound for the generated 32-bit floats (included)
    * @defaultValue Number.NEGATIVE_INFINITY, -3.4028234663852886e+38 when noDefaultInfinity is true
-   * @remarks Since 2.8.0
+   * @remarks Since 2.6.0
    */
   min?: number;
   /**
@@ -29,7 +29,7 @@ export interface FloatConstraints {
   /**
    * Upper bound for the generated 32-bit floats (included)
    * @defaultValue Number.POSITIVE_INFINITY, 3.4028234663852886e+38 when noDefaultInfinity is true
-   * @remarks Since 2.8.0
+   * @remarks Since 2.6.0 (upper bound included since 2.8.0 with `next: true` and since 3.0.0 by default)
    */
   max?: number;
   /**
@@ -132,7 +132,7 @@ function anyFloat(constraints: Omit<FloatConstraints, 'noInteger'>): Arbitrary<n
  * The smallest non-zero value (in absolute value) that can be represented by such float is: 2 ** -126 * 2 ** -23.
  * And the largest one is: 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23).
  *
- * @param constraints - Constraints to apply when building instances (since 2.8.0)
+ * @param constraints - Constraints to apply when building instances (since 2.6.0)
  *
  * @remarks Since 0.0.6
  * @public

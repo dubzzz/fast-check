@@ -6,7 +6,7 @@ export function propertyRunner<Ts>(
   run: Property<Ts>['run'],
 ): Promise<void> | void {
   for (let v = runner.next(); !v.done; v = runner.next()) {
-    const out = run(v.value);
+    const out = run(v.value, {});
     if (out !== null && 'then' in out) {
       return out.then((result) => {
         runner.handleResult(result);

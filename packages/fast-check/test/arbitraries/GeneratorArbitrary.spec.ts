@@ -5,7 +5,7 @@ import { seed } from '../seed.js';
 describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   it('should be able to shrink a single arbitrary', async () => {
     const out = await fc.check(
-      fc.asyncProperty(fc.gen(), (gen) => {
+      fc.property(fc.gen(), (gen) => {
         const v1 = gen(fc.integer);
         expect(v1).toBeLessThanOrEqual(10);
       }),
@@ -17,7 +17,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
 
   it('should be able to shrink two unrelated arbitraries', async () => {
     const out = await fc.check(
-      fc.asyncProperty(fc.gen(), (gen) => {
+      fc.property(fc.gen(), (gen) => {
         const v1 = gen(fc.nat, {});
         const v2 = gen(fc.nat, {}); // unrelated because does not depend on v1
         expect(v1).toBeLessThanOrEqual(v2);
@@ -37,7 +37,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
       return arb;
     };
     const out = await fc.check(
-      fc.asyncProperty(fc.gen(), (gen) => {
+      fc.property(fc.gen(), (gen) => {
         const v1 = gen(fc.nat, { max: 100 });
         const v2 = gen(squareArb, v1);
         const surface = v2.length !== 0 ? v2.length * v2[0].length : 0;
@@ -58,7 +58,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
 
   it('should be able to shrink two related arbitraries with changing branches', async () => {
     const out = await fc.check(
-      fc.asyncProperty(fc.gen(), (gen) => {
+      fc.property(fc.gen(), (gen) => {
         const v1 = gen(fc.integer);
         if (v1 < 0) {
           const v2 = gen(fc.integer);
@@ -76,7 +76,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
 
   it('should be able to shrink arbitraries generated via for-loops', async () => {
     const out = await fc.check(
-      fc.asyncProperty(fc.gen(), (gen) => {
+      fc.property(fc.gen(), (gen) => {
         const width = gen(fc.nat, { max: 100 });
         const height = gen(fc.nat, { max: 100 });
         const grid: number[][] = [];
@@ -102,7 +102,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
 
   it('should be usable in conjonction with other arbitraries', async () => {
     const out = await fc.check(
-      fc.asyncProperty(fc.integer({ min: 0, max: 1000 }), fc.gen(), fc.integer({ min: 0, max: 1000 }), (a, gen, b) => {
+      fc.property(fc.integer({ min: 0, max: 1000 }), fc.gen(), fc.integer({ min: 0, max: 1000 }), (a, gen, b) => {
         const min = Math.min(a, b);
         const max = Math.max(a, b);
         const value = gen(fc.integer, { min, max });
@@ -123,7 +123,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
 
   it('should be able to rely on cloneable arbitraries', async () => {
     const out = await fc.check(
-      fc.asyncProperty(fc.gen(), (gen) => {
+      fc.property(fc.gen(), (gen) => {
         const context1 = gen(fc.context); // cloneable
         const intValueA = gen(fc.integer); // not cloneable
         const context2 = gen(fc.context); // cloneable

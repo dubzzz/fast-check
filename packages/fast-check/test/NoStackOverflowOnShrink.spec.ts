@@ -59,7 +59,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     }
 
     const out = await fc.check(
-      fc.asyncProperty(new InfiniteShrinkingDepth(), (_n) => false),
+      fc.property(new InfiniteShrinkingDepth(), (_n) => false),
       { seed },
     );
     expect(out.failed).toBe(true);

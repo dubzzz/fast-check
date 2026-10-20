@@ -49,7 +49,7 @@ const reporterPlugin = () => ({
 });
 
 await fc.assert(
-  fc.asyncProperty(...),
+  fc.property(...),
   { plugins: [reporterPlugin] },
 )
 ```
@@ -58,7 +58,7 @@ await fc.assert(
 Before the introduction of plugins, custom reporting used to be achieved by passing a custom `reporter` to `assert`:
 
 ```js
-await fc.assert(fc.asyncProperty(...), {
+await fc.assert(fc.property(...), {
   async reporter(out) {
     // Let's say we want to re-create the default reporter of `assert`
     if (out.failed) {
@@ -129,7 +129,7 @@ const buildCodeSandboxReporterPlugin = (createFiles) => {
 }
 
 await fc.assert(
-  fc.asyncProperty(...),
+  fc.property(...),
   {
     plugins: [
       buildCodeSandboxReporterPlugin(counterexample => ({

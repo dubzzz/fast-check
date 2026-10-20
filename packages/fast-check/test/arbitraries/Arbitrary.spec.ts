@@ -6,7 +6,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
   describe('chain', () => {
     it('Should bias nothing', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] > 100 && v[1] > 100),
         ),
@@ -16,7 +16,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
     });
     it('Should bias source only', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] <= 100 && v[1] > 100),
         ),
@@ -26,7 +26,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
     });
     it('Should bias destination only', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] > 100 && v[1] <= 100),
         ),
@@ -36,7 +36,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
     });
     it('Should bias both source and destination', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] <= 100 && v[1] <= 100),
         ),
@@ -48,7 +48,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink chain on source', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.nat().chain((v) => fc.constant(v)),
           (v: number) => v < 1,
         ),
@@ -59,7 +59,7 @@ describe(`Arbitrary (seed: ${seed})`, () => {
     });
     it('Should shrink chain on destination', async () => {
       const out = await fc.check(
-        fc.asyncProperty(
+        fc.property(
           fc.constant(42).chain((_v) => fc.nat()),
           (v: number) => v < 1,
         ),

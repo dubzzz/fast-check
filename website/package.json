@@ -24,8 +24,8 @@
     "clsx": "^2.1.1",
     "lodash": "^4.18.1",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.2",
@@ -33,17 +33,17 @@
     "@docusaurus/tsconfig": "3.10.2",
     "@docusaurus/types": "3.10.2",
     "@mdx-js/react": "^3.1.1",
-    "@types/lodash": "^4.17.25",
-    "@types/node": "^24.19.0",
+    "@types/lodash": "^4.17.26",
+    "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
-    "docusaurus-plugin-llms": "^0.6.0",
+    "docusaurus-plugin-llms": "^0.6.1",
     "docusaurus-plugin-typedoc": "^1.4.3",
     "fast-check": "workspace:*",
     "jimp": "^1.6.1",
     "typedoc": "^0.28.20",
-    "typedoc-plugin-markdown": "^4.13.1",
+    "typedoc-plugin-markdown": "^4.14.1",
     "typescript": "~7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.5"
   },
   "browserslist": {
     "production": [

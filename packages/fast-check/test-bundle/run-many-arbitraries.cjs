@@ -5,7 +5,7 @@ var fc = require('fast-check');
 async function testArbitrary(arb) {
   // should not crash if running a succesful property
   await fc.assert(
-    fc.asyncProperty(arb, function () {
+    fc.property(arb, function () {
       return true;
     }),
   );
@@ -17,7 +17,7 @@ async function testArbitrary(arb) {
   try {
     runId = 0;
     await fc.assert(
-      fc.asyncProperty(arb, function () {
+      fc.property(arb, function () {
         return runId++ % 3 === 0;
       }),
     );
@@ -31,7 +31,7 @@ async function testArbitrary(arb) {
   // should be able to replay a failing case
   runId = 0;
   var details = await fc.check(
-    fc.asyncProperty(arb, function () {
+    fc.property(arb, function () {
       return runId++ % 3 === 0;
     }),
   );
@@ -133,7 +133,7 @@ async function run() {
     // Parameters after a second edit (we set number of runs to zero)
     fc.configureGlobal({ numRuns: 0 });
     assert.deepStrictEqual(fc.readConfigureGlobal(), { numRuns: 0 });
-    await fc.assert(fc.asyncProperty(fc.nat(), () => false));
+    await fc.assert(fc.property(fc.nat(), () => false));
 
     // Parameters after a reset
     fc.resetConfigureGlobal();

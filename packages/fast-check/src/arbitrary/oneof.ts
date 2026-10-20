@@ -64,7 +64,7 @@ export type OneOfConstraints = {
    * this factor will be used to increase the probability to generate instances
    * of the first passed arbitrary.
    *
-   * @remarks Since 2.14.0
+   * @remarks Since 3.0.0 (previously called `depthFactor` in 2.14.0)
    */
   depthSize?: DepthSize;
   /**

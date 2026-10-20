@@ -21,7 +21,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
 
       const maxDepth = 3;
       const out = await fc.check(
-        fc.asyncProperty(tree(maxDepth), (t) => {
+        fc.property(tree(maxDepth), (t) => {
           const depth = (n: Tree): number => {
             if (typeof n === 'number') return 0;
             return 1 + Math.max(depth(n.left), depth(n.right));
@@ -42,7 +42,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
 
       const maxDepth = 3;
       const out = await fc.check(
-        fc.asyncProperty(tree(maxDepth), (t) => {
+        fc.property(tree(maxDepth), (t) => {
           const depth = (n: Tree): number => {
             if (typeof n === 'number') return 0;
             return 1 + Math.max(depth(n.left), depth(n.right));
@@ -62,7 +62,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
       });
 
       const out = await fc.check(
-        fc.asyncProperty(tree(), (t) => typeof t !== 'object'),
+        fc.property(tree(), (t) => typeof t !== 'object'),
         { seed },
       );
       expect(out.failed).toBe(true);

@@ -67,7 +67,7 @@ describe('GlobalParameters', () => {
 
     const withLocalConfiguration: number[] = [];
     await fc.check(
-      fc.asyncProperty(fc.nat(), (v) => {
+      fc.property(fc.nat(), (v) => {
         withLocalConfiguration.push(v);
       }),
       { ...globalConfig, numRuns: overridenNumRuns },
@@ -76,7 +76,7 @@ describe('GlobalParameters', () => {
     fc.configureGlobal(globalConfig);
     const withGlobalConfigurationOverriden: number[] = [];
     await fc.check(
-      fc.asyncProperty(fc.nat(), (v) => {
+      fc.property(fc.nat(), (v) => {
         withGlobalConfigurationOverriden.push(v);
       }),
       { numRuns: overridenNumRuns },
@@ -92,7 +92,7 @@ describe('GlobalParameters', () => {
 
     const withLocalConfiguration: number[] = [];
     await fc.assert(
-      fc.asyncProperty(fc.nat(), (v) => {
+      fc.property(fc.nat(), (v) => {
         withLocalConfiguration.push(v);
       }),
       { ...globalConfig, numRuns: overridenNumRuns },
@@ -101,7 +101,7 @@ describe('GlobalParameters', () => {
     fc.configureGlobal(globalConfig);
     const withGlobalConfigurationOverriden: number[] = [];
     await fc.assert(
-      fc.asyncProperty(fc.nat(), (v) => {
+      fc.property(fc.nat(), (v) => {
         withGlobalConfigurationOverriden.push(v);
       }),
       { numRuns: overridenNumRuns },

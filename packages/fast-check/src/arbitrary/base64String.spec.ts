@@ -20,7 +20,7 @@ describe('base64String', () => {
 
   it('should accept any constraints accepting at least one length multiple of 4', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.nat({ max: 5 }),
         fc.integer({ min: 3, max: 30 }),
         fc.boolean(),
@@ -37,7 +37,7 @@ describe('base64String', () => {
 
   it('should reject any constraints not accepting at least one length multiple of 4', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.nat({ max: 30 }), fc.nat({ max: 2 }), (min, gap) => {
+      fc.property(fc.nat({ max: 30 }), fc.nat({ max: 2 }), (min, gap) => {
         // Arrange
         const constraints = { minLength: min, maxLength: min + gap };
         let includesMultipleOf4 = false;
@@ -53,7 +53,7 @@ describe('base64String', () => {
 
   it('should always query for arrays that will produce length fitting the requested range', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.nat({ max: 30 }),
         fc.integer({ min: 3, max: 30 }),
         fc.boolean(),
@@ -101,7 +101,7 @@ describe('base64String', () => {
 
   it('should always forward constraints on size to the underlying arbitrary when provided', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.nat({ max: 5 }),
         fc.integer({ min: 3, max: 30 }),
         fc.boolean(),

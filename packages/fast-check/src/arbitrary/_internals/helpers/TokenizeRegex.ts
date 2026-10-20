@@ -28,6 +28,7 @@ type CharRegexToken = {
   value: string;
   codePoint: number;
   escaped?: true;
+  isSurrogatePair?: true;
 };
 type RepetitionRegexToken = {
   type: 'Repetition';
@@ -45,7 +46,7 @@ type QuantifierRegexToken =
       kind: 'Range';
       greedy: boolean;
       from: number;
-      to: number | undefined; // probably not that undefined
+      to: number | undefined; // undefined for an unbounded range such as {n,}
     };
 type AlternativeRegexToken = {
   type: 'Alternative';
@@ -136,7 +137,7 @@ function simpleChar(char: string, escaped?: true): CharRegexToken {
     kind: 'simple',
     symbol: char,
     value: char,
-    codePoint: char.codePointAt(0) || -1,
+    codePoint: char.codePointAt(0) ?? -1,
     escaped,
   };
 }
@@ -150,7 +151,8 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
     kind: 'meta',
     symbol, // eg.: \t
     value: block, // eg.: \\t
-    codePoint: symbol.codePointAt(0) || -1,
+    // oxlint-disable-next-line typescript/no-non-null-assertion
+    codePoint: symbol.codePointAt(0)!, // never unset by construct (see callers)
   };
 }
 
@@ -178,6 +180,9 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
     const next = block[1];
     switch (next) {
       case 'x': {
+        if (block === '\\x') {
+          return simpleChar('x', true);
+        }
         const allDigits = block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
         const symbol = String.fromCodePoint(codePoint);
@@ -187,6 +192,13 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
         if (block === '\\u') {
           return simpleChar('u', true);
         }
+        if (block[2] !== '{' && block.length === 12) {
+          const lead = Number.parseInt(block.substring(2, 6), 16);
+          const trail = Number.parseInt(block.substring(8), 16);
+          const codePoint = (lead - 0xd800) * 0x400 + (trail - 0xdc00) + 0x10000;
+          const symbol = String.fromCodePoint(codePoint);
+          return { type: 'Char', kind: 'unicode', symbol, value: block, codePoint, isSurrogatePair: true };
+        }
         const allDigits = block[2] === '{' ? block.substring(3, block.length - 1) : block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
         const symbol = String.fromCodePoint(codePoint);
@@ -194,7 +206,7 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
       }
 
       case '0': {
-        return metaEscapedChar(block, '\0');
+        return { type: 'Char', kind: 'decimal', symbol: '\0', value: block, codePoint: 0 };
       }
       case 'n': {
         return metaEscapedChar(block, '\n');
@@ -419,7 +431,7 @@ function pushTokens(
           tokens.push({ type: 'Assertion', kind: block });
         } else if (block[0] === '\\' && isDigit(block[1])) {
           const reference = Number(block.substring(1));
-          if (unicodeMode || reference <= groups.lastIndex) {
+          if (reference !== 0 && (unicodeMode || reference <= groups.lastIndex)) {
             tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
           } else {
             tokens.push(blockToCharToken(block));

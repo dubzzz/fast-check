@@ -24,7 +24,7 @@ describe('sparseArray', () => {
 
   it('should always specify a minLength and maxLength on the underlying set', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
+      fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
         const tuple = vi.spyOn(TupleMock, 'tuple');
@@ -50,7 +50,7 @@ describe('sparseArray', () => {
 
   it('should always pass a not too large maxLength or with a size to set given the length we expect at the end', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
+      fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
         const tuple = vi.spyOn(TupleMock, 'tuple');
@@ -106,7 +106,7 @@ describe('sparseArray', () => {
 
   it('should reject constraints having minNumElements > maxLength', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         validSparseArrayConstraints(['minNumElements', 'maxLength']),
         fc.nat({ max: 4294967295 }),
         fc.nat({ max: 4294967295 }),
@@ -125,7 +125,7 @@ describe('sparseArray', () => {
 
   it('should reject constraints having minNumElements > maxNumElements', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         validSparseArrayConstraints(['minNumElements', 'maxNumElements']),
         fc.nat({ max: 4294967295 }),
         fc.nat({ max: 4294967295 }),

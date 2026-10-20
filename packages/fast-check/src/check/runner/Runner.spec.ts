@@ -13,14 +13,6 @@ import type { Property } from '../property/types/Property.js';
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
-    it('Should not throw if reporter is specified on asynchronous properties', () => {
-      const p: Property<[number]> = {
-        generate: () => new Value([0], undefined),
-        shrink: () => nil,
-        run: () => null,
-      };
-      expect(() => check(p, { reporter: () => {} })).not.toThrowError(); // no sync throw
-    });
     it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
@@ -101,7 +93,7 @@ describe('Runner', () => {
         }, []),
       );
       await fc.assert(
-        fc.asyncProperty(successfulRunIdsArb, fc.option(fc.nat(99)), async (successIds, failAtId) => {
+        fc.property(successfulRunIdsArb, fc.option(fc.nat(99)), async (successIds, failAtId) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: Property<[number]> = {
@@ -137,7 +129,7 @@ describe('Runner', () => {
     });
     it('Should fail on too many precondition failures', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.nat(1000).chain((v) => fc.record({ maxSkipsPerRun: fc.constant(v), onlySuccessId: fc.nat(2 * v + 1) })),
           async (settings) => {
             let numCallsGenerate = 0;
@@ -185,7 +177,7 @@ describe('Runner', () => {
     });
     it('Should call the property 100 times by default (except on error)', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
+        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: Property<[number]> = {
@@ -209,7 +201,7 @@ describe('Runner', () => {
       ));
     it('Should alter the number of runs when asked to', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.nat(MAX_NUM_RUNS), async (num) => {
+        fc.property(fc.nat(MAX_NUM_RUNS), async (num) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: Property<[number]> = {
@@ -232,7 +224,7 @@ describe('Runner', () => {
       ));
     it('Should generate the same values given the same seeds', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer(), async (seed) => {
+        fc.property(fc.integer(), async (seed) => {
           const buildPropertyFor = function (runOn: number[]) {
             const p: Property<[number]> = {
               generate: (rng: Random) => {
@@ -312,7 +304,7 @@ describe('Runner', () => {
     });
     it('Should build the right counterexamplePath', async () =>
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.integer(),
           fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }),
           async (seed, failurePoints) => {
@@ -353,7 +345,7 @@ describe('Runner', () => {
       ));
     it('Should wait on async properties to complete', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
+        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
           let runnerHasCompleted = false;
