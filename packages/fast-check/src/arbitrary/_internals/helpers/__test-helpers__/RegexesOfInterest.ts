@@ -72,8 +72,8 @@ export const RegexesOfInterest: {
   { regex: /[^a-z]/ },
   { regex: /[abc^def]/ },
   { regex: /[a-z^A-Z]/ },
-  { regex: new RegExp('^[\\xZ]$'), invalidInUnicodeMode: true },
-  { regex: new RegExp('^[\\uZ]$'), invalidInUnicodeMode: true },
+  { regex: new RegExp('[\\xZ]'), invalidInUnicodeMode: true },
+  { regex: new RegExp('[\\uZ]'), invalidInUnicodeMode: true },
 
   // Ranges
   { regex: /[a-z]/ },
