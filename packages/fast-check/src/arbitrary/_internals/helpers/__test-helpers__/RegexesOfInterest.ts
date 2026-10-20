@@ -136,10 +136,12 @@ export const RegexesOfInterest: {
   { regex: /[\p{Letter}-]/u },
 
   // NUL
+  { regex: /\0/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('\0') },
+  { regex: new RegExp('\0') }, // not the same as /\0/
+  { regex: /[\0-\0]/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('[\0-\0]') },
-  // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp('[\\0-\\0]') },
+  { regex: new RegExp('[\0-\0]') }, // not the same as /[\0-\0]/
+  { regex: /^\0$/ },
+  { regex: /^(a)\0$/ },
 ];
