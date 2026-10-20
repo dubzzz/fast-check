@@ -193,9 +193,11 @@ export const RegexesOfInterest: {
 
   // NUL
   { regex: /\0/ },
-  { regex: /[\0]/ },
   // oxlint-disable-next-line no-control-regex
   { regex: new RegExp('\0') }, // not the same as /\0/
+  { regex: /[\0]/ },
+  // oxlint-disable-next-line no-control-regex
+  { regex: new RegExp('[\0]') }, // not the same as /[\0]/
   { regex: /[\0-\0]/ },
   // oxlint-disable-next-line no-control-regex
   { regex: new RegExp('[\0-\0]') }, // not the same as /[\0-\0]/
