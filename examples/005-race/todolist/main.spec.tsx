@@ -16,7 +16,7 @@ import { listTodos, sortTodos } from './model-based/Model.js';
 describe('TodoList', () => {
   it('should detect potential issues with the TodoList', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.scheduler(),
         TodoListCommands,
         fc.uniqueArray(fc.record({ id: fc.uuid(), label: fc.string(), checked: fc.boolean() }), {

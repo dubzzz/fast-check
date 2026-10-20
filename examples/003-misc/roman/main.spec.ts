@@ -5,7 +5,7 @@ import * as fc from 'fast-check';
 describe('toRoman', () => {
   it('should be able to revert toRoman using fromRoman', async () => {
     await fc.assert(
-      fc.asyncProperty(romanNumberArb, (n) => {
+      fc.property(romanNumberArb, (n) => {
         expect(fromRoman(toRoman(n))).toBe(n);
       }),
     );
@@ -13,7 +13,7 @@ describe('toRoman', () => {
 
   it('should produce a non empty string', async () => {
     await fc.assert(
-      fc.asyncProperty(romanNumberArb, (n) => {
+      fc.property(romanNumberArb, (n) => {
         expect(toRoman(n)).not.toBe('');
       }),
     );
@@ -21,7 +21,7 @@ describe('toRoman', () => {
 
   it('should be injective', async () => {
     await fc.assert(
-      fc.asyncProperty(romanNumberArb, romanNumberArb, (n1, n2) => {
+      fc.property(romanNumberArb, romanNumberArb, (n1, n2) => {
         fc.pre(n1 !== n2);
         expect(toRoman(n2)).not.toBe(toRoman(n1));
       }),
@@ -30,7 +30,7 @@ describe('toRoman', () => {
 
   it('should start negative romans with a minus sign', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.integer({ min: -MaxRoman, max: -1 }), (n) => {
+      fc.property(fc.integer({ min: -MaxRoman, max: -1 }), (n) => {
         expect(toRoman(n)[0]).toBe('-');
       }),
     );
@@ -38,7 +38,7 @@ describe('toRoman', () => {
 
   it('should return same value for positive and negative romans excluding minus sign', async () => {
     await fc.assert(
-      fc.asyncProperty(posRomanNumberArb, (n) => {
+      fc.property(posRomanNumberArb, (n) => {
         expect(toRoman(-n)).toBe(`-${toRoman(n)}`);
       }),
     );
@@ -47,7 +47,7 @@ describe('toRoman', () => {
   it('should produce only one of the allowed letters', async () => {
     const letters: string[] = LettersValue.map(([_, v]) => v);
     await fc.assert(
-      fc.asyncProperty(posRomanNumberArb, (n) => {
+      fc.property(posRomanNumberArb, (n) => {
         expect([...toRoman(n)].every((c) => letters.includes(c))).toBe(true);
       }),
     );
@@ -56,7 +56,7 @@ describe('toRoman', () => {
   it('should not output too many times the same letter', async () => {
     const letters: string[] = LettersValue.map(([_, v]) => v);
     await fc.assert(
-      fc.asyncProperty(posRomanNumberArb, (n) => {
+      fc.property(posRomanNumberArb, (n) => {
         const repr = toRoman(n);
         for (let idx = 0; idx !== letters.length; ++idx) {
           expect([...repr].filter((c) => c === letters[idx]).length).toBeLessThanOrEqual(
@@ -72,7 +72,7 @@ describe('toRoman', () => {
   it('should not produce a too long roman output', async () => {
     const MaxRomanReprLength = (NumLetters - 1) / 2 + (3 * (NumLetters + 1)) / 2 + 1;
     await fc.assert(
-      fc.asyncProperty(romanNumberArb, (n) => {
+      fc.property(romanNumberArb, (n) => {
         expect(toRoman(n).length).toBeLessThanOrEqual(MaxRomanReprLength);
       }),
     );
@@ -82,7 +82,7 @@ describe('toRoman', () => {
 describe('fromRoman', () => {
   it('should read simple roman strings (no letter doing a minus)', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.array(fc.nat(3), { minLength: NumLetters, maxLength: NumLetters }), (choices) => {
+      fc.property(fc.array(fc.nat(3), { minLength: NumLetters, maxLength: NumLetters }), (choices) => {
         fc.pre(choices.find((e) => e !== 0) !== undefined);
 
         let romanRepr = '';

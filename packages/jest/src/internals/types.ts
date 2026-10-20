@@ -1,8 +1,9 @@
 import type { it as itJest } from '@jest/globals';
-import type { Arbitrary, asyncProperty, assert, readConfigureGlobal, interruptAfterTimeLimit } from 'fast-check';
+import type { Arbitrary, property, assert, readConfigureGlobal, interruptAfterTimeLimit } from 'fast-check';
 
 export type FcExtra = {
-  asyncProperty: typeof asyncProperty;
+  asyncProperty?: typeof property;
+  property: typeof property;
   assert: typeof assert;
   readConfigureGlobal: typeof readConfigureGlobal;
   interruptAfterTimeLimit: typeof interruptAfterTimeLimit;

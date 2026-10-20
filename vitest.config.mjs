@@ -16,6 +16,11 @@ const testTimeout = 120_000; // 120s
 
 export default defineConfig({
   test: {
+    clearMocks: true,
+    mockReset: true,
+    restoreMocks: true,
+    unstubEnvs: true,
+    unstubGlobals: true,
     include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [...defaultExclude, '**/test-bundle/**', '**/.test-artifacts/**', '**/templates/*-tutorial/**'],
     coverage: {

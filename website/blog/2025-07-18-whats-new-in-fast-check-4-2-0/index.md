@@ -4,6 +4,9 @@ authors: [dubzzz]
 tags: [release, scheduler, race-conditions, async-testing]
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 With version 4.2.0, we are re-affirming our will to provide our users with efficient and easy to use primitives around race condition detection. Because race conditions are far from easy to detect and think of we want to make them easy to track. For that reason we decided to introduce two new primitives to help you waiting for the scheduler to be done.
 
 Continue reading to explore the detailed updates it brings.
@@ -19,6 +22,44 @@ When releasing version 4.0.0 of fast-check we decided that having a predictable 
 The newly introduced `waitIdle` provides a simple, efficient and predicable way to wait for all tasks to be scheduled by `fc.scheduler`. It does not come with the gotchas we had on `waitAll` in previous majors while offering an API as easy to use.
 
 Let see how it simplify the flow of checking race conditions:
+
+<Tabs>
+  <TabItem value="v5" label="Since v5" default>
+
+```ts
+import { test, expect } from 'vitest';
+
+test('our test', async () => {
+  await fc.assert(
+    fc.property(fc.scheduler(), async (s) => {
+      const fetchIdFor = s.scheduleFunction(async (name) => `id:${name}`);
+      const { doStuff, warmup } = buildDoStuff(fetchIdFor);
+      await warmup();
+      let done = false;
+      doStuff('name').then(() => (done = true));
+      await s.waitAll();
+      expect(done).toBe(true);
+    }),
+  );
+});
+
+// In a real world example, the function below would probably have been defined
+// into a dedicated file not being the file holding the test.
+function buildDoStuff(fetchIdFor) {
+  return {
+    doStuff: async function doStuff(name) {
+      const { default: executeTaskOnId } = await import('./executor');
+      await executeTaskOnId(await fetchIdFor(name));
+    },
+    warmup: async function warmup(name) {
+      await import('./executor');
+    },
+  };
+}
+```
+
+  </TabItem>
+  <TabItem value="v4" label="Until v4">
 
 ```ts
 import { test, expect } from 'vitest';
@@ -51,6 +92,9 @@ function buildDoStuff(fetchIdFor) {
   };
 }
 ```
+
+  </TabItem>
+</Tabs>
 
 This test does not pass. Actually nothing got scheduled in time so `waitAll` ended immediatelly. Calling `s.report()` after the execution of `waitAll` and checking its output confirms it: nothing has been released by the scheduler and the scheduler has not seen any tasks yet. The whole problem is that the call to `fetchIdFor` is delayed a bit too much for `waitAll` to see it. Overall `waitAll` makes the test harder to reason about as it may trigger failures for non obvious reasons that depends on micro-tasks.
 

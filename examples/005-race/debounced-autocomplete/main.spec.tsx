@@ -16,7 +16,7 @@ describe('DebouncedAutocomplete', () => {
   it('should autocomplete queries (with mocked timers)', async () => {
     vi.useFakeTimers();
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.scheduler(),
         fc.uniqueArray(fc.string()),
         fc.string({ minLength: 1 }),

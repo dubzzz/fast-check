@@ -23,7 +23,7 @@ describe('record', () => {
 
   it('should call buildPartialRecordArbitrary with keys=undefined when no constraints on keys', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.uniqueArray(keyArb, { minLength: 1 }),
         fc.constantFrom(...([undefined, {}, { noNullPrototype: false }, { noNullPrototype: true }] as const)),
         (keys, constraints) => {
@@ -54,7 +54,7 @@ describe('record', () => {
 
   it('should call buildPartialRecordArbitrary with keys=requiredKeys when constraints defines valid requiredKeys', async () =>
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.uniqueArray(keyArb, { minLength: 1 }),
         fc.func(fc.boolean()),
         fc.option(fc.boolean(), { nil: undefined }),
@@ -94,7 +94,7 @@ describe('record', () => {
 
   it('should reject configurations specifying non existing keys as required', async () =>
     await fc.assert(
-      fc.asyncProperty(fc.uniqueArray(keyArb, { minLength: 1 }), keyArb, (keys, requiredKey) => {
+      fc.property(fc.uniqueArray(keyArb, { minLength: 1 }), keyArb, (keys, requiredKey) => {
         // Arrange
         fc.pre(!keys.includes(requiredKey));
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};

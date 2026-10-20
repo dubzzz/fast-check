@@ -43,7 +43,7 @@ export type GlobalParameters = Pick<
  * fc.configureGlobal({ numRuns: 10 });
  * //...
  * await fc.assert(
- *   fc.asyncProperty(
+ *   fc.property(
  *     fc.nat(), fc.nat(),
  *     (a, b) => a + b === b + a
  *   ), { seed: 42 }

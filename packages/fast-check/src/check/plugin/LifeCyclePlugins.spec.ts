@@ -8,7 +8,7 @@ import type { Plugin, PluginInstance } from './Plugin.js';
 describe('LifeCyclePlugins', () => {
   it('should queue everything and never run several hooks/predicate at the same time', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() }), { minLength: 1 }),
         fc.boolean(),
         fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
@@ -64,7 +64,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           expect(probingFailed ? probes : undefined).toBe(undefined);
@@ -75,7 +75,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should apply proper relative order: beforeEach then predicate then afterEach-and-teardown', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() }), { minLength: 1 }),
         fc.boolean(),
         fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
@@ -115,7 +115,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           expect(hasFailedStep ? seenSteps : undefined).toBe(undefined);
@@ -126,7 +126,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should always trigger all beforeEach hooks in declaration order when no other beforeEach throw', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(
           fc.oneof(
             fc.record({ hookType: hookTypeArbitrary('only', 'beforeEach'), fails: fc.constant(false) }),
@@ -159,7 +159,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           const expectedBeforeEachs = hookTypes.flatMap(({ hookType }, index) =>
@@ -173,7 +173,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should always trigger all afterEach-and-teardown hooks in reverse order no matter the status of other hooks or predicate', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() }), { minLength: 1 }),
         fc.boolean(),
         fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
@@ -200,7 +200,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           let beforeEachFailureSpotted = false;
@@ -223,7 +223,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should produce a sync value if and only if all hooks and run were returning a sync value', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(hookTypeArbitrary(), { minLength: 1 }),
         fc.boolean(),
         fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
@@ -240,7 +240,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          const out = finalRun(null);
+          const out = finalRun(null, {});
 
           // Assert
           const expectsSync = !isAsyncRun && !hookTypes.some((hookType) => hookType.includes('async'));
@@ -256,7 +256,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should return the same value as the run function if no hook failed to run', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(hookTypeArbitrary(), { minLength: 1 }),
         fc.boolean(),
         fc.constantFrom<ReturnType<Property<unknown>['run']>>(null, new PreconditionFailure(), {
@@ -273,7 +273,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          const out = await finalRun(null);
+          const out = await finalRun(null, {});
 
           // Assert
           expect(out).toBe(runValue);
@@ -284,7 +284,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should mark a successful run as failed whenever one of the hooks failed', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.array(hookTypeArbitrary()),
         hookTypeArbitrary(),
         fc.array(hookTypeArbitrary()),
@@ -304,7 +304,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          const out = await finalRun(null);
+          const out = await finalRun(null, {});
 
           // Assert
           expect(out).toMatchObject({ error: expect.any(Error) });
@@ -315,7 +315,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should interrupt the beforeEach and predicate flow in case a beforeEach throws', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc
           .tuple(
             fc.array(fc.record({ hookType: hookTypeArbitrary(), fails: fc.boolean() })),
@@ -348,7 +348,7 @@ describe('LifeCyclePlugins', () => {
           finalRun = produceFinalRun(finalRun, instances);
 
           // Act
-          await finalRun(null);
+          await finalRun(null, {});
 
           // Assert
           expect(originalRun).not.toHaveBeenCalled(); // predicate not called
@@ -360,7 +360,7 @@ describe('LifeCyclePlugins', () => {
 
   it('should merge consecutive instances of the plugin into a single instance but create a new instance at each index gap', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.nat(),
         fc.array(
           fc.record({
