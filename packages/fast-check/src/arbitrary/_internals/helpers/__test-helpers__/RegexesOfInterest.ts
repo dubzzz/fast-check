@@ -19,10 +19,10 @@ export const RegexesOfInterest: {
   { regex: /.*?/ },
   { regex: /.??/ },
   { regex: /.{1,4}?/ },
-  { regex: new RegExp('^\\x1+$'), invalidInUnicodeMode: true },
-  { regex: new RegExp('^\\u123+$'), invalidInUnicodeMode: true },
-  { regex: new RegExp('^\\x{2}$'), invalidInUnicodeMode: true },
-  { regex: new RegExp('^\\u{2}$') }, // matches 'uu' without /u, U+0002 with /u
+  { regex: new RegExp('\\x1+'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u123+'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\x{2}'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u{2}') }, // matches 'uu' without /u, U+0002 with /u
 
   // Escapes
   { regex: /\x25/ },
