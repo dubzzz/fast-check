@@ -3,6 +3,7 @@ import { ignoreEqualValues, skipEqualValues } from './EqualValuesPlugins.js';
 import type { Property } from '../property/types/Property.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { Plugin, PluginStore } from './Plugin.js';
+import { stringify } from '../../utils/stringify.js';
 
 describe('EqualValuesPlugins', () => {
   describe.each([
@@ -96,6 +97,111 @@ describe('EqualValuesPlugins', () => {
       // Assert
       expect(out).not.toBeInstanceOf(Promise); // sync run, sync output even on covered cases
     });
+
+    describe('complex values', () => {
+      it.each([
+        {
+          what: 'unconsumed iterators yielding equal values',
+          valueRun1: prettyIterator([1, 2]),
+          valueRun2: prettyIterator([1, 2]),
+          action: (_value: unknown) => null,
+          expectedCallCount: 1,
+        },
+        {
+          what: 'unconsumed iterators yielding different values',
+          valueRun1: prettyIterator([1, 2]),
+          valueRun2: prettyIterator([4]),
+          action: (_value: unknown) => null,
+          expectedCallCount: 1,
+        },
+        {
+          what: 'iterators yielding equal values with a predicate that fully consumes them',
+          valueRun1: prettyIterator([1, 2]),
+          valueRun2: prettyIterator([1, 2]),
+          action: (value: unknown) => {
+            // oxlint-disable-next-line no-unused-vars
+            for (const _item of value as IteratorObject<any>) {
+              // just pulling from the value, until it gets exhausted
+            }
+            return null;
+          },
+          expectedCallCount: 2,
+        },
+        {
+          what: 'iterators yielding different values with a predicate that fully consumes them',
+          valueRun1: prettyIterator([1, 2]),
+          valueRun2: prettyIterator([4]),
+          action: (value: unknown) => {
+            // oxlint-disable-next-line no-unused-vars
+            for (const _item of value as IteratorObject<any>) {
+              // just pulling from the value, until it gets exhausted
+            }
+            return null;
+          },
+          expectedCallCount: 2,
+        },
+        {
+          // closer to what we have for `fc.func` with a toString capturing the hash and its seeds and so known before pulling
+          what: 'unconsumed iterators exposing equal values in toString',
+          valueRun1: prettyIterator([1, 2], true),
+          valueRun2: prettyIterator([1, 2], true),
+          action: (_value: unknown) => null,
+          expectedCallCount: 1,
+        },
+        {
+          // closer to what we have for `fc.func` with a toString capturing the hash and its seeds and so known before pulling
+          what: 'unconsumed iterators exposing different values in toString',
+          valueRun1: prettyIterator([1, 2], true),
+          valueRun2: prettyIterator([4], true),
+          action: (_value: unknown) => null,
+          expectedCallCount: 2,
+        },
+        {
+          what: 'promises resolving to equal values with a synchronous predicate',
+          valueRun1: Promise.resolve(1),
+          valueRun2: Promise.resolve(1),
+          action: (_value: unknown) => null,
+          expectedCallCount: 1,
+        },
+        {
+          what: 'promises resolving to different values with a synchronous predicate',
+          valueRun1: Promise.resolve(1),
+          valueRun2: Promise.resolve(2),
+          action: (_value: unknown) => null,
+          expectedCallCount: 1,
+        },
+        {
+          what: 'promises resolving to equal values with an asynchronous predicate',
+          valueRun1: Promise.resolve(1),
+          valueRun2: Promise.resolve(1),
+          action: async (_value: unknown) => null,
+          expectedCallCount: 1,
+        },
+        {
+          what: 'promises resolving to different values with an asynchronous predicate',
+          valueRun1: Promise.resolve(1),
+          valueRun2: Promise.resolve(2),
+          action: async (_value: unknown) => null,
+          expectedCallCount: 2,
+        },
+      ])(
+        'should call run $expectedCallCount time(s) for $what',
+        async ({ valueRun1, valueRun2, action, expectedCallCount }) => {
+          // Arrange
+          const nestedRun = vi.fn<Property<unknown>['run']>(action);
+          const firstContext = { signal: new AbortController().signal };
+          const secondContext = { signal: new AbortController().signal };
+
+          // Act
+          const finalRun = equalValuesPluginRun(factory, nestedRun);
+          await finalRun(valueRun1, firstContext);
+          await finalRun(valueRun2, secondContext);
+
+          // Assert
+          expect(nestedRun).toHaveBeenCalledTimes(expectedCallCount);
+        },
+      );
+    });
   });
 
   it.each([
@@ -168,4 +274,23 @@ function equalValuesPluginRun(factory: () => Plugin<unknown>, nestedRun: Propert
   const store: PluginStore = new Map<symbol, any>();
   const instance = factory()(0, store);
   return instance.decorateRun!(nestedRun);
+}
+
+function prettyIterator<T>(values: T[], knownBefore?: boolean): IteratorObject<T, undefined> {
+  // Mimic how an iterator from fast-check would behave
+  const extractedValues: T[] = [];
+  function* g(): IteratorObject<T, undefined> {
+    for (const v of values) {
+      extractedValues.push(v);
+      yield v;
+    }
+  }
+  return Object.defineProperties(g(), {
+    toString: {
+      value: () =>
+        knownBefore
+          ? `Iterator.from(${values.map(stringify).join(',')})`
+          : `Iterator.from(${extractedValues.map(stringify).join(',')}${extractedValues.length !== values.length ? '...' : ''})`,
+    },
+  });
 }

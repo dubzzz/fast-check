@@ -1,42 +1,72 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
-import { stringify } from '../../utils/stringify.js';
+import { possiblyAsyncStringify, stringify } from '../../utils/stringify.js';
 import type { UniversalPlugin } from './Plugin.js';
 import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 
-type RunOutput = ReturnType<Property<unknown>['run']>;
+const valueIsChangingWithAsyncRun = Symbol('fast-check.plugins.equalValuesRunner.valueIsChangingWithAsyncRun');
+const valueIsChangingWithSyncRun = Symbol('fast-check.plugins.equalValuesRunner.valueIsChangingWithSyncRun');
 
-function fromSyncCachedForAsyncPath(cachedValue: Awaited<RunOutput>): Awaited<RunOutput> {
-  return cachedValue === null ? new PreconditionFailure() : cachedValue;
-}
+type RunOutput = Awaited<ReturnType<Property<unknown>['run']>>;
+type CoveredCase = RunOutput | typeof valueIsChangingWithAsyncRun | typeof valueIsChangingWithSyncRun;
 
 function fromCached(cachedValue: RunOutput): RunOutput {
   if (cachedValue !== null) {
-    if ('then' in cachedValue) {
-      return cachedValue.then(fromSyncCachedForAsyncPath);
-    } else {
-      return cachedValue satisfies PreconditionFailure | PropertyFailure;
-    }
+    return cachedValue satisfies PreconditionFailure | PropertyFailure;
   }
   return new PreconditionFailure(); // already encountered with sync success, so skip it
 }
 
-function equalValuesRunner(
-  coveredCases: Map<string, RunOutput>,
+async function equalValuesRunner(
+  coveredCases: Map<string, CoveredCase>,
   nestedRun: Property<unknown>['run'],
   value: unknown,
   executionContext: PredicateExecutionContext,
   skipRuns: boolean,
-): ReturnType<typeof nestedRun> {
-  // TODO(v5) - Switch to possiblyAsyncStringify and await to support asynchronous values as inputs
+): Promise<Awaited<ReturnType<typeof nestedRun>>> {
   const stringifiedValue = stringify(value);
   if (coveredCases.has(stringifiedValue)) {
-    const lastOutput = coveredCases.get(stringifiedValue) as RunOutput;
-    return skipRuns ? fromCached(lastOutput) : lastOutput;
+    // oxlint-disable-next-line typescript/no-non-null-assertion
+    const coveredCase = coveredCases.get(stringifiedValue)!;
+
+    if (coveredCase === valueIsChangingWithAsyncRun) {
+      // When we know that the value has changed after an async predicate execution, we try to asyncjronously compute its stringified version just in case
+      // If matching an existing case, we can drop the run, otherwise we keep the run
+      const asyncStringifiedValue = await possiblyAsyncStringify(value);
+      if (coveredCases.has(asyncStringifiedValue)) {
+        // oxlint-disable-next-line typescript/no-non-null-assertion
+        const coveredAsyncCase = coveredCases.get(asyncStringifiedValue)!;
+        if (coveredAsyncCase !== valueIsChangingWithAsyncRun && coveredAsyncCase !== valueIsChangingWithSyncRun) {
+          return skipRuns ? fromCached(coveredAsyncCase) : coveredAsyncCase;
+        }
+      }
+    } else if (coveredCase !== valueIsChangingWithSyncRun) {
+      // For nominal cases we simply return the existing case
+      return skipRuns ? fromCached(coveredCase) : coveredCase;
+    }
+    // But we cannot do anything for values changing due to the execution of a synchronous predicate (eg.: pull from the value changes the way it gets stringified)
   }
+
   const out = nestedRun(value, executionContext);
-  coveredCases.set(stringifiedValue, out);
+  if (out !== null && 'then' in out) {
+    const awaitedOut = await out;
+    const secondStringifiedValue = await possiblyAsyncStringify(value);
+    if (stringifiedValue === secondStringifiedValue) {
+      coveredCases.set(secondStringifiedValue, awaitedOut);
+    } else {
+      coveredCases.set(stringifiedValue, valueIsChangingWithAsyncRun);
+      coveredCases.set(secondStringifiedValue, awaitedOut);
+    }
+    return awaitedOut;
+  }
+  const secondStringifiedValue = stringify(value);
+  if (stringifiedValue === secondStringifiedValue) {
+    coveredCases.set(secondStringifiedValue, out);
+  } else {
+    coveredCases.set(stringifiedValue, valueIsChangingWithSyncRun);
+    coveredCases.set(secondStringifiedValue, out);
+  }
   return out;
 }
 
@@ -61,7 +91,7 @@ function equalValuesRunner(
  */
 export function ignoreEqualValues(): UniversalPlugin {
   return () => {
-    const coveredCases = new Map<string, RunOutput>();
+    const coveredCases = new Map<string, CoveredCase>();
     return {
       decorateRun: (nestedRun) => (value, executionContext) =>
         equalValuesRunner(coveredCases, nestedRun, value, executionContext, false),
@@ -92,7 +122,7 @@ export function ignoreEqualValues(): UniversalPlugin {
  */
 export function skipEqualValues(): UniversalPlugin {
   return () => {
-    const coveredCases = new Map<string, RunOutput>();
+    const coveredCases = new Map<string, CoveredCase>();
     return {
       decorateRun: (nestedRun) => (value, executionContext) =>
         equalValuesRunner(coveredCases, nestedRun, value, executionContext, true),
