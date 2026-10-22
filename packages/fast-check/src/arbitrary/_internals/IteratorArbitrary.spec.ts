@@ -218,7 +218,7 @@ describe('IteratorArbitrary', () => {
           // Assert
           expect(values).toEqual(expectedValues);
           expect(String(iterator)).toEqual(
-            `Iterator.from([${[...expectedValues.map(fakeStringify), '/*...*/'].join(',')}])`,
+            `Iterator.from([${[...expectedValues.map(fakeStringify), '/*…*/'].join(',')}])`,
           );
           expect(stringify).toHaveBeenCalledTimes(expectedValues.length);
           expect(generate).toHaveBeenCalledTimes(expectedValues.length);
@@ -436,7 +436,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 0,
         numToPull: 0,
         expectedPulledValues: [],
-        expectedPrint: 'Iterator.from([/*...*/])',
+        expectedPrint: 'Iterator.from([/*…*/])',
       },
       {
         description: 'with history, finite iterator with its last value pulled but no completion observed',
@@ -445,7 +445,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 2,
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([0,1,/*...*/])',
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
       },
       {
         description: 'with history, finite iterator with one value remaining',
@@ -454,7 +454,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 3,
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([0,1,/*...*/])',
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
       },
       {
         description: 'with history, finite iterator partially consumed',
@@ -463,7 +463,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 5,
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([0,1,/*...*/])',
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
       },
       {
         description: 'with history, finite iterator not consumed at all',
@@ -472,7 +472,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 5,
         numToPull: 0,
         expectedPulledValues: [],
-        expectedPrint: 'Iterator.from([/*...*/])',
+        expectedPrint: 'Iterator.from([/*…*/])',
       },
       {
         description: 'with history, never-ending iterator (minLength is +infinity)',
@@ -481,7 +481,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: undefined, // never-ending iterator
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([0,1,/*...*/])',
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
       },
       {
         description: 'with history, never-ending iterator (drawn on the extra slot)',
@@ -490,7 +490,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: -1, // minLength - 1, aka never-ending
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([0,1,/*...*/])',
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
       },
       {
         description: 'with history, never-ending iterator not consumed at all',
@@ -499,7 +499,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: undefined, // never-ending iterator
         numToPull: 0,
         expectedPulledValues: [],
-        expectedPrint: 'Iterator.from([/*...*/])',
+        expectedPrint: 'Iterator.from([/*…*/])',
       },
       // Without history: we only print the number of values already emitted
       {
@@ -648,9 +648,9 @@ describe('IteratorArbitrary', () => {
 
       // Assert
       expect(String(iterator)).toEqual('Iterator.from([42])');
-      expect(String(cloned)).toEqual('Iterator.from([/*...*/])');
+      expect(String(cloned)).toEqual('Iterator.from([/*…*/])');
       expect(cloned.next()).toEqual({ done: false, value: 42 });
-      expect(String(cloned)).toEqual('Iterator.from([42,/*...*/])');
+      expect(String(cloned)).toEqual('Iterator.from([42,/*…*/])');
       expect(cloned.next().done).toBe(true);
       expect(String(cloned)).toEqual('Iterator.from([42])');
     });
@@ -671,7 +671,7 @@ describe('IteratorArbitrary', () => {
       expect(iterator.next()).toEqual({ done: false, value: 42 });
 
       // Assert
-      expect(String(iterator)).toEqual('Iterator.from([42,/*...*/])');
+      expect(String(iterator)).toEqual('Iterator.from([42,/*…*/])');
       expect(iterator.next()).toEqual({ done: false, value: 42 });
     });
   });

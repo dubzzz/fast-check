@@ -3550,12 +3550,12 @@ Execution summary:
 exports[`NoRegression > iterator 1`] = `
 [Error: Property failed after 2 tests
 { seed: 42, path: "1", endOnFailure: true }
-Counterexample: [Iterator.from([1570664410,1275475127,1594409417,/*...*/])]
+Counterexample: [Iterator.from([1570664410,1275475127,1594409417,/*…*/])]
 Shrunk 0 time(s)
 
 Execution summary:
 [32m√[0m [Iterator.from([19])]
-[31m×[0m [Iterator.from([1570664410,1275475127,1594409417,/*...*/])]]
+[31m×[0m [Iterator.from([1570664410,1275475127,1594409417,/*…*/])]]
 `;
 
 exports[`NoRegression > json 1`] = `

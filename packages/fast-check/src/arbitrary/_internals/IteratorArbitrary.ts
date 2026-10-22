@@ -8,7 +8,7 @@ import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '
 function prettyPrint(numSeen: number, isExhausted: boolean, seenValuesStrings?: string[]): string {
   const seenSegment =
     seenValuesStrings !== undefined
-      ? `[${(isExhausted ? seenValuesStrings : [...seenValuesStrings, '/*...*/']).join(',')}]`
+      ? `[${(isExhausted ? seenValuesStrings : [...seenValuesStrings, '/*…*/']).join(',')}]`
       : `/*${numSeen} emitted*/`;
   return `Iterator.from(${seenSegment})`;
 }
