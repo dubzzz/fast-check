@@ -210,7 +210,6 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
           s.schedule(Promise.resolve(task));
         }
         await s.waitAll();
-        // Passing shrink candidates exercise scheduler clones that are later discarded.
         return taskCount < 6;
       },
     );
