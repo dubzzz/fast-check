@@ -214,7 +214,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       },
     );
 
-    const report = await fc.check(failsWithAtLeastSixTasks, { seed, numRuns: 200 });
+    const report = await fc.check(failsWithAtLeastSixTasks, { seed });
     expect(report.failed).toBe(true);
 
     const replay = await fc.check(failsWithAtLeastSixTasks, {
