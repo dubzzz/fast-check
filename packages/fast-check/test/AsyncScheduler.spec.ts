@@ -189,36 +189,39 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     };
 
     await fc.assert(
-      fc.property(fc.noShrink(fc.scheduler()), async (scheduler) => {
-        const firstClone = await orderOf((scheduler as any)[fc.cloneMethod]());
-        const secondClone = await orderOf((scheduler as any)[fc.cloneMethod]());
+      fc.property(fc.scheduler(), async (scheduler) => {
+        if (!fc.hasCloneMethod(scheduler)) {
+          throw new Error('Scheduler should be cloneable');
+        }
+        const firstClone = await orderOf(scheduler[fc.cloneMethod]());
+        const secondClone = await orderOf(scheduler[fc.cloneMethod]());
         expect(secondClone).toBe(firstClone);
       }),
+      { seed },
     );
   });
 
   it('should replay the reported counterexample from its seed and path', async () => {
-    const lastTaskRunsFirst = fc.property(fc.scheduler(), fc.integer({ min: 2, max: 12 }), async (s, taskCount) => {
+    const firstTaskRunsFirst = fc.property(fc.scheduler(), fc.integer({ min: 2, max: 12 }), async (s, taskCount) => {
       const ran: number[] = [];
       for (let task = 0; task < taskCount; task++) {
         s.schedule(Promise.resolve(task)).then((t) => ran.push(t));
       }
       await s.waitAll();
-      if (taskCount >= 6 && ran[0] === taskCount - 1) {
-        throw new Error('last task ran first');
-      }
+      return taskCount < 6 && ran[0] === 0;
     });
 
-    for (let runSeed = 1; runSeed <= 10; runSeed++) {
-      const report = await fc.check(lastTaskRunsFirst, { seed: runSeed, numRuns: 200 });
-      if (!report.failed) continue;
-      const replay = await fc.check(lastTaskRunsFirst, {
-        seed: runSeed,
-        path: report.counterexamplePath!,
-        endOnFailure: true,
-      });
-      expect(replay.failed).toBe(true);
-      expect(fc.stringify(replay.counterexample)).toBe(fc.stringify(report.counterexample));
-    }
+    const report = await fc.check(firstTaskRunsFirst, { seed });
+    expect(report.failed).toBe(true);
+
+    const replay = await fc.check(firstTaskRunsFirst, {
+      seed: report.seed,
+      path: report.counterexamplePath!,
+      endOnFailure: true,
+    });
+    expect(replay.failed).toBe(true);
+    expect(replay.numRuns).toBe(1);
+    expect(replay.numShrinks).toBe(0);
+    expect(fc.stringify(replay.counterexample)).toBe(fc.stringify(report.counterexample));
   });
 });
