@@ -9,7 +9,7 @@ function prettyPrint(numSeen: number, isExhausted: boolean, seenValuesStrings?: 
   const seenSegment =
     seenValuesStrings !== undefined
       ? `[${(isExhausted ? seenValuesStrings : [...seenValuesStrings, '/*…*/']).join(',')}]`
-      : `/*${numSeen} emitted*/`;
+      : `/*${numSeen} emitted${isExhausted ? '' : '…'}*/`;
   return `Iterator.from(${seenSegment})`;
 }
 
