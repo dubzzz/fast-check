@@ -58,7 +58,7 @@ Both plugins share the same limitations.
 
 There is no way to pause or kill a running synchronous script in JavaScript. A synchronous predicate will always run to its end before any of these plugins get the flow back.
 
-As such, `timeout` has no effect on purely synchronous predicates and `interruptAfterTimeLimit` can only prevent new executions from starting once the limit gets reached.
+The `timeout` plugin checks elapsed time when the predicate completes, so synchronous work that reaches the time limit is reported as a failure. This also applies to synchronous work inside asynchronous predicates. The `interruptAfterTimeLimit` plugin can only prevent new executions from starting once the limit gets reached.
 
 ### Asynchronous code can't be canceled
 
