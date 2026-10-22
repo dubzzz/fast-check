@@ -202,22 +202,19 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
   });
 
   it('should replay the reported counterexample from its seed and path', async () => {
-    const failsWithAtLeastSixTasks = fc.property(
-      fc.scheduler(),
-      fc.integer({ min: 2, max: 12 }),
-      async (s, taskCount) => {
-        for (let task = 0; task < taskCount; task++) {
-          s.schedule(Promise.resolve(task));
-        }
-        await s.waitAll();
-        return taskCount < 6;
-      },
-    );
+    const firstTaskRunsFirst = fc.property(fc.scheduler(), fc.integer({ min: 2, max: 12 }), async (s, taskCount) => {
+      const ran: number[] = [];
+      for (let task = 0; task < taskCount; task++) {
+        s.schedule(Promise.resolve(task)).then((t) => ran.push(t));
+      }
+      await s.waitAll();
+      return taskCount < 6 && ran[0] === 0;
+    });
 
-    const report = await fc.check(failsWithAtLeastSixTasks, { seed });
+    const report = await fc.check(firstTaskRunsFirst, { seed });
     expect(report.failed).toBe(true);
 
-    const replay = await fc.check(failsWithAtLeastSixTasks, {
+    const replay = await fc.check(firstTaskRunsFirst, {
       seed: report.seed,
       path: report.counterexamplePath!,
       endOnFailure: true,
