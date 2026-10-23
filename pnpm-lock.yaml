@@ -283,8 +283,8 @@ importers:
         specifier: ^24.19.2
         version: 24.19.2
       ava:
-        specifier: ^8.1.0
-        version: 8.1.0(rollup@4.64.9)(supports-color@8.1.1)
+        specifier: ^8.1.1
+        version: 8.1.1(rollup@4.64.9)(supports-color@8.1.1)
       esm:
         specifier: ^3.2.25
         version: 3.2.25
@@ -4678,8 +4678,8 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
 
-  ava@8.1.0:
-    resolution: {integrity: sha512-qGT7MZBJK4PSgrfg0yYIWRl9+LoXTIgNuGgrQ4PrIlQN2OpUae1gLmyEqZbUyTjR2J113sRreoqXTE0NqudwIw==}
+  ava@8.1.1:
+    resolution: {integrity: sha512-qkXhR6mHjNVTbpf7mqwCdBuM8kgbY5xQKjxnOCTsSkJXTFUn1GEMO/QEZwVCxyUcdPOSUDx5GBbtqzHdhItaZA==}
     engines: {node: ^22.20 || ^24.12 || >=26}
     hasBin: true
     peerDependencies:
@@ -5753,8 +5753,8 @@ packages:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
     engines: {node: '>=12'}
 
-  emittery@2.1.0:
-    resolution: {integrity: sha512-cPP/ddRdWhEQz7+R/QJi22O2iA73YuNWJRgDM2SUVEKA3XRPiv9f5cfGb508s+124sEBlnewHq/CiSOuIyewHg==}
+  emittery@2.2.0:
+    resolution: {integrity: sha512-zpmLSuVIqrtTPDR2IYiTbxXB6XgrS7+rRk5uT4w6qgmxeNvtdnSaAOGNNbVokgm+0F6zrRufshUfSlnsPc7d8g==}
     engines: {node: '>=22'}
 
   emoji-regex@10.6.0:
@@ -8046,10 +8046,6 @@ packages:
     resolution: {integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==}
     engines: {node: '>=8'}
 
-  parse-ms@4.0.0:
-    resolution: {integrity: sha512-TXfryirbmq34y8QBwgqCVLi+8oA3oWx2eAnSn62ITyEhEYaWRlVZ2DvMM9eZbMs/RfxPu/PK/aBLyGj4IrqMHw==}
-    engines: {node: '>=18'}
-
   parse-numeric-range@1.3.0:
     resolution: {integrity: sha512-twN+njEipszzlMJd4ONUYgSfZPDxgHhT9Ahed5uTigpQn90FggW4SA/AIPq/6a149fTbE9qBEcSwE3FAEp6wQQ==}
 
@@ -8585,9 +8581,9 @@ packages:
     resolution: {integrity: sha512-byhRAPguVKMQIj4kjJwJ5lAskVhfuiSdiYl/aLTWpgkGEmic2jYhJh1yE9ih8Ox44Xg9ccCT11/S6QrzSJuNrg==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
-  pretty-ms@9.3.1:
-    resolution: {integrity: sha512-HzMy3Geq23nVALD/M2LliU+F+M+gVNsvkQWWqeBZ8HDiCgzo6YPJ/Omrmtq24EFrIsk0a3EkQGEd7bDOo+IhGA==}
-    engines: {node: '>=18'}
+  pretty-ms@10.0.0:
+    resolution: {integrity: sha512-6BWuxY2dCNgT45VnGzZcfNy7WeLqXiZqhhy4aHThTE6KI56R2ZBw9HQ7spPFKYchDizvJbPxTEknIpmW4FSmQA==}
+    engines: {node: '>=22'}
 
   pretty-time@1.1.0:
     resolution: {integrity: sha512-28iF6xPQrP8Oa6uxE6a1biz+lWeTOAPKggvjB8HAs6nVMKZwf5bG++632Dx614hIWgUPkgivRfG+a8uAXGTIbA==}
@@ -15677,7 +15673,7 @@ snapshots:
       postcss: 8.5.30
       postcss-value-parser: 4.2.0
 
-  ava@8.1.0(rollup@4.64.9)(supports-color@8.1.1):
+  ava@8.1.1(rollup@4.64.9)(supports-color@8.1.1):
     dependencies:
       '@vercel/nft': 1.11.0(rollup@4.64.9)(supports-color@8.1.1)
       acorn: 8.19.0
@@ -15697,7 +15693,7 @@ snapshots:
       concordance: 5.0.4
       currently-unhandled: 0.4.1
       debug: 4.4.3(supports-color@8.1.1)
-      emittery: 2.1.0
+      emittery: 2.2.0
       figures: 6.1.0
       globby: 16.2.4
       ignore-by-default: 2.1.0
@@ -15711,7 +15707,7 @@ snapshots:
       package-config: 5.0.0
       picomatch: 4.0.7
       plur: 6.0.0
-      pretty-ms: 9.3.1
+      pretty-ms: 10.0.0
       resolve-cwd: 3.0.0
       slash: 5.1.0
       stack-utils: 2.0.6
@@ -16861,7 +16857,7 @@ snapshots:
 
   emittery@0.13.1: {}
 
-  emittery@2.1.0: {}
+  emittery@2.2.0: {}
 
   emoji-regex@10.6.0: {}
 
@@ -19852,8 +19848,6 @@ snapshots:
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
 
-  parse-ms@4.0.0: {}
-
   parse-numeric-range@1.3.0: {}
 
   parse5-htmlparser2-tree-adapter@7.1.0:
@@ -20420,9 +20414,7 @@ snapshots:
       '@jest/schemas': 30.5.0
       ansi-styles: 5.2.0
 
-  pretty-ms@9.3.1:
-    dependencies:
-      parse-ms: 4.0.0
+  pretty-ms@10.0.0: {}
 
   pretty-time@1.1.0: {}
 
