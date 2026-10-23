@@ -213,7 +213,7 @@ describe('EqualValuesPlugins', () => {
     { originalValuePretty: 'new PreconditionFailure()', originalValue: new PreconditionFailure(), isAsync: true },
   ])(
     'should always return the cached value for ignoreEqualValues, originalValue=$originalValuePretty, isAsync=$isAsync',
-    ({ originalValue, isAsync }) => {
+    async ({ originalValue, isAsync }) => {
       // Arrange
       // success -> success
       // failure -> failure
@@ -228,7 +228,11 @@ describe('EqualValuesPlugins', () => {
       const secondRunOutput = finalRun(null, {});
 
       // Assert
-      expect(secondRunOutput).toBe(initialRunOutput);
+      if (isAsync) {
+        expect(await secondRunOutput).toBe(await initialRunOutput);
+      } else {
+        expect(secondRunOutput).toBe(initialRunOutput);
+      }
     },
   );
 
