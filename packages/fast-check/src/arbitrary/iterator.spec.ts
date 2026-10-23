@@ -26,7 +26,7 @@ describe('iterator', () => {
     const arb = iterator(sourceArbitrary);
 
     // Assert
-    expect(IteratorArbitrary).toHaveBeenCalledWith(sourceArbitrary, true, 0, 10, Number.POSITIVE_INFINITY);
+    expect(IteratorArbitrary).toHaveBeenCalledWith(sourceArbitrary, true, 0, 10, Number.POSITIVE_INFINITY, undefined);
     expect(arb).toBe(instance);
   });
 
@@ -45,7 +45,14 @@ describe('iterator', () => {
         const arb = iterator(sourceArbitrary, { noHistory: !history });
 
         // Assert
-        expect(IteratorArbitrary).toHaveBeenCalledWith(sourceArbitrary, history, 0, 10, Number.POSITIVE_INFINITY);
+        expect(IteratorArbitrary).toHaveBeenCalledWith(
+          sourceArbitrary,
+          history,
+          0,
+          10,
+          Number.POSITIVE_INFINITY,
+          undefined,
+        );
         expect(arb).toBe(instance);
       }),
     );
@@ -85,10 +92,24 @@ describe('iterator', () => {
         expectedMinLength,
         expectedMaxGeneratedLength,
         expectedMaxLength,
+        undefined,
       );
       expect(arb).toBe(instance);
     },
   );
+
+  it('should forward replayPath to IteratorArbitrary', () => {
+    const { instance: sourceArbitrary } = fakeArbitrary();
+    const { instance } = fakeArbitrary();
+    const IteratorArbitrary = vi.spyOn(IteratorArbitraryMock, 'IteratorArbitrary');
+    IteratorArbitrary.mockImplementation(function () {
+      return instance as IteratorArbitraryMock.IteratorArbitrary<unknown>;
+    });
+
+    iterator(sourceArbitrary, { replayPath: '56:28:14' });
+
+    expect(IteratorArbitrary).toHaveBeenCalledWith(sourceArbitrary, true, 0, 10, Number.POSITIVE_INFINITY, '56:28:14');
+  });
 
   it.each`
     constraints                                               | description

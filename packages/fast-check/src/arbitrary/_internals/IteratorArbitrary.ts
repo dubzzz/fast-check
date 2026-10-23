@@ -4,6 +4,37 @@ import { cloneMethod } from '../../check/symbols.js';
 import type { Random } from '../../random/generator/Random.js';
 import { nil } from '../../utils/iterator.js';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
+import { array } from '../array.js';
+import type { ArrayArbitraryContext } from './ArrayArbitrary.js';
+
+type IteratorState<T> = {
+  seenValues: T[];
+  seenContexts: unknown[];
+  mrng: Random;
+  biasFactor: number | undefined;
+  preBuiltLength: number;
+  arrayContext: ArrayArbitraryContext | undefined;
+  targetLength: number;
+};
+
+type IteratorReplay = { path: number[]; position: number };
+
+// Clones share their shrinking context, but each records its own consumption.
+type IteratorArbitraryContext<T> = {
+  states: WeakMap<IteratorObject<T, undefined>, IteratorState<T>>;
+  replay: IteratorReplay;
+};
+
+function parseReplayPath(replayPath: string | undefined): number[] {
+  if (replayPath === undefined || replayPath === '') {
+    return [];
+  }
+  const path = replayPath.split(':').map(Number);
+  if (!/^\d+(?::\d+)*$/.test(replayPath) || path.some((count) => !Number.isSafeInteger(count))) {
+    throw new Error('Invalid iterator replayPath');
+  }
+  return path;
+}
 
 function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings?: string[]): string {
   const seenSegment =
@@ -16,14 +47,18 @@ function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings
 }
 
 export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>> {
+  private readonly sourceReplayPath: number[];
+
   constructor(
     readonly arb: Arbitrary<T>,
     readonly history: boolean,
     readonly minLength: number,
     readonly maxGeneratedLength: number,
     readonly maxLength: number,
+    replayPath?: string,
   ) {
     super();
+    this.sourceReplayPath = parseReplayPath(replayPath);
   }
 
   private drawTargetLength(mrng: Random): number {
@@ -44,28 +79,64 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
   generate(mrng: Random, biasFactor: number | undefined): Value<IteratorObject<T, undefined>> {
     const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
     const targetLength = this.drawTargetLength(mrng);
+    return this.wrapper(mrng, appliedBiasFactor, targetLength);
+  }
+
+  private wrapper(
+    mrng: Random,
+    biasFactor: number | undefined,
+    targetLength: number,
+    preBuilt?: Value<T[]>,
+    replay: IteratorReplay = { path: this.sourceReplayPath.slice(), position: 0 },
+  ): Value<IteratorObject<T, undefined>> {
+    const context: IteratorArbitraryContext<T> | undefined = this.history
+      ? { states: new WeakMap(), replay }
+      : undefined;
+    const metadataForReplay = () => (replay.path.length !== 0 ? ` /*replayPath="${replay.path.join(':')}"*/` : '');
     const enrichedProducer = () => {
       const seenValues: T[] | null = this.history ? [] : null;
+      const seenContexts: unknown[] = [];
+      const preBuiltValues = preBuilt !== undefined ? preBuilt.value : [];
+      const arrayContext = preBuilt !== undefined ? (preBuilt.context as ArrayArbitraryContext) : undefined;
+      const clonedMrng = mrng.clone();
       let numSeenValues = 0;
       const g = function* (arb: Arbitrary<T>, clonedMrng: Random): IteratorObject<T, undefined> {
         for (let numYields = 0; numYields < targetLength; ++numYields) {
-          const value = arb.generate(clonedMrng, appliedBiasFactor).value;
+          const item =
+            numYields < preBuiltValues.length
+              ? new Value(preBuiltValues[numYields], arrayContext?.itemsContexts[numYields])
+              : arb.generate(clonedMrng, biasFactor);
+          const value = item.value;
           numSeenValues++;
           if (seenValues !== null) {
             seenValues.push(value);
+            seenContexts.push(item.context);
           }
           yield value;
         }
       };
-      const s = g(this.arb, mrng.clone());
+      const s = g(this.arb, clonedMrng);
+      if (context !== undefined && seenValues !== null) {
+        context.states.set(s, {
+          seenValues,
+          seenContexts,
+          mrng: clonedMrng,
+          biasFactor,
+          preBuiltLength: preBuiltValues.length,
+          arrayContext,
+          targetLength,
+        });
+      }
       return Object.defineProperties(s, {
         toString: {
           value: () =>
-            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined),
+            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined) +
+            metadataForReplay(),
         },
         [toStringMethod]: {
           value: () =>
-            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined),
+            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined) +
+            metadataForReplay(),
         },
         [asyncToStringMethod]: {
           value: async () =>
@@ -73,13 +144,13 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
               numSeenValues,
               targetLength,
               seenValues !== null ? await Promise.all(seenValues.map(asyncStringify)) : undefined,
-            ),
+            ) + metadataForReplay(),
         },
         // We allow reconfiguration of the [cloneMethod] as caller might want to enforce its own
         [cloneMethod]: { value: enrichedProducer, enumerable: true },
       });
     };
-    return new Value(enrichedProducer(), undefined);
+    return new Value(enrichedProducer(), context);
   }
 
   canShrinkWithoutContext(_value: unknown): _value is IteratorObject<T, undefined> {
@@ -88,11 +159,51 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
     return false;
   }
 
-  shrink(
-    _value: IteratorObject<T, undefined>,
-    _context?: unknown,
-  ): IteratorObject<Value<IteratorObject<T, undefined>>> {
-    // Not supported yet, even if context was provided
-    return nil;
+  shrink(value: IteratorObject<T, undefined>, context?: unknown): IteratorObject<Value<IteratorObject<T, undefined>>> {
+    if (context === undefined) {
+      return nil;
+    }
+    const safeContext = context as IteratorArbitraryContext<T>;
+    const state = safeContext.states.get(value);
+    if (state === undefined) {
+      return nil;
+    }
+    const replay = safeContext.replay;
+    const numSeen = replay.path[replay.position];
+    if (numSeen === undefined) {
+      replay.path.push(state.seenValues.length);
+    } else {
+      // Path walking skips predicate execution. Recreate exactly the prefix it consumed.
+      if (state.seenValues.length > numSeen || numSeen > state.targetLength) {
+        throw new Error('Mismatch between iterator replayPath and execution');
+      }
+      while (state.seenValues.length < numSeen) {
+        if (value.next().done) {
+          throw new Error('Mismatch between iterator replayPath and execution');
+        }
+      }
+    }
+    ++replay.position;
+    if (state.seenValues.length === 0) {
+      return nil;
+    }
+    const seenValues = state.seenValues.slice();
+    const arrayContext: ArrayArbitraryContext = {
+      // A different number of consumed items invalidates the previous array's length and index hints.
+      ...(seenValues.length === state.preBuiltLength && state.arrayContext !== undefined
+        ? state.arrayContext
+        : { shrunkOnce: false, lengthContext: undefined, startIndex: 0 }),
+      itemsContexts: state.seenContexts.slice(),
+    };
+    const arrayArb = array(this.arb, {
+      minLength: Math.min(this.minLength, seenValues.length),
+      maxLength: seenValues.length,
+    });
+    const mrng = state.mrng.clone();
+    return arrayArb.shrink(seenValues, arrayContext).map((shrunk) =>
+      // An unconsumed suffix is only kept when required by minLength (including +infinity).
+      // It remains lazy and starts at the random state following the consumed prefix.
+      this.wrapper(mrng, state.biasFactor, Math.max(this.minLength, shrunk.value_.length), shrunk, replay),
+    );
   }
 }

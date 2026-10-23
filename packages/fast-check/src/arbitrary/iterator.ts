@@ -49,11 +49,18 @@ export interface IteratorConstraints {
   size?: SizeForArbitrary;
   /**
    * Do not save items emitted by this arbitrary and print count instead.
-   * Recommended for very large tests.
+   * Disables shrinking. Recommended for very large tests.
    *
    * @defaultValue false
    */
   noHistory?: boolean;
+  /**
+   * Consumption trace printed with a failing iterator, required alongside `seed` and `path`
+   * to replay a shrunk counterexample without running the intermediate predicates.
+   *
+   * @remarks Since 5.0.0
+   */
+  replayPath?: string;
 }
 
 /**
@@ -61,6 +68,10 @@ export interface IteratorConstraints {
  *
  * By default, the produced iterator can be either finite or infinite.
  * You can tweak this behavior by playing with `minLength`, `maxLength` and `noDefaultInfinity`.
+ *
+ * Shrinks the consumed prefix using {@link array}, respecting `minLength`.
+ * With `noHistory: true`, shrinking is disabled. When replaying a shrunk failure,
+ * pass the reported `replayPath` in addition to the runner's `seed` and `path`.
  *
  * WARNING: By default, iterator remembers all values it has ever
  * generated. This causes unbounded memory growth during large tests.
@@ -107,7 +118,7 @@ function iterator<T>(
           maxLength !== Number.POSITIVE_INFINITY ? maxLength : Number.MAX_SAFE_INTEGER,
           specifiedMaxLength,
         );
-  return new IteratorArbitrary(arb, history, minLength, maxGeneratedLength, maxLength);
+  return new IteratorArbitrary(arb, history, minLength, maxGeneratedLength, maxLength, constraints.replayPath);
 }
 
 export { iterator };
