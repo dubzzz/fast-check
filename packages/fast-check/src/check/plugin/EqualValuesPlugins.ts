@@ -63,29 +63,42 @@ function equalValuesRunner(
   skipRuns: boolean,
 ): ReturnType<typeof nestedRun> {
   const stringifiedValue = stringify(value);
-  if (coveredCases.has(stringifiedValue)) {
-    // oxlint-disable-next-line typescript/no-non-null-assertion
-    const coveredCase = coveredCases.get(stringifiedValue)!;
 
-    if (coveredCase === valueIsChangingWithAsyncRun) {
-      // When we know that the value has changed after an async predicate execution, we try to asyncjronously compute its stringified version just in case
-      // If matching an existing case, we can drop the run, otherwise we keep the run
-      const asyncStringifiedValue = await possiblyAsyncStringify(value);
-      if (coveredCases.has(asyncStringifiedValue)) {
-        // oxlint-disable-next-line typescript/no-non-null-assertion
-        const coveredAsyncCase = coveredCases.get(asyncStringifiedValue)!;
-        if (coveredAsyncCase !== valueIsChangingWithAsyncRun && coveredAsyncCase !== valueIsChangingWithSyncRun) {
-          return skipRuns ? fromCached(coveredAsyncCase) : coveredAsyncCase;
-        }
-      }
-    } else if (coveredCase !== valueIsChangingWithSyncRun) {
-      // For nominal cases we simply return the existing case
-      return skipRuns ? fromCached(coveredCase) : coveredCase;
-    }
-    // But we cannot do anything for values changing due to the execution of a synchronous predicate (eg.: pull from the value changes the way it gets stringified)
+  if (!coveredCases.has(stringifiedValue)) {
+    // Not covered yet! We force the run
+    return forceRun(coveredCases, nestedRun, value, executionContext, stringifiedValue);
   }
 
-  return forceRun(coveredCases, nestedRun, value, executionContext, stringifiedValue);
+  // oxlint-disable-next-line typescript/no-non-null-assertion
+  const coveredCase = coveredCases.get(stringifiedValue)!;
+
+  if (coveredCase === valueIsChangingWithSyncRun) {
+    // We cannot do anything for values changing due to the execution of a synchronous predicate (eg.: pull from the value changes the way it gets stringified)
+    // We have to force the run again
+    return forceRun(coveredCases, nestedRun, value, executionContext, stringifiedValue);
+  }
+
+  if (coveredCase === valueIsChangingWithAsyncRun) {
+    // When we know that the value has changed after an async predicate execution, we try to asyncjronously compute its stringified version just in case
+    // If matching an existing case, we can drop the run, otherwise we keep the run
+    return Promise.resolve(possiblyAsyncStringify(value)).then((asyncStringifiedValue) => {
+      // We don't expect the built-in stringify helpers to throw
+      if (!coveredCases.has(asyncStringifiedValue)) {
+        // Not covered yet! We force the run
+        return forceRun(coveredCases, nestedRun, value, executionContext, stringifiedValue);
+      }
+      // oxlint-disable-next-line typescript/no-non-null-assertion
+      const coveredAsyncCase = coveredCases.get(asyncStringifiedValue)!;
+      if (coveredAsyncCase === valueIsChangingWithAsyncRun || coveredAsyncCase === valueIsChangingWithSyncRun) {
+        // Improperly covered! We force the run
+        return forceRun(coveredCases, nestedRun, value, executionContext, stringifiedValue);
+      }
+      return skipRuns ? fromCached(coveredAsyncCase) : coveredAsyncCase;
+    });
+  }
+
+  // For nominal cases we simply return the existing case
+  return skipRuns ? fromCached(coveredCase) : coveredCase;
 }
 
 /**
