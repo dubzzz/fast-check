@@ -18,13 +18,50 @@ function fromCached(cachedValue: RunOutput): RunOutput {
   return new PreconditionFailure(); // already encountered with sync success, so skip it
 }
 
-async function equalValuesRunner(
+function forceRun(
+  coveredCases: Map<string, CoveredCase>,
+  nestedRun: Property<unknown>['run'],
+  value: unknown,
+  executionContext: PredicateExecutionContext,
+  stringifiedValue: string,
+): ReturnType<typeof nestedRun> {
+  const out = nestedRun(value, executionContext);
+
+  if (out === null || !('then' in out)) {
+    // The synchronous execution path
+    const secondStringifiedValue = stringify(value);
+    if (stringifiedValue === secondStringifiedValue) {
+      coveredCases.set(secondStringifiedValue, out);
+    } else {
+      coveredCases.set(stringifiedValue, valueIsChangingWithSyncRun);
+      coveredCases.set(secondStringifiedValue, out);
+    }
+    return out;
+  }
+
+  // The asynchronous execution path
+  return out.then((awaitedOut) => {
+    // By spec `out` should never throw
+    return Promise.resolve(possiblyAsyncStringify(value)).then((secondStringifiedValue) => {
+      // We don't expect the built-in stringify helpers to throw
+      if (stringifiedValue === secondStringifiedValue) {
+        coveredCases.set(secondStringifiedValue, awaitedOut);
+      } else {
+        coveredCases.set(stringifiedValue, valueIsChangingWithAsyncRun);
+        coveredCases.set(secondStringifiedValue, awaitedOut);
+      }
+      return awaitedOut;
+    });
+  });
+}
+
+function equalValuesRunner(
   coveredCases: Map<string, CoveredCase>,
   nestedRun: Property<unknown>['run'],
   value: unknown,
   executionContext: PredicateExecutionContext,
   skipRuns: boolean,
-): Promise<Awaited<ReturnType<typeof nestedRun>>> {
+): ReturnType<typeof nestedRun> {
   const stringifiedValue = stringify(value);
   if (coveredCases.has(stringifiedValue)) {
     // oxlint-disable-next-line typescript/no-non-null-assertion
@@ -48,26 +85,7 @@ async function equalValuesRunner(
     // But we cannot do anything for values changing due to the execution of a synchronous predicate (eg.: pull from the value changes the way it gets stringified)
   }
 
-  const out = nestedRun(value, executionContext);
-  if (out !== null && 'then' in out) {
-    const awaitedOut = await out;
-    const secondStringifiedValue = await possiblyAsyncStringify(value);
-    if (stringifiedValue === secondStringifiedValue) {
-      coveredCases.set(secondStringifiedValue, awaitedOut);
-    } else {
-      coveredCases.set(stringifiedValue, valueIsChangingWithAsyncRun);
-      coveredCases.set(secondStringifiedValue, awaitedOut);
-    }
-    return awaitedOut;
-  }
-  const secondStringifiedValue = stringify(value);
-  if (stringifiedValue === secondStringifiedValue) {
-    coveredCases.set(secondStringifiedValue, out);
-  } else {
-    coveredCases.set(stringifiedValue, valueIsChangingWithSyncRun);
-    coveredCases.set(secondStringifiedValue, out);
-  }
-  return out;
+  return forceRun(coveredCases, nestedRun, value, executionContext, stringifiedValue);
 }
 
 /**
