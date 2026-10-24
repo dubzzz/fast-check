@@ -804,23 +804,8 @@ describe('IteratorArbitrary', () => {
       const value = shrunk.value;
       const consumed = [...value];
 
-      expect(String(value)).toBe(`Iterator.from(${JSON.stringify(consumed)}) /*replayPath="10"*/`);
+      expect(String(value)).toBe(`Iterator.from(${JSON.stringify(consumed)})`);
       expect(await asyncStringify(value)).toBe(String(value));
-    });
-
-    it.each(['-1', '1.5', '1::2', 'abc', '9007199254740992'])('should reject invalid replayPath %s', (replayPath) => {
-      expect(() => new IteratorArbitrary(integer(), true, 0, 100, 100, replayPath)).toThrow(
-        'Invalid iterator replayPath',
-      );
-    });
-
-    it('should reject a replayPath consuming more than the iterator can yield', () => {
-      const arb = new IteratorArbitrary(integer(), true, 0, 100, 100, '56');
-      const generated = generateAtLength(arb, 10);
-
-      expect(() => arb.shrink(generated.value_, generated.context)).toThrow(
-        'Mismatch between iterator replayPath and execution',
-      );
     });
   });
 });
@@ -846,20 +831,15 @@ describe('IteratorArbitrary (integration)', () => {
       Number.POSITIVE_INFINITY,
     );
 
-  it.each([10, 56])('should minimize and replay a failure after consuming up to %i values', async (numConsumed) => {
-    const buildProperty = (replayPath?: string) =>
-      fc.property(iterator(integer({ min: 0, max: 100 }), { maxLength: 100, size: 'max', replayPath }), (value) =>
-        [...value.take(numConsumed)].every((v) => v < 10),
-      );
-    const result = await fc.check(buildProperty(), { seed: 42 });
+  it.each([10, 56])('should minimize a failure after consuming up to %i values', async (numConsumed) => {
+    const property = fc.property(iterator(integer({ min: 0, max: 100 }), { maxLength: 100, size: 'max' }), (value) =>
+      [...value.take(numConsumed)].every((v) => v < 10),
+    );
+    const result = await fc.check(property, { seed: 42 });
 
     expect(result.failed).toBe(true);
     expect(result.numShrinks).toBeGreaterThan(0);
     expect([...cloneIfNeeded(result.counterexample![0])]).toEqual([10]);
-    const replayPath = /replayPath="([\d:]*)"/.exec(String(result.counterexample![0]))![1];
-    const replay = await fc.check(buildProperty(replayPath), { seed: result.seed, path: result.counterexamplePath! });
-    expect(replay.failed).toBe(true);
-    expect([...cloneIfNeeded(replay.counterexample![0])]).toEqual([10]);
   });
 
   it('should shrink values consumed after another property argument has shrunk', async () => {
@@ -890,13 +870,13 @@ describe('IteratorArbitrary (integration)', () => {
     expect([...cloneIfNeeded(result.counterexample![0]).take(100)]).toHaveLength(100);
   });
 
-  it('should replay dynamic consumption with other property arguments and asynchronous predicates', async () => {
+  it('should reproduce dynamic consumption and asynchronous predicates from the original seed', async () => {
     await fc.assert(
       fc.property(fc.integer(), fc.constantFrom(0, 3, Number.POSITIVE_INFINITY), async (seed, minLength) => {
-        const buildProperty = (replayPath?: string) =>
+        const buildProperty = () =>
           fc.property(
             integer({ min: 1, max: 20 }),
-            iterator(integer({ min: 0, max: 100 }), { minLength, maxLength: Number.POSITIVE_INFINITY, replayPath }),
+            iterator(integer({ min: 0, max: 100 }), { minLength, maxLength: Number.POSITIVE_INFINITY }),
             integer({ min: 1, max: 20 }),
             async (before, value, after) => {
               await Promise.resolve();
@@ -905,8 +885,7 @@ describe('IteratorArbitrary (integration)', () => {
           );
         const result = await fc.check(buildProperty(), { seed });
         expect(result.failed).toBe(true);
-        const replayPath = /replayPath="([\d:]*)"/.exec(String(result.counterexample![1]))![1];
-        const replay = await fc.check(buildProperty(replayPath), { seed, path: result.counterexamplePath! });
+        const replay = await fc.check(buildProperty(), { seed });
 
         expect(replay.failed).toBe(true);
         expect(replay.counterexamplePath).toBe(result.counterexamplePath);

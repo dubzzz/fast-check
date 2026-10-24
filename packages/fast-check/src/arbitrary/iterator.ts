@@ -54,13 +54,6 @@ export interface IteratorConstraints {
    * @defaultValue false
    */
   noHistory?: boolean;
-  /**
-   * Consumption trace printed with a failing iterator, required alongside `seed` and `path`
-   * to replay a shrunk counterexample without running the intermediate predicates.
-   *
-   * @remarks Since 5.0.0
-   */
-  replayPath?: string;
 }
 
 /**
@@ -70,8 +63,7 @@ export interface IteratorConstraints {
  * You can tweak this behavior by playing with `minLength`, `maxLength` and `noDefaultInfinity`.
  *
  * Shrinks the consumed prefix using {@link array}, respecting `minLength`.
- * With `noHistory: true`, shrinking is disabled. When replaying a shrunk failure,
- * pass the reported `replayPath` in addition to the runner's `seed` and `path`.
+ * With `noHistory: true`, shrinking is disabled.
  *
  * WARNING: By default, iterator remembers all values it has ever
  * generated. This causes unbounded memory growth during large tests.
@@ -118,7 +110,7 @@ function iterator<T>(
           maxLength !== Number.POSITIVE_INFINITY ? maxLength : Number.MAX_SAFE_INTEGER,
           specifiedMaxLength,
         );
-  return new IteratorArbitrary(arb, history, minLength, maxGeneratedLength, maxLength, constraints.replayPath);
+  return new IteratorArbitrary(arb, history, minLength, maxGeneratedLength, maxLength);
 }
 
 export { iterator };

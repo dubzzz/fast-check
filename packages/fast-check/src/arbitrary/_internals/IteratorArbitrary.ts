@@ -14,27 +14,12 @@ type IteratorState<T> = {
   biasFactor: number | undefined;
   preBuiltLength: number;
   arrayContext: ArrayArbitraryContext | undefined;
-  targetLength: number;
 };
-
-type IteratorReplay = { path: number[]; position: number };
 
 // Clones share their shrinking context, but each records its own consumption.
 type IteratorArbitraryContext<T> = {
   states: WeakMap<IteratorObject<T, undefined>, IteratorState<T>>;
-  replay: IteratorReplay;
 };
-
-function parseReplayPath(replayPath: string | undefined): number[] {
-  if (replayPath === undefined || replayPath === '') {
-    return [];
-  }
-  const path = replayPath.split(':').map(Number);
-  if (!/^\d+(?::\d+)*$/.test(replayPath) || path.some((count) => !Number.isSafeInteger(count))) {
-    throw new Error('Invalid iterator replayPath');
-  }
-  return path;
-}
 
 function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings?: string[]): string {
   const seenSegment =
@@ -47,18 +32,14 @@ function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings
 }
 
 export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>> {
-  private readonly sourceReplayPath: number[];
-
   constructor(
     readonly arb: Arbitrary<T>,
     readonly history: boolean,
     readonly minLength: number,
     readonly maxGeneratedLength: number,
     readonly maxLength: number,
-    replayPath?: string,
   ) {
     super();
-    this.sourceReplayPath = parseReplayPath(replayPath);
   }
 
   private drawTargetLength(mrng: Random): number {
@@ -87,12 +68,8 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
     biasFactor: number | undefined,
     targetLength: number,
     preBuilt?: Value<T[]>,
-    replay: IteratorReplay = { path: this.sourceReplayPath.slice(), position: 0 },
   ): Value<IteratorObject<T, undefined>> {
-    const context: IteratorArbitraryContext<T> | undefined = this.history
-      ? { states: new WeakMap(), replay }
-      : undefined;
-    const metadataForReplay = () => (replay.path.length !== 0 ? ` /*replayPath="${replay.path.join(':')}"*/` : '');
+    const context: IteratorArbitraryContext<T> | undefined = this.history ? { states: new WeakMap() } : undefined;
     const enrichedProducer = () => {
       const seenValues: T[] | null = this.history ? [] : null;
       const seenContexts: unknown[] = [];
@@ -124,19 +101,16 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
           biasFactor,
           preBuiltLength: preBuiltValues.length,
           arrayContext,
-          targetLength,
         });
       }
       return Object.defineProperties(s, {
         toString: {
           value: () =>
-            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined) +
-            metadataForReplay(),
+            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [toStringMethod]: {
           value: () =>
-            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined) +
-            metadataForReplay(),
+            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [asyncToStringMethod]: {
           value: async () =>
@@ -144,7 +118,7 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
               numSeenValues,
               targetLength,
               seenValues !== null ? await Promise.all(seenValues.map(asyncStringify)) : undefined,
-            ) + metadataForReplay(),
+            ),
         },
         // We allow reconfiguration of the [cloneMethod] as caller might want to enforce its own
         [cloneMethod]: { value: enrichedProducer, enumerable: true },
@@ -168,22 +142,6 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
     if (state === undefined) {
       return nil;
     }
-    const replay = safeContext.replay;
-    const numSeen = replay.path[replay.position];
-    if (numSeen === undefined) {
-      replay.path.push(state.seenValues.length);
-    } else {
-      // Path walking skips predicate execution. Recreate exactly the prefix it consumed.
-      if (state.seenValues.length > numSeen || numSeen > state.targetLength) {
-        throw new Error('Mismatch between iterator replayPath and execution');
-      }
-      while (state.seenValues.length < numSeen) {
-        if (value.next().done) {
-          throw new Error('Mismatch between iterator replayPath and execution');
-        }
-      }
-    }
-    ++replay.position;
     if (state.seenValues.length === 0) {
       return nil;
     }
@@ -203,7 +161,7 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
     return arrayArb.shrink(seenValues, arrayContext).map((shrunk) =>
       // An unconsumed suffix is only kept when required by minLength (including +infinity).
       // It remains lazy and starts at the random state following the consumed prefix.
-      this.wrapper(mrng, state.biasFactor, Math.max(this.minLength, shrunk.value_.length), shrunk, replay),
+      this.wrapper(mrng, state.biasFactor, Math.max(this.minLength, shrunk.value_.length), shrunk),
     );
   }
 }
