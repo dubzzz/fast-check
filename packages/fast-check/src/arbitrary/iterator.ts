@@ -49,7 +49,7 @@ export interface IteratorConstraints {
   size?: SizeForArbitrary;
   /**
    * Do not save items emitted by this arbitrary and print count instead.
-   * Recommended for very large tests.
+   * Disables shrinking. Recommended for very large tests.
    *
    * @defaultValue false
    */
@@ -61,6 +61,9 @@ export interface IteratorConstraints {
  *
  * By default, the produced iterator can be either finite or infinite.
  * You can tweak this behavior by playing with `minLength`, `maxLength` and `noDefaultInfinity`.
+ *
+ * Shrinks the consumed prefix using {@link array}, respecting `minLength`.
+ * With `noHistory: true`, shrinking is disabled.
  *
  * WARNING: By default, iterator remembers all values it has ever
  * generated. This causes unbounded memory growth during large tests.
