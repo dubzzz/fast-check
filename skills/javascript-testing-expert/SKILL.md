@@ -55,3 +55,8 @@ Use tests to find bugs, document behavior, and prevent regressions.
 - **✅ Do** make Arrange/Act/Assert visible. Put simple examples first and helpers below tests.
 - **👍 Prefer** an installed, compatible `@fast-check/vitest`; otherwise use fast-check inside the current runner.
 - **✅ Do** retain counterexamples and seed/path for replay. Keep readable regressions alongside exploratory properties.
+
+## Read only the relevant references
+
+- [Properties and replay](references/properties-and-replay.md): oracles, domains, shrinking, regression cases.
+- [Deterministic data and tooling](references/deterministic-data-and-tooling.md): unused fields, dates, Faker, generators, runner integration.
