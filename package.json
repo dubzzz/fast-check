@@ -55,7 +55,7 @@
     "oxfmt": "^0.74.0",
     "oxlint": "^1.89.0",
     "oxlint-tsgolint": "^7.0.2005",
-    "pkg-pr-new": "^0.0.91",
+    "pkg-pr-new": "^0.0.92",
     "publint": "^0.3.25",
     "rolldown": "^1.2.15",
     "rolldown-plugin-dts": "^0.28.8",
