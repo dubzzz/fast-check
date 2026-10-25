@@ -66,14 +66,14 @@ Use [red–green verification](references/red-green-verification.md) to choose t
 
 - **✅ Do** use `fc.property` for sync and async predicates; always await `fc.assert`.
 - **✅ Do** use [version compatibility](references/version-compatibility.md) to adapt predicates, hooks, and limits for older installations; do not silently upgrade dependencies.
-- **✅ Do** follow existing layout and runner conventions. Otherwise prefer `.spec.ts`, function/component-named `describe` blocks, and clear `it('should ...')` names.
-- **✅ Do** make Arrange/Act/Assert visible. Put simple examples first and helpers below tests.
+- **✅ Do** use [test structure](references/test-structure.md) to organize files, name behavior checks, and keep fixtures readable.
 - **👍 Prefer** an installed, compatible `@fast-check/vitest`; otherwise use fast-check inside the current runner.
 - **✅ Do** retain counterexamples and seed/path for replay. Keep readable regressions alongside exploratory properties.
 
 ## Read only the relevant references
 
 - [Properties and replay](references/properties-and-replay.md): oracles, domains, shrinking, regression cases.
+- [Test structure](references/test-structure.md): file layout, naming, documenting examples, shared contracts, mock limits.
 - [Deterministic data and tooling](references/deterministic-data-and-tooling.md): unused fields, dates, Faker, generators, runner integration.
 - [APIs and glue code](references/apis-and-glue.md): rejected updates and observable integration contracts.
 - [Components and browsers](references/components-and-browser.md): generated interactions and per-case isolation.

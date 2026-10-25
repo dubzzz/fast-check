@@ -25,12 +25,14 @@ Example contract: `createSearch({ lookup, publish })` returns `search(query)`. E
 - **✅ Do** use [version compatibility](version-compatibility.md) to adapt scheduler and predicate APIs for older projects.
 
 ```ts
-import { expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as fc from 'fast-check';
 import { createSearch } from './search.js';
 
-it('should publish only the latest requested result despite response order', async () => {
-  await fc.assert(latestRequestProperty(createSearch));
+describe('createSearch', () => {
+  it('should publish only the latest requested result despite response order', async () => {
+    await fc.assert(latestRequestProperty(createSearch));
+  });
 });
 
 // Helpers
@@ -63,7 +65,6 @@ function latestRequestProperty(factory: typeof createSearch) {
 
 - **✅ Do** wrap React updates with async `act`, through `fc.scheduler({ act })` or the wait method's `act` argument, so assertions see committed UI updates.
 - **❌ Don't** await a UI query that needs a held response before advancing the scheduler; the query cannot succeed until that response is released.
-- **✅ Do** unmount and restore stubs in predicate-local `finally` so failures and shrink attempts cannot contaminate the next evaluation.
 - **❌ Don't** assume a test-process scheduler controls browser events, network, timers, or another process.
 - **✅ Do** confirm intercepted browser requests have arrived, generate their delivery order, then assert UI state after each release.
 - **✅ Do** retain real integration tests to check wiring that controlled dependencies bypass; state which boundary each generated test controls.
@@ -77,18 +78,9 @@ function latestRequestProperty(factory: typeof createSearch) {
 
 ## Reproduce and keep the failure
 
-- **✅ Do** retain the seed, path, counterexample, and scheduler trace for replay. Keep arbitraries, configuration, and fast-check version unchanged to reproduce the same case.
-
-```ts
-await fc.assert(latestRequestProperty(createSearch), {
-  seed: reportedSeed,
-  path: reportedPath,
-  endOnFailure: true,
-});
-```
+- **✅ Do** save the scheduler trace alongside the counterexample; use the [replay steps](properties-and-replay.md#replay-an-observed-failure) to reproduce it before fixing the race.
 
 - **✅ Do** keep the failing order as a small `fc.schedulerFor` regression alongside the generated property, covering the known bug while exploration continues.
 - **❌ Don't** replace application assertions with scheduler-order assertions; delivering responses in an order does not prove the application handled them correctly.
-- **❌ Don't** permanently pin the exploratory property to one seed; that repeats the same exploration instead of finding new cases.
 - **❌ Don't** claim exhaustive race coverage from sampled controlled interleavings.
-- **✅ Do** read [execution hooks and limits](execution-and-limits.md) for per-evaluation lifecycle plugins and bounded exploration/shrinking.
+- **✅ Do** use [execution hooks and limits](execution-and-limits.md) to clean up pending work and bound exploration without losing the counterexample report.

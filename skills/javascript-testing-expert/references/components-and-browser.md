@@ -6,7 +6,7 @@
 - **✅ Do** use UI properties to verify rendering, event wiring, focus, persistence, and navigation through the interface users operate.
 - **👍 Prefer** broad tests of complex domain logic in pure functions too; they explore more cases cheaply while UI tests verify integration.
 - **✅ Do** keep named examples and reviewed screenshots for important journeys and visual states; generated runs may not visit those exact cases.
-- **❌ Don't** treat random screenshots as proof of visual correctness; they need reviewed expected images. DOM snapshots check structure, not appearance.
+- **❌ Don't** create a fresh golden screenshot for each random input; without a reviewed expected image, the comparison cannot detect a visual regression.
 - **✅ Do** use [version compatibility](version-compatibility.md) to adapt async predicates for older projects.
 
 For design-system components:
@@ -31,15 +31,19 @@ Example contract: `Counter` starts at zero, accepts `max`, exposes a numeric `st
 import { createElement } from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as fc from 'fast-check';
 import { Counter } from './Counter.js';
 ```
 
-- **✅ Do** put setup and cleanup inside the predicate so each generated case and shrink attempt starts with fresh component state.
-- **❌ Don't** rely on runner `beforeEach`/`afterEach` for that isolation; they surround the outer test, which contains many fast-check evaluations.
-
 ```js
+describe('Counter', () => {
+  it('should follow the bounded counter model after every interaction', async () => {
+    await fc.assert(counterProperty(Counter), { numRuns: 40 });
+  });
+});
+
+// Helpers
 function counterProperty(CounterUnderTest) {
   // 30 actions is an execution budget for this UI recipe, not a domain limit.
   const actions = fc.array(fc.constantFrom('Increment', 'Decrement'), { maxLength: 30, size: 'max' });
@@ -67,12 +71,6 @@ function counterProperty(CounterUnderTest) {
 }
 ```
 
-```js
-it('should follow the bounded counter model after every interaction', async () => {
-  await fc.assert(counterProperty(Counter), { numRuns: 40 });
-});
-```
-
 - **✅ Do** await async queries and `waitFor` assertions so missing UI updates fail the test instead of continuing after it finishes.
 - **❌ Don't** put clicks or other side effects inside `waitFor`; it retries its callback and may repeat the action.
 - **✅ Do** settle or cancel pending work before cleanup, then restore timers, spies, handlers, and globals so later evaluations inherit no effects.
@@ -80,7 +78,6 @@ it('should follow the bounded counter model after every interaction', async () =
 - **👍 Prefer** `fc.commands` with `fc.asyncModelRun` when action availability depends on model state.
 - **✅ Do** derive command preconditions from the model so a broken application cannot decide which checks to skip.
 - **✅ Do** describe each command's action and inputs in `toString()` so failures show a readable sequence.
-- **❌ Don't** discard a case because the application produced a failing result; that hides the bug the property should report.
 
 ## Browser/E2E: preserve the same property
 

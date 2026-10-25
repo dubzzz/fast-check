@@ -13,6 +13,8 @@ test service when testing integration. Merely repeating the implementation's moc
 call order does not establish either contract. Keep clear examples for important
 error paths and simple wiring that has no useful generated invariant.
 
+- **✅ Do** repeat the same request with the same idempotency key to verify one observable effect. Distinct requests with distinct keys need a separate property.
+
 ## Recipe: a rejected update must not change the resource
 
 This example assumes an inventory API accepts nonnegative integer quantities and
@@ -33,12 +35,14 @@ must release partially acquired resources if its own setup fails. Browser storag
 or resetting client mocks does not isolate server-side data.
 
 ```ts
-import { expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as fc from 'fast-check';
 import { createInventoryFixture } from './inventory-test-fixture.js';
 
-it('should reject negative quantities without changing the resource', async () => {
-  await fc.assert(rejectedUpdateProperty(createInventoryFixture));
+describe('inventory', () => {
+  it('should reject negative quantities without changing the resource', async () => {
+    await fc.assert(rejectedUpdateProperty(createInventoryFixture));
+  });
 });
 
 // Helpers

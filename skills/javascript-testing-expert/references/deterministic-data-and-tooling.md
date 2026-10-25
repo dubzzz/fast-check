@@ -8,6 +8,7 @@
 - **✅ Do** constrain dates to the supported domain. Generate related dates together so constraints such as `start <= end` survive shrinking.
 - **❌ Don't** let the wall clock decide whether a test passes.
 - **❌ Don't** narrow application types merely to avoid filling a test fixture.
+- **✅ Do** control ambient locale, time, randomness, and external responses so replay restores the same conditions. Inject or stub these dependencies when production code uses them.
 
 ## Construct valid data directly
 
@@ -24,7 +25,7 @@ fc.integer({ min: 0, max: 0x3fffffff }).map((value) => value * 2);
 fc.tuple(fc.string(), fc.string()).map(([prefix, suffix]) => prefix + 'A' + suffix);
 ```
 
-**✅ Do** use defaults when they match the supported domain. Prefer `size: '-1'` for cheaper exploration before hard length caps. A documented browser journey budget is different from a domain constraint; an arbitrary cap must never remove a known failing case. The [property patterns](properties-and-replay.md) cover independent invariants, input-derived relations, constructed inputs, function compositions, and simpler references.
+Use [property patterns](properties-and-replay.md) to choose the invariant these generated values must satisfy.
 
 ## Keep Faker reproducible
 
@@ -55,45 +56,35 @@ const person = fakerToArb((faker) => ({
 - **✅ Do** keep Faker version and locale fixed for replay. Control the reference date for relative-date generators.
 - **✅ Do** call methods such as `firstName()`, rather than returning function objects.
 
-## Runner integration and mocks
+## Runner integration and cleanup
 
 These forms express the same property through the runner integration or direct fast-check calls:
 
 ```ts
 // @fast-check/vitest
-it.prop([fc.string()], { numRuns: 100 })('should round-trip', (value) => {
-  expect(decode(encode(value))).toBe(value);
+describe('encode', () => {
+  it.prop([fc.string()], { numRuns: 100 })('should round-trip', (value) => {
+    expect(decode(encode(value))).toBe(value);
+  });
 });
 
 // fast-check inside the project's runner
-it('should round-trip', async () => {
-  await fc.assert(
-    fc.property(fc.string(), (value) => {
-      expect(decode(encode(value))).toBe(value);
-    }),
-    { numRuns: 100 },
-  );
+describe('encode', () => {
+  it('should round-trip', async () => {
+    await fc.assert(
+      fc.property(fc.string(), (value) => {
+        expect(decode(encode(value))).toBe(value);
+      }),
+      { numRuns: 100 },
+    );
+  });
 });
 ```
 
-Import `it` from `@fast-check/vitest` for `it.prop`, or from the existing runner for direct `fc.assert`; import `fc` as a namespace from `fast-check`. Use [Version compatibility](version-compatibility.md) to adapt direct fast-check calls for older installations.
+Import `it` from `@fast-check/vitest` for `it.prop`, or from the existing runner for direct `fc.assert`. Import `describe` and `expect` from the runner, and `fc` as a namespace from `fast-check`. Use [Version compatibility](version-compatibility.md) to adapt direct fast-check calls for older installations.
 
 - **✅ Do** check Vitest's `clearMocks`, `mockReset`, `restoreMocks`, `unstubEnvs`, and `unstubGlobals` to determine which state needs explicit cleanup.
 - **❌ Don't** assume runner cleanup happens between cases inside `fc.assert`. Reset state per evaluation; see [Execution hooks and limits](execution-and-limits.md).
 
-- **👎 Avoid** rebuilding dependency internals with mocks. If setup mainly reproduces call sequences, assert a public outcome using a real dependency or one boundary stub.
-- **✅ Do** test observable results of component interactions: rendering, events, focus, navigation, or persisted state.
-- **❌ Don't** duplicate dependency tests or test trivial private component logic.
-
-## Cover contract variants
-
-- **👍 Prefer** a shared contract suite for interchangeable implementations or configurations, with each variant named. Keep differing behavior in explicit tests.
-- **✅ Do** cover synchronous return/throw and asynchronous resolve/reject when the API supports them. Check synchronous behavior before awaiting; `await` alone hides whether a value was returned directly or through a promise.
-
-## File and code layout
-
-- **✅** Mimic the existing file layout, naming, assertion style, and runner. Without an established convention, prefer colocated `.spec.ts` files, `describe` named after the function or public component under test, and `it('should ...')` names that state the contract.
-- **✅** Put simple documenting examples before more exploratory properties. Keep each test focused on one behavior; several assertions may describe that behavior.
-- **✅** Make Arrange, Act, and Assert easy to identify. Put shared helpers below the tests under `// Helpers`, with names describing their purpose. Avoid a large configurable `prepare` helper that hides the action being tested.
-- **👍** Prefer `@fast-check/vitest` if already installed. Otherwise use `fast-check` directly inside the existing runner. Add relevant devDependencies using the project's package manager when needed; explain why an optional runner integration or browser tool would help before adding it.
-- **✅** Use Testing Library for component behavior, the project's browser runner for real browser behavior, and controlled network dependencies such as MSW for isolated tests. A true integration or E2E test may intentionally exercise a real test service; isolate its data and do not depend on uncontrolled external services.
+- **✅ Do** choose tools for the boundary: Testing Library for component interactions, the project's browser runner for browser behavior, and MSW or equivalent for controlled network responses.
+- **✅ Do** add needed devDependencies with the project's package manager. Explain which missing capability an optional runner integration or browser tool provides before adding it.
