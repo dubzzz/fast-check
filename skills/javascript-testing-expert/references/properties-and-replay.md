@@ -1,6 +1,6 @@
 # Properties and reproducibility
 
-Use fast-check v5 for these recipes. For older projects, read Version compatibility.
+Use fast-check v5 for these recipes. For older projects, read [Version compatibility](version-compatibility.md).
 
 ## Choose an oracle before the generator
 
@@ -97,4 +97,4 @@ First reproduce the failure, then distinguish a production bug from an incorrect
 - **✅** Account for JavaScript semantics: `NaN`, infinities, signed zero, unsafe integer arithmetic, Unicode, and invalid dates where the contract permits them. Use `bigint` for an exact integer oracle when appropriate; do not change the system's input type to evade a bug.
 - **❌** Avoid raw `Math.random()`, unseeded Faker, real time, ambient locale, and external network variability in the test harness. Use shrinkable arbitraries and explicit dependencies. If the production code depends on randomness or time, inject or control that dependency too.
 
-For per-evaluation lifecycle plugins and bounded exploration/shrinking, read Execution hooks and limits.
+For per-evaluation lifecycle plugins and bounded exploration/shrinking, read [Execution hooks and limits](execution-and-limits.md).

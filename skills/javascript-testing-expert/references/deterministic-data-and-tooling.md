@@ -76,10 +76,10 @@ it('should round-trip', async () => {
 });
 ```
 
-Use the imports appropriate to each form. For direct fast-check on older versions, follow Version compatibility.
+Use the imports appropriate to each form. For direct fast-check on older versions, follow [Version compatibility](version-compatibility.md).
 
 - **✅ Do** inspect Vitest's `clearMocks`, `mockReset`, `restoreMocks`, `unstubEnvs`, and `unstubGlobals`.
-- **❌ Don't** assume runner cleanup happens between cases inside `fc.assert`. Reset state per evaluation; see Execution hooks and limits.
+- **❌ Don't** assume runner cleanup happens between cases inside `fc.assert`. Reset state per evaluation; see [Execution hooks and limits](execution-and-limits.md).
 
 - **👎 Avoid** extensive mocks and assertions that restate internal call order. Review the test boundary when setup grows.
 - **✅ Do** test consequential public component interactions.

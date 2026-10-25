@@ -50,7 +50,7 @@ Use tests to find bugs, document behavior, and prevent regressions.
 ## Fit the project; default to v5
 
 - **✅ Do** use v5 `fc.property` for sync and async predicates; always await `fc.assert`.
-- **✅ Do** check the resolved package and exports. For older installations, read version compatibility; do not silently upgrade dependencies.
+- **✅ Do** check the resolved package and exports. For older installations, read [version compatibility](references/version-compatibility.md); do not silently upgrade dependencies.
 - **✅ Do** follow existing layout and runner conventions. Otherwise prefer `.spec.ts`, function/component-named `describe` blocks, and clear `it('should ...')` names.
 - **✅ Do** make Arrange/Act/Assert visible. Put simple examples first and helpers below tests.
 - **👍 Prefer** an installed, compatible `@fast-check/vitest`; otherwise use fast-check inside the current runner.
@@ -60,3 +60,4 @@ Use tests to find bugs, document behavior, and prevent regressions.
 
 - [Properties and replay](references/properties-and-replay.md): oracles, domains, shrinking, regression cases.
 - [Deterministic data and tooling](references/deterministic-data-and-tooling.md): unused fields, dates, Faker, generators, runner integration.
+- [Execution hooks and limits](references/execution-and-limits.md): v5 lifecycle plugins and slow-test budgets.
