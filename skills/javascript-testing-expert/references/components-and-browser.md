@@ -27,33 +27,30 @@ Example contract: `Counter` starts at zero, accepts `max`, exposes a numeric `st
 - **👍 Prefer** meaningful behavior such as selection, undo, or focus restoration when adapting this example; avoid properties that only restate trivial component logic.
 - **✅ Do** render the real component in the project's DOM environment to exercise its actual rendering and event wiring.
 
-```js
-import { createElement } from 'react';
+```tsx
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import * as fc from 'fast-check';
 import { Counter } from './Counter.js';
-```
 
-```js
 describe('Counter', () => {
   it('should follow the bounded counter model after every interaction', async () => {
-    await fc.assert(counterProperty(Counter), { numRuns: 40 });
+    await fc.assert(counterProperty(), { numRuns: 40 });
   });
 });
 
 // Helpers
-function counterProperty(CounterUnderTest) {
+function counterProperty() {
   // 30 actions is an execution budget for this UI recipe, not a domain limit.
   const actions = fc.array(fc.constantFrom('Increment', 'Decrement'), { maxLength: 30, size: 'max' });
   return fc.property(actions, async (sequence) => {
     const user = userEvent.setup();
     try {
       // Arrange: a fresh component and model for every evaluation.
-      render(createElement(CounterUnderTest, { max: 3 }));
-      const transitions = { Increment: [1, 2, 3, 3], Decrement: [0, 0, 1, 2] };
-      let expected = 0;
+      render(<Counter max={3} />);
+      const transitions = { Increment: [1, 2, 3, 3], Decrement: [0, 0, 1, 2] } as const;
+      let expected: 0 | 1 | 2 | 3 = 0;
       expect(screen.getByRole('status').textContent).toBe(String(expected));
 
       for (const action of sequence) {
