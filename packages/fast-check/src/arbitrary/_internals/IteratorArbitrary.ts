@@ -5,13 +5,11 @@ import type { Random } from '../../random/generator/Random.js';
 import { nil } from '../../utils/iterator.js';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
-function prettyPrint(numSeen: number, numTargetValues: number, seenValuesStrings?: string[]): string {
+function prettyPrint(numSeen: number, isExhausted: boolean, seenValuesStrings?: string[]): string {
   const seenSegment =
     seenValuesStrings !== undefined
-      ? `[${(numSeen === numTargetValues ? seenValuesStrings : numTargetValues === Number.POSITIVE_INFINITY ? [...seenValuesStrings, `/*…*/`] : numSeen === numTargetValues - 1 ? [...seenValuesStrings, `/*${numTargetValues - numSeen} other…*/`] : [...seenValuesStrings, `/*${numTargetValues - numSeen} others…*/`]).join(',')}]`
-      : numTargetValues === Number.POSITIVE_INFINITY
-        ? `/*${numSeen} emitted*/`
-        : `/*${numSeen} emitted over ${numTargetValues}*/`;
+      ? `[${(isExhausted ? seenValuesStrings : [...seenValuesStrings, '/*…*/']).join(',')}]`
+      : `/*${numSeen} emitted${isExhausted ? '' : '…'}*/`;
   return `Iterator.from(${seenSegment})`;
 }
 
@@ -47,31 +45,56 @@ export class IteratorArbitrary<T> extends Arbitrary<IteratorObject<T, undefined>
     const enrichedProducer = () => {
       const seenValues: T[] | null = this.history ? [] : null;
       let numSeenValues = 0;
-      const g = function* (arb: Arbitrary<T>, clonedMrng: Random): IteratorObject<T, undefined> {
-        for (let numYields = 0; numYields < targetLength; ++numYields) {
-          const value = arb.generate(clonedMrng, appliedBiasFactor).value;
-          numSeenValues++;
-          if (seenValues !== null) {
-            seenValues.push(value);
+      let hasStarted = false;
+      let isExhausted = false;
+      const g = function* (arb: Arbitrary<T>, clonedMrng: Random): Generator<T, undefined> {
+        hasStarted = true;
+        try {
+          for (let numYields = 0; numYields < targetLength; ++numYields) {
+            const value = arb.generate(clonedMrng, appliedBiasFactor).value;
+            numSeenValues++;
+            if (seenValues !== null) {
+              seenValues.push(value);
+            }
+            yield value;
           }
-          yield value;
+        } finally {
+          isExhausted = true;
         }
       };
       const s = g(this.arb, mrng.clone());
+      const returnMethod = s.return;
+      const throwMethod = s.throw;
       return Object.defineProperties(s, {
+        // Closing a generator before its first next() does not run its finally block.
+        return: {
+          value: (value: undefined) => {
+            const result = returnMethod.call(s, value);
+            isExhausted = true;
+            return result;
+          },
+        },
+        throw: {
+          value: (error: unknown) => {
+            if (!hasStarted) {
+              isExhausted = true;
+            }
+            return throwMethod.call(s, error);
+          },
+        },
         toString: {
           value: () =>
-            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined),
+            prettyPrint(numSeenValues, isExhausted, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [toStringMethod]: {
           value: () =>
-            prettyPrint(numSeenValues, targetLength, seenValues !== null ? seenValues.map(stringify) : undefined),
+            prettyPrint(numSeenValues, isExhausted, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
         [asyncToStringMethod]: {
           value: async () =>
             prettyPrint(
               numSeenValues,
-              targetLength,
+              isExhausted,
               seenValues !== null ? await Promise.all(seenValues.map(asyncStringify)) : undefined,
             ),
         },
