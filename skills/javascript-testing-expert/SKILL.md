@@ -61,5 +61,6 @@ Use tests to find bugs, document behavior, and prevent regressions.
 - [Properties and replay](references/properties-and-replay.md): oracles, domains, shrinking, regression cases.
 - [Deterministic data and tooling](references/deterministic-data-and-tooling.md): unused fields, dates, Faker, generators, runner integration.
 - [APIs and glue code](references/apis-and-glue.md): rejected updates and observable integration contracts.
+- [Components and browsers](references/components-and-browser.md): generated interactions and per-case isolation.
 - [Async code and races](references/async-and-races.md): controlled dependencies and completion orders.
 - [Execution hooks and limits](references/execution-and-limits.md): v5 lifecycle plugins and slow-test budgets.
