@@ -2,10 +2,10 @@
 
 ## Unused fields and clocks
 
-- **👍 Prefer** `name: g(fc.string)` for an incidental name. Pass the arbitrary factory, not `g(fc.string())`.
+- **👍 Prefer** `name: g(fc.string)` for an unused name, so a fixed literal does not imply significance. Pass the arbitrary factory, not `g(fc.string())`.
 - **✅ Do** use an explicit multi-run property to claim a field never affects behavior. One `g` sample is insufficient.
 - **✅ Do** control today's date with `g(fc.date, { noInvalidDate: true })` and `vi.setSystemTime(now)` when using fake timers. Restore `vi.useRealTimers()` in `finally`.
-- **✅ Do** constrain dates to the supported domain. Generate related dates together for temporal properties.
+- **✅ Do** constrain dates to the supported domain. Generate related dates together so constraints such as `start <= end` survive shrinking.
 - **❌ Don't** let the wall clock decide whether a test passes.
 - **❌ Don't** narrow application types merely to avoid filling a test fixture.
 
@@ -28,7 +28,7 @@ fc.tuple(fc.string(), fc.string()).map(([prefix, suffix]) => prefix + 'A' + suff
 
 ## Keep Faker reproducible
 
-- **👍 Prefer** built-in arbitraries for behavior-relevant fields.
+- **👍 Prefer** built-in arbitraries for behavior-relevant fields, so failures shrink toward simpler values.
 - **✅ Do** seed a fresh Faker instance from fast-check when Faker is already used. Avoid global Faker state.
 
 A small reproducible adapter:
@@ -76,13 +76,13 @@ it('should round-trip', async () => {
 });
 ```
 
-Use the imports appropriate to each form. For direct fast-check on older versions, follow [Version compatibility](version-compatibility.md).
+Import `it` from `@fast-check/vitest` for `it.prop`, or from the existing runner for direct `fc.assert`; import `fc` as a namespace from `fast-check`. Use [Version compatibility](version-compatibility.md) to adapt direct fast-check calls for older installations.
 
-- **✅ Do** inspect Vitest's `clearMocks`, `mockReset`, `restoreMocks`, `unstubEnvs`, and `unstubGlobals`.
+- **✅ Do** check Vitest's `clearMocks`, `mockReset`, `restoreMocks`, `unstubEnvs`, and `unstubGlobals` to determine which state needs explicit cleanup.
 - **❌ Don't** assume runner cleanup happens between cases inside `fc.assert`. Reset state per evaluation; see [Execution hooks and limits](execution-and-limits.md).
 
-- **👎 Avoid** extensive mocks and assertions that restate internal call order. Review the test boundary when setup grows.
-- **✅ Do** test consequential public component interactions.
+- **👎 Avoid** rebuilding dependency internals with mocks. If setup mainly reproduces call sequences, assert a public outcome using a real dependency or one boundary stub.
+- **✅ Do** test observable results of component interactions: rendering, events, focus, navigation, or persisted state.
 - **❌ Don't** duplicate dependency tests or test trivial private component logic.
 
 ## Cover contract variants

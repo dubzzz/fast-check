@@ -2,19 +2,14 @@
 
 - **✅ Required:** Confirm every added test fails when its target behavior is violated, then passes with correct behavior. Apply this to examples and properties at every layer.
 
-## Red
+## Follow this order
 
-- **👍 Prefer** writing and running the test before implementing the behavior or fix.
-- **✅ Do** test existing behavior against the pre-fix implementation, a faulty dependency, or a targeted local mutation.
-- **✅ Do** keep the oracle intact. Break the behavior the test protects.
-- **❌ Don't** accept an import error, broken fixture, unrelated timeout, or artificial failing assertion as proof.
-- **✅ Do** strengthen the assertion or exercised cases if the broken behavior still passes.
+1. **✅ Do** choose how to violate the target behavior. Prefer running before the fix. For already-correct behavior, inject a faulty dependency or make an isolated local mutation. Keep the oracle intact.
+2. **✅ Do** run the test and confirm its intended assertion fails. If broken behavior passes, strengthen the assertion or exercised cases, then repeat this step.
+3. **✅ Do** implement or restore correct behavior and rerun the same case to confirm green. Remove temporary defects before committing; keep tests green while refactoring.
+4. **✅ Do** report the observed failure and success. If execution is blocked, say that failure sensitivity remains unverified.
 
-## Green and refactor
-
-- **✅ Do** implement or restore correct behavior and rerun the same case.
-- **✅ Do** remove temporary defects before committing. Keep tests green while refactoring.
-- **✅ Do** report the observed failure and success. If execution is blocked, say that failure sensitivity remains unverified.
+- **❌ Don't** accept an import error, broken fixture, unrelated timeout, or artificial failing assertion as proof. Fix the unrelated failure and repeat step 2.
 
 ## Properties and races
 

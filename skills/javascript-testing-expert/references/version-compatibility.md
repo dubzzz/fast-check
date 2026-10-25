@@ -1,7 +1,7 @@
 # Adapt v5 recipes to older versions
 
-- **✅ Do** read this guide for v4 or earlier; keep the same contract, oracle, isolation, and red–green verification.
-- **✅ Do** inspect the lockfile, resolved exports/types, and integration peer dependencies. A manifest range alone is insufficient; upstream development code can implement v5 under a v4 version number.
+- **✅ Do** translate v5 API calls for the installed version; preserve the contract, oracle, isolation, and red–green verification.
+- **✅ Do** identify the resolved version from the lockfile, then check exports/types and integration peer dependencies to choose supported APIs. A manifest range alone is insufficient; upstream development code can implement v5 under a v4 version number.
 
 ## Adapt to v4
 
@@ -28,7 +28,7 @@ await fc.assert(
 
 ## Adapt hooks and runner controls
 
-- **✅ Do** check exports: earlier v4 uses methods/parameters; later v4 releases may also expose plugins.
+- **✅ Do** check whether the installed version exports the required lifecycle and time-limit plugins before using them. Earlier v4 uses property methods and runner parameters.
 - **❌ Don't** pass removed v4 parameters to v5: unrecognized options do not enforce the intended behavior.
 
 | Intent                   | v5                                                                     | Earlier v4                                                                                   |
@@ -45,14 +45,14 @@ await fc.assert(
 - **✅ Do** match v4 global async hooks to async properties; avoid incompatible sync/async hook combinations. Predicate-local `try/finally` works on both versions.
 - **✅ Do** retain `numRuns`, `seed`, `path`, `examples`, and `endOnFailure` as runner parameters.
 - **👍 Prefer** default generation bias. Unbiased generation does not automatically improve coverage; duplicate plugins can reduce actual executions or exhaust skips on small domains.
-- **✅ Do** read [execution budgets](execution-and-limits.md) before adapting cleanup or time limits.
+- **✅ Do** use [execution budgets](execution-and-limits.md) to preserve cleanup, cancellation, and failure reporting when translating hooks or time limits.
 
 ## Adapt to v3 and earlier
 
 - **✅ Do** use v4's sync/async split in v3 and verify each arbitrary against the installed minor version. Preserve Unicode domains: older `fullUnicodeString()` and newer string-unit options differ. Consult the [v3-to-v4 migration guide](https://fast-check.dev/docs/migration-guide/from-3.x-to-4.x/) in reverse.
 - **✅ Do** check scheduler availability: scheduler since v1.20.0; `waitFor` since v2.24.0; `waitIdle` / `waitNext` since v4.2.0. Prefer `waitFor` with the application's completion promise.
 - **❌ Don't** blindly substitute `waitAll`: it can finish before work scheduled after additional awaits. Use deferred promises plus completion handshakes, or propose an upgrade; preserve overlap and behavior assertions.
-- **✅ Do** verify exact exports, signatures, runtime requirements, and shrink/replay semantics for v2/v1 or custom arbitraries. Explain unavailable features rather than inventing equivalents.
+- **✅ Do** check v2/v1 exports, signatures, runtime requirements, and shrink/replay semantics before choosing an equivalent recipe. Explain unavailable features rather than inventing equivalents.
 - **✅ Do** run the adapted test red and green. Keep concrete regression inputs across upgrades and obtain fresh seed/path reports; verify historical replay before claiming it works.
 
 References: [scheduler API](https://fast-check.dev/api-reference/interfaces/Scheduler.html), [migration guides](https://fast-check.dev/docs/migration-guide/).

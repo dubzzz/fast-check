@@ -60,7 +60,7 @@ For sequences, model only externally visible state. Generate valid commands dire
 
 ## Keep generation and failure reproducible
 
-- Prefer the built-in arbitraries and combinators (`record`, `tuple`, `array`, `oneof`, `map`, `chain`) to a custom generator. Use their constraints to represent the actual domain.
+- **👍 Prefer** built-in arbitraries and combinators (`record`, `tuple`, `array`, `oneof`, `map`, `chain`) to retain shrinking and replay support. Use their constraints to represent the actual domain.
 - `fc.integer()` generates signed 32-bit integers by default. Use `fc.maxSafeInteger()` when the contract spans safe integers. Do not mistake a generator's default range for the complete API domain.
 - Floating-point contracts need deliberate handling of `NaN` and infinities. Even with `noNaN: true`, `fc.double` can generate infinity unless its bounds or `noDefaultInfinity` exclude it.
 - `fc.string()` does not mean every possible Unicode string. Check the installed version's string units when Unicode behavior matters. Likewise, choose JSON-compatible arbitraries for a JSON round-trip, not arbitrary JavaScript values.
@@ -70,15 +70,18 @@ For sequences, model only externally visible state. Generate valid commands dire
 
 ## Replay an observed failure
 
-Keep fast-check's full failure report, especially the counterexample, seed, and path. Pass the actual reported values back to `fc.assert` on the unchanged property. The following are illustrative values, not a known failure:
+1. **✅ Do** keep fast-check's full failure report, especially the counterexample, seed, and path, so the failing case can be reproduced.
+2. **✅ Do** replay the reported seed/path on the unchanged property. Preserve generator order, constraints, examples, library version, and controlled external state.
+3. **✅ Do** identify whether the failure comes from production code, an incorrect property, unsupported input, or a leaking fixture. Fix that cause and rerun the same case.
+4. **✅ Do** keep the smallest useful counterexample as a named regression or through `examples`, alongside the exploratory property. A permanently fixed seed alone limits future exploration.
+
+The following seed/path values are illustrative, not a known failure:
 
 ```ts
 await fc.assert(propertyUnderTest, { seed: 12345, path: '0:1:0' });
 ```
 
-For `@fast-check/vitest`, pass those parameters as the second argument to `it.prop`. Preserve generator ordering, constraints, examples, library version, and controlled external state. A seed cannot recreate an uncontrolled network response or operating-system schedule. Command-based properties may also report command replay information; retain it rather than reconstructing a sequence by hand.
-
-First reproduce the failure, then distinguish a production bug from an incorrect property, unsupported input, or leaking fixture. Fix the appropriate cause. Add the smallest useful counterexample as a named regression test or through `examples`, and retain the exploring property with varying seeds. A permanently fixed seed alone limits future exploration.
+For `@fast-check/vitest`, pass those parameters as the second argument to `it.prop`. A seed cannot recreate an uncontrolled network response or operating-system schedule. Retain command replay information too, when reported, to reproduce the generated sequence.
 
 ## Core guidelines
 
@@ -97,7 +100,7 @@ First reproduce the failure, then distinguish a production bug from an incorrect
 - **✅ Do** assert the promised error type, code, or value. Check identity when propagation must preserve the original error; accepting any exception can hide an unrelated failure.
 - **✅** Distinguish semantic constraints from execution budgets. A business rule may require a positive amount; a browser test may need a short sequence for runtime. Document either reason. Prefer a smaller `size` (for example `size: '-1'`) or fewer runs before imposing a hard cap; a budget cap limits explored behavior and is not an application requirement.
 - **✅** Cover important boundaries with explicit examples as well as generated cases. Small run counts cannot guarantee a particular edge case is exercised.
-- **✅** Account for JavaScript semantics: `NaN`, infinities, signed zero, unsafe integer arithmetic, Unicode, and invalid dates where the contract permits them. Use `bigint` for an exact integer oracle when appropriate; do not change the system's input type to evade a bug.
+- **✅** Include `NaN`, infinities, signed zero, unsafe integer arithmetic, Unicode, and invalid dates where supported; state their expected behavior. Use `bigint` for an exact integer oracle when appropriate; do not change the system's input type to evade a bug.
 - **❌** Avoid raw `Math.random()`, unseeded Faker, real time, ambient locale, and external network variability in the test harness. Use shrinkable arbitraries and explicit dependencies. If the production code depends on randomness or time, inject or control that dependency too.
 
 For per-evaluation lifecycle plugins and bounded exploration/shrinking, read [Execution hooks and limits](execution-and-limits.md).

@@ -3,10 +3,10 @@
 ## Choose observable contracts
 
 - **✅ Do** generate props, input values, or user actions around a visible invariant: selection survives filtering, undo restores state, or stale results never replace newer ones.
-- **✅ Do** keep UI properties for rendering, event wiring, focus, persistence, and navigation.
-- **👍 Prefer** testing complex domain logic broadly in pure functions too.
-- **✅ Do** keep named examples and fixed screenshots for important journeys and visual states.
-- **❌ Don't** treat random screenshots or DOM snapshots as proof of visual correctness.
+- **✅ Do** use UI properties to verify rendering, event wiring, focus, persistence, and navigation through the interface users operate.
+- **👍 Prefer** broad tests of complex domain logic in pure functions too; they explore more cases cheaply while UI tests verify integration.
+- **✅ Do** keep named examples and reviewed screenshots for important journeys and visual states; generated runs may not visit those exact cases.
+- **❌ Don't** treat random screenshots as proof of visual correctness; they need reviewed expected images. DOM snapshots check structure, not appearance.
 - **✅ Do** use these v5 recipes with the project's runner; read [version compatibility](version-compatibility.md) for older projects.
 
 For design-system components:
@@ -17,15 +17,15 @@ For design-system components:
 | Keyboard and pointer action sequences     | Equivalent activation has the same visible effect      |
 | Toggle, select, and dismiss sequences     | ARIA state agrees with visible state after each action |
 
-- **✅ Do** remove a relevant event guard or state update temporarily, observe red, restore it, and observe green.
+- **✅ Do** confirm the assertion catches a missing event guard or state update: observe red with that behavior absent, then green when restored.
 
 ## Component: a sequence of interactions
 
 Example contract: `Counter` starts at zero, accepts `max`, exposes a numeric `status`, and has `Increment`/`Decrement` buttons. Both stay enabled; clicks at a boundary leave the value unchanged.
 
 - **✅ Do** derive the model from the public contract, independently of the component's update algorithm.
-- **👍 Prefer** a consequential application contract when adapting this small example.
-- **✅ Do** use the project's DOM environment and import the real component.
+- **👍 Prefer** meaningful behavior such as selection, undo, or focus restoration when adapting this example; avoid properties that only restate trivial component logic.
+- **✅ Do** render the real component in the project's DOM environment to exercise its actual rendering and event wiring.
 
 ```js
 import { createElement } from 'react';
@@ -36,8 +36,8 @@ import * as fc from 'fast-check';
 import { Counter } from './Counter.js';
 ```
 
-- **✅ Do** put setup and cleanup inside the predicate, including shrinking evaluations.
-- **❌ Don't** assume runner `beforeEach`/`afterEach` hooks surround each fast-check evaluation.
+- **✅ Do** put setup and cleanup inside the predicate so each generated case and shrink attempt starts with fresh component state.
+- **❌ Don't** rely on runner `beforeEach`/`afterEach` for that isolation; they surround the outer test, which contains many fast-check evaluations.
 
 ```js
 function counterProperty(CounterUnderTest) {
@@ -73,13 +73,14 @@ it('should follow the bounded counter model after every interaction', async () =
 });
 ```
 
-- **✅ Do** await async queries or `waitFor` assertions.
-- **❌ Don't** put clicks or other side effects inside `waitFor`.
-- **✅ Do** settle or cancel pending work before cleanup; restore timers, spies, handlers, and globals.
-- **❌ Don't** run concurrent properties against shared DOM or global mocks.
+- **✅ Do** await async queries and `waitFor` assertions so missing UI updates fail the test instead of continuing after it finishes.
+- **❌ Don't** put clicks or other side effects inside `waitFor`; it retries its callback and may repeat the action.
+- **✅ Do** settle or cancel pending work before cleanup, then restore timers, spies, handlers, and globals so later evaluations inherit no effects.
+- **❌ Don't** run concurrent properties against shared DOM or global mocks; one evaluation can alter another's observations.
 - **👍 Prefer** `fc.commands` with `fc.asyncModelRun` when action availability depends on model state.
-- **✅ Do** base command preconditions on the model and give commands useful `toString()` descriptions.
-- **❌ Don't** discard a case because the application produced a failing result.
+- **✅ Do** derive command preconditions from the model so a broken application cannot decide which checks to skip.
+- **✅ Do** describe each command's action and inputs in `toString()` so failures show a readable sequence.
+- **❌ Don't** discard a case because the application produced a failing result; that hides the bug the property should report.
 
 ## Browser/E2E: preserve the same property
 
@@ -122,17 +123,17 @@ test('counter follows its model across user journeys', async ({ browser, baseURL
 });
 ```
 
-- **✅ Do** treat run count and sequence length as measured exploration budgets, not application requirements.
+- **✅ Do** choose run counts and sequence lengths from measured execution cost; document these exploration budgets separately from application limits.
 - **✅ Do** use `size: 'max'` to make the full bounded length range available; `maxLength` alone does not guarantee that range with default sizing.
 - **❌ Don't** narrow the domain to make a failing property pass.
 - **👍 Prefer** `endOnFailure: true` for expensive journeys: retain the first failing sequence, seed, and path promptly.
 - **✅ Do** replay first, then minimize from that seed/path with `endOnFailure: false` and a separate shrinking budget.
-- **❌ Don't** rely on the runner timeout for replay evidence; it can expire before fast-check reports. Read [execution and limits](execution-and-limits.md).
-- **✅ Do** isolate backend data per evaluation and dispose of it in `finally`.
+- **❌ Don't** rely on the runner timeout for replay evidence; it can expire before fast-check reports. Use [execution and limits](execution-and-limits.md) to reserve time for reporting and cleanup.
+- **✅ Do** create isolated backend data per evaluation and dispose of it in `finally` so journeys and shrink attempts cannot affect each other.
 - **❌ Don't** assume a new browser context resets the server, or that `page.reload()` clears persistent storage.
 - **❌ Don't** run destructive generated journeys against production.
 - **✅ Do** exercise real services when integration is the subject; stub unrelated dependencies at controlled boundaries.
-- **👍 Prefer** locator waiting and web-first assertions over fixed sleeps.
+- **👍 Prefer** locator waiting and web-first assertions over fixed sleeps; they wait for the required UI state and fail when it never appears.
 - **✅ Do** record seed, path, sequence, application version, and relevant Playwright traces. A browser retry is not replay.
-- **✅ Do** control response delivery for [race properties](async-and-races.md).
+- **✅ Do** use [race properties](async-and-races.md) when response order affects UI state: control deliveries and check for transient stale results.
 - **❌ Don't** assume scheduling `page.click()` controls the requests or application work it triggers.
