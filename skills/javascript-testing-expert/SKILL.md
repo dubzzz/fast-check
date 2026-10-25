@@ -59,12 +59,12 @@ Use [red–green verification](references/red-green-verification.md) to choose t
 - **👍 Prefer** arbitrary options and `map` to construct valid inputs without excessive discards. Use defaults when they cover the supported domain.
 - **👍 Prefer** `size: '-1'` or fewer runs for cost before a hard cap. Explain runtime budgets; never exclude a known failure.
 - **✅ Do** create fresh fixtures for every generated case and shrinking attempt.
-- **✅ Do** clean up with predicate-local `try/finally` or v5 lifecycle plugins. Outer runner hooks do not surround every fast-check evaluation.
+- **✅ Do** clean up with predicate-local `try/finally` or lifecycle plugins. Outer runner hooks do not surround every fast-check evaluation.
 - **✅ Do** reset applicable DOM, server data, storage, clocks, mocks, and pending work. A fresh browser context does not reset the server.
 
-## Fit the project; default to v5
+## Fit the project
 
-- **✅ Do** use v5 `fc.property` for sync and async predicates; always await `fc.assert`.
+- **✅ Do** use `fc.property` for sync and async predicates; always await `fc.assert`.
 - **✅ Do** use [version compatibility](references/version-compatibility.md) to adapt predicates, hooks, and limits for older installations; do not silently upgrade dependencies.
 - **✅ Do** follow existing layout and runner conventions. Otherwise prefer `.spec.ts`, function/component-named `describe` blocks, and clear `it('should ...')` names.
 - **✅ Do** make Arrange/Act/Assert visible. Put simple examples first and helpers below tests.
@@ -78,4 +78,4 @@ Use [red–green verification](references/red-green-verification.md) to choose t
 - [APIs and glue code](references/apis-and-glue.md): rejected updates and observable integration contracts.
 - [Components and browsers](references/components-and-browser.md): generated interactions and per-case isolation.
 - [Async code and races](references/async-and-races.md): controlled dependencies and completion orders.
-- [Execution hooks and limits](references/execution-and-limits.md): v5 lifecycle plugins and slow-test budgets.
+- [Execution hooks and limits](references/execution-and-limits.md): lifecycle plugins and slow-test budgets.

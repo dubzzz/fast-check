@@ -7,7 +7,7 @@
 - **👍 Prefer** broad tests of complex domain logic in pure functions too; they explore more cases cheaply while UI tests verify integration.
 - **✅ Do** keep named examples and reviewed screenshots for important journeys and visual states; generated runs may not visit those exact cases.
 - **❌ Don't** treat random screenshots as proof of visual correctness; they need reviewed expected images. DOM snapshots check structure, not appearance.
-- **✅ Do** use these v5 recipes with the project's runner; read [version compatibility](version-compatibility.md) for older projects.
+- **✅ Do** use [version compatibility](version-compatibility.md) to adapt async predicates for older projects.
 
 For design-system components:
 

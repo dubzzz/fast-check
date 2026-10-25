@@ -1,6 +1,6 @@
 # Properties and reproducibility
 
-Use fast-check v5 for these recipes. For older projects, read [Version compatibility](version-compatibility.md).
+For older installations, use [Version compatibility](version-compatibility.md) to adapt predicates and runner APIs.
 
 ## Choose an oracle before the generator
 
@@ -52,7 +52,7 @@ For a substring search, construct `prefix + pattern + suffix` from three generat
 
 ## APIs and stateful workflows
 
-Use an asynchronous `fc.property` around the real test client (v5). For example, generate a valid resource, create an isolated tenant inside the callback, save the resource, read it back, and compare the fields promised by the API. Release the tenant in `finally`. For a rejected update, compare observable state before and after the rejection.
+Use an asynchronous `fc.property` around the real test client. For example, generate a valid resource, create an isolated tenant inside the callback, save the resource, read it back, and compare the fields promised by the API. Release the tenant in `finally`. For a rejected update, compare observable state before and after the rejection.
 
 An idempotency property should repeat the same request with the same idempotency key and verify one observable effect. Distinct requests with distinct keys are a different property. A unique tenant or transaction prevents one generated case, parallel test, or shrinking attempt from contaminating another. Use a real test service when the integration boundary is the subject; use a controlled stub when testing the client in isolation.
 

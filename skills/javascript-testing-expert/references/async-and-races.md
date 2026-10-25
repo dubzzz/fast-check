@@ -22,7 +22,7 @@ Example contract: `createSearch({ lookup, publish })` returns `search(query)`. E
 
 - **✅ Do** import the real application implementation and await `fc.assert` so the test waits for exploration and reports its failures.
 - **👍 Prefer** two distinct fixed queries to isolate response ordering; generate queries and action sequences separately when they matter.
-- **✅ Do** use this v5 recipe; read [version compatibility](version-compatibility.md) for older projects.
+- **✅ Do** use [version compatibility](version-compatibility.md) to adapt scheduler and predicate APIs for older projects.
 
 ```ts
 import { expect, it } from 'vitest';

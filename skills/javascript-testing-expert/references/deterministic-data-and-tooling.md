@@ -57,7 +57,7 @@ const person = fakerToArb((faker) => ({
 
 ## Runner integration and mocks
 
-**✅ Do** use the existing runner and compatible integration. These forms express the same property in v5:
+These forms express the same property through the runner integration or direct fast-check calls:
 
 ```ts
 // @fast-check/vitest

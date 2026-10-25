@@ -3,7 +3,7 @@
 ## Isolate each evaluation
 
 - **👍 Prefer** setup inside the predicate and cleanup in `finally` so each generated case and shrinking attempt owns its fixture.
-- **✅ Do** pass v5 `fc.beforeEach(...)` / `fc.afterEach(...)` through `plugins` when hooks fit existing infrastructure. They surround generated cases **and shrinking attempts**; async hooks are awaited.
+- **✅ Do** pass `fc.beforeEach(...)` / `fc.afterEach(...)` through `plugins` when hooks fit existing infrastructure. They surround generated cases **and shrinking attempts**; async hooks are awaited.
 - **✅ Do** return teardown from `fc.beforeEach` that closes the resource acquired by that invocation, including after assertion failures:
 
 ```js
@@ -31,14 +31,14 @@ await fc.assert(
 - **❌ Don't** release a resource through both teardown and `afterEach`; choose one cleanup owner.
 - **✅ Do** keep fixture variables local to each campaign so concurrent tests cannot overwrite them.
 - **👍 Prefer** local plugins to limit hooks to properties that need them. Install suite-wide hooks once in test setup with `fc.installGlobalPlugin(fc.beforeEach(...))` or `fc.installGlobalPlugin(fc.afterEach(...))`. Global plugins wrap local ones.
-- **❌ Don't** install plugins repeatedly inside tests or predicates. `configureGlobal` sets defaults such as `numRuns`, not v5 hooks or plugins.
+- **❌ Don't** install plugins repeatedly inside tests or predicates. `configureGlobal` sets defaults such as `numRuns`, not hooks or plugins.
 
 ## Budget exploration and shrinking
 
 - **✅ Do** measure setup, actions, assertions, cleanup, and shrinking to choose run and time budgets. `numRuns` does not bound shrinking evaluations.
 - **✅ Do** leave the outer runner enough time for fast-check's counterexample report and application cleanup.
 
-| Need                                     | v5 control                                                             | Meaning                                                             |
+| Need                                     | Control                                                                | Meaning                                                             |
 | ---------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | Bound successful exploration             | `numRuns` and an arbitrary's `size`                                    | Fewer cases or smaller typical inputs; shrinking still runs         |
 | Capture the first failure quickly        | `endOnFailure: true`                                                   | Reports the first failing case without shrinking                    |
