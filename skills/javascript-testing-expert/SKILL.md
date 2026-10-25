@@ -16,6 +16,14 @@ Use tests to find bugs, document behavior, and prevent regressions.
 - **❌ Don't** force a weak or tautological property. Explain when no useful property is practical.
 - **✅ Do** choose the cheapest layer that exercises the risk. Preserve requested component, browser, and integration boundaries.
 
+## Confirm red, then green
+
+- **✅ Required:** Run each added test against missing or broken behavior. Confirm that the intended assertion fails.
+- **✅ Do** implement or restore correct behavior, then rerun the same case and confirm it passes.
+- **👍 Prefer** testing before the fix or injecting a faulty dependency. Use an isolated local mutation when needed; restore it before committing.
+- **❌ Don't** count a broken fixture, import error, or unrelated timeout as evidence.
+- **✅ Do** report when execution is blocked. See [red–green verification](references/red-green-verification.md) for details.
+
 ## Find properties at every layer
 
 | Layer             | Vary                                        | Check                                                            |
