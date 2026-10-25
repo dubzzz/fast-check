@@ -20,6 +20,8 @@
 
 Example contract: `createSearch({ lookup, publish })` returns `search(query)`. Each call starts a lookup; only the latest requested result may be published. Its promise settles after publication or discard.
 
+`scheduleSequence` preserves the user's query order while allowing responses between actions. An earlier result is valid before the next request starts, so record which query was latest at each publication.
+
 - **✅ Do** import the real application implementation and await `fc.assert` so the test waits for exploration and reports its failures.
 - **👍 Prefer** two distinct fixed queries to isolate response ordering; generate queries and action sequences separately when they matter.
 - **✅ Do** use [version compatibility](version-compatibility.md) to adapt scheduler and predicate APIs for older projects.
@@ -39,23 +41,47 @@ describe('createSearch', () => {
 function latestRequestProperty(factory: typeof createSearch) {
   return fc.property(fc.scheduler(), async (s) => {
     // Arrange: recreate all application state for every run and shrink attempt.
-    const published: string[] = [];
-    const lookup = s.scheduleFunction(async (query: string) => `result:${query}`);
-    const search = factory({ lookup, publish: (value) => published.push(value) });
+    let latestQuery = '';
+    const published: { value: string; expected: string }[] = [];
+    const requests: Promise<unknown>[] = [];
+    const errors: unknown[] = [];
+    const search = factory({
+      lookup: s.scheduleFunction(async (query: string) => `result:${query}`),
+      publish: (value) => {
+        published.push({ value, expected: `result:${latestQuery}` });
+      },
+    });
 
-    // Act: both requests are in flight before releasing either response.
-    const older = search('older');
-    const latest = search('latest');
-    await s.waitFor(Promise.all([older, latest]));
+    // Act: user actions and response deliveries compete for the next scheduled step.
+    const sequence = s.scheduleSequence(
+      ['older', 'latest'].map((query) => ({
+        label: `search(${query})`,
+        builder: async () => {
+          latestQuery = query;
+          // Start the request; awaiting it here would block response delivery.
+          requests.push(
+            search(query).catch((error) => {
+              errors.push(error);
+            }),
+          );
+        },
+      })),
+    );
+    // Finish issuing actions before collecting all started request completions.
+    const status = await s.waitFor(sequence.task);
+    await s.waitFor(Promise.all(requests));
 
-    // Assert: inspect the history, not just the final value.
-    expect(published).toContain('result:latest');
-    expect(published).not.toContain('result:older');
+    // Assert: sequence.task resolves even when a builder fails, so check its status.
+    expect(status).toEqual({ done: true, faulty: false });
+    expect(errors).toEqual([]);
+    for (const { value, expected } of published) expect(value).toBe(expected);
+    expect(published[published.length - 1]?.value).toBe('result:latest');
   });
 }
 ```
 
 - **✅ Do** confirm this property catches missing stale-response protection: observe the intended failure with protection absent, then green with protection restored.
+- **✅ Do** record observations in application callbacks and assert afterward; application error handling could swallow assertions thrown inside those callbacks.
 - **✅ Do** cover rejection, cancellation, and later batches when supported; assert their specified effect on published state and pending work.
 - **✅ Do** generate dependency successes and failures independently of delivery order. Check the settled observable state, including cleared loading indicators and recovery when promised.
 - **✅ Do** define what a failed latest request should display before asserting it.
