@@ -57,7 +57,43 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
     },
   );
 
-  it('should have no effect on synchronous predicates', async () => {
+  it.each([
+    { kind: 'synchronous', isAsync: false, waitFirst: false },
+    { kind: 'async with blocking work before the first await', isAsync: true, waitFirst: false },
+    { kind: 'async with blocking work after an await', isAsync: true, waitFirst: true },
+  ])('should fail when the predicate is $kind and exceeds the time limit', async ({ isAsync, waitFirst }) => {
+    // Arrange
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const fc = await import('../src/fast-check.js');
+    let numRuns = 0;
+    const blockingPredicate = () => {
+      ++numRuns;
+      now.mockReturnValue(100); // block the event loop without firing the timeout callback
+    };
+    const asyncPredicate = async () => {
+      if (waitFirst) {
+        await Promise.resolve();
+      }
+      blockingPredicate();
+    };
+
+    // Act
+    const out = await fc.check(fc.property(fc.constant(null), isAsync ? asyncPredicate : blockingPredicate), {
+      plugins: [fc.timeout(10)],
+    });
+
+    // Assert
+    expect(out.failed).toBe(true);
+    expect(out.interrupted).toBe(false);
+    expect(out.numRuns).toBe(1);
+    expect(out.numShrinks).toBe(0);
+    expect(out.numSkips).toBe(0);
+    expect(out.errorInstance).toEqual(new Error('Property timeout: exceeded limit of 10 milliseconds'));
+    expect(numRuns).toBe(1);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('should have no effect on synchronous predicates completing within the time limit', async () => {
     // Arrange
     const fc = await import('../src/fast-check.js');
     let numRuns = 0;

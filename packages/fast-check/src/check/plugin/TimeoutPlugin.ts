@@ -7,18 +7,34 @@ import { mergeSignals, signalAsPromise } from './utils/Signals.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
+const safePerformanceNow = performance.now.bind(performance);
 
 function timeoutAfter(timeMs: number) {
+  const limitTime = safePerformanceNow() + timeMs;
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
   const abortController = new AbortController();
+  const getFailure = (): PropertyFailure => ({
+    error: abortController.signal.aborted
+      ? abortController.signal.reason
+      : new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`),
+  });
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = safeSetTimeout(() => {
-      const error = new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
-      resolve({ error });
-      abortController.abort(error);
+      const failure = getFailure();
+      resolve(failure);
+      abortController.abort(failure.error);
     }, timeMs);
   });
   return {
+    check: (out: PreconditionFailure | PropertyFailure | null) => {
+      // Blocking work may complete before the event loop can run the timeout callback.
+      if (safePerformanceNow() >= limitTime) {
+        const failure = getFailure();
+        abortController.abort(failure.error);
+        return failure;
+      }
+      return out;
+    },
     clear: () => safeClearTimeout(timeoutHandle),
     promise,
     signal: abortController.signal,
@@ -44,16 +60,17 @@ function timeoutRunner(
   if (runOut === null || !('then' in runOut)) {
     // synchronous run: it already came to an end, nothing to race against the timeout
     t.clear();
-    return runOut;
+    return t.check(runOut);
   }
 
+  const checkedRunOut = runOut.then(t.check);
   if (signal === undefined) {
-    const propRun = Promise.race([runOut, t.promise]);
+    const propRun = Promise.race([checkedRunOut, t.promise]);
     propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
     return propRun;
   }
   const sp = signalAsPromise(signal);
-  const propRun = Promise.race([runOut, t.promise, sp.promise]);
+  const propRun = Promise.race([checkedRunOut, t.promise, sp.promise]);
   const clear = () => {
     t.clear();
     sp.clear();
@@ -68,7 +85,7 @@ function timeoutRunner(
  * WARNING: It cannot stop a running predicate.
  * It mainly returns earlier so the test runner can move forward.
  *
- * NOTE: It has no effect on a synchronously running predicate.
+ * Synchronous work cannot be interrupted, but is reported as a failure if it reaches the time limit.
  *
  * @example
  * ```ts
