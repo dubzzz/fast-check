@@ -85,6 +85,11 @@ Use the imports appropriate to each form. For direct fast-check on older version
 - **✅ Do** test consequential public component interactions.
 - **❌ Don't** duplicate dependency tests or test trivial private component logic.
 
+## Cover contract variants
+
+- **👍 Prefer** a shared contract suite for interchangeable implementations or configurations, with each variant named. Keep differing behavior in explicit tests.
+- **✅ Do** cover synchronous return/throw and asynchronous resolve/reject when the API supports them. Check synchronous behavior before awaiting; `await` alone hides whether a value was returned directly or through a promise.
+
 ## File and code layout
 
 - **✅** Mimic the existing file layout, naming, assertion style, and runner. Without an established convention, prefer colocated `.spec.ts` files, `describe` named after the function or public component under test, and `it('should ...')` names that state the contract.

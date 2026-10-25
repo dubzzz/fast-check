@@ -46,6 +46,8 @@ it('should sort all elements without changing the input', async () => {
 
 The oracle rejects unordered output, dropped duplicates, and unintended mutation. Keep explicit examples for any additional documented behavior such as stability of equal-key records. Do not constrain the input to already sorted or distinct arrays to make a broken sort pass.
 
+**✅ Do** construct the event a property needs, then generate its surroundings: insert a matching item or a failing callback among arbitrary neighbors. Do not rely on chance to exercise the behavior under test.
+
 For a substring search, construct `prefix + pattern + suffix` from three generated strings. Assert that the returned index is valid and `text.slice(index, index + pattern.length) === pattern`. If the API promises the first occurrence, compare with `text.indexOf(pattern)` too. Never use `fc.pre(index !== -1)` on the result: returning “not found” is precisely a bug this property should catch. Test the absent-pattern contract separately.
 
 ## APIs and stateful workflows
@@ -92,6 +94,7 @@ First reproduce the failure, then distinguish a production bug from an incorrect
 
 - **✅** Use arbitrary defaults when they match the supported inputs. Construct valid correlated data rather than generating unrelated values and discarding most of them with `.filter` or `fc.pre`.
 - **✅** Keep invalid inputs in a separate property with an explicit error contract. Do not silently narrow the domain to make a failing test pass.
+- **✅ Do** assert the promised error type, code, or value. Check identity when propagation must preserve the original error; accepting any exception can hide an unrelated failure.
 - **✅** Distinguish semantic constraints from execution budgets. A business rule may require a positive amount; a browser test may need a short sequence for runtime. Document either reason. Prefer a smaller `size` (for example `size: '-1'`) or fewer runs before imposing a hard cap; a budget cap limits explored behavior and is not an application requirement.
 - **✅** Cover important boundaries with explicit examples as well as generated cases. Small run counts cannot guarantee a particular edge case is exercised.
 - **✅** Account for JavaScript semantics: `NaN`, infinities, signed zero, unsafe integer arithmetic, Unicode, and invalid dates where the contract permits them. Use `bigint` for an exact integer oracle when appropriate; do not change the system's input type to evade a bug.
