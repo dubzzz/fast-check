@@ -13,6 +13,8 @@
 - **👍 Prefer** `await s.waitFor(completion)` when completion includes all relevant work and state updates.
 - **✅ Do** use `waitIdle()` only when all relevant work is scheduled or reachable from scheduled tasks.
 - **✅ Do** inspect intermediate observations as well as the final result; a briefly published stale value can be a bug.
+- **✅ Do** vary operation counts and, when a resource is shared, the number of clients using it.
+- **✅ Do** interleave user actions with response deliveries while preserving each user's action order. A burst of calls before any response explores only one interaction pattern.
 
 ## Recipe: only the latest requested result may be published
 
@@ -53,6 +55,7 @@ function latestRequestProperty(factory: typeof createSearch) {
 
 - **✅ Do** remove stale-response protection, observe the intended failure, restore it, and observe green.
 - **✅ Do** add rejection, cancellation, and multiple batches when required by the contract.
+- **✅ Do** generate dependency successes and failures independently of delivery order. Check the settled observable state, including cleared loading indicators and recovery when promised.
 - **✅ Do** define what a failed latest request should display before asserting it.
 - **❌ Don't** leave expected rejections or detached promises unhandled.
 
@@ -65,7 +68,7 @@ function latestRequestProperty(factory: typeof createSearch) {
 - **✅ Do** confirm intercepted browser requests have arrived, generate their delivery order, then assert UI state after each release.
 - **✅ Do** retain real integration tests and state which boundary the generated test controls.
 - **❌ Don't** substitute random sleeps, network latency, or retries for controlled scheduling.
-- **✅ Do** explicitly advance and restore fake timers; the scheduler does not advance them.
+- **✅ Do** interleave explicit clock advances with response deliveries for debounce, retries, or polling; flushing all timers first misses these interactions. Restore fake timers after each evaluation; the scheduler does not advance them.
 - **👍 Prefer** `fc.commands` and `fc.asyncModelRun` with a small independent model for longer workflows.
 - **❌ Don't** use `fc.scheduledModelRun` when a scheduled command waits for another task held by the same scheduler.
 - **✅ Do** check preconditions against the model, assert after transitions, and recreate model and system for every evaluation.
