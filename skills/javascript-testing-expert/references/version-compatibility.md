@@ -1,7 +1,8 @@
 # Adapt v5 recipes to older versions
 
-- **✅ Do** translate v5 API calls for the installed version; preserve the contract, oracle, isolation, and red–green verification.
-- **✅ Do** identify the resolved version from the lockfile, then check exports/types and integration peer dependencies to choose supported APIs. A manifest range alone is insufficient.
+1. Identify the resolved version from the lockfile, then check exports/types and integration peer dependencies to establish which APIs are available.
+2. Use the [v4](#adapt-to-v4) or [v3-and-earlier](#adapt-to-v3-and-earlier) guidance to translate predicates, hooks, and runner controls. Preserve the contract, oracle, and per-evaluation isolation.
+3. Run the adapted test red and green. Keep concrete regression inputs across upgrades, obtain fresh seed/path reports, and verify historical replay before claiming it works.
 
 ## Adapt to v4
 
@@ -53,6 +54,5 @@ await fc.assert(
 - **✅ Do** check scheduler availability: scheduler since v1.20.0; `waitFor` since v2.24.0; `waitIdle` / `waitNext` since v4.2.0. Prefer `waitFor` with the application's completion promise.
 - **❌ Don't** blindly substitute `waitAll`: it can finish before work scheduled after additional awaits. Use deferred promises plus completion handshakes, or propose an upgrade; preserve overlap and behavior assertions.
 - **✅ Do** check v2/v1 exports, signatures, runtime requirements, and shrink/replay semantics before choosing an equivalent recipe. Explain unavailable features rather than inventing equivalents.
-- **✅ Do** run the adapted test red and green. Keep concrete regression inputs across upgrades and obtain fresh seed/path reports; verify historical replay before claiming it works.
 
 References: [scheduler API](https://fast-check.dev/api-reference/interfaces/Scheduler.html), [migration guides](https://fast-check.dev/docs/migration-guide/).
