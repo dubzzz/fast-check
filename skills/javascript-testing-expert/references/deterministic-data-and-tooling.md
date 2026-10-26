@@ -1,5 +1,9 @@
 # Deterministic data and runner setup
 
+1. Separate behavior-relevant inputs from incidental fixture fields; construct generators that preserve required relationships.
+2. Identify clocks, randomness, locale, and external responses that affect results; make their values reproducible. Use the Faker adapter only when Faker is needed.
+3. Select the existing runner integration and determine which state needs explicit cleanup for every evaluation.
+
 ## Unused fields and clocks
 
 - **👍 Prefer** `name: g(fc.string)` for an unused name, so a fixed literal does not imply significance. Pass the arbitrary factory, not `g(fc.string())`.

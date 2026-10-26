@@ -1,10 +1,14 @@
 # Properties and reproducibility
 
-For older installations, use [Version compatibility](version-compatibility.md) to adapt predicates and runner APIs.
+If a case already fails, follow [replay](#replay-an-observed-failure) before changing the property or implementation. Otherwise, start below.
+
+1. State the behavior in plain language, then choose an independent oracle from the patterns below.
+2. Generate supported inputs, constructing any event the assertion requires. Add explicit examples for important boundaries.
+3. Write the assertion and confirm [red then green](red-green-verification.md). Keep discovered failures using the replay steps below.
+
+For older installations, use [version compatibility](version-compatibility.md) to adapt predicates and runner APIs.
 
 ## Choose an oracle before the generator
-
-Translate “works for these examples” into a statement about supported inputs. Write that statement in plain language before writing code.
 
 | Pattern                     | Example                                                          | Guard against                                                          |
 | --------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------- |

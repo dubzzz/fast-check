@@ -7,17 +7,19 @@ description: Write, review, or improve JavaScript and TypeScript tests. Propose 
 
 Use tests to find bugs, document behavior, and prevent regressions.
 
-## Start with the contract
+## Workflow
 
-1. **✅ Do** read requirements to identify supported inputs, expected behavior, and observable results.
-2. **✅ Do** inspect the implementation for branches, state changes, and async boundaries that could violate that contract.
-3. **✅ Do** inspect nearby tests and runner configuration to choose the test location, fixtures, cleanup, and run command.
-4. **✅ Do** check resolved dependency versions and exports to select supported testing APIs.
-5. **✅ Do** state the contract and choose the cheapest layer that exercises the risk. Preserve requested component, browser, and integration boundaries.
+1. Gather context; these checks can run in parallel:
 
-- **✅ Do** propose a useful property for every testing request, even when the user does not mention property-based testing.
-- **✅ Do** keep clear examples for important behavior and regressions.
-- **❌ Don't** force a weak or tautological property. Explain when no useful property is practical.
+   - Read requirements for supported inputs and expected results; inspect code for branches, state changes, and async risks.
+   - Inspect nearby tests, runner setup, and resolved dependencies to choose the test location, fixtures, cleanup, supported APIs, and run command.
+
+2. State the contract and choose the cheapest layer that exercises the risk, preserving requested integration boundaries. Propose a useful property for every testing request; if none is practical, explain why and use clear examples.
+3. Choose an independent oracle and generators, then write the test with isolated fixtures using the relevant reference below.
+4. Apply [red–green verification](references/red-green-verification.md) to every added test. For unexpected property failures, [replay the case](references/properties-and-replay.md#replay-an-observed-failure) before changing code.
+5. Keep discovered counterexamples as readable regressions and report observed results or execution blockers.
+
+- **✅ Do** agree on the contract and shared setup before splitting independent test files across parallel tasks. Isolate fixtures and temporary mutations before running their verification concurrently.
 
 ## Confirm red, then green
 

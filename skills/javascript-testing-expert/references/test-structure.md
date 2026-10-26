@@ -1,5 +1,9 @@
 # Test structure and dependencies
 
+1. Choose the test file and behavior names using [project conventions or the defaults below](#file-layout-and-naming).
+2. Choose real dependencies or boundary stubs, then check [mock limits](#keep-dependencies-proportionate).
+3. Arrange examples, properties, and helpers using the [readability rules](#readable-examples-and-shared-contracts); share suites when implementations promise the same contract.
+
 ## File layout and naming
 
 - **✅ Do** follow existing project conventions so new tests are discoverable and run with the established suite. Use the defaults below where no convention exists.
