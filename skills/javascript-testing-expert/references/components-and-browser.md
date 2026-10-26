@@ -1,10 +1,13 @@
 # Properties for components and browser journeys
 
+1. Use the component recipe for rendering and interaction, or the browser recipe for navigation and browser integration. Add cheaper pure-function properties for complex domain rules.
+2. Define the expected visible result independently of the implementation; choose props, inputs, or action sequences to vary.
+3. Create fresh UI state and any required backend fixtures for each evaluation, then check the initial state.
+4. Perform actions through the public interface, check each settled transition, and clean up. Keep the failing journey and replay information when a check fails.
+
 ## Choose observable contracts
 
-- **✅ Do** generate props, input values, or user actions around a visible invariant: selection survives filtering, undo restores state, or stale results never replace newer ones.
-- **✅ Do** use UI properties to verify rendering, event wiring, focus, persistence, and navigation through the interface users operate.
-- **👍 Prefer** broad tests of complex domain logic in pure functions too; they explore more cases cheaply while UI tests verify integration.
+- **✅ Do** express the visible invariant concretely: selection survives filtering, undo restores state, or stale results never replace newer ones.
 - **✅ Do** keep named examples and reviewed screenshots for important journeys and visual states; generated runs may not visit those exact cases.
 - **❌ Don't** create a fresh golden screenshot for each random input; without a reviewed expected image, the comparison cannot detect a visual regression.
 - **✅ Do** use [version compatibility](version-compatibility.md) to adapt async predicates for older projects.

@@ -1,7 +1,9 @@
 # Async behavior and race conditions
 
-- **✅ Do** look for order-dependent failures in search, autosave, caches, queues, cancellation, retries, and concurrent updates: stale results, lost writes, or inconsistent published state.
-- **✅ Do** name the contract first: latest request wins, call order is preserved, updates are never lost, or published state stays consistent.
+1. Name the observable rule that overlapping operations could break: latest request wins, no lost writes, or consistent published state.
+2. Identify the response or write boundary whose ordering matters; make that boundary controllable.
+3. Within each evaluation, start overlapping operations or schedule ordered user actions so responses can interleave with them.
+4. Drive the scheduler while recording or checking intermediate observations; after all operations complete, check final state. Retain failing inputs and the schedule for replay.
 
 ## Control the boundary that creates the race
 

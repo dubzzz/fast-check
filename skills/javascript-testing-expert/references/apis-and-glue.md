@@ -1,18 +1,14 @@
 # Properties for APIs and glue code
 
-Test the observable responsibility of the boundary: a saved resource can be read
-back, a rejected update leaves state unchanged, or repeated requests with the same
-idempotency key produce one effect. Generate payloads and operation sequences;
-assert responses and resulting state through the public interface.
+1. Choose an observable rule: saved data reads back, rejected updates preserve state, repeated requests have one effect, or combined results preserve source data.
+2. Choose the boundary: controlled dependencies for orchestration decisions, or a real test service for integration.
+3. Generate payloads or operation sequences from the contract, with known initial state for each evaluation.
+4. Execute through the public interface, check responses and resulting state, and dispose of the evaluation's resources.
 
-For glue code, choose a property of its decisions or combined result. Aggregation
-can preserve all source items; a fallback can return the secondary result only
-when the primary fails; retrying an idempotent operation can preserve state.
-Use small controlled dependencies when testing the orchestrator itself and a real
-test service when testing integration. Merely repeating the implementation's mock
-call order does not establish either contract. Keep clear examples for important
-error paths and simple wiring that has no useful generated invariant.
+## Choose the contract
 
+- **✅ Do** test glue code's decisions and combined results: aggregation preserves source items; fallback uses the secondary result only when the primary fails.
+- **❌ Don't** substitute mock-call order for an observable contract. Keep clear examples for error paths and simple wiring with no useful generated invariant.
 - **✅ Do** repeat the same request with the same idempotency key to verify one observable effect. Distinct requests with distinct keys need a separate property.
 
 ## Recipe: a rejected update must not change the resource
