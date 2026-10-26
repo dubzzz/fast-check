@@ -1,7 +1,7 @@
 # Adapt v5 recipes to older versions
 
 - **✅ Do** translate v5 API calls for the installed version; preserve the contract, oracle, isolation, and red–green verification.
-- **✅ Do** identify the resolved version from the lockfile, then check exports/types and integration peer dependencies to choose supported APIs. A manifest range alone is insufficient; upstream development code can implement v5 under a v4 version number.
+- **✅ Do** identify the resolved version from the lockfile, then check exports/types and integration peer dependencies to choose supported APIs. A manifest range alone is insufficient.
 
 ## Adapt to v4
 
