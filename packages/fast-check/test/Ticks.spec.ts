@@ -63,7 +63,7 @@ describe(`Ticks (seed: ${seed})`, () => {
         startupTicks: 2, // 1 to settle the hook, 1 to start the predicate
         ticksPerRun: 4, // 2 before-hook ticks, 1 result propagation, 1 after-hook check
         chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
-        fixedCompletionTicks: -2, // No next before-hook phase after the final predicate
+        fixedCompletionTicks: -2, // -startupTicks: no next run to prepare
       },
       description: 'async beforeEach',
     },
@@ -74,7 +74,7 @@ describe(`Ticks (seed: ${seed})`, () => {
         startupTicks: 5, // 1 for the first hook, 3 for the second, 1 to start the predicate
         ticksPerRun: 7, // 5 before-hook ticks, 1 result propagation, 1 after-hook check
         chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
-        fixedCompletionTicks: -5, // No next before-hook phase after the final predicate
+        fixedCompletionTicks: -5, // -startupTicks: no next run to prepare
       },
       description: '2x async beforeEach',
     },
