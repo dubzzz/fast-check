@@ -62,22 +62,26 @@ describe('propertyRunner', () => {
   );
 
   it('should pass a fresh execution context to every run', async () => {
-    // Arrange
-    function* generator() {
-      yield* [1, 2, 3, 4];
-    }
-    const iterator = Object.assign(generator(), { handleResult: vi.fn() });
-    const contexts = new Set<PredicateExecutionContext>();
-    const run = (_value: number, executionContext: PredicateExecutionContext) => {
-      contexts.add(executionContext);
-      return null;
-    };
+    await fc.assert(
+      fc.property(fc.array(fc.boolean()), async (syncFlags) => {
+        // Arrange
+        function* generator() {
+          yield* syncFlags;
+        }
+        const iterator = Object.assign(generator(), { handleResult: vi.fn() });
+        const contexts = new Set<PredicateExecutionContext>();
+        const run = (isSync: boolean, executionContext: PredicateExecutionContext) => {
+          contexts.add(executionContext);
+          return isSync ? null : Promise.resolve(null);
+        };
 
-    // Act
-    await propertyRunner(iterator, run);
+        // Act
+        await propertyRunner(iterator, run);
 
-    // Assert
-    expect(contexts).toHaveLength(4);
+        // Assert
+        expect(contexts).toHaveLength(syncFlags.length);
+      }),
+    );
   });
 
   it('should always batch together in the same micro-tasks all consecutive synchronous runs', async () => {
