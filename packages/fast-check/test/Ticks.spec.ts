@@ -10,10 +10,127 @@ describe(`Ticks (seed: ${seed})`, () => {
     extraTicks: Partial<ReturnType<typeof extractExpectedTicks>>;
     description: string;
   }>([
-    { kind: 'sync', plugins: [], extraTicks: {}, description: '' },
-    { kind: 'async', plugins: [], extraTicks: {}, description: '' },
+    {
+      kind: 'sync',
+      plugins: [],
+      extraTicks: {},
+      description: 'no plugins',
+    },
+    {
+      kind: 'async',
+      plugins: [],
+      extraTicks: {},
+      description: 'no plugins',
+    },
+    {
+      kind: 'sync',
+      plugins: [buildSyncPassThroughPlugin()],
+      extraTicks: {},
+      description: 'sync pass-through plugin',
+    },
+    {
+      kind: 'async',
+      plugins: [buildSyncPassThroughPlugin()],
+      extraTicks: {},
+      description: 'sync pass-through plugin',
+    },
+    {
+      kind: 'sync',
+      plugins: [buildPromiseReturningPassThroughPlugin()],
+      extraTicks: {
+        startupTicks: 0, // No extra delay before the first predicate
+        ticksPerRun: 1, // 1 to handle the wrapped result
+        chainSettlementTicksPerTransition: 1, // 1 to propagate runner settlement
+        fixedCompletionTicks: 5, // 2 hook continuations, 2 result propagations, 1 check continuation
+      },
+      description: 'Promise.resolve pass-through plugin',
+    },
+    {
+      kind: 'async',
+      plugins: [buildPromiseReturningPassThroughPlugin()],
+      extraTicks: {
+        startupTicks: 0, // No extra delay before the first predicate
+        ticksPerRun: 0, // Promise.resolve reuses nestedRun's promise
+        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
+        fixedCompletionTicks: 4, // 2 hook continuations, 2 result propagations
+      },
+      description: 'Promise.resolve pass-through plugin',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.beforeEach(async () => {})],
+      extraTicks: {
+        startupTicks: 2, // 1 to settle the hook, 1 to start the predicate
+        ticksPerRun: 4, // 2 before-hook ticks, 1 result propagation, 1 after-hook check
+        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
+        fixedCompletionTicks: -2, // No next before-hook phase after the final predicate
+      },
+      description: 'async beforeEach',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.beforeEach(async () => {}), fc.beforeEach(async () => {})],
+      extraTicks: {
+        startupTicks: 5, // 1 for the first hook, 3 for the second, 1 to start the predicate
+        ticksPerRun: 7, // 5 before-hook ticks, 1 result propagation, 1 after-hook check
+        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
+        fixedCompletionTicks: -5, // No next before-hook phase after the final predicate
+      },
+      description: '2x async beforeEach',
+    },
+    {
+      kind: 'sync',
+      plugins: [fc.interruptAfterTimeLimit(60_000)],
+      extraTicks: {}, // Synchronous results and cleanup stay inline
+      description: 'interruptAfterTimeLimit',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.interruptAfterTimeLimit(60_000)],
+      extraTicks: {
+        startupTicks: 0, // No extra delay before the first predicate
+        ticksPerRun: 1, // 1 to settle Promise.race
+        chainSettlementTicksPerTransition: 0, // Runner settlement unchanged
+        fixedCompletionTicks: 0, // Timer cleanup is synchronous
+      },
+      description: 'interruptAfterTimeLimit',
+    },
+    {
+      kind: 'sync',
+      plugins: [fc.timeout(60_000)],
+      extraTicks: {}, // Synchronous results and cleanup stay inline
+      description: 'timeout',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.timeout(60_000)],
+      extraTicks: {
+        startupTicks: 0, // No extra delay before the first predicate
+        ticksPerRun: 1, // 1 to settle Promise.race
+        chainSettlementTicksPerTransition: 0, // Runner settlement unchanged
+        fixedCompletionTicks: 0, // Timer cleanup adds no awaited promise
+      },
+      description: 'timeout',
+    },
+    {
+      kind: 'sync',
+      plugins: [fc.ignoreEqualValues()],
+      extraTicks: {}, // Synchronous cache updates stay inline
+      description: 'ignoreEqualValues',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.ignoreEqualValues()],
+      extraTicks: {
+        startupTicks: 0, // No extra delay before the first predicate
+        ticksPerRun: 3, // 1 result continuation, 1 cache update, 1 promise propagation
+        chainSettlementTicksPerTransition: 0, // Runner settlement unchanged
+        fixedCompletionTicks: 0, // No completion hooks
+      },
+      description: 'ignoreEqualValues',
+    },
   ])(
-    'should minimize microtask overhead when running $kind predicate$description',
+    'should match expected tick counts for $kind predicates with $description',
     async ({ kind, plugins, extraTicks }) => {
       // Arrange
       expect(readInstalledGlobalPlugins()).toHaveLength(0);
@@ -30,7 +147,7 @@ describe(`Ticks (seed: ${seed})`, () => {
       let firstPredicateRunTick: number | undefined = undefined;
       let lastPredicateRunTick: number | undefined = undefined;
       await fc.assert(
-        fc.property(fc.integer(), (_value) => {
+        fc.property(incrementalInteger(), (_value) => {
           firstPredicateRunTick ??= clock.tick;
           lastPredicateRunTick = clock.tick;
           return kind === 'async' ? Promise.resolve() : undefined;
@@ -54,6 +171,11 @@ describe(`Ticks (seed: ${seed})`, () => {
 });
 
 // Helpers
+
+function incrementalInteger(): fc.Arbitrary<number> {
+  let nextValue = 0;
+  return fc.constant(undefined).map(() => nextValue++);
+}
 
 function startMicroTaskClock() {
   let isMicrotaskClockStopped = false;
@@ -94,4 +216,23 @@ function extractExpectedTicks(kind: 'async' | 'sync') {
     chainSettlementTicksPerTransition: 1, // One tick to propagate settlement to the enclosing promise
     fixedCompletionTicks: 3, // check, assert and the it's await each add one tick
   };
+}
+
+function buildSyncPassThroughPlugin(): fc.UniversalPlugin {
+  return <Ts>(): Required<fc.PluginInstance<Ts>> => ({
+    decorateGenerate: (nestedGenerate) => (mrng, runId) => nestedGenerate(mrng, runId),
+    decorateRun: (nestedRun) => (v, executionContext) => nestedRun(v, executionContext),
+    onAllRunsComplete: (_runDetails) => {},
+    afterAll: () => {},
+  });
+}
+
+function buildPromiseReturningPassThroughPlugin(): fc.UniversalPlugin {
+  return <Ts>(): Required<fc.PluginInstance<Ts>> => ({
+    decorateGenerate: (nestedGenerate) => (mrng, runId) => nestedGenerate(mrng, runId),
+    // WARNING: not equivalent to `(nestedRun) => async (v, executionContext) => nestedRun(v, executionContext)` when considering ticks
+    decorateRun: (nestedRun) => (v, executionContext) => Promise.resolve(nestedRun(v, executionContext)),
+    onAllRunsComplete: (_runDetails) => Promise.resolve(),
+    afterAll: () => Promise.resolve(),
+  });
 }
