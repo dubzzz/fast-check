@@ -186,6 +186,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       // Arrange
       expect(readInstalledGlobalPlugins()).toHaveLength(0);
       using clock = startMicroTaskClock();
+      const numRuns = 10;
       const defaultTicks = extractExpectedTicks(kind);
       const startupTicks = defaultTicks.startupTicks + (extraTicks.startupTicks ?? 0);
       const ticksPerRun = defaultTicks.ticksPerRun + (extraTicks.ticksPerRun ?? 0);
