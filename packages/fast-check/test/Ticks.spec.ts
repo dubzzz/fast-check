@@ -57,6 +57,24 @@ describe(`Ticks (seed: ${seed})`, () => {
       description: 'Promise.resolve pass-through plugin',
     },
     {
+      kind: 'sync',
+      plugins: [fc.beforeEach(() => {})],
+      extraTicks: {}, // Synchronous results and cleanup stay inline
+      description: 'sync beforeEach',
+    },
+    {
+      kind: 'sync',
+      plugins: [fc.beforeEach(() => () => {})],
+      extraTicks: {}, // Synchronous results and cleanup stay inline
+      description: 'sync beforeEach with sync cleanup',
+    },
+    {
+      kind: 'sync',
+      plugins: [fc.afterEach(() => {})],
+      extraTicks: {}, // Synchronous results and cleanup stay inline
+      description: 'sync afterEach',
+    },
+    {
       kind: 'async',
       plugins: [fc.beforeEach(async () => {})],
       extraTicks: {
@@ -77,6 +95,50 @@ describe(`Ticks (seed: ${seed})`, () => {
         fixedCompletionTicks: -5, // -startupTicks: no next run to prepare
       },
       description: '2x async beforeEach',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.afterEach(async () => {})],
+      extraTicks: {
+        startupTicks: 0, // No extra delay before the first predicate
+        ticksPerRun: 5, // 1 after-hook check, 3 hook ticks, 1 result propagation
+        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
+        fixedCompletionTicks: 0, // Cleanup is already counted per run
+      },
+      description: 'async afterEach',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.afterEach(async () => {}), fc.afterEach(async () => {})],
+      extraTicks: {
+        startupTicks: 0, // No extra delay before the first predicate
+        ticksPerRun: 8, // 1 after-hook check, 6 hook ticks, 1 result propagation
+        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
+        fixedCompletionTicks: 0, // Cleanup is already counted per run
+      },
+      description: '2x async afterEach',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.beforeEach(async () => async () => {})],
+      extraTicks: {
+        startupTicks: 2, // 1 to settle the hook, 1 to start the predicate
+        ticksPerRun: 8, // 2 before-hook ticks, 1 result propagation, 5 cleanup ticks
+        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
+        fixedCompletionTicks: -2, // -startupTicks: no next run to prepare
+      },
+      description: 'async beforeEach with async cleanup',
+    },
+    {
+      kind: 'async',
+      plugins: [fc.beforeEach(async () => async () => {}), fc.beforeEach(async () => async () => {})],
+      extraTicks: {
+        startupTicks: 5, // 1 for the first hook, 3 for the second, 1 to start the predicate
+        ticksPerRun: 14, // 5 before-hook ticks, 1 result propagation, 8 cleanup ticks
+        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
+        fixedCompletionTicks: -5, // -startupTicks: no next run to prepare
+      },
+      description: '2x async beforeEach with async cleanup',
     },
     {
       kind: 'sync',
