@@ -3,7 +3,7 @@ import * as fc from '../src/fast-check.js';
 import { readInstalledGlobalPlugins } from '../src/check/runner/configuration/GlobalPlugins.js';
 import { seed } from './seed.js';
 
-describe(`Ticks (seed: ${seed})`, () => {
+describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
   it.each<{
     kind: 'sync' | 'async';
     plugins: fc.UniversalPlugin[];
@@ -40,7 +40,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 1, // 1 to handle the wrapped result
-        chainSettlementTicksPerTransition: 1, // 1 to propagate runner settlement
         fixedCompletionTicks: 5, // 2 hook continuations, 2 result propagations, 1 check continuation
       },
       description: 'Promise.resolve pass-through plugin',
@@ -51,7 +50,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 0, // Promise.resolve reuses nestedRun's promise
-        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
         fixedCompletionTicks: 4, // 2 hook continuations, 2 result propagations
       },
       description: 'Promise.resolve pass-through plugin',
@@ -80,7 +78,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 2, // 1 to settle the hook, 1 to start the predicate
         ticksPerRun: 4, // 2 before-hook ticks, 1 result propagation, 1 after-hook check
-        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
         fixedCompletionTicks: -2, // -startupTicks: no next run to prepare
       },
       description: 'async beforeEach',
@@ -91,7 +88,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 5, // 1 for the first hook, 3 for the second, 1 to start the predicate
         ticksPerRun: 7, // 5 before-hook ticks, 1 result propagation, 1 after-hook check
-        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
         fixedCompletionTicks: -5, // -startupTicks: no next run to prepare
       },
       description: '2x async beforeEach',
@@ -102,7 +98,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 5, // 1 after-hook check, 3 hook ticks, 1 result propagation
-        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
         fixedCompletionTicks: 0, // Cleanup is already counted per run
       },
       description: 'async afterEach',
@@ -113,7 +108,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 8, // 1 after-hook check, 6 hook ticks, 1 result propagation
-        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
         fixedCompletionTicks: 0, // Cleanup is already counted per run
       },
       description: '2x async afterEach',
@@ -124,7 +118,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 2, // 1 to settle the hook, 1 to start the predicate
         ticksPerRun: 8, // 2 before-hook ticks, 1 result propagation, 5 cleanup ticks
-        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
         fixedCompletionTicks: -2, // -startupTicks: no next run to prepare
       },
       description: 'async beforeEach with async cleanup',
@@ -135,7 +128,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 5, // 1 for the first hook, 3 for the second, 1 to start the predicate
         ticksPerRun: 14, // 5 before-hook ticks, 1 result propagation, 8 cleanup ticks
-        chainSettlementTicksPerTransition: 0, // Already covered by the async baseline
         fixedCompletionTicks: -5, // -startupTicks: no next run to prepare
       },
       description: '2x async beforeEach with async cleanup',
@@ -152,7 +144,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 1, // 1 to settle Promise.race
-        chainSettlementTicksPerTransition: 0, // Runner settlement unchanged
         fixedCompletionTicks: 0, // Timer cleanup is synchronous
       },
       description: 'interruptAfterTimeLimit',
@@ -169,7 +160,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 1, // 1 to settle Promise.race
-        chainSettlementTicksPerTransition: 0, // Runner settlement unchanged
         fixedCompletionTicks: 0, // Timer cleanup adds no awaited promise
       },
       description: 'timeout',
@@ -186,7 +176,6 @@ describe(`Ticks (seed: ${seed})`, () => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 3, // 1 result continuation, 1 cache update, 1 promise propagation
-        chainSettlementTicksPerTransition: 0, // Runner settlement unchanged
         fixedCompletionTicks: 0, // No completion hooks
       },
       description: 'ignoreEqualValues',
@@ -197,12 +186,9 @@ describe(`Ticks (seed: ${seed})`, () => {
       // Arrange
       expect(readInstalledGlobalPlugins()).toHaveLength(0);
       using clock = startMicroTaskClock();
-      const numRuns = 10;
       const defaultTicks = extractExpectedTicks(kind);
       const startupTicks = defaultTicks.startupTicks + (extraTicks.startupTicks ?? 0);
       const ticksPerRun = defaultTicks.ticksPerRun + (extraTicks.ticksPerRun ?? 0);
-      const chainSettlementTicksPerTransition =
-        defaultTicks.chainSettlementTicksPerTransition + (extraTicks.chainSettlementTicksPerTransition ?? 0);
       const fixedCompletionTicks = defaultTicks.fixedCompletionTicks + (extraTicks.fixedCompletionTicks ?? 0);
 
       // Act
@@ -225,11 +211,7 @@ describe(`Ticks (seed: ${seed})`, () => {
       expect({ firstPredicateRunTick, lastPredicateRunTick, assertionCompletionTick }).toEqual({
         firstPredicateRunTick: startupTicks,
         lastPredicateRunTick: firstPredicateRunTick! + (numRuns - 1) * ticksPerRun,
-        assertionCompletionTick:
-          firstPredicateRunTick! +
-          numRuns * ticksPerRun +
-          (numRuns - 1) * chainSettlementTicksPerTransition +
-          fixedCompletionTicks,
+        assertionCompletionTick: firstPredicateRunTick! + numRuns * ticksPerRun + fixedCompletionTicks,
       });
     },
   );
@@ -271,14 +253,12 @@ function extractExpectedTicks(kind: 'async' | 'sync') {
     return {
       startupTicks: 0, // The runner invokes the first predicate before yielding to any microtask
       ticksPerRun: 0, // Synchronous results are handled inline, so all predicate starts on the same tick
-      chainSettlementTicksPerTransition: 0, // No extra tick for the final settlement
       fixedCompletionTicks: 2, // One tick runs assert's reportRunDetails callback, another resumes the it's await
     };
   }
   return {
     startupTicks: 0, // The runner invokes the first predicate before yielding to any microtask
-    ticksPerRun: 2, // 2 ticks per run: PropertyImplem.run converts the predicate result in one promise callback, propertyRunner handles it in the next
-    chainSettlementTicksPerTransition: 1, // One tick to propagate settlement to the enclosing promise
+    ticksPerRun: 2, // 1 to convert the predicate result, 1 to resume the runner
     fixedCompletionTicks: 3, // check, assert and the it's await each add one tick
   };
 }
