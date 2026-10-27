@@ -208,8 +208,10 @@ describe(`Ticks (seed: ${seed})`, () => {
       // Act
       let firstPredicateRunTick: number | undefined = undefined;
       let lastPredicateRunTick: number | undefined = undefined;
+      let predicateRuns = 0;
       await fc.assert(
         fc.property(incrementalInteger(), (_value) => {
+          predicateRuns += 1;
           firstPredicateRunTick ??= clock.tick;
           lastPredicateRunTick = clock.tick;
           return kind === 'async' ? Promise.resolve() : undefined;
@@ -219,6 +221,7 @@ describe(`Ticks (seed: ${seed})`, () => {
       const assertionCompletionTick = clock.tick;
 
       // Assert
+      expect(predicateRuns).toBe(numRuns);
       expect({ firstPredicateRunTick, lastPredicateRunTick, assertionCompletionTick }).toEqual({
         firstPredicateRunTick: startupTicks,
         lastPredicateRunTick: firstPredicateRunTick! + (numRuns - 1) * ticksPerRun,
