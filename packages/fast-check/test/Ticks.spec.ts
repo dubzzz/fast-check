@@ -4,15 +4,27 @@ import { readInstalledGlobalPlugins } from '../src/check/runner/configuration/Gl
 import { seed } from './seed.js';
 
 describe(`Ticks (seed: ${seed})`, () => {
-  it.each([{ kind: 'sync' as const }, { kind: 'async' as const }])(
-    'should minimize microtask overhead when running $kind predicate',
-    async ({ kind }) => {
+  it.each<{
+    kind: 'sync' | 'async';
+    plugins: fc.UniversalPlugin[];
+    extraTicks: Partial<ReturnType<typeof extractExpectedTicks>>;
+    description: string;
+  }>([
+    { kind: 'sync', plugins: [], extraTicks: {}, description: '' },
+    { kind: 'async', plugins: [], extraTicks: {}, description: '' },
+  ])(
+    'should minimize microtask overhead when running $kind predicate$description',
+    async ({ kind, plugins, extraTicks }) => {
       // Arrange
       expect(readInstalledGlobalPlugins()).toHaveLength(0);
       using clock = startMicroTaskClock();
       const numRuns = 10;
-      const { startupTicks, ticksPerRun, chainSettlementTicksPerTransition, fixedCompletionTicks } =
-        extractExpectedTicks(kind);
+      const defaultTicks = extractExpectedTicks(kind);
+      const startupTicks = defaultTicks.startupTicks + (extraTicks.startupTicks ?? 0);
+      const ticksPerRun = defaultTicks.ticksPerRun + (extraTicks.ticksPerRun ?? 0);
+      const chainSettlementTicksPerTransition =
+        defaultTicks.chainSettlementTicksPerTransition + (extraTicks.chainSettlementTicksPerTransition ?? 0);
+      const fixedCompletionTicks = defaultTicks.fixedCompletionTicks + (extraTicks.fixedCompletionTicks ?? 0);
 
       // Act
       let firstPredicateRunTick: number | undefined = undefined;
@@ -23,7 +35,7 @@ describe(`Ticks (seed: ${seed})`, () => {
           lastPredicateRunTick = clock.tick;
           return kind === 'async' ? Promise.resolve() : undefined;
         }),
-        { numRuns },
+        { numRuns, plugins },
       );
       const assertionCompletionTick = clock.tick;
 
