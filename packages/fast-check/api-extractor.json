@@ -3,6 +3,9 @@
   "compiler": {
     "overrideTsconfig": {
       "extends": "../../tsconfig.common.json",
+      "compilerOptions": {
+        "types": ["node"]
+      },
       "include": ["src/"],
       "exclude": ["src/**/*.spec.ts", "src/**/__test-helpers__/"]
     }
