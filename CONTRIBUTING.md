@@ -68,6 +68,20 @@ You should also check for linting by running `pnpm lint:check` and fix lint prob
 All pull requests will trigger GitHub Actions checks.
 It ensures that the pull request follow the code style of the project and do not break existing tests.
 
+When adding or changing GitHub Actions dependencies, regenerate the workflow lockfile with the
+[`gh-actions-lock` extension](https://github.com/github/gh-actions-lock):
+
+```bash
+gh extension install github/gh-actions-lock --pin v0.4.0
+gh actions-lock --no-narrow
+gh actions-lock --verify
+```
+
+Keep `--no-narrow` when generating the lockfile to preserve the workflows' existing commit SHA pins.
+Do not edit `.github/workflows/actions.lock` by hand. Renovate updates it when updating actions,
+and the Verify GitHub Actions lockfile workflow verifies it when workflow definitions, local actions,
+or the lockfile change.
+
 #### Notify how impactful your change will be
 
 Any change in the code may have impact in the next release. In order to ease our deployment process we try to anticipate as much as possible the impacts of each single pull request from a semver point of view:
