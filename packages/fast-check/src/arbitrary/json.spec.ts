@@ -19,7 +19,6 @@ describe('json (integration)', () => {
         {
           depthSize: sizeArb,
           maxDepth: fc.nat({ max: 5 }),
-          noUnicodeString: fc.boolean(),
           stringUnit: fc.constantFrom<JsonSharedConstraints['stringUnit']>(
             'grapheme',
             'grapheme-composite',

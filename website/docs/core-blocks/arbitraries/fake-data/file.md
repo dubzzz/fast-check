@@ -57,13 +57,12 @@ All the string values (from keys to values) are generated using `fc.string()`.
 **Signatures:**
 
 - `fc.json()`
-- `fc.json({depthSize?, maxDepth?, noUnicodeString?, stringUnit?})`
+- `fc.json({depthSize?, maxDepth?, stringUnit?})`
 
 **with:**
 
 - `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth of generated objects_
-- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters — shadowed by `stringUnit`_
 - `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 
 **Usages:**
@@ -78,7 +77,7 @@ fc.json();
 // • "[null,-1.5485504457576672e+192,null,{},-1.417727947024272e-287,null,null,null]"
 // • …
 
-fc.json({ noUnicodeString: false });
+fc.json({ stringUnit: 'binary' });
 // Examples of generated values:
 // • "{}"
 // • "[{\"򦇘󜁳򁿳򎗯􈤘\":-6.105777408643394e-70,\"򈷩𫨹􏥃򤵪񥉨񢦜꣙\":[],\"񬘲񊺱򨩟𔹱󦌞􋚫𵢮򉲨򛨰𜥲\":null,\"􀤯\":\"񵟈뫖򖂅𦧠򎇩򁅥򹀿񱣒\",\"򲊷񥛡򂝱\":null,\"𩪎񡨫񝗻򱟬񖄕󿧶🣺𾹚\":\"񙏶𒝠𨚜󸟗񭗊􄓎򅆁\"},null,[false,null]]"
@@ -120,13 +119,12 @@ As `JSON.parse` preserves `-0`, `jsonValue` can also have `-0` as a value.
 **Signatures:**
 
 - `fc.jsonValue()`
-- `fc.jsonValue({depthSize?, maxDepth?, noUnicodeString?, stringUnit?})`
+- `fc.jsonValue({depthSize?, maxDepth?, stringUnit?})`
 
 **with:**
 
 - `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
-- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters — shadowed by `stringUnit`_
 - `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 
 **Usages:**
@@ -141,7 +139,7 @@ fc.jsonValue();
 // • [null,true,true,"`l+$I","kSros",null]
 // • …
 
-fc.jsonValue({ noUnicodeString: false });
+fc.jsonValue({ stringUnit: 'binary' });
 // Examples of generated values: ["򴾼󹤷𡅤񤱓򛗡"], {"􎵔򲁼򀎈𸝔􃌅􊿛񹙦":[],"_":[556603.8398649627],"􏿽\u000b򸑽":{}}, [null,[]], "򐐩", []…
 
 fc.jsonValue({ maxDepth: 0 });

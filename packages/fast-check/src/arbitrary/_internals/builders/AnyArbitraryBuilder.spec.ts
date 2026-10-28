@@ -103,7 +103,6 @@ describe('anyArbitraryBuilder (integration)', () => {
         withSet: fc.boolean(),
         withSparseArray: fc.boolean(),
         withTypedArray: fc.boolean(),
-        withUnicodeString: fc.boolean(),
         stringUnit: fc.constantFrom<ObjectConstraints['stringUnit']>(
           'grapheme',
           'grapheme-composite',
@@ -157,7 +156,7 @@ describe('anyArbitraryBuilder (integration)', () => {
     if (!extra.withTypedArray) {
       expect(isTypedArray(v)).toBe(false);
     }
-    if (!extra.withUnicodeString && !('stringUnit' in extra)) {
+    if (!('stringUnit' in extra)) {
       expect(stringify(v)).toSatisfy(doesNotIncludeAnySurrogateCharacter);
     }
     // No check for !extra.withObjectString as nothing prevent normal string builders to build such strings
