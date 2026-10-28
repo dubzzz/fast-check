@@ -56,6 +56,8 @@ workflows:
     '.github/workflows/validate-pr-title.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3'
+    '.github/workflows/verify-lockfile.yml':
+        - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
     '.github/workflows/zizmor.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b'

@@ -79,7 +79,8 @@ gh actions-lock --verify
 
 Keep `--no-narrow` when generating the lockfile to preserve the workflows' existing commit SHA pins.
 Do not edit `.github/workflows/actions.lock` by hand. Renovate updates it when updating actions,
-and the Workflow Security Audit workflow verifies it on pull requests.
+and the Verify GitHub Actions lockfile workflow verifies it when workflow definitions, local actions,
+or the lockfile change.
 
 #### Notify how impactful your change will be
 

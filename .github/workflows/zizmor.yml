@@ -20,25 +20,6 @@ concurrency:
 permissions: {}
 
 jobs:
-  lockfile:
-    name: 'Verify GitHub Actions lockfile'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Install actions-lock
-        run: gh extension install github/gh-actions-lock --pin v0.4.0
-        env:
-          GH_TOKEN: ${{ github.token }}
-      - name: Verify workflow dependencies
-        run: gh actions-lock --verify
-        env:
-          GH_TOKEN: ${{ github.token }}
-
   audit:
     name: 'Audit GitHub Actions workflows'
     runs-on: ubuntu-latest
