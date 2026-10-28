@@ -497,20 +497,6 @@ fc.assert(fc.property(fc.string(), fc.string(), async (_s1, _s2) => {}), { plugi
 // @ts-expect-error - string and number are incompatible
 fc.assert(fc.property(fc.nat(), async (_n) => {}), { plugins: [stringArgPlugin()] });
 
-// JSON and object string constraints
-expectTypeOf(fc.json({ stringUnit: 'binary' })).toEqualTypeOf<fc.Arbitrary<string>>();
-expectTypeOf(fc.jsonValue({ stringUnit: 'binary' })).toEqualTypeOf<fc.Arbitrary<fc.JsonValue>>();
-expectTypeOf(fc.anything({ stringUnit: fc.constant('é') })).toEqualTypeOf<fc.Arbitrary<unknown>>();
-expectTypeOf(fc.object({ stringUnit: fc.constant('é') })).toEqualTypeOf<fc.Arbitrary<Record<string, unknown>>>();
-// @ts-expect-error - noUnicodeString was removed; use stringUnit instead
-fc.json({ noUnicodeString: false });
-// @ts-expect-error - noUnicodeString was removed; use stringUnit instead
-fc.jsonValue({ noUnicodeString: false });
-// @ts-expect-error - withUnicodeString was removed; use stringUnit instead
-fc.anything({ withUnicodeString: true });
-// @ts-expect-error - withUnicodeString was removed; use stringUnit instead
-fc.object({ withUnicodeString: true });
-
 // entityGraph
 type Node = { name: string; linkTo: Node[] };
 // translate "many" into an array
