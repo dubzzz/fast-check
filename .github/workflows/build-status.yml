@@ -35,7 +35,7 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         id: pnpm-cache
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: 'pnpm'
       - name: Update pnpm cache
         if: steps.pnpm-cache.outputs.cache-hit != 'true'
@@ -63,7 +63,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
@@ -89,7 +89,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: ${{ github.event_name == 'push' && '' || 'pnpm' }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
@@ -121,7 +121,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
@@ -278,7 +278,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
@@ -334,7 +334,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
@@ -391,7 +391,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
@@ -454,7 +454,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: 'pnpm'
       - name: Install dependencies
         id: install
@@ -637,7 +637,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
@@ -709,7 +709,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
@@ -781,7 +781,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
@@ -853,7 +853,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
@@ -925,7 +925,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
@@ -997,7 +997,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
@@ -1069,7 +1069,7 @@ jobs:
       - name: Using Node v24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Install pnpm
