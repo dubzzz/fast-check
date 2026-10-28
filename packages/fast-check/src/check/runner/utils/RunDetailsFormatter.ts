@@ -208,11 +208,16 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefin
   if (!out.failed) {
     return;
   }
-  const failedOut = out;
-  return buildReportedError((stringifier) => defaultReportMessageInternal(failedOut, stringifier));
+  return buildReportedErrorInternal(
+    (stringifier) => defaultReportMessageInternal(out, stringifier),
+    (message) => message,
+  );
 }
 
-function buildReportedError(format: (stringifyValue: FormatStringifier) => FormatOutput): Promise<string> | string {
+function buildReportedErrorInternal<TOut>(
+  format: (stringifyValue: FormatStringifier) => FormatOutput,
+  wrapOutput: (output: string) => TOut,
+): Promise<TOut> | TOut {
   // The asynchronous version might require two passes:
   // - the first one will register the asynchronous values that will need to be stringified
   // - the second one will take the computed values
@@ -230,7 +235,7 @@ function buildReportedError(format: (stringifyValue: FormatStringifier) => Forma
   // Checks if async mode would have changed the message
   if (pendingStringifieds.length === 0) {
     // No asynchronous stringify have been queued: the computation was synchronous
-    return buildErrorMessage(firstTryFormatted);
+    return wrapOutput(buildErrorMessage(firstTryFormatted));
   }
 
   // Retry with async stringified versions in mind
@@ -245,32 +250,36 @@ function buildReportedError(format: (stringifyValue: FormatStringifier) => Forma
       // on usual paths, the ones not having any async generated values
       return stringify(value);
     }
-    return buildErrorMessage(format(stringifySecond));
+    return wrapOutput(buildErrorMessage(format(stringifySecond)));
   });
 }
 
-function buildError<Ts>(
-  errorMessage: string | undefined,
-  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
-) {
+function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts>) {
   if (out.runConfiguration.includeErrorInReport) {
     throw new Error(errorMessage);
   }
   return new Error(errorMessage, { cause: out.errorInstance });
 }
 
+export function reportError<Ts>(
+  format: (stringifyValue: FormatStringifier) => FormatOutput,
+  out: RunDetails<Ts>,
+): Promise<never> | never {
+  return buildReportedErrorInternal(format, (message) => {
+    throw buildError<Ts>(message, out);
+  });
+}
+
 export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (!out.failed) {
     return;
   }
-  const messageOrThenable: Promise<string> | string = defaultReportMessage(out);
-  if (typeof messageOrThenable === 'string') {
-    // Synchrounous handling for non-Promise values for faster throughput
-    throw buildError<Ts>(messageOrThenable, out);
-  }
-  return messageOrThenable.then((message) => {
-    throw buildError<Ts>(message, out);
-  });
+  return buildReportedErrorInternal(
+    (stringifier) => defaultReportMessageInternal(out, stringifier),
+    (message) => {
+      throw buildError<Ts>(message, out);
+    },
+  );
 }
 
 export { defaultReportMessage };
