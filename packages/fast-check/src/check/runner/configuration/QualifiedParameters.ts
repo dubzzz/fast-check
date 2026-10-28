@@ -40,7 +40,6 @@ export class QualifiedParameters<T> {
       p.logger !== undefined
         ? p.logger
         : (v: string) => {
-            // tslint:disable-next-line:no-console
             console.log(v);
           };
     this.path = p.path !== undefined ? p.path : '';
