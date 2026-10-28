@@ -1,13 +1,10 @@
 export function unboxedToBoxedMapper(value: unknown): unknown {
   switch (typeof value) {
     case 'boolean':
-      // tslint:disable-next-line:no-construct
       return new Boolean(value);
     case 'number':
-      // tslint:disable-next-line:no-construct
       return new Number(value);
     case 'string':
-      // tslint:disable-next-line:no-construct
       return new String(value);
     default:
       return value;
