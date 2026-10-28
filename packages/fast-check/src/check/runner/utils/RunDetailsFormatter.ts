@@ -10,11 +10,25 @@ import type {
   RunDetailsSuccess,
 } from '../reporter/RunDetails.js';
 
+type FormatStringifier = (value: unknown) => string;
+type FormatOutput = {
+  message: string;
+  details: string | null;
+  hints: string[];
+};
+
 function formatHints(hints: string[]): string {
   if (hints.length === 1) {
     return `Hint: ${hints[0]}`;
   }
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
+}
+
+function buildErrorMessage(formatted: FormatOutput): string {
+  let errorMessage = formatted.message;
+  if (formatted.details !== null) errorMessage += `\n\n${formatted.details}`;
+  if (formatted.hints.length > 0) errorMessage += `\n\n${formatHints(formatted.hints)}`;
+  return errorMessage;
 }
 
 function formatFailures<Ts>(failures: Ts[], stringifyOne: (value: Ts) => string): string {
@@ -148,22 +162,14 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, st
 }
 
 function defaultReportMessageInternal<Ts>(
-  out: RunDetails<Ts>,
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
   stringifyOne: (value: Ts) => string,
-): string | undefined {
-  if (!out.failed) return;
-
-  const { message, details, hints } =
-    out.counterexamplePath === null
-      ? out.interrupted
-        ? preFormatEarlyInterrupted(out, stringifyOne)
-        : preFormatTooManySkipped(out, stringifyOne)
-      : preFormatFailure(out, stringifyOne);
-
-  let errorMessage = message;
-  if (details !== null) errorMessage += `\n\n${details}`;
-  if (hints.length > 0) errorMessage += `\n\n${formatHints(hints)}`;
-  return errorMessage;
+): FormatOutput {
+  return out.counterexamplePath === null
+    ? out.interrupted
+      ? preFormatEarlyInterrupted(out, stringifyOne)
+      : preFormatTooManySkipped(out, stringifyOne)
+    : preFormatFailure(out, stringifyOne);
 }
 
 /**
@@ -199,6 +205,14 @@ function defaultReportMessage<Ts>(out: RunDetailsSuccess<Ts>): Promise<undefined
  */
 function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined;
 function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined {
+  if (!out.failed) {
+    return;
+  }
+  const failedOut = out;
+  return buildReportedError((stringifier) => defaultReportMessageInternal(failedOut, stringifier));
+}
+
+function buildReportedError(format: (stringifyValue: FormatStringifier) => FormatOutput): Promise<string> | string {
   // The asynchronous version might require two passes:
   // - the first one will register the asynchronous values that will need to be stringified
   // - the second one will take the computed values
@@ -211,12 +225,12 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefin
     pendingStringifieds.push(Promise.all([value, stringified]));
     return '\u2026'; // ellipsis
   }
-  const firstTryMessage = defaultReportMessageInternal(out, stringifyOne);
+  const firstTryFormatted = format(stringifyOne);
 
   // Checks if async mode would have changed the message
   if (pendingStringifieds.length === 0) {
     // No asynchronous stringify have been queued: the computation was synchronous
-    return firstTryMessage;
+    return buildErrorMessage(firstTryFormatted);
   }
 
   // Retry with async stringified versions in mind
@@ -231,7 +245,7 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefin
       // on usual paths, the ones not having any async generated values
       return stringify(value);
     }
-    return defaultReportMessageInternal(out, stringifySecond);
+    return buildErrorMessage(format(stringifySecond));
   });
 }
 
