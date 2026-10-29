@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@fast-check/vitest": "workspace:*",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "fast-check": "workspace:*",
     "rolldown": "^1.2.15",
     "typescript": "~7.0.2",
