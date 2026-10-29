@@ -2,6 +2,10 @@
   "extends": ["config:recommended", ":dependencyDashboard"],
   "labels": ["dependencies"],
   "commitMessagePrefix": "⬆️ ",
+  "automerge": false,
+  "automergeType": "pr",
+  "platformAutomerge": true,
+  "automergeStrategy": "squash",
   "packageRules": [
     {
       "matchFileNames": ["packages/*/package.json"],
@@ -33,6 +37,33 @@
       "matchDepTypes": ["devEngines.runtime"],
       "matchPackageNames": ["node"],
       "enabled": false
+    },
+    {
+      "description": "Automerge patch updates to development dependencies",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "description": "Automerge minor updates to development dependencies at version 1 or later",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor"],
+      "matchCurrentVersion": ">=1.0.0",
+      "automerge": true
+    },
+    {
+      "description": "Keep release tooling updates manual",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@changesets/cli", "pkg-pr-new"],
+      "automerge": false
+    },
+    {
+      "description": "Keep dependency override and resolution changes manual",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["overrides", "pnpm.overrides", "pnpm-workspace.overrides", "resolutions"],
+      "automerge": false
     }
   ],
   "vulnerabilityAlerts": {
@@ -42,7 +73,8 @@
   "dependencyDashboardOSVVulnerabilitySummary": "all",
   "postUpdateOptions": ["pnpmDedupe"],
   "lockFileMaintenance": {
-    "enabled": true
+    "enabled": true,
+    "automerge": true
   },
   "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
   "configMigration": true
