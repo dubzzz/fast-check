@@ -1,406 +1,83 @@
 ---
 name: javascript-testing-expert
-description: Expert-level JavaScript testing skill focused on writing high-quality tests that find bugs, serve as documentation, and prevent regressions. Advocates for property-based testing with fast-check and protects against indeterministic code in tests. Does not cover black-box e2e testing.
+description: Write, review, or improve JavaScript and TypeScript tests. Propose property-based testing with fast-check for unit, API, integration, component, browser, and end-to-end tests, including asynchronous code and race conditions.
 ---
 
-> **⚠️ Scope:** Testing functions and components, not black-box e2e.
+# JavaScript testing expert
 
-**🏅 Main objectives:** use tests as a way to...
+Use tests to find bugs, document behavior, and prevent regressions.
 
-1. uncover hard to detect bugs
-2. document how to use the code
-3. avoid regressions
-4. challenge the code
+## Workflow
 
-**🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `@testing-library/*`, `@vitest/browser-playwright`, `msw` installed as devDependencies.  
-**✅ Do** try to install missing and relevant tooling, only recommend for `@fast-check/vitest` and browser testing.  
-**✅ Do** highly recommend user to install missing and relevant tooling.  
-**✅ Do** adapt yourself to missing tools.
+1. Gather context; these checks can run in parallel:
 
-## File and code layout
+   - Read requirements for supported inputs and expected results; inspect code for branches, state changes, and async risks.
+   - Inspect nearby tests, runner setup, and resolved dependencies to choose the test location, fixtures, cleanup, supported APIs, and run command.
 
-**✅ Do** mimic the existing test structure of the project when adding new tests
+2. State the contract and choose the cheapest layer that exercises the risk, preserving requested integration boundaries. Propose a useful property for every testing request; if none is practical, explain why and use clear examples.
+3. Choose an independent oracle and generators, then write the test with isolated fixtures using the relevant reference below.
+4. Apply [red–green verification](references/red-green-verification.md) to every added test. For unexpected property failures, [replay the case](references/properties-and-replay.md#replay-an-observed-failure) before changing code.
+5. Keep discovered counterexamples as readable regressions and report observed results or execution blockers.
 
-**✅ Do** use one test file per code file
+- **✅ Do** agree on the contract and shared setup before splitting independent test files across parallel tasks. Isolate fixtures and temporary mutations before running their verification concurrently.
 
-**👍 Prefer** using `.spec.ts` extension (e.g., `fileName.ts` → `fileName.spec.ts`) and colocated with the source file if no existing test structure is present
+## Confirm red, then green
 
-**✅ Do** put `it` within `describe`, when using `it`
+1. **✅ Required:** Run each added test against missing or broken behavior. Confirm that the intended assertion fails.
+2. **✅ Do** implement or restore correct behavior, then rerun the same case and confirm it passes.
+3. **✅ Do** report the observed failure and success. If execution is blocked, state that failure sensitivity remains unverified.
 
-**👍 Prefer** `it` over `test`
+- **👍 Prefer** testing before the fix or injecting a faulty dependency. Use an isolated local mutation when needed; restore it before committing.
+- **❌ Don't** count a broken fixture, import error, or unrelated timeout as evidence.
 
-**✅ Do** name the `describe` with the name of the function being tested
+Use [red–green verification](references/red-green-verification.md) to choose the broken behavior and handle a test that fails for the wrong reason.
 
-**✅ Do** use a dedicated `describe` for each function being tested
+## Find properties at every layer
 
-**✅ Do** start naming `it` with "should" and considers that the name should be clear, as consise as possible and could be read as a sentence implicitly prefixed by "it"
+| Layer             | Vary                                        | Check                                                            |
+| ----------------- | ------------------------------------------- | ---------------------------------------------------------------- |
+| Unit              | Inputs and related inputs                   | Preservation, round trips, simpler reference results             |
+| API / integration | Requests and operation sequences            | Idempotency, read-after-write, rejected updates preserve state   |
+| Component         | Props and user actions                      | Visible state matches the model; disabled actions have no effect |
+| Browser / E2E     | Inputs, journeys, reloads                   | Persistence, navigation, and workflow invariants                 |
+| Async / races     | Overlapping operations and completion order | Latest request wins, ordered results, no lost updates            |
 
-**✅ Do** start with simple and documenting tests
+- **✅ Do** assert the invariant after each relevant action or response; a correct final state can hide transient failures.
+- **👍 Prefer** generated action arrays for simple sequences. Use `fc.commands` when a model must decide which actions are valid.
+- **❌ Don't** claim the scheduler controls uninstrumented browser, network, or operating-system work.
 
-**✅ Do** continue with advanced tests looking for edge-cases
+## Write meaningful assertions
 
-**❌ Don't** delimitate explicitely simple from advanced tests, just but them in the right order
+- **✅ Do** assert public behavior with an independent oracle: a simpler reference, model, relation, or constructed input.
+- **❌ Don't** copy the production algorithm into the expected result or filter cases based on the actual output.
+- **✅ Do** ensure the relevant assertion executes. Empty loops and swallowed errors can make broken code pass.
+- **👍 Prefer** UI queries by role, label, or accessible name to assert what users can observe.
+- **👍 Prefer** small stubs at dependency boundaries to control responses. Avoid testing trivial private logic or repeating internal mock call sequences.
+- **✅ Do** use fixed screenshots for visual contracts and targeted snapshots for structural contracts. DOM snapshots do not establish visual correctness.
 
-**✅ Do** put helper functions specific to the file after all the `describe`s just below a comment `// Helpers` stating the beginning of the helpers tailored for this file
+## Generate and isolate cases
 
-## Core guidelines
+- **✅ Do** generate the supported domain; separate invalid-input properties with explicit error contracts.
+- **👍 Prefer** arbitrary options and `map` to construct valid inputs without excessive discards. Use defaults when they cover the supported domain.
+- **👍 Prefer** `size: '-1'` or fewer runs for cost before a hard cap. Explain runtime budgets; never exclude a known failure.
+- **✅ Do** create fresh fixtures for every generated case and shrinking attempt.
+- **✅ Do** clean up with predicate-local `try/finally` or lifecycle plugins. Outer runner hooks do not surround every fast-check evaluation.
+- **✅ Do** reset applicable DOM, server data, storage, clocks, mocks, and pending work. A fresh browser context does not reset the server.
 
-**✅ Do** follow the AAA pattern and make it visible in the test
+## Fit the project
 
-```ts
-it('should...', () => {
-  // Arrange
-  code;
+- **✅ Do** use `fc.property` for sync and async predicates; always await `fc.assert`.
+- **✅ Do** use [version compatibility](references/version-compatibility.md) to adapt predicates, hooks, and limits for older installations; do not silently upgrade dependencies.
+- **✅ Do** use [test structure](references/test-structure.md) to organize files, name behavior checks, and keep fixtures readable.
+- **👍 Prefer** an installed, compatible `@fast-check/vitest`; otherwise use fast-check inside the current runner.
+- **✅ Do** retain counterexamples and seed/path for replay. Keep readable regressions alongside exploratory properties.
 
-  // Act
-  code;
+## Read only the relevant references
 
-  // Assert
-  code;
-});
-```
-
-**✅ Do** keep tests focused, try to assert on one precise aspect
-
-**✅ Do** keep tests simple
-
-**👎 Avoid** complex logic in tests or its helpers
-
-**❌ Don't** test internal details
-
-**👍 Prefer** stubs over mocks, the first one provides an alternate implementation, the second one helps to assert on calls being done or not  
-Why? Often, asserting the number of calls is not something critical for the user of the function but purely an internal detail
-
-**❌ Don't** rely on network call, stub it with `msw`
-
-**✅ Do** reset globals and mocks in `beforeEach` if any `it` plays with mocks or spies or alter globals  
-Alternatively, when using vitest you could check if flags `mockReset`, `unstubEnvs` and `unstubGlobals` have been enabled in the configuration, in such case resetting globals is done by default
-
-**👍 Prefer** realistic data for documentation-like tests  
-Eg.: use real names if you have to build instances of users
-
-**❌ Don't** overuse snapshot tests; only snapshot things when the "what is expected to be seen in the snapshot" is clear  
-Why? Snapshots tests tend to capture too many details in the snapshot, making them hard to update given future reader is lost on what was the real thing being tested
-
-**👍 Prefer** snapshots when shape and structure are important (component hierarchy, attributes, non-regression on output structure)
-
-**👍 Prefer** screenshots when final render is important (visual styling, layout)
-
-**✅ Do** warn developer when the code under tests requires too many parameters and/or too many mocks/stubs to be forged (more than 10)  
-Why? Code being hardly testable is often a code smell pinpointing an API having to be changed. Code is harder to evolve, harder to reason about and often handling too many responsibilities. Recommend the single-responsibility principle (SRP)
-
-**✅ Do** try to make tests shorter and faster to read by factorizing recurrent logics into helper functions
-
-**✅ Do** group shared logics under a function having a clear and explicit name, follow SRP for these helpers  
-Eg.: avoid functions with lots of optional parameters, doing several things
-
-**❌ Don't** write a big `prepare` function re-used by all tests in their act part, but make the name clearer and eventually split it into multiple functions
-
-**✅ Do** make sure your test breaks if you drop the thing supposed to make it pass  
-Eg.: When your test says "should do X when Y" makes sure that if you don't have Y it fails before keeping it.
-
-**👎 Avoid** writing tests with entities specifying hardcoded values on unused fields
-
-Example of test content
-
-```ts
-const user: User = {
-  name: 'Paul', // unused
-  birthday: '2010-02-03',
-};
-const age = computeAge(user);
-//...
-```
-
-**👍 Prefer** leveraging `@fast-check/vitest`, if installed
-
-```ts
-import { describe } from 'vitest';
-import { it, fc } from '@fast-check/vitest';
-
-describe('computeAge', () => {
-  it('should compute a positive age', ({ g }) => {
-    // Arrange
-    const user: User = {
-      name: g(fc.string), // unused
-      birthday: '2010-02-03',
-    };
-
-    // Act
-    const age = computeAge(user);
-
-    // Assert
-    expect(age).toBeGreaterThan(0);
-  });
-});
-```
-
-**👍 Prefer** leveraging `fast-check`, if installed but not `@fast-check/vitest`
-
-**👎 Avoid** writing tests depending on unstable values  
-Eg.: in the example above `computeAge` depends on the current date  
-Remark: same for locales and plenty other platform dependent values
-
-**👍 Prefer** stubbing today using `vi.setSystemTime`
-
-**👍 Prefer** controlling today using `@fast-check/vitest`  
-Why? Contrary to `vi.setSystemTime` alone you check the code against one new today at each run, but if it happens to fail one day you will be reported with the exact date causing the problem
-
-```ts
-// Arrange
-vi.setSystemTime(g(fc.date, { min: new Date('2010-02-04'), noInvalidDate: true }));
-const user: User = {
-  name: g(fc.string), // unused
-  birthday: '2010-02-03',
-};
-```
-
-**👎 Avoid** writing tests depending on random values or entities
-
-**👍 Prefer** controlling randomly generated values by relying on `@fast-check/vitest` if installed, or `fast-check` otherwise
-
-**✅ Do** use property based tests for any test with a notion of always or never  
-Eg.: name being "should always do x when y" or "should never do x when y"  
-Remark: consider these tests as advanced and put them after the documentation tests and not with them
-
-**👍 Prefer** using property based testing for edge case detection instead of writing all cases one by one
-
-**❌ Don't** try to test 100% of the algorithm cases using property-based testing
-Why? Property-based testing and example-based testing are complementary. Property-based tests are excellent for uncovering edge cases and validating general properties, while example-based tests provide clear documentation and cover specific important scenarios. Use both approaches together for comprehensive test coverage.
-
-```ts
-// for all a, b, c strings
-// b is a substring of a + b + c
-it.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', (a, b, c) => {
-  // Arrange
-  const text = a + b + c;
-  const pattern = b;
-
-  // Act
-  const result = isSubstring(text, pattern);
-
-  // Assert
-  expect(result).toBe(true);
-});
-```
-
-**✅ Do** extract complex logic from components into dedicated and testable functions
-
-**❌ Don't** test trivial component logic that has zero complexity
-
-**👍 Prefer** testing the DOM structure and user interactions when using testing-library
-
-**👍 Prefer** testing the visual display and user interactions when using browser testing
-
-**👍 Prefer** querying by accessible attributes and user-visible text by relying on `getByRole`, `getByLabelText`, `getByText` over `getByTestId` whenever possible for testing-library and browser testing
-
-**✅ Do** ensure non visual regression of Design System components and more generally visual components by leveraging screenshot tests in browser when available  
-**✅ Do** fallback to snapshot tests capturing the DOM structure if screenshot tests cannot be ran
-
-## Guidelines for properties
-
-All this section considers that we are in the context of property based tests!
-
-**⚠️ Version compatibility:** Starting with fast-check v5, use `fc.property` for both synchronous and asynchronous predicates. With fast-check v4, use `fc.property` for synchronous predicates and `fc.asyncProperty` for asynchronous predicates.
-
-**✅ Do** always await `fc.assert(...)` when using `fast-check` directly, in both v4 and v5+, even when the predicate is synchronous. Make the surrounding test callback `async` so property failures are reported by the test runner.
-
-**⚠️ Important:** When using `g` from `@fast-check/vitest`, pass the arbitrary **function** (e.g., `fc.string`, `fc.date`) along with its arguments as separate parameters to `g`, not the result of calling it.  
-Correct: `g(fc.string)`, `g(fc.date, { min: new Date('2010-01-01') })`  
-Incorrect: `g(fc.string())`, `g(fc.date({ min: new Date('2010-01-01') }))`
-
-**❌ Don't** generate inputs directly  
-The risk being that you may end up rewriting the code being tested in the test
-
-**✅ Do** construct values to build some inputs where you know the expected outcome
-
-**❌ Don't** expect the returned value in details, in many cases you won't have enough details to be able to assert the full value
-
-**✅ Do** expect some aspects and characteristics of the returned value
-
-**❌ NEVER** specify any `maxLength` on an arbitrary if it is a not a requirement of the algorithm  
-**👍 Prefer** specifying a `size: '-1'` if you feel that the algorithm will take very long on large inputs (by default fast-check generates up to 10 items, so only use `size` when clearly required)  
-Eg.: No `fc.string({maxLength: 5})` or `fc.array(arb, {maxLength: 8})` except being a string requirement
-
-**❌ NEVER** specify any constraint on an arbitrary if it is not a requirement of the arbitrary, use defaults as much as possible  
-Eg.: if the algorithm should accept any integer just ask an integer without specifying any min and max
-
-**👎 Avoid** overusing `.filter` and `fc.pre`  
-Why? They slow down the generation of values by dropping some generated ones
-
-**👍 Prefer** using options provided by arbitraries to directly generate valid values  
-Eg.: use `fc.string({ minLength: 2 })` instead of `fc.string().filter(s => s.length >= 2)`  
-Eg.: use `fc.integer({ min: 1 })` instead of `fc.integer().filter(n => n >= 1)`, or use `fc.nat()` instead of `fc.integer().filter(n => n >= 0)`
-
-**👍 Prefer** using `map` over `filter` when a `map` trick can avoid filtering  
-Eg.: use `fc.nat().map(n => n * 2)` for even numbers  
-Eg.: use `fc.tuple(fc.string(), fc.string()).map(([start, end]) => start + 'A' + end)` for strings always having an 'A' character
-
-**👍 Prefer** bigint type over number type for integer computations used within predicates when there is a risk of overflow (eg.: when running pow, multiply.. on generated values)
-
-Some classical properties:
-
-1. Characteristics independent of the inputs. _Eg.: for any floating point number d, Math.floor(d) is an integer. for any integer n, Math.abs(n) ≥ 0_
-2. Characteristics derived from the inputs. _Eg.: for any a and b integers, the average of a and b is between a and b. for any n, the product of all numbers in the prime factor decomposition of n equals n. for any array of data, sorted(data) and data contains the same elements. for any n1, n2 integers such that n1 != n2, romanString(n1) != romanString(n2). for any floating point number d, Math.floor(d) is an integer such as d-1 ≤ Math.floor(d) ≤ d_
-3. Restricted set of inputs with useful characteristics. _Eg.: for any array data with no duplicates, the result of removing duplicates from data is data itself. for any a, b and c strings, the concatenation of a, b and c always contains b. for any prime number p, its decomposition into prime factors is itself_
-4. Characteristics on combination of functions. _Eg.: zipping then unzipping a file should result in the original file. lcm(a,b) times gcd(a,b) must be equal to a times b_
-5. Comparison with a simpler implementation. _Eg.: c is contained inside sorted array data for binary search is equivalent to c is contained inside data for linear search_
-
-## Guidelines for race conditions
-
-**✅ Do** write tests checking for race conditions and playing with resolution order — _automatically handled by `fast-check`_ — when an algorithm accepts asynchronous functions as input
-
-**✅ Do** leverage `fast-check` and its `fc.scheduler()` arbitrary to test asynchronous code depending on asynchronous functions
-
-Turn:
-
-```ts
-it('should resolve in call order', async () => {
-  // Arrange
-  const seenAnswers = [];
-  const call = vi.fn().mockImplementation((v) => Promise.resolve(v));
-
-  // Act
-  const queued = queue(call);
-  await Promise.all([queued(1).then((v) => seenAnswers.push(v)), queued(2).then((v) => seenAnswers.push(v))]);
-
-  // Assert
-  expect(seenAnswers).toEqual([1, 2]);
-});
-```
-
-Into (fast-check v5+; use `fc.asyncProperty` instead of `fc.property` in v4):
-
-```ts
-it('should resolve in call order', async () => {
-  await fc.assert(
-    fc.property(fc.scheduler(), async (s) => {
-      // Arrange
-      const seenAnswers = [];
-      const call = vi.fn().mockImplementation((v) => Promise.resolve(v));
-
-      // Act
-      const queued = queue(s.scheduleFunction(call));
-      await s.waitFor(
-        Promise.all([queued(1).then((v) => seenAnswers.push(v)), queued(2).then((v) => seenAnswers.push(v))]),
-      );
-
-      // Assert
-      expect(seenAnswers).toEqual([1, 2]);
-    }),
-  );
-});
-```
-
-## Recommendation for faker users
-
-If using `faker` to fake data, we recommend wiring any fake data generation within `fast-check` by leveraging this code snippet:
-
-```ts
-// Source: https://fast-check.dev/blog/2024/07/18/integrating-faker-with-fast-check/
-import { Faker, Randomizer, base } from '@faker-js/faker';
-import * as fc from 'fast-check';
-
-class FakerBuilder<TValue> extends fc.Arbitrary<TValue> {
-  constructor(private readonly generator: (faker: Faker) => TValue) {
-    super();
-  }
-  generate(mrng: fc.Random, biasFactor: number | undefined): fc.Value<TValue> {
-    const randomizer: Randomizer = {
-      next: (): number => (mrng.nextInt(0, 0x3ffffff) * 2 ** 27 + mrng.nextInt(0, 0x7ffffff)) / 2 ** 53,
-      seed: () => {}, // no-op, no support for updates of the seed, could even throw
-    };
-    const customFaker = new Faker({ locale: base, randomizer });
-    return new fc.Value(this.generator(customFaker), undefined);
-  }
-  canShrinkWithoutContext(value: unknown): value is TValue {
-    return false;
-  }
-  shrink(value: TValue, context: unknown): fc.Stream<fc.Value<TValue>> {
-    return fc.Stream.nil();
-  }
-}
-
-function fakerToArb<TValue>(generator: (faker: Faker) => TValue): fc.Arbitrary<TValue> {
-  return new FakerBuilder(generator);
-}
-```
-
-Example of usage
-
-```ts
-await fc.assert(
-  fc.property(
-    fakerToArb((faker) => faker.person.firstName),
-    fakerToArb((faker) => faker.person.lastName),
-    (firstName, lastName) => {
-      // code
-    },
-  ),
-);
-```
-
-## Equivalence `fast-check` and `@fast-check/vitest`
-
-Example 1.
-
-```ts
-// with @fast-check/vitest
-import { it, fc } from '@fast-check/vitest';
-it('...', ({ g }) => {
-  //...
-});
-
-// with fast-check
-import { it } from 'vitest';
-import * as fc from 'fast-check';
-it('...', async () => {
-  await fc.assert(
-    fc.property(fc.gen(), (g) => {
-      //...
-    }),
-  );
-});
-```
-
-Example 2.
-
-```ts
-// with @fast-check/vitest
-import { it, fc } from '@fast-check/vitest';
-it.prop([...arbitraries])('...', (...values) => {
-  //...
-});
-
-// with fast-check
-import { it } from 'vitest';
-import * as fc from 'fast-check';
-it('...', async () => {
-  await fc.assert(
-    fc.property(...arbitraries, (...values) => {
-      //...
-    }),
-  );
-});
-```
-
-Example 3. For asynchronous predicates, use `fc.property` in fast-check v5+ (as shown below) and `fc.asyncProperty` in v4. Always await `fc.assert`, just as in the synchronous examples above.
-
-```ts
-// with @fast-check/vitest
-import { it, fc } from '@fast-check/vitest';
-it.prop([...arbitraries])('...', async (...values) => {
-  //...
-});
-
-// with fast-check
-import { it } from 'vitest';
-import * as fc from 'fast-check';
-it('...', async () => {
-  await fc.assert(
-    fc.property(...arbitraries, async (...values) => {
-      //...
-    }),
-  );
-});
-```
+- [Properties and replay](references/properties-and-replay.md): oracles, domains, shrinking, regression cases.
+- [Test structure](references/test-structure.md): file layout, naming, documenting examples, shared contracts, mock limits.
+- [Deterministic data and tooling](references/deterministic-data-and-tooling.md): unused fields, dates, Faker, generators, runner integration.
+- [APIs and glue code](references/apis-and-glue.md): rejected updates and observable integration contracts.
+- [Components and browsers](references/components-and-browser.md): generated interactions and per-case isolation.
+- [Async code and races](references/async-and-races.md): controlled dependencies and completion orders.
+- [Execution hooks and limits](references/execution-and-limits.md): lifecycle plugins and slow-test budgets.
