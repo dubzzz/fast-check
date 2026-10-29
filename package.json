@@ -15,7 +15,6 @@
     }
   },
   "workspaces": [
-    ".github/actions/*",
     "examples",
     "packages/*",
     "website"
