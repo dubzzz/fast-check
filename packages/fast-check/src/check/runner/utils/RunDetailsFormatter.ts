@@ -12,8 +12,18 @@ import type {
 
 type FormatStringifier = (value: unknown) => string;
 type FormatOutput = {
+  /** Main error message describing the failure. Enriched with extra details depending on the verbosity level */
   message: string;
-  details: string | null;
+  /** Hints displayed regardless of the verbosity level. Default hints might be appended */
+  hints?: string[];
+};
+
+type FullFormatOutput = {
+  /** Main error message */
+  message: string;
+  /** Execution details */
+  details: string | undefined;
+  /** Report hints, including defaults */
   hints: string[];
 };
 
@@ -24,7 +34,7 @@ function formatHints(hints: string[]): string {
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
 }
 
-function buildErrorMessage(formatted: FormatOutput): string {
+function buildErrorMessage(formatted: FullFormatOutput): string {
   let errorMessage = formatted.message;
   if (formatted.details !== null) errorMessage += `\n\n${formatted.details}`;
   if (formatted.hints.length > 0) errorMessage += `\n\n${formatHints(formatted.hints)}`;
@@ -32,6 +42,9 @@ function buildErrorMessage(formatted: FormatOutput): string {
 }
 
 function formatFailures<Ts>(failures: Ts[], stringifyOne: (value: Ts) => string): string {
+  if (failures.length === 0) {
+    return `No failure encountered`;
+  }
   return `Encountered failures were:\n- ${failures.map(stringifyOne).join('\n- ')}`;
 }
 
@@ -67,23 +80,13 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringi
   return `Execution summary:\n${summaryLines.join('\n')}`;
 }
 
-function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, stringifyOne: (value: Ts) => string) {
+function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>) {
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
-  let details: string | null = null;
   const hints = [
     'Try to reduce the number of rejected values by combining map, chain and built-in arbitraries',
     'Increase failure tolerance by setting maxSkipsPerRun to an higher value',
   ];
-
-  if (out.verbose >= VerbosityLevel.VeryVerbose) {
-    details = formatExecutionSummary(out.executionSummary, stringifyOne);
-  } else {
-    hints.push(
-      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status',
-    );
-  }
-
-  return { message, details, hints };
+  return { message, hints };
 }
 
 function prettyError(errorInstance: unknown) {
@@ -131,34 +134,12 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
   }", endOnFailure: true }\nCounterexample: ${stringifyOne(out.counterexample)}\nShrunk ${
     out.numShrinks
   } time(s)${messageErrorPart}`;
-  let details: string | null = null;
-  const hints: string[] = [];
-
-  if (out.verbose >= VerbosityLevel.VeryVerbose) {
-    details = formatExecutionSummary(out.executionSummary, stringifyOne);
-  } else if (out.verbose === VerbosityLevel.Verbose) {
-    details = formatFailures(out.failures, stringifyOne);
-  } else {
-    hints.push('Enable verbose mode in order to have the list of all failing values encountered during the run');
-  }
-
-  return { message, details, hints };
+  return { message };
 }
 
-function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, stringifyOne: (value: Ts) => string) {
+function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
   const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
-  let details: string | null = null;
-  const hints: string[] = [];
-
-  if (out.verbose >= VerbosityLevel.VeryVerbose) {
-    details = formatExecutionSummary(out.executionSummary, stringifyOne);
-  } else {
-    hints.push(
-      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status',
-    );
-  }
-
-  return { message, details, hints };
+  return { message };
 }
 
 function defaultReportMessageInternal<Ts>(
@@ -167,9 +148,30 @@ function defaultReportMessageInternal<Ts>(
 ): FormatOutput {
   return out.counterexamplePath === null
     ? out.interrupted
-      ? preFormatEarlyInterrupted(out, stringifyOne)
-      : preFormatTooManySkipped(out, stringifyOne)
+      ? preFormatEarlyInterrupted(out)
+      : preFormatTooManySkipped(out)
     : preFormatFailure(out, stringifyOne);
+}
+
+function enrichFormatOutput<Ts>(
+  out: RunDetails<Ts>,
+  formatted: FormatOutput,
+  stringifyOne: FormatStringifier,
+): FullFormatOutput {
+  const { message, hints = [] } = formatted;
+  return {
+    message: message,
+    details:
+      out.verbose >= VerbosityLevel.VeryVerbose
+        ? formatExecutionSummary(out.executionSummary, stringifyOne)
+        : out.verbose === VerbosityLevel.Verbose
+          ? formatFailures(out.failures, stringifyOne)
+          : undefined,
+    hints:
+      out.verbose >= VerbosityLevel.VeryVerbose
+        ? hints
+        : [...hints, 'Increase the verbosity level to see more details about the run'],
+  };
 }
 
 /**
@@ -209,13 +211,13 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefin
     return;
   }
   return buildReportedErrorInternal(
-    (stringifier) => defaultReportMessageInternal(out, stringifier),
+    (stringifier) => enrichFormatOutput(out, defaultReportMessageInternal(out, stringifier), stringifier),
     (message) => message,
   );
 }
 
 function buildReportedErrorInternal<TOut>(
-  format: (stringifyValue: FormatStringifier) => FormatOutput,
+  fullFormat: (stringifyValue: FormatStringifier) => FullFormatOutput,
   wrapOutput: (output: string) => TOut,
 ): Promise<TOut> | TOut {
   // The asynchronous version might require two passes:
@@ -230,7 +232,7 @@ function buildReportedErrorInternal<TOut>(
     pendingStringifieds.push(Promise.all([value, stringified]));
     return '\u2026'; // ellipsis
   }
-  const firstTryFormatted = format(stringifyOne);
+  const firstTryFormatted = fullFormat(stringifyOne);
 
   // Checks if async mode would have changed the message
   if (pendingStringifieds.length === 0) {
@@ -250,7 +252,7 @@ function buildReportedErrorInternal<TOut>(
       // on usual paths, the ones not having any async generated values
       return stringify(value);
     }
-    return wrapOutput(buildErrorMessage(format(stringifySecond)));
+    return wrapOutput(buildErrorMessage(fullFormat(stringifySecond)));
   });
 }
 
@@ -265,9 +267,12 @@ export function reportError<Ts>(
   format: (stringifyValue: FormatStringifier) => FormatOutput,
   out: RunDetails<Ts>,
 ): Promise<never> | never {
-  return buildReportedErrorInternal(format, (message) => {
-    throw buildError<Ts>(message, out);
-  });
+  return buildReportedErrorInternal(
+    (stringifier) => enrichFormatOutput(out, format(stringifier), stringifier),
+    (message) => {
+      throw buildError<Ts>(message, out);
+    },
+  );
 }
 
 export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
@@ -275,7 +280,7 @@ export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void 
     return;
   }
   return buildReportedErrorInternal(
-    (stringifier) => defaultReportMessageInternal(out, stringifier),
+    (stringifier) => enrichFormatOutput(out, defaultReportMessageInternal(out, stringifier), stringifier),
     (message) => {
       throw buildError<Ts>(message, out);
     },
