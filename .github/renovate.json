@@ -27,6 +27,12 @@
       "minimumReleaseAge": "24 hours",
       "minimumReleaseAgeBehaviour": "timestamp-required",
       "internalChecksFilter": "strict"
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devEngines.runtime"],
+      "matchPackageNames": ["node"],
+      "enabled": false
     }
   ],
   "vulnerabilityAlerts": {
