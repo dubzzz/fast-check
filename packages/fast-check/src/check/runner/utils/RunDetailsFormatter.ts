@@ -18,7 +18,7 @@ type FormatOutput = {
   hints?: string[];
 };
 
-type FullFormatOutput = {
+type ReportContent = {
   /** Main error message */
   message: string;
   /** Execution details */
@@ -34,7 +34,7 @@ function formatHints(hints: string[]): string {
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
 }
 
-function buildErrorMessage(formatted: FullFormatOutput): string {
+function buildErrorMessage(formatted: ReportContent): string {
   let errorMessage = formatted.message;
   if (formatted.details !== null) errorMessage += `\n\n${formatted.details}`;
   if (formatted.hints.length > 0) errorMessage += `\n\n${formatHints(formatted.hints)}`;
@@ -153,11 +153,11 @@ function defaultReportMessageInternal<Ts>(
     : preFormatFailure(out, stringifyOne);
 }
 
-function enrichFormatOutput<Ts>(
+function buildReportContent<Ts>(
   out: RunDetails<Ts>,
   formatted: FormatOutput,
   stringifyOne: FormatStringifier,
-): FullFormatOutput {
+): ReportContent {
   const { message, hints = [] } = formatted;
   return {
     message: message,
@@ -211,13 +211,13 @@ function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefin
     return;
   }
   return buildReportedErrorInternal(
-    (stringifier) => enrichFormatOutput(out, defaultReportMessageInternal(out, stringifier), stringifier),
+    (stringifier) => buildReportContent(out, defaultReportMessageInternal(out, stringifier), stringifier),
     (message) => message,
   );
 }
 
 function buildReportedErrorInternal<TOut>(
-  fullFormat: (stringifyValue: FormatStringifier) => FullFormatOutput,
+  buildContent: (stringifyValue: FormatStringifier) => ReportContent,
   wrapOutput: (output: string) => TOut,
 ): Promise<TOut> | TOut {
   // The asynchronous version might require two passes:
@@ -232,12 +232,12 @@ function buildReportedErrorInternal<TOut>(
     pendingStringifieds.push(Promise.all([value, stringified]));
     return '\u2026'; // ellipsis
   }
-  const firstTryFormatted = fullFormat(stringifyOne);
+  const initialContent = buildContent(stringifyOne);
 
   // Checks if async mode would have changed the message
   if (pendingStringifieds.length === 0) {
     // No asynchronous stringify have been queued: the computation was synchronous
-    return wrapOutput(buildErrorMessage(firstTryFormatted));
+    return wrapOutput(buildErrorMessage(initialContent));
   }
 
   // Retry with async stringified versions in mind
@@ -252,7 +252,7 @@ function buildReportedErrorInternal<TOut>(
       // on usual paths, the ones not having any async generated values
       return stringify(value);
     }
-    return wrapOutput(buildErrorMessage(fullFormat(stringifySecond)));
+    return wrapOutput(buildErrorMessage(buildContent(stringifySecond)));
   });
 }
 
@@ -268,7 +268,7 @@ export function reportError<Ts>(
   out: RunDetails<Ts>,
 ): Promise<never> | never {
   return buildReportedErrorInternal(
-    (stringifier) => enrichFormatOutput(out, format(stringifier), stringifier),
+    (stringifier) => buildReportContent(out, format(stringifier), stringifier),
     (message) => {
       throw buildError<Ts>(message, out);
     },
@@ -280,7 +280,7 @@ export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void 
     return;
   }
   return buildReportedErrorInternal(
-    (stringifier) => enrichFormatOutput(out, defaultReportMessageInternal(out, stringifier), stringifier),
+    (stringifier) => buildReportContent(out, defaultReportMessageInternal(out, stringifier), stringifier),
     (message) => {
       throw buildError<Ts>(message, out);
     },
