@@ -263,6 +263,16 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts>) {
   return new Error(errorMessage, { cause: out.errorInstance });
 }
 
+/**
+ * Report a custom error using fast-check's default formatting and error construction.
+ *
+ * @param format - Builds the message and optional hints using the provided value stringifier.
+ * @param out - Run details used to build the error.
+ * @returns A rejecting promise if formatting is asynchronous, throws otherwise.
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
 export function reportError<Ts>(
   format: (stringifyValue: FormatStringifier) => FormatOutput,
   out: RunDetails<Ts>,
