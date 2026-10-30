@@ -56,9 +56,14 @@ pnpm --filter fast-check build    #compile the code in packages/fast-check/src, 
 
 Once done, everything is ready for you to start working on the code.
 
+Alternatively, open the repository in GitHub Codespaces or use **Dev Containers: Reopen in Container** in VS Code
+with Docker and the Dev Containers extension installed. The dev container provides Node.js 26, installs the pnpm
+version declared in `package.json`, and installs locked dependencies before connecting. Run `pnpm --filter fast-check build`
+in the container terminal to compile the code. Rebuild the container after changing its configuration.
+
 #### Code style
 
-Code style standard is enforced by Prettier.
+Code style standard is enforced by Oxfmt.
 Once done with your development you can check it follow the recommended code style by running `pnpm format:check` or run autofixes with `pnpm format`.
 
 You should also check for linting by running `pnpm lint:check` and fix lint problems with `pnpm lint`.
