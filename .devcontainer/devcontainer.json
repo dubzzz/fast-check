@@ -1,23 +1,18 @@
 {
-  "name": "Node.js",
+  "name": "fast-check",
+  "remoteEnv": {
+    "PATH": "${containerEnv:HOME:/home/codespace}/.local/share/pnpm/bin:${containerEnv:HOME:/home/codespace}/.nvs:${containerEnv:PATH}"
+  },
   "customizations": {
     "vscode": {
-      "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "ms-azuretools.vscode-docker",
-        "eamodio.gitlens",
-        "GitHub.vscode-github-actions"
-      ],
+      "extensions": ["-dbaeumer.vscode-eslint", "oxc.oxc-vscode", "GitHub.vscode-github-actions"],
       "settings": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.defaultFormatter": "oxc.oxc-vscode",
         "editor.formatOnSave": true,
-        "editor.stickyScroll.enabled": true,
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "workbench.colorTheme": "Dark+"
+        "editor.stickyScroll.enabled": true
       }
     }
   },
-  "onCreateCommand": "./.devcontainer/onCreateCommand.sh",
-  "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+  "waitFor": "postCreateCommand"
 }
