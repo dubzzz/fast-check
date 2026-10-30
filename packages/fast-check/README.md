@@ -65,7 +65,7 @@ In case of failure, the test raises a red flag. Its output should help you to di
     Shrunk 1 time(s)
     Got error: Property failed by returning false
 
-    Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
+    Hint: Increase the verbosity level to see more details about the run
 ```
 
 Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-check-examples/blob/main/test-ava/example.spec.js), [jasmine](https://github.com/dubzzz/fast-check-examples/blob/main/test-jasmine/example.spec.js), [jest](https://github.com/dubzzz/fast-check-examples/blob/main/test-jest/example.spec.js), [mocha](https://github.com/dubzzz/fast-check-examples/blob/main/test/longest%20common%20substr/test.js) and [tape](https://github.com/dubzzz/fast-check-examples/blob/main/test-tape/example.spec.js).

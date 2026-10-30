@@ -511,10 +511,8 @@ describe('Runner', () => {
       it('Should throw with base message in verbose mode', async () => {
         await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures in verbose mode', async () => {
-        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.not.toThrowError(
-          'Encountered failures were:',
-        );
+      it('Should throw with no failure encountered in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.toThrowError('No failure encountered');
       });
       it('Should throw without execution tree in verbose mode', async () => {
         await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.not.toThrowError('Execution summary:');
