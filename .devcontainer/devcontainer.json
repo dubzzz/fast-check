@@ -7,7 +7,9 @@
     "vscode": {
       "extensions": ["-dbaeumer.vscode-eslint", "oxc.oxc-vscode", "GitHub.vscode-github-actions"],
       "settings": {
-        "editor.formatOnSave": true
+        "editor.defaultFormatter": "oxc.oxc-vscode",
+        "editor.formatOnSave": true,
+        "editor.stickyScroll.enabled": true
       }
     }
   },
