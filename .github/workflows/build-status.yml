@@ -190,7 +190,6 @@ jobs:
         # untar seems to fail on Windows when untaring already existing files
         run: pnpm run unpack || true
       - name: Unit tests
-        # Keep setup-node's PATH instead of loading login profiles (including Homebrew).
         shell: bash
         env:
           EXPECTED_NODE_VERSION: ${{ steps.setup-node.outputs.node-version }}
@@ -492,7 +491,6 @@ jobs:
         run: node --run unpack
       - name: Benchmark
         id: bench
-        # Keep setup-node's PATH instead of loading login profiles (including Homebrew).
         shell: bash
         env:
           EXPECTED_NODE_VERSION: ${{ steps.setup-node.outputs.node-version }}
