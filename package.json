@@ -6,6 +6,7 @@
   "devEngines": {
     "runtime": {
       "name": "node",
+      "version": ">=22",
       "onFail": "warn"
     },
     "packageManager": {
@@ -15,7 +16,6 @@
     }
   },
   "workspaces": [
-    ".github/actions/*",
     "examples",
     "packages/*",
     "website"
@@ -31,7 +31,8 @@
     "bench:ci": "cross-env BENCH_WRITE=true BENCH_COMPARE=true vitest bench --run --reporter=default",
     "bench:snap": "cross-env BENCH_WRITE=true vitest bench --run",
     "bench:compare": "cross-env BENCH_COMPARE=true vitest bench --run",
-    "typecheck": "pnpm --parallel run typecheck",
+    "typecheck": "pnpm run typecheck:workflow-scripts && pnpm --parallel run typecheck",
+    "typecheck:workflow-scripts": "tsc --project .github/workflows/scripts/tsconfig.json",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint --fix",
@@ -44,11 +45,11 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/documentation"
   },
   "devDependencies": {
-    "@atproto/api": "^0.29.5",
+    "@atproto/api": "^0.29.6",
     "@changesets/cli": "^3.0.3",
     "@fast-check/packaged": "workspace:*",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.0.5",
     "all-contributors-cli": "^7.0.0",
     "cross-env": "^10.1.0",
