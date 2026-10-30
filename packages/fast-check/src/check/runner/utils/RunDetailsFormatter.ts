@@ -36,7 +36,7 @@ function formatHints(hints: string[]): string {
 
 function buildErrorMessage(formatted: ReportContent): string {
   let errorMessage = formatted.message;
-  if (formatted.details !== null) errorMessage += `\n\n${formatted.details}`;
+  if (formatted.details !== undefined) errorMessage += `\n\n${formatted.details}`;
   if (formatted.hints.length > 0) errorMessage += `\n\n${formatHints(formatted.hints)}`;
   return errorMessage;
 }
