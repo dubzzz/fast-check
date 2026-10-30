@@ -56,10 +56,11 @@ pnpm --filter fast-check build    #compile the code in packages/fast-check/src, 
 
 Once done, everything is ready for you to start working on the code.
 
-Alternatively, open the repository in GitHub Codespaces or use **Dev Containers: Reopen in Container** in VS Code
-with Docker and the Dev Containers extension installed. The dev container provides Node.js 26, installs the pnpm
-version declared in `package.json`, and installs locked dependencies before connecting. Run `pnpm --filter fast-check build`
-in the container terminal to compile the code. Rebuild the container after changing its configuration.
+Alternatively, open the repository in GitHub Codespaces. The default Codespaces image provides Node.js and GitHub CLI.
+The repository's configuration adds NVS for switching Node.js versions, installs the pnpm version declared in
+`package.json` using its standalone installer, and installs locked dependencies before connecting. NVS is initialized
+in Bash and Zsh terminals and is available to legacy bundle tests. Run `pnpm --filter fast-check build` in the terminal
+to compile the code. Rebuild the codespace after changing its configuration.
 
 #### Code style
 

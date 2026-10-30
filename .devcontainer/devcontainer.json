@@ -1,7 +1,8 @@
 {
   "name": "fast-check",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:5-26-trixie",
-  "remoteUser": "node",
+  "remoteEnv": {
+    "PATH": "${containerEnv:HOME:/home/codespace}/.local/share/pnpm/bin:${containerEnv:HOME:/home/codespace}/.nvs:${containerEnv:PATH}"
+  },
   "customizations": {
     "vscode": {
       "extensions": ["-dbaeumer.vscode-eslint", "oxc.oxc-vscode", "GitHub.vscode-github-actions"],
