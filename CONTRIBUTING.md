@@ -57,6 +57,7 @@ pnpm --filter fast-check build    #compile the code in packages/fast-check/src, 
 Once done, everything is ready for you to start working on the code.
 
 Alternatively, open the repository in GitHub Codespaces.
+
 #### Code style
 
 Code style standard is enforced by Oxfmt.
