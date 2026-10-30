@@ -166,6 +166,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v${{matrix.node-version}}
+        id: setup-node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{matrix.node-version}}
@@ -189,10 +190,19 @@ jobs:
         # untar seems to fail on Windows when untaring already existing files
         run: pnpm run unpack || true
       - name: Unit tests
-        shell: bash -l {0}
+        shell: bash
+        env:
+          EXPECTED_NODE_VERSION: ${{ steps.setup-node.outputs.node-version }}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
         # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
         run: |
+          pnpm exec node -e '
+            const { execPath, version, versions } = process;
+            console.log({ execPath, version, icu: versions.icu, unicode: versions.unicode });
+            if (version !== process.env.EXPECTED_NODE_VERSION) {
+              throw new Error(`Expected Node ${process.env.EXPECTED_NODE_VERSION} from setup-node, got ${version}`);
+            }
+          '
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           export FAST_CI_RUN=$("${ENABLE_COVERAGE}" = "true")
@@ -452,6 +462,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Using Node v26.x
+        id: setup-node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '26.x'
@@ -480,10 +491,19 @@ jobs:
         run: node --run unpack
       - name: Benchmark
         id: bench
-        shell: bash -l {0}
+        shell: bash
+        env:
+          EXPECTED_NODE_VERSION: ${{ steps.setup-node.outputs.node-version }}
         # The DEFAULT_SEED has to be specified to make vitest.setup.mjs happy.
         # But we don't use it for benchmarks.
         run: |
+          node -e '
+            const { execPath, version, versions } = process;
+            console.log({ execPath, version, icu: versions.icu, unicode: versions.unicode });
+            if (version !== process.env.EXPECTED_NODE_VERSION) {
+              throw new Error(`Expected Node ${process.env.EXPECTED_NODE_VERSION} from setup-node, got ${version}`);
+            }
+          '
           set -o pipefail
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED="0"
