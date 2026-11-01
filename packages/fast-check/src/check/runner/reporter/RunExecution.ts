@@ -1,7 +1,12 @@
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from './ExecutionStatus.js';
 import type { ExecutionTree } from './ExecutionTree.js';
-import type { RunDetails, RunDetailsFailureTooManySkips, RunDetailsSuccess } from './RunDetails.js';
+import type {
+  RunDetails,
+  RunDetailsFailureProperty,
+  RunDetailsFailureTooManySkips,
+  RunDetailsSuccess,
+} from './RunDetails.js';
 import type { QualifiedParameters } from '../configuration/QualifiedParameters.js';
 import type { PropertyFailure } from '../../property/types/PropertyFailure.js';
 
@@ -127,9 +132,10 @@ export class RunExecution<Ts> {
         executionSummary: this.rootExecutionTrees,
         verbose: this.verbosity,
         runConfiguration: qParams.toParameters(),
-      };
+      } satisfies RunDetailsFailureProperty<Ts>;
     }
 
+    // The key: this.numSkips > maxSkips and this.interrupted are exclusive!
     // -- Let's suppose: this.numSkips > maxSkips
     // In the context of RunnerIterator we pull values from the stream
     // using the underlying SourceValuesIterator until we reach a first failure.
@@ -140,7 +146,7 @@ export class RunExecution<Ts> {
     // SourceValuesIterator automatically ends as soon as we skip too many values
     // so no subsequent values will be pulled from it, so no call to interrupt after this last skip.
     // -- Similarly, when interrupted, RunnerIterator stops everything so no call to skip after being interrupted.
-    const out: RunDetailsSuccess<Ts> | RunDetailsFailureTooManySkips<Ts> = {
+    return {
       failed: this.numSkips > maxSkips, // too many skips
       interrupted: this.interrupted,
       numRuns: this.numSuccesses,
@@ -149,13 +155,11 @@ export class RunExecution<Ts> {
       seed,
       counterexample: null,
       counterexamplePath: null,
-      error: null,
       errorInstance: null,
       failures: [],
       executionSummary: this.rootExecutionTrees,
       verbose: this.verbosity,
       runConfiguration: qParams.toParameters(),
-    };
-    return out;
+    } satisfies RunDetailsSuccess<Ts> | RunDetailsFailureTooManySkips<Ts>;
   }
 }
