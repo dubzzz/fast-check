@@ -16,5 +16,12 @@ export function createRunnerIterator<Ts>(
     qParams.path.length === 0
       ? toss(generator, qParams.seed, qParams.randomType, qParams.examples)
       : pathWalk(qParams.path, lazyToss(generator, qParams.seed, qParams.randomType, qParams.examples), shrink);
-  return new RunnerIterator(initialValues, !qParams.endOnFailure ? shrink : () => nil, qParams.verbose, maxSkips);
+  const maxInitialIterations = qParams.path.includes(':') ? Number.POSITIVE_INFINITY : qParams.numRuns;
+  return new RunnerIterator(
+    initialValues,
+    !qParams.endOnFailure ? shrink : () => nil,
+    qParams.verbose,
+    maxSkips,
+    maxInitialIterations,
+  );
 }

@@ -22,6 +22,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     readonly shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
     verbose: VerbosityLevel,
     readonly maxSkips: number,
+    readonly maxInitialIterations: number,
   ) {
     this.runExecution = new RunExecution<Ts>(verbose, maxSkips);
     this.currentIdx = -1;
@@ -31,8 +32,14 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     return this;
   }
   next(): IteratorResult<Ts> {
+    if (
+      this.runExecution.interrupted ||
+      (this.nextValues === this.sourceValues && this.runExecution.numSuccesses >= this.maxInitialIterations)
+    ) {
+      return { done: true, value: undefined };
+    }
     const nextValue = this.nextValues.next();
-    if (nextValue.done || this.runExecution.interrupted) {
+    if (nextValue.done) {
       return { done: true, value: undefined };
     }
     this.currentValue = nextValue.value;
