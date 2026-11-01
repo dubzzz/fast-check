@@ -160,6 +160,7 @@ export class RunExecution<Ts> {
       executionSummary: this.rootExecutionTrees,
       verbose: this.verbosity,
       runConfiguration: qParams.toParameters(),
-    } satisfies RunDetailsSuccess<Ts> | RunDetailsFailureTooManySkips<Ts>;
+      // TODO Move to satisfies, drop the duplicated logic of stopping next via "this.sourceValues.skippedOne()" and "interrupt"
+    } as RunDetailsSuccess<Ts> | RunDetailsFailureTooManySkips<Ts>;
   }
 }
