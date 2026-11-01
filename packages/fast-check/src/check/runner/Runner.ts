@@ -43,13 +43,13 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     ? Promise.resolve(
         runPluginCompletionCallbacks(
           pluginInstances,
-          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
         ),
       )
     : propertyRunnerOut.then(() =>
         runPluginCompletionCallbacks(
           pluginInstances,
-          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
         ),
       );
 }
