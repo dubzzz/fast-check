@@ -142,7 +142,7 @@ export class RunExecution<Ts> {
     const failed = tooManySkippedRuns || (interruptedNotBecauseOfSkips && considerInterruptedAsFailure);
     const out = {
       failed,
-      // For now we don't want to report, too many skipped runs as interrupted
+      // For now we don't want to report "too many skipped runs" as interrupted, but we will change that!
       interrupted: interruptedNotBecauseOfSkips,
       numRuns: this.numSuccesses,
       numSkips: this.numSkips,
