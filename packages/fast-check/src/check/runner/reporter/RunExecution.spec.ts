@@ -22,7 +22,7 @@ describe('RunExecution', () => {
         ),
         (seed, verbosityLevel, failuresDesc) => {
           // Simulate the run
-          const run = new RunExecution<number>(verbosityLevel);
+          const run = new RunExecution<number>(verbosityLevel, 10000);
           for (let idx = 0; idx !== failuresDesc[0].failureId; ++idx) {
             run.success(idx);
           }
@@ -31,7 +31,7 @@ describe('RunExecution', () => {
           }
           // Assert the value
           const lastFailure = failuresDesc[failuresDesc.length - 1];
-          const details = run.toRunDetails(seed, '', 10000, read({}));
+          const details = run.toRunDetails(seed, '', read({}));
           expect(details.failed).toBe(true);
           expect(details.interrupted).toBe(false);
           expect(details.counterexamplePath).not.toBe(null);
@@ -57,7 +57,7 @@ describe('RunExecution', () => {
     await fc.assert(
       fc.property(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
         // Simulate the run
-        const run = new RunExecution<number>(VerbosityLevel.None);
+        const run = new RunExecution<number>(VerbosityLevel.None, 10000);
         for (let idx = 0; idx !== path[0]; ++idx) {
           run.success(idx);
         }
@@ -65,7 +65,7 @@ describe('RunExecution', () => {
           run.fail(42, failureId, { error: new Error('Failed') });
         }
         // Assert the value
-        expect(run.toRunDetails(seed, '', 10000, read({})).counterexamplePath).toEqual(path.join(':'));
+        expect(run.toRunDetails(seed, '', read({})).counterexamplePath).toEqual(path.join(':'));
       }),
     ));
   it('Should generate correct counterexamplePath given initial offset', async () =>
@@ -76,7 +76,7 @@ describe('RunExecution', () => {
         fc.array(fc.nat(1000), { minLength: 1 }),
         (seed, offsetPath, addedPath) => {
           // Simulate the run
-          const run = new RunExecution<number>(VerbosityLevel.None);
+          const run = new RunExecution<number>(VerbosityLevel.None, 10000);
           for (let idx = 0; idx !== addedPath[0]; ++idx) {
             run.success(idx);
           }
@@ -87,7 +87,7 @@ describe('RunExecution', () => {
           const joinedPath = [...offsetPath, ...addedPath.slice(1)];
           joinedPath[offsetPath.length - 1] += addedPath[0];
           // Assert the value
-          expect(run.toRunDetails(seed, offsetPath.join(':'), 10000, read({})).counterexamplePath).toEqual(
+          expect(run.toRunDetails(seed, offsetPath.join(':'), read({})).counterexamplePath).toEqual(
             joinedPath.join(':'),
           );
         },
@@ -108,7 +108,7 @@ describe('RunExecution', () => {
         ),
         (executionStatuses) => {
           // Simulate the run
-          const run = new RunExecution<number>(VerbosityLevel.VeryVerbose);
+          const run = new RunExecution<number>(VerbosityLevel.VeryVerbose, executionStatuses.length + 1);
           for (let idx = 0; idx !== executionStatuses.length; ++idx) {
             switch (executionStatuses[idx].status) {
               case ExecutionStatus.Success:
@@ -124,7 +124,7 @@ describe('RunExecution', () => {
                 break;
             }
           }
-          const details = run.toRunDetails(0, '', executionStatuses.length + 1, read({}));
+          const details = run.toRunDetails(0, '', read({}));
           let currentExecutionTrees = details.executionSummary;
           for (let idx = 0, idxInTrees = 0; idx !== executionStatuses.length; ++idx, ++idxInTrees) {
             // Ordered like execution: same value and status
