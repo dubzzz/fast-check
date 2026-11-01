@@ -4,7 +4,6 @@ import { ExecutionStatus } from '../reporter/ExecutionStatus.js';
 import type { ExecutionTree } from '../reporter/ExecutionTree.js';
 import type {
   RunDetails,
-  RunDetailsFailureInterrupted,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
   RunDetailsSuccess,
@@ -137,20 +136,11 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
   return { message };
 }
 
-function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>) {
-  const message = `Property interrupted after ${out.numRuns} tests\n{ seed: ${out.seed} }`;
-  return { message };
-}
-
 function defaultReportMessageInternal<Ts>(
-  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts>,
   stringifyOne: (value: Ts) => string,
 ): FormatOutput {
-  return out.counterexamplePath === null
-    ? out.interrupted
-      ? preFormatEarlyInterrupted(out)
-      : preFormatTooManySkipped(out)
-    : preFormatFailure(out, stringifyOne);
+  return out.counterexamplePath === null ? preFormatTooManySkipped(out) : preFormatFailure(out, stringifyOne);
 }
 
 function buildReportContent<Ts>(
@@ -184,7 +174,7 @@ function buildReportContent<Ts>(
  * @public
  */
 function defaultReportMessage<Ts>(
-  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsFailureInterrupted<Ts>,
+  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts>,
 ): Promise<string> | string;
 /**
  * Format output of {@link check} using the default error reporting of {@link assert}

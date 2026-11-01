@@ -1,7 +1,7 @@
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from './ExecutionStatus.js';
 import type { ExecutionTree } from './ExecutionTree.js';
-import type { RunDetails } from './RunDetails.js';
+import type { RunDetails, RunDetailsFailureTooManySkips, RunDetailsSuccess } from './RunDetails.js';
 import type { QualifiedParameters } from '../configuration/QualifiedParameters.js';
 import type { PropertyFailure } from '../../property/types/PropertyFailure.js';
 
@@ -130,11 +130,6 @@ export class RunExecution<Ts> {
       };
     }
 
-    // Either 'too many skips' or 'interrupted' with flag interruptedAsFailure enabled
-    // The two cases are exclusive (the two cannot be true at the same time)
-    const considerInterruptedAsFailure = this.numSuccesses === 0;
-    const failed = this.numSkips > maxSkips || (this.interrupted && considerInterruptedAsFailure);
-
     // -- Let's suppose: this.numSkips > maxSkips
     // In the context of RunnerIterator we pull values from the stream
     // using the underlying SourceValuesIterator until we reach a first failure.
@@ -145,8 +140,8 @@ export class RunExecution<Ts> {
     // SourceValuesIterator automatically ends as soon as we skip too many values
     // so no subsequent values will be pulled from it, so no call to interrupt after this last skip.
     // -- Similarly, when interrupted, RunnerIterator stops everything so no call to skip after being interrupted.
-    const out = {
-      failed,
+    const out: RunDetailsSuccess<Ts> | RunDetailsFailureTooManySkips<Ts> = {
+      failed: this.numSkips > maxSkips, // too many skips
       interrupted: this.interrupted,
       numRuns: this.numSuccesses,
       numSkips: this.numSkips,
