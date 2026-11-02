@@ -40,7 +40,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 1, // 1 to handle the wrapped result
-        fixedCompletionTicks: 5, // 2 hook continuations, 2 result propagations, 1 check continuation
+        fixedCompletionTicks: 5, // 2 hook continuations, 2 result propagations, 1 runner completion continuation
       },
       description: 'Promise.resolve pass-through plugin',
     },
@@ -259,7 +259,7 @@ function extractExpectedTicks(kind: 'async' | 'sync') {
   return {
     startupTicks: 0, // The runner invokes the first predicate before yielding to any microtask
     ticksPerRun: 2, // 1 to convert the predicate result, 1 to resume the runner
-    fixedCompletionTicks: 3, // check, assert and the it's await each add one tick
+    fixedCompletionTicks: 3, // Plugin completion, default reporting and the it's await each add one tick
   };
 }
 

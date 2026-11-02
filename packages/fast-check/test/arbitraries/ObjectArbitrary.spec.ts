@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
+import { runDetails } from '../__test-helpers__/RunDetails.js';
 import { seed } from '../seed.js';
 
 describe(`ObjectArbitrary (seed: ${seed})`, () => {
@@ -24,7 +25,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
         .join('');
     };
     it('Should shrink on entity having a reverse JSON a valid JSON', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.json(), (json: string) => {
           if (json[0] !== '{') return true;
           try {
@@ -42,7 +43,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
   });
   describe('object', () => {
     it('Should shrink on object in object', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.object(), (obj: any) => {
           const isObject = (ins: any) => {
             return typeof ins === 'object' && !Array.isArray(ins) && ins !== null;

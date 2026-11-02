@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../src/fast-check.js';
+import { runDetails } from './__test-helpers__/RunDetails.js';
 import { seed } from './seed.js';
 
 describe(`RecursiveStructures (seed: ${seed})`, () => {
@@ -15,7 +16,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     })).data;
 
     // Act
-    const out = await fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+    const out = await runDetails(fc.property(dataArb, (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
@@ -30,7 +31,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     })).data;
 
     // Act
-    const out = await fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+    const out = await runDetails(fc.property(dataArb, (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
@@ -46,7 +47,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     });
 
     // Act
-    const out = await fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+    const out = await runDetails(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
@@ -62,7 +63,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     });
 
     // Act
-    const out = await fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+    const out = await runDetails(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);

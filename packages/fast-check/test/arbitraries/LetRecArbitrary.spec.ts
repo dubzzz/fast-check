@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
+import { runDetails } from '../__test-helpers__/RunDetails.js';
 import { seed } from '../seed.js';
 
 describe(`LetRecArbitrary (seed: ${seed})`, () => {
@@ -29,7 +30,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
         node: fc.tuple(tie('tree'), tie('tree')),
         leaf: fc.nat(),
       }));
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(tree, (t) => {
           const depth = (n: any): number => {
             if (typeof n === 'number') return 0;
@@ -49,7 +50,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
           leaf: fc.nat(),
         };
       });
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(tree, (t) => typeof t !== 'object'),
         { seed },
       );

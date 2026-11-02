@@ -24,44 +24,37 @@ Check [`Parameters`](/docs/api/interfaces/Parameters) to run `assert` with advan
 Resources: [API reference](/docs/api/functions/assert).  
 Available since 0.0.1.
 
-## check
+### Run details
 
-Similar to `assert` except that caller is responsible to handle the output.
-
-In terms of signatures, `check` provides the following:
-
-```ts
-function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
-```
-
-The structure `RunDetails` provides all the details needed to report what happened. There are four major reasons for `check` to end:
-
-| Reasons                                                 | `failed` | `interrupted`  | `counterexample`/`counterexamplePath`/`error` |
-| ------------------------------------------------------- | :------: | :------------: | :-------------------------------------------: |
-| failure of the predicate                                |  `true`  | `true`/`false` |                  _not null_                   |
-| too many pre-conditions failures                        |  `true`  |    `false`     |                    `null`                     |
-| execution took too long given `interruptAfterTimeLimit` |  `true`  |     `true`     |                    `null`                     |
-| successful run                                          | `false`  | `true`/`false` |                    `null`                     |
-
-:::tip[Build a custom assertion with `check`]
-
-Use `check` to throw your own error on failure. This example produces a custom message instead of the default report of `assert`.
+Use a plugin's `onAllRunsComplete` callback to inspect the results of a run. Set `noDefaultPlugins: true` when you want to handle the outcome yourself, including failed runs, without the default report of `assert`.
 
 ```js
-async function customAssert(property, params) {
-  const out = await fc.check(property, params);
-  if (out.failed) {
-    throw new Error(`Property failed after ${out.numRuns} tests`, {
-      cause: out.errorInstance,
-    });
-  }
-}
+let runDetails;
+await fc.assert(property, {
+  noDefaultPlugins: true,
+  plugins: [
+    () => ({
+      onAllRunsComplete(out) {
+        runDetails = out;
+      },
+    }),
+  ],
+});
+// Inspect runDetails here after all runs and completion callbacks have finished.
 ```
 
-:::
+The structure `RunDetails` provides all the details needed to report what happened. There are four major reasons for a run to end:
 
-Resources: [API reference](/docs/api/functions/check).  
-Available since 0.0.1.
+| Reasons                                                 | `failed` | `interrupted`  | `counterexample`/`counterexamplePath`/`errorInstance` |
+| ------------------------------------------------------- | :------: | :------------: | :---------------------------------------------------: |
+| failure of the predicate                                |  `true`  | `true`/`false` |                       _not null_                      |
+| too many pre-conditions failures                        |  `true`  |    `false`     |                         `null`                        |
+| execution took too long given `interruptAfterTimeLimit` |  `true`  |     `true`     |                         `null`                        |
+| successful run                                          | `false`  | `true`/`false` |                         `null`                        |
+
+A plugin can throw or reject from `onAllRunsComplete` to report a failure even when `noDefaultPlugins` is enabled. See [custom reports](/docs/configuration/custom-reports/) for examples.
+
+Resources: [RunDetails API reference](/docs/api/types/RunDetails).
 
 ## sample
 

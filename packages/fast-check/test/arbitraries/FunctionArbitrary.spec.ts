@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
+import { runDetails } from '../__test-helpers__/RunDetails.js';
 import { seed } from '../seed.js';
 
 describe(`FunctionArbitrary (seed: ${seed})`, () => {
   describe('func', () => {
     it('Should be able to generate multiple values', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)),
         {
           seed: seed,
@@ -28,7 +29,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
   });
   describe('compareFunc', () => {
     it('Should be able to find equivalence between distinct values', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
           fc.pre(a !== b);
           return f(a, b) !== 0;

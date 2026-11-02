@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
+import { runDetails } from '../__test-helpers__/RunDetails.js';
 import { seed } from '../seed.js';
 
 const src = [1, 25, 42, 0, -12];
@@ -21,7 +22,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
       );
     });
     it('Should be able to shrink to the minimal counterexample', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.subarray(src), (arr: number[]) => arr.indexOf(src[0]) === -1 || arr.indexOf(src[3]) === -1),
         { seed: seed },
       );
@@ -31,7 +32,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
   });
   describe('shuffledSubarray', () => {
     it('Should be able to shrink to counterexample restricted to an inverted pair', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.shuffledSubarray(src), (arr: number[]) => {
           const correspondingIndexes = arr.map((v) => src.indexOf(v));
           let prev = -1;

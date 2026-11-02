@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
+import { runDetails } from '../__test-helpers__/RunDetails.js';
 import { seed } from '../seed.js';
 
 describe(`StringArbitrary (seed: ${seed})`, () => {
   describe('base64String', () => {
     it('Should shrink on base64 containing no equal signs', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.base64String(), (s: string) => /^\w*$/.exec(s) == null),
         { seed: seed },
       );
@@ -13,7 +14,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual(['']);
     });
     it('Should shrink on base64 containing one equal signs', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.base64String(), (s: string) => /^\w+=$/.exec(s) == null),
         { seed: seed },
       );
@@ -21,7 +22,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual(['AAA=']);
     });
     it('Should shrink on base64 containing two equal signs', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.base64String(), (s: string) => /^\w+==$/.exec(s) == null),
         { seed: seed },
       );

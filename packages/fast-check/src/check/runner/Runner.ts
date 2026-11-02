@@ -3,7 +3,6 @@ import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import type { RunDetails } from './reporter/RunDetails.js';
 import { propertyRunner } from './PropertyRunner.js';
 import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
 import { reportRunDetails } from './utils/RunDetailsFormatter.js';
@@ -13,46 +12,6 @@ import {
   instantiatePlugins,
   runPluginCompletionCallbacks,
 } from './utils/PluginIntegration.js';
-
-/**
- * Run the property, do not throw contrary to {@link assert}
- *
- * WARNING: Has to be awaited
- *
- * @param property - Asynchronous property to be checked
- * @param params - Optional parameters to customize the execution
- *
- * @returns Test status and other useful details
- *
- * @remarks Since 0.0.7
- * @public
- */
-function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
-  const qParams: QualifiedParameters<Ts> = read<Ts>({
-    ...(readConfigureGlobal() as Parameters<Ts>),
-    ...params,
-  });
-  const pluginInstances = instantiatePlugins(qParams.plugins);
-  const generator = applyPluginGeneratorDecorators(property, pluginInstances);
-  const run = applyPluginRunDecorators(property, pluginInstances);
-
-  const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
-  const propertyRunnerOut = propertyRunner(runnerIterator, run);
-  return propertyRunnerOut === undefined
-    ? Promise.resolve(
-        runPluginCompletionCallbacks(
-          pluginInstances,
-          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
-        ),
-      )
-    : propertyRunnerOut.then(() =>
-        runPluginCompletionCallbacks(
-          pluginInstances,
-          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
-        ),
-      );
-}
 
 /**
  * Run the property and reject if a plugin reports the run as an error
@@ -71,7 +30,31 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
  * @public
  */
 function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
-  const out = check(property, params);
+  const qParams: QualifiedParameters<Ts> = read<Ts>({
+    ...(readConfigureGlobal() as Parameters<Ts>),
+    ...params,
+  });
+  const pluginInstances = instantiatePlugins(qParams.plugins);
+  const generator = applyPluginGeneratorDecorators(property, pluginInstances);
+  const run = applyPluginRunDecorators(property, pluginInstances);
+
+  const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
+  const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
+  const propertyRunnerOut = propertyRunner(runnerIterator, run);
+  const out =
+    propertyRunnerOut === undefined
+      ? Promise.resolve(
+          runPluginCompletionCallbacks(
+            pluginInstances,
+            runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
+          ),
+        )
+      : propertyRunnerOut.then(() =>
+          runPluginCompletionCallbacks(
+            pluginInstances,
+            runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
+          ),
+        );
   return out.then((runDetails) => {
     if (!runDetails.runConfiguration.noDefaultPlugins) {
       return reportRunDetails(runDetails);
@@ -79,4 +62,4 @@ function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<vo
   });
 }
 
-export { check, assert };
+export { assert };

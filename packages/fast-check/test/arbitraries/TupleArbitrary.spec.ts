@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
+import { runDetails } from '../__test-helpers__/RunDetails.js';
 import { seed } from '../seed.js';
 
 describe(`TupleArbitrary (seed: ${seed})`, () => {
   describe('tuple', () => {
     it('Should shrink on tuple2', async () => {
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.tuple(fc.nat(), fc.nat()), (v: [number, number]) => v[0] < 100 || v[1] < 50),
         { seed: seed },
       );

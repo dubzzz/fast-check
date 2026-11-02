@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
+import { runDetails } from '../__test-helpers__/RunDetails.js';
 import { seed } from '../seed.js';
 
 describe(`RecordArbitrary (seed: ${seed})`, () => {
@@ -10,7 +11,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         bb: fc.object(),
         cc: fc.string(),
       };
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.record(recordModel), (obj) => obj.cc.length <= 2),
         { seed: seed },
       );
@@ -23,7 +24,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         bb: fc.object(),
         cc: fc.string(),
       };
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.record(recordModel, { requiredKeys: [] }), (obj) => obj.bb == null),
         {
           seed: seed,
@@ -41,7 +42,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         forcePositiveOutput: fc.boolean(),
         forceNegativeOutput: fc.boolean(),
       };
-      const out = await fc.check(
+      const out = await runDetails(
         fc.property(fc.record(recordModel, { requiredKeys: [] }), (obj) => {
           if (obj.forcePositiveOutput === true && obj.forceNegativeOutput === true) return false;
           return true;

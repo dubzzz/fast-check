@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { mersenne } from 'pure-rand/generator/mersenne';
 import * as fc from '../src/fast-check.js';
+import { runDetails } from './__test-helpers__/RunDetails.js';
 import { seed } from './seed.js';
 
 // Fake commands
@@ -53,26 +54,26 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
     );
   };
   it('Should be able to replay commands by specifying replayPath in fc.commands', async () => {
-    const out = await fc.check(buildProp(), { seed: seed });
+    const out = await runDetails(buildProp(), { seed: seed });
     expect(out.failed).toBe(true);
 
     const path = out.counterexamplePath!;
     const replayPath = /\/\*replayPath=['"](.*)['"]\*\//.exec(out.counterexample![0].toString())![1];
 
-    const outReplayed = await fc.check(buildProp(replayPath), { seed, path });
+    const outReplayed = await runDetails(buildProp(replayPath), { seed, path });
     expect(outReplayed.counterexamplePath).toEqual(out.counterexamplePath);
     expect(outReplayed.counterexample![0].toString()).toEqual(out.counterexample![0].toString());
     expect(outReplayed.numRuns).toEqual(1);
   });
   it('Should be able to resume a stopped run by specifying replayPath in fc.commands', async () => {
     const mrng = new fc.Random(mersenne(seed));
-    const out = await fc.check(buildProp(undefined, mrng), { seed: seed });
+    const out = await runDetails(buildProp(undefined, mrng), { seed: seed });
     expect(out.failed).toBe(true);
 
     const path = out.counterexamplePath!;
     const replayPath = /\/\*replayPath=['"](.*)['"]\*\//.exec(out.counterexample![0].toString())![1];
 
-    const outReplayed = await fc.check(buildProp(replayPath), { seed, path });
+    const outReplayed = await runDetails(buildProp(replayPath), { seed, path });
     expect(outReplayed.counterexamplePath).toContain(out.counterexamplePath);
     expect(outReplayed.counterexamplePath!.startsWith(out.counterexamplePath!)).toBe(true);
   });

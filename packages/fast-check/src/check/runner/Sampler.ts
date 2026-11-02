@@ -34,7 +34,7 @@ function streamSample<Ts>(
 }
 
 /**
- * Generate an array containing all the values that would have been generated during {@link assert} or {@link check}
+ * Generate an array containing all the values that would have been generated during {@link assert}
  *
  * @example
  * ```typescript

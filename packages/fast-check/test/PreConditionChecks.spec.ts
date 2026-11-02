@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../src/fast-check.js';
+import { runDetails } from './__test-helpers__/RunDetails.js';
 import { seed } from './seed.js';
 
 describe(`PreConditionChecks (seed: ${seed})`, () => {
@@ -12,7 +13,7 @@ describe(`PreConditionChecks (seed: ${seed})`, () => {
     );
   });
   it('should consider run as failure on too many pre failures', async () => {
-    const out = await fc.check(
+    const out = await runDetails(
       fc.property(fc.integer(), fc.integer(), (_x, _y) => {
         fc.pre(false);
         return true;
@@ -21,7 +22,7 @@ describe(`PreConditionChecks (seed: ${seed})`, () => {
     expect(out.failed).toBe(true);
   });
   it('should not failed when no skips on no skips allowed', async () => {
-    const out = await fc.check(
+    const out = await runDetails(
       fc.property(fc.integer(), fc.integer(), (_x, _y) => true),
       { maxSkipsPerRun: 0 },
     );

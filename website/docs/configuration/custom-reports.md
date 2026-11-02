@@ -71,27 +71,26 @@ await fc.assert(fc.property(...), {
 `reporter` is now deprecated: prefer a plugin relying on the `onAllRunsComplete` hook.
 :::
 
-:::info[Before `reporter`]
-In the past, writing your own reporter would have been done as follow:
+### Disable the default report
+
+Set `noDefaultPlugins: true` to handle the outcome entirely in your plugins. In this mode, `assert` does not reject just because the property failed. A plugin can still throw or reject from `onAllRunsComplete` to report an error.
 
 ```js
-const throwIfFailed = async (out) => {
-  if (out.failed) {
-    throw new Error(`Property failed after ${out.numRuns} tests`, {
-      cause: out.errorInstance,
-    });
-  }
-};
-const myCustomAssert = async (property, parameters) => {
-  const runDetails = await fc.check(property, parameters);
-  await throwIfFailed(runDetails);
-};
+let runDetails;
+await fc.assert(property, {
+  noDefaultPlugins: true,
+  plugins: [
+    () => ({
+      onAllRunsComplete(out) {
+        runDetails = out;
+      },
+    }),
+  ],
+});
+// Use runDetails to inspect or report the outcome.
 ```
 
-This approach based on `fc.check` stays fully supported and remains the way to go whenever the default report of `assert` has to be dropped entirely, including its "throw on failure" behavior.
-
-These examples produce a custom message instead of reproducing the default report of `assert`.
-:::
+The returned promise resolves after all completion callbacks have finished. You can also return a promise from `onAllRunsComplete` when reporting requires asynchronous work.
 
 ## CodeSandbox Reporter
 
