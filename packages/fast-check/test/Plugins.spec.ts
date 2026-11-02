@@ -88,8 +88,9 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should forward afterAll errors on predicate failure when default plugins are disabled', async () => {
+  it('should forward afterAll errors when no onAllRunsComplete reported an error', async () => {
     // Arrange
+    // Disable default reporting so no completion hook reports the predicate failure before afterAll.
     const reporterPlugin: fc.Plugin<[number]> = () => ({
       afterAll: () => {
         throw new Error(`boom!`);
