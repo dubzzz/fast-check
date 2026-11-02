@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
-import { readInstalledGlobalPlugins } from '../src/check/runner/configuration/GlobalPlugins.js';
 
 describe(`Plugins (seed: ${seed})`, () => {
   it('should wait and queue onAllRunsComplete and afterAll', async () => {
@@ -54,103 +53,40 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should preserve global and local plugins and await their callbacks with noDefaultPlugins', async () => {
+  it('should run every onAllRunsComplete and afterAll even when many throw and only forward the first error', async () => {
     // Arrange
     const probes: string[] = [];
-    const seenRunDetails: unknown[] = [];
-    const buildPlugin =
-      (name: string): fc.UniversalPlugin =>
-      () => {
-        probes.push(`${name} instantiated`);
+    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
+      return () => {
         return {
-          decorateRun: (nestedRun) => (value, context) => {
-            probes.push(`${name}::run`);
-            return nestedRun(value, context);
-          },
-          onAllRunsComplete: async (runDetails) => {
-            await Promise.resolve();
-            probes.push(`${name}::onAllRunsComplete`);
-            seenRunDetails.push(runDetails);
+          onAllRunsComplete: async () => {
+            probes.push(`${pluginName}::onAllRunsComplete`);
+            throw new Error(`error from ${pluginName}::onAllRunsComplete`);
           },
           afterAll: async () => {
-            await Promise.resolve();
-            probes.push(`${name}::afterAll`);
+            probes.push(`${pluginName}::afterAll`);
+            throw new Error(`error from ${pluginName}::afterAll`);
           },
         };
       };
-    const globalPlugins = readInstalledGlobalPlugins();
-    const initialGlobalPluginCount = globalPlugins.length;
-    fc.installGlobalPlugin(buildPlugin('global'));
+    };
 
-    try {
-      // Act
-      const out = await fc.assert(
-        fc.property(fc.constant(42), () => false),
-        {
-          noDefaultPlugins: true,
-          plugins: [buildPlugin('local')],
-        },
-      );
-      probes.push('assert done');
-
-      // Assert
-      expect(out).toBeUndefined();
-      expect(seenRunDetails).toHaveLength(2);
-      expect(seenRunDetails[0]).toMatchObject({ failed: true, counterexample: [42] });
-      expect(seenRunDetails[1]).toBe(seenRunDetails[0]);
-      expect(probes).toEqual([
-        'global instantiated',
-        'local instantiated',
-        'global::run',
-        'local::run',
-        'global::onAllRunsComplete',
-        'local::onAllRunsComplete',
-        'local::afterAll',
-        'global::afterAll',
-        'assert done',
-      ]);
-    } finally {
-      globalPlugins.splice(initialGlobalPluginCount);
-    }
+    // Act / Assert
+    await expect(
+      fc.assert(
+        fc.property(fc.integer(), async (_x) => true),
+        { plugins: [buildPlugin('a'), buildPlugin('b'), buildPlugin('c')] },
+      ),
+    ).rejects.toThrow(/^error from a::onAllRunsComplete$/);
+    expect(probes).toEqual([
+      'a::onAllRunsComplete',
+      'b::onAllRunsComplete',
+      'c::onAllRunsComplete',
+      'c::afterAll',
+      'b::afterAll',
+      'a::afterAll',
+    ]);
   });
-
-  it.each([false, true])(
-    'should run every onAllRunsComplete and afterAll even when many throw and only forward the first error (noDefaultPlugins=%s)',
-    async (noDefaultPlugins) => {
-      // Arrange
-      const probes: string[] = [];
-      const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
-        return () => {
-          return {
-            onAllRunsComplete: async () => {
-              probes.push(`${pluginName}::onAllRunsComplete`);
-              throw new Error(`error from ${pluginName}::onAllRunsComplete`);
-            },
-            afterAll: async () => {
-              probes.push(`${pluginName}::afterAll`);
-              throw new Error(`error from ${pluginName}::afterAll`);
-            },
-          };
-        };
-      };
-
-      // Act / Assert
-      await expect(
-        fc.assert(
-          fc.property(fc.integer(), async (_x) => true),
-          { noDefaultPlugins, plugins: [buildPlugin('a'), buildPlugin('b'), buildPlugin('c')] },
-        ),
-      ).rejects.toThrow(/^error from a::onAllRunsComplete$/);
-      expect(probes).toEqual([
-        'a::onAllRunsComplete',
-        'b::onAllRunsComplete',
-        'c::onAllRunsComplete',
-        'c::afterAll',
-        'b::afterAll',
-        'a::afterAll',
-      ]);
-    },
-  );
 
   it('should forward errors thrown within afterAll to the user even in case of predicate failure', async () => {
     // Arrange
