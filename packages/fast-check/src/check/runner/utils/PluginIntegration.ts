@@ -3,8 +3,9 @@ import type { Property } from '../../property/types/Property.js';
 import { readInstalledGlobalPlugins } from '../configuration/GlobalPlugins.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import { runAllCallbacksAndReturn } from './AllCallbacksThenReturnRunner.js';
+import { defaultReporter } from './RunDetailsFormatter.js';
 
-export function instantiatePlugins<Ts>(localPlugins: Plugin<Ts>[]): PluginInstance<Ts>[] {
+export function instantiatePlugins<Ts>(localPlugins: Plugin<Ts>[], addDefaultPlugins: boolean): PluginInstance<Ts>[] {
   const globalPlugins = readInstalledGlobalPlugins();
   const pluginStore = new Map<symbol, any>();
   const pluginInstances: PluginInstance<Ts>[] = [];
@@ -13,6 +14,9 @@ export function instantiatePlugins<Ts>(localPlugins: Plugin<Ts>[]): PluginInstan
   }
   for (let index = 0; index !== localPlugins.length; ++index) {
     pluginInstances.push(localPlugins[index](globalPlugins.length + index, pluginStore));
+  }
+  if (addDefaultPlugins) {
+    pluginInstances.push(defaultReporter()<Ts>(pluginInstances.length, pluginStore));
   }
   return pluginInstances;
 }
@@ -51,14 +55,14 @@ export function applyPluginRunDecorators<Ts>(
 export function runPluginCompletionCallbacks<Ts>(
   pluginInstances: PluginInstance<Ts>[],
   runDetails: RunDetails<Ts>,
-): RunDetails<Ts> | Promise<RunDetails<Ts>> {
+): void | Promise<void> {
   if (pluginInstances.length === 0) {
-    return runDetails;
+    return;
   }
   const halfCount = pluginInstances.length;
   const count = halfCount * 2;
   return runAllCallbacksAndReturn(
-    runDetails,
+    undefined,
     (index) =>
       index < halfCount
         ? pluginInstances[index].onAllRunsComplete?.(runDetails)

@@ -5,7 +5,6 @@ import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { propertyRunner } from './PropertyRunner.js';
 import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
-import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import {
   applyPluginGeneratorDecorators,
   applyPluginRunDecorators,
@@ -34,32 +33,27 @@ function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<vo
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  const pluginInstances = instantiatePlugins(qParams.plugins);
+  const pluginInstances = instantiatePlugins(qParams.plugins, !qParams.noDefaultPlugins);
   const generator = applyPluginGeneratorDecorators(property, pluginInstances);
   const run = applyPluginRunDecorators(property, pluginInstances);
 
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
   const propertyRunnerOut = propertyRunner(runnerIterator, run);
-  const out =
-    propertyRunnerOut === undefined
-      ? Promise.resolve(
-          runPluginCompletionCallbacks(
-            pluginInstances,
-            runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
-          ),
-        )
-      : propertyRunnerOut.then(() =>
-          runPluginCompletionCallbacks(
-            pluginInstances,
-            runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
-          ),
-        );
-  return out.then((runDetails) => {
-    if (!runDetails.runConfiguration.noDefaultPlugins) {
-      return reportRunDetails(runDetails);
-    }
-  });
+  return propertyRunnerOut === undefined
+    ? Promise.resolve(
+        runPluginCompletionCallbacks(
+          pluginInstances,
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
+        ),
+      )
+    : propertyRunnerOut.then(() =>
+        runPluginCompletionCallbacks(
+          pluginInstances,
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
+        ),
+      );
 }
+
 
 export { assert };

@@ -88,8 +88,9 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should forward errors thrown within afterAll to the user even in case of predicate failure', async () => {
+  it('should forward afterAll errors when no onAllRunsComplete reported an error', async () => {
     // Arrange
+    // Disable default reporting so no completion hook reports the predicate failure before afterAll.
     const reporterPlugin: fc.Plugin<[number]> = () => ({
       afterAll: () => {
         throw new Error(`boom!`);
@@ -100,7 +101,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     await expect(() =>
       fc.assert(
         fc.property(fc.integer(), (x) => x < 42),
-        { plugins: [reporterPlugin], seed },
+        { plugins: [reporterPlugin], seed, noDefaultPlugins: true },
       ),
     ).rejects.toThrow(/^boom!$/);
   });
