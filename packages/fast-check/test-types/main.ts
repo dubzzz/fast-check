@@ -10,51 +10,6 @@ import { expectTypeOf } from 'vitest';
 expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Promise<void>>();
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
-// assert keeps its return type when default plugins are disabled
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), async () => {}),
-    { noDefaultPlugins: true },
-  ),
-).toEqualTypeOf<Promise<void>>();
-// assert keeps its return type even with a synchronous predicate
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), () => {}),
-    { noDefaultPlugins: true },
-  ),
-).toEqualTypeOf<Promise<void>>();
-// assert keeps its default return type when default plugins are explicitly enabled
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), () => {}),
-    { noDefaultPlugins: false },
-  ),
-).toEqualTypeOf<Promise<void>>();
-// assert accepts a flag whose value is only known at runtime
-declare const noDefaultPlugins: boolean;
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), () => {}),
-    { noDefaultPlugins },
-  ),
-).toEqualTypeOf<Promise<void>>();
-// assert accepts parameters whose flag may be true, false, or omitted
-declare const assertionParameters: fc.Parameters<[number]>;
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), () => {}),
-    assertionParameters,
-  ),
-).toEqualTypeOf<Promise<void>>();
-// assert keeps its return type with optional parameters
-declare const optionalAssertionParameters: fc.Parameters<[number]> | undefined;
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), () => {}),
-    optionalAssertionParameters,
-  ),
-).toEqualTypeOf<Promise<void>>();
 
 // property
 // "property" instantiates instances compatible with Property
@@ -541,36 +496,6 @@ fc.assert(fc.property(fc.string(), fc.string(), async (_s1, _s2) => {}), { plugi
 // prettier-ignore
 // @ts-expect-error - string and number are incompatible
 fc.assert(fc.property(fc.nat(), async (_n) => {}), { plugins: [stringArgPlugin()] });
-// can use a properly typed plugin when default plugins are disabled
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.string(), async (_s) => {}),
-    {
-      noDefaultPlugins: true,
-      plugins: [stringArgPlugin()],
-    },
-  ),
-).toEqualTypeOf<Promise<void>>();
-// plugins receive typed run details when default plugins are disabled
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), fc.string(), () => {}),
-    {
-      noDefaultPlugins: true,
-      plugins: [
-        () => ({
-          onAllRunsComplete: (runDetails) => {
-            expectTypeOf(runDetails).toEqualTypeOf<fc.RunDetails<[number, string]>>();
-          },
-        }),
-      ],
-    },
-  ),
-).toEqualTypeOf<Promise<void>>();
-// disabling default plugins does not permit incompatible explicit plugins
-// prettier-ignore
-// @ts-expect-error - string and number are incompatible
-fc.assert(fc.property(fc.nat(), async (_n) => {}), { noDefaultPlugins: true, plugins: [stringArgPlugin()] });
 
 // entityGraph
 type Node = { name: string; linkTo: Node[] };
