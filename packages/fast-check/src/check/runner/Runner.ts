@@ -265,10 +265,12 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
 }
 
 /**
- * Run the property, throw in case of failure
+ * Run the property and reject if a plugin reports the run as an error
+ *
+ * With the default setup, failed runs are rejected.
  *
  * It can be called directly from describe/it blocks of Mocha.
- * No meaningful results are produced in case of success.
+ * No meaningful results are produced. Use a plugin's `onAllRunsComplete` callback to access run details.
  *
  * WARNING: Has to be awaited
  *
@@ -309,8 +311,17 @@ function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   const out = check(property, params);
-  if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(asyncReportRunDetails);
-  else reportRunDetails(out as RunDetails<Ts>) as void;
+  if (property.isAsync()) {
+    return (out as Promise<RunDetails<Ts>>).then((runDetails) => {
+      if (!runDetails.runConfiguration.noDefaultPlugins) {
+        return asyncReportRunDetails(runDetails);
+      }
+    });
+  }
+  const runDetails = out as RunDetails<Ts>;
+  if (!runDetails.runConfiguration.noDefaultPlugins) {
+    void reportRunDetails(runDetails);
+  }
 }
 
 export { check, assert };
