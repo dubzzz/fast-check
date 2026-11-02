@@ -43,14 +43,17 @@ The structure `RunDetails` provides all the details needed to report what happen
 | execution took too long given `interruptAfterTimeLimit` |  `true`  |     `true`     |                    `null`                     |
 | successful run                                          | `false`  | `true`/`false` |                    `null`                     |
 
-:::tip[Rewrite `assert` with `check`]
+:::tip[Build a custom assertion with `check`]
+
+Use `check` to throw your own error on failure. This example produces a custom message instead of the default report of `assert`.
 
 ```js
-async function assert(property, params) {
+async function customAssert(property, params) {
   const out = await fc.check(property, params);
   if (out.failed) {
-    const message = await fc.defaultReportMessage(out);
-    throw new Error(message, { cause: out.errorInstance });
+    throw new Error(`Property failed after ${out.numRuns} tests`, {
+      cause: out.errorInstance,
+    });
   }
 }
 ```
