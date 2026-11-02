@@ -6,7 +6,6 @@ import type { QualifiedParameters } from './configuration/QualifiedParameters.js
 import type { RunDetails } from './reporter/RunDetails.js';
 import { propertyRunner } from './PropertyRunner.js';
 import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
-import { defaultReporter } from './utils/RunDetailsFormatter.js';
 import {
   applyPluginGeneratorDecorators,
   applyPluginRunDecorators,
@@ -19,9 +18,7 @@ function checkInternal<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Pro
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  const pluginInstances = instantiatePlugins(
-    qParams.noDefaultPlugins ? qParams.plugins : [...qParams.plugins, defaultReporter()],
-  );
+  const pluginInstances = instantiatePlugins(qParams.plugins, !qParams.noDefaultPlugins);
   const generator = applyPluginGeneratorDecorators(property, pluginInstances);
   const run = applyPluginRunDecorators(property, pluginInstances);
 
