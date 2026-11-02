@@ -3,7 +3,6 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import { RunExecution } from './reporter/RunExecution.js';
-import type { SourceValuesIterator } from './SourceValuesIterator.js';
 
 /**
  * Responsible for the iteration logic
@@ -19,11 +18,13 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
   private currentValue: Value<Ts> | undefined;
   private nextValues: IterableIterator<Value<Ts>>;
   constructor(
-    readonly sourceValues: SourceValuesIterator<Value<Ts>>,
+    readonly sourceValues: IteratorObject<Value<Ts>, unknown, unknown>,
     readonly shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
     verbose: VerbosityLevel,
+    readonly maxSkips: number,
+    readonly maxInitialIterations: number,
   ) {
-    this.runExecution = new RunExecution<Ts>(verbose);
+    this.runExecution = new RunExecution<Ts>(verbose, maxSkips);
     this.currentIdx = -1;
     this.nextValues = sourceValues;
   }
@@ -31,8 +32,14 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     return this;
   }
   next(): IteratorResult<Ts> {
+    if (
+      this.runExecution.interrupted ||
+      (this.nextValues === this.sourceValues && this.runExecution.numSuccesses >= this.maxInitialIterations)
+    ) {
+      return { done: true, value: undefined };
+    }
     const nextValue = this.nextValues.next();
-    if (nextValue.done || this.runExecution.interrupted) {
+    if (nextValue.done) {
       return { done: true, value: undefined };
     }
     this.currentValue = nextValue.value;
@@ -55,7 +62,6 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
         // skipped run
         // oxlint-disable-next-line typescript/no-non-null-assertion
         this.runExecution.skip(this.currentValue!.value_);
-        this.sourceValues.skippedOne();
       } else {
         // interrupt signal
         this.runExecution.interrupt();
