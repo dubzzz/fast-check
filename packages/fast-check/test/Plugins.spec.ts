@@ -88,7 +88,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should forward errors thrown within afterAll to the user even in case of predicate failure', async () => {
+  it('should forward afterAll errors on predicate failure when default plugins are disabled', async () => {
     // Arrange
     const reporterPlugin: fc.Plugin<[number]> = () => ({
       afterAll: () => {
@@ -100,7 +100,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     await expect(() =>
       fc.assert(
         fc.property(fc.integer(), (x) => x < 42),
-        { plugins: [reporterPlugin], seed },
+        { plugins: [reporterPlugin], seed, noDefaultPlugins: true },
       ),
     ).rejects.toThrow(/^boom!$/);
   });

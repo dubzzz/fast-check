@@ -6,7 +6,7 @@ import type { QualifiedParameters } from './configuration/QualifiedParameters.js
 import type { RunDetails } from './reporter/RunDetails.js';
 import { propertyRunner } from './PropertyRunner.js';
 import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
-import { reportRunDetails } from './utils/RunDetailsFormatter.js';
+import { defaultReporter } from './utils/RunDetailsFormatter.js';
 import {
   applyPluginGeneratorDecorators,
   applyPluginRunDecorators,
@@ -14,25 +14,14 @@ import {
   runPluginCompletionCallbacks,
 } from './utils/PluginIntegration.js';
 
-/**
- * Run the property, do not throw contrary to {@link assert}
- *
- * WARNING: Has to be awaited
- *
- * @param property - Asynchronous property to be checked
- * @param params - Optional parameters to customize the execution
- *
- * @returns Test status and other useful details
- *
- * @remarks Since 0.0.7
- * @public
- */
-function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
+function checkInternal<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
   const qParams: QualifiedParameters<Ts> = read<Ts>({
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  const pluginInstances = instantiatePlugins(qParams.plugins);
+  const pluginInstances = instantiatePlugins(
+    qParams.noDefaultPlugins ? qParams.plugins : [...qParams.plugins, defaultReporter()],
+  );
   const generator = applyPluginGeneratorDecorators(property, pluginInstances);
   const run = applyPluginRunDecorators(property, pluginInstances);
 
@@ -55,6 +44,23 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
 }
 
 /**
+ * Run the property, do not throw contrary to {@link assert}
+ *
+ * WARNING: Has to be awaited
+ *
+ * @param property - Asynchronous property to be checked
+ * @param params - Optional parameters to customize the execution
+ *
+ * @returns Test status and other useful details
+ *
+ * @remarks Since 0.0.7
+ * @public
+ */
+function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
+  return checkInternal(property, { ...params, noDefaultPlugins: true });
+}
+
+/**
  * Run the property and reject if a plugin reports the run as an error
  *
  * With the default setup, failed runs are rejected.
@@ -71,12 +77,8 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
  * @public
  */
 function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
-  const out = check(property, params);
-  return out.then((runDetails) => {
-    if (!runDetails.runConfiguration.noDefaultPlugins) {
-      return reportRunDetails(runDetails);
-    }
-  });
+  const out = checkInternal(property, params);
+  return out.then(() => undefined);
 }
 
 export { check, assert };
