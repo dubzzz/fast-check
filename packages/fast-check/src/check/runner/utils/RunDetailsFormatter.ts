@@ -1,4 +1,5 @@
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify.js';
+import type { UniversalPlugin } from '../../plugin/Plugin.js';
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from '../reporter/ExecutionStatus.js';
 import type { ExecutionTree } from '../reporter/ExecutionTree.js';
@@ -218,7 +219,7 @@ export function reportError<Ts>(
   );
 }
 
-export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
   if (!out.failed) {
     return;
   }
@@ -228,4 +229,8 @@ export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void 
       throw buildError<Ts>(message, out);
     },
   );
+}
+
+export function defaultReporter(): UniversalPlugin {
+  return () => ({ onAllRunsComplete: reportRunDetails });
 }
