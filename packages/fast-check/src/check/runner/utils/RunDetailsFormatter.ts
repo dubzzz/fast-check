@@ -2,12 +2,7 @@ import { stringify, possiblyAsyncStringify } from '../../../utils/stringify.js';
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from '../reporter/ExecutionStatus.js';
 import type { ExecutionTree } from '../reporter/ExecutionTree.js';
-import type {
-  RunDetails,
-  RunDetailsFailureProperty,
-  RunDetailsFailureTooManySkips,
-  RunDetailsSuccess,
-} from '../reporter/RunDetails.js';
+import type { RunDetails, RunDetailsFailureProperty, RunDetailsFailureTooManySkips } from '../reporter/RunDetails.js';
 
 type FormatStringifier = (value: unknown) => string;
 type FormatOutput = {
@@ -164,48 +159,6 @@ function buildReportContent<Ts>(
   };
 }
 
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 1.25.0
- * @public
- */
-function defaultReportMessage<Ts>(
-  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts>,
-): Promise<string> | string;
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 1.25.0
- * @public
- */
-function defaultReportMessage<Ts>(out: RunDetailsSuccess<Ts>): Promise<undefined> | undefined;
-/**
- * Format output of {@link check} using the default error reporting of {@link assert}
- *
- * Produce a string containing the formated error in case of failed run,
- * undefined otherwise.
- *
- * @remarks Since 1.25.0
- * @public
- */
-function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined;
-function defaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<string | undefined> | string | undefined {
-  if (!out.failed) {
-    return;
-  }
-  return buildReportedErrorInternal(
-    (stringifier) => buildReportContent(out, defaultReportMessageInternal(out, stringifier), stringifier),
-    (message) => message,
-  );
-}
-
 function buildReportedErrorInternal<TOut>(
   buildContent: (stringifyValue: FormatStringifier) => ReportContent,
   wrapOutput: (output: string) => TOut,
@@ -276,5 +229,3 @@ export function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void 
     },
   );
 }
-
-export { defaultReportMessage };
