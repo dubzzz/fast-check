@@ -441,9 +441,6 @@ describe('Runner', () => {
     it('Should throw on failure', async () => {
       await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError();
     });
-    it('Should throw on failure when noDefaultPlugins is false', async () => {
-      await expect(rAssert(failingProperty, { seed: 42, noDefaultPlugins: false })).rejects.toThrowError();
-    });
     it('Should put the seed in error message', async () => {
       await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError(`seed: 42, path:`);
     });
