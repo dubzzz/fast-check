@@ -102,7 +102,7 @@ export interface Parameters<T = void> {
   /**
    * Disable the default plugins: `false` by default
    *
-   * When set to `true`, {@link assert} does not report failures, just like {@link check}.
+   * When set to `true`, {@link assert} skips default failure reporting.
    * Plugins passed through `plugins` or installed globally via
    * {@link installGlobalPlugin} are still executed and may throw.
    *
