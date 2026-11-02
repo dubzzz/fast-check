@@ -110,4 +110,59 @@ describe('GlobalParameters', () => {
     expect(withGlobalConfigurationOverriden).toEqual(withLocalConfiguration);
     fc.resetConfigureGlobal();
   });
+
+  it('should return run details when noDefaultPlugins is globally enabled', async () => {
+    fc.configureGlobal({ noDefaultPlugins: true });
+
+    await expect(fc.assert(fc.property(fc.constant(42), () => false))).resolves.toMatchObject({
+      failed: true,
+      counterexample: [42],
+      runConfiguration: { noDefaultPlugins: true },
+    });
+  });
+
+  it('should locally enable default plugins when noDefaultPlugins is globally enabled', async () => {
+    fc.configureGlobal({ noDefaultPlugins: true });
+
+    await expect(
+      fc.assert(
+        fc.property(fc.constant(42), () => false),
+        { noDefaultPlugins: false },
+      ),
+    ).rejects.toThrowError('Property failed');
+  });
+
+  it('should locally disable default plugins when noDefaultPlugins is globally disabled', async () => {
+    fc.configureGlobal({ noDefaultPlugins: false });
+
+    await expect(
+      fc.assert(
+        fc.property(fc.constant(42), () => false),
+        { noDefaultPlugins: true },
+      ),
+    ).resolves.toMatchObject({
+      failed: true,
+      counterexample: [42],
+      runConfiguration: { noDefaultPlugins: true },
+    });
+  });
+
+  it.each([true, false])(
+    'should preserve noDefaultPlugins=%s for an ongoing run when global configuration changes',
+    async (noDefaultPlugins) => {
+      fc.configureGlobal({ noDefaultPlugins });
+      const out = fc.assert(
+        fc.property(fc.constant(42), async () => {
+          fc.configureGlobal({ noDefaultPlugins: !noDefaultPlugins });
+          return false;
+        }),
+      );
+
+      if (noDefaultPlugins) {
+        await expect(out).resolves.toMatchObject({ failed: true, runConfiguration: { noDefaultPlugins: true } });
+      } else {
+        await expect(out).rejects.toThrowError('Property failed');
+      }
+    },
+  );
 });

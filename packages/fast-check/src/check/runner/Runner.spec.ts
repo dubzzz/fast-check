@@ -3,16 +3,24 @@ import { nil } from '../../utils/iterator.js';
 import * as fc from 'fast-check';
 
 import { Value } from '../arbitrary/definition/Value.js';
-import { check, assert as rAssert } from './Runner.js';
+import { check as rCheck, assert as rAssert } from './Runner.js';
 import type { Random } from '../../random/generator/Random.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import type { Property } from '../property/types/Property.js';
+import type { Parameters } from './configuration/Parameters.js';
 
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
-  describe('check', () => {
+  describe.each([
+    { name: 'check', check: rCheck },
+    {
+      name: 'assert with noDefaultPlugins',
+      check: <Ts>(property: Property<Ts>, params?: Parameters<Ts>) =>
+        rAssert(property, { ...params, noDefaultPlugins: true }),
+    },
+  ])('$name', ({ check }) => {
     it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
@@ -412,10 +420,13 @@ describe('Runner', () => {
     };
 
     it('Should never throw if no failure occured', async () => {
-      await rAssert(successProperty, { seed: 42 }); // no throw
+      await expect(rAssert(successProperty, { seed: 42 })).resolves.toBeUndefined();
     });
     it('Should throw on failure', async () => {
       await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError();
+    });
+    it('Should throw on failure when noDefaultPlugins is false', async () => {
+      await expect(rAssert(failingProperty, { seed: 42, noDefaultPlugins: false })).rejects.toThrowError();
     });
     it('Should put the seed in error message', async () => {
       await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError(`seed: 42, path:`);

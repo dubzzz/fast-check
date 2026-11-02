@@ -522,6 +522,8 @@ async function expectPropertyToThrowErrorMatchingSnapshot<T>(
   customSettings?: fc.Parameters<T>,
 ) {
   await expect(
-    asyncRunWithSanitizedStack(async () => await fc.assert(property, customSettings ?? settings)),
+    asyncRunWithSanitizedStack(async () => {
+      await fc.assert(property, customSettings ?? settings);
+    }),
   ).rejects.toThrowErrorMatchingSnapshot();
 }

@@ -29,7 +29,7 @@ function poisoningAfterEach() {
 // > The following assertions are supposed to be fulfilled by any of the arbitraries
 // > provided by fast-check.
 
-export function assertProduceSameValueGivenSameSeed<T, U = never>(
+export async function assertProduceSameValueGivenSameSeed<T, U = never>(
   arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   options: {
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
@@ -44,7 +44,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
     extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
     assertParameters,
   } = options;
-  return fc.assert(
+  await fc.assert(
     fc.property(
       fc.noShrink(fc.integer()),
       biasFactorArbitrary(),
@@ -79,7 +79,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
 // > The following requirements are optional as they do not break the design of fast-check when they are not totally ensured
 // > But some of them are really recommended to build valid arbitraries that can be used.
 
-export function assertProduceCorrectValues<T, U = never>(
+export async function assertProduceCorrectValues<T, U = never>(
   arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   isCorrect: (v: T, extraParameters: U, arb: Arbitrary<T>) => void | boolean,
   options: {
@@ -89,7 +89,7 @@ export function assertProduceCorrectValues<T, U = never>(
 ): Promise<void> {
   const { extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>, assertParameters } =
     options;
-  return fc.assert(
+  await fc.assert(
     fc.property(
       fc.noShrink(fc.integer()),
       biasFactorArbitrary(),
@@ -113,7 +113,7 @@ export function assertProduceCorrectValues<T, U = never>(
   );
 }
 
-export function assertGenerateEquivalentTo<T, U = never>(
+export async function assertGenerateEquivalentTo<T, U = never>(
   arbitraryBuilderA: (extraParameters: U) => Arbitrary<T>,
   arbitraryBuilderB: (extraParameters: U) => Arbitrary<T>,
   options: {
@@ -129,7 +129,7 @@ export function assertGenerateEquivalentTo<T, U = never>(
     extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
     assertParameters,
   } = options;
-  return fc.assert(
+  await fc.assert(
     fc.property(fc.noShrink(fc.integer()), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
       // Arrange
       const arbA = arbitraryBuilderA(extraParameters);

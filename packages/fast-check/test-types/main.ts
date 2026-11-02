@@ -10,6 +10,61 @@ import { expectTypeOf } from 'vitest';
 expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Promise<void>>();
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
+// assert exposes run details when default plugins are disabled
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.nat(), async () => {}),
+    { noDefaultPlugins: true },
+  ),
+).toEqualTypeOf<Promise<fc.RunDetails<[number]>>>();
+// assert exposes run details even with a synchronous predicate
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.nat(), () => {}),
+    { noDefaultPlugins: true },
+  ),
+).toEqualTypeOf<Promise<fc.RunDetails<[number]>>>();
+// assert preserves the full generated tuple when returning run details
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.nat(), fc.string(), () => {}),
+    {
+      noDefaultPlugins: true,
+      examples: [[42, 'example'] as [number, string]],
+    },
+  ),
+).toEqualTypeOf<Promise<fc.RunDetails<[number, string]>>>();
+// assert keeps its default return type when default plugins are explicitly enabled
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.nat(), () => {}),
+    { noDefaultPlugins: false },
+  ),
+).toEqualTypeOf<Promise<void>>();
+// assert accepts a flag whose value is only known at runtime
+declare const noDefaultPlugins: boolean;
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.nat(), () => {}),
+    { noDefaultPlugins },
+  ),
+).toEqualTypeOf<Promise<void | fc.RunDetails<[number]>>>();
+// assert accepts parameters whose flag may be true, false, or omitted
+declare const assertionParameters: fc.Parameters<[number]>;
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.nat(), () => {}),
+    assertionParameters,
+  ),
+).toEqualTypeOf<Promise<void | fc.RunDetails<[number]>>>();
+// assert accepts optional parameters without losing the possible run details
+declare const optionalAssertionParameters: fc.Parameters<[number]> | undefined;
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.nat(), () => {}),
+    optionalAssertionParameters,
+  ),
+).toEqualTypeOf<Promise<void | fc.RunDetails<[number]>>>();
 
 // property
 // "property" instantiates instances compatible with Property
@@ -496,6 +551,20 @@ fc.assert(fc.property(fc.string(), fc.string(), async (_s1, _s2) => {}), { plugi
 // prettier-ignore
 // @ts-expect-error - string and number are incompatible
 fc.assert(fc.property(fc.nat(), async (_n) => {}), { plugins: [stringArgPlugin()] });
+// can use a properly typed plugin when default plugins are disabled
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.string(), async (_s) => {}),
+    {
+      noDefaultPlugins: true,
+      plugins: [stringArgPlugin()],
+    },
+  ),
+).toEqualTypeOf<Promise<fc.RunDetails<[string]>>>();
+// disabling default plugins does not permit incompatible explicit plugins
+// prettier-ignore
+// @ts-expect-error - string and number are incompatible
+fc.assert(fc.property(fc.nat(), async (_n) => {}), { noDefaultPlugins: true, plugins: [stringArgPlugin()] });
 
 // entityGraph
 type Node = { name: string; linkTo: Node[] };

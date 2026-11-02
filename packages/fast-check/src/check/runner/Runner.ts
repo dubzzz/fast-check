@@ -55,6 +55,25 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
 }
 
 /**
+ * Run the property without default plugins, returning the same details as {@link check}
+ *
+ * Plugins explicitly passed or installed globally are still executed and may throw.
+ *
+ * WARNING: Has to be awaited
+ *
+ * @param property - Property to be checked
+ * @param params - Parameters disabling default plugins
+ *
+ * @returns Test status and other useful details
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+function assert<Ts>(
+  property: Property<Ts>,
+  params: Parameters<Ts> & { noDefaultPlugins: true },
+): Promise<RunDetails<Ts>>;
+/**
  * Run the property, throw in case of failure
  *
  * It can be called directly from describe/it blocks of Mocha.
@@ -68,9 +87,29 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
  * @remarks Since 0.0.7
  * @public
  */
-function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
+function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts> & { noDefaultPlugins?: false }): Promise<void>;
+/**
+ * Run the property, reporting failures unless `noDefaultPlugins` is enabled
+ *
+ * WARNING: Has to be awaited
+ *
+ * @param property - Property to be checked
+ * @param params - Optional parameters to customize the execution
+ *
+ * @returns Test status and other useful details when `noDefaultPlugins` is enabled, otherwise nothing
+ *
+ * @remarks Since 0.0.7
+ * @public
+ */
+function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void | RunDetails<Ts>>;
+function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void | RunDetails<Ts>> {
   const out = check(property, params);
-  return out.then(reportRunDetails);
+  return out.then((runDetails) => {
+    if (runDetails.runConfiguration.noDefaultPlugins) {
+      return runDetails;
+    }
+    return reportRunDetails(runDetails);
+  });
 }
 
 export { check, assert };

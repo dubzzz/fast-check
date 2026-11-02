@@ -100,6 +100,19 @@ export interface Parameters<T = void> {
    */
   includeErrorInReport?: boolean;
   /**
+   * Disable the default plugins: `false` by default
+   *
+   * When set to `true`, {@link assert} returns {@link RunDetails} without reporting failures,
+   * just like {@link check}. Plugins passed through `plugins` or installed globally via
+   * {@link installGlobalPlugin} are still executed and may throw.
+   *
+   * Pass `noDefaultPlugins: true` directly to {@link assert} to infer its result as {@link RunDetails},
+   * even when this option is already enabled via {@link configureGlobal}.
+   *
+   * @remarks Since 5.0.0
+   */
+  noDefaultPlugins?: boolean;
+  /**
    * Set of plugins extending the way the property gets executed by the runner
    *
    * Each plugin is instantiated once per run.

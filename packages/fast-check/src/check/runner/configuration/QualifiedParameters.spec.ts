@@ -22,6 +22,7 @@ const parametersArbitrary = fc.record(
     examples: fc.array(fc.nat()),
     endOnFailure: fc.boolean(),
     includeErrorInReport: fc.boolean(),
+    noDefaultPlugins: fc.boolean(),
     plugins: fc.constant([] satisfies Plugin<any>[]),
   },
   { requiredKeys: [] },
@@ -31,6 +32,14 @@ const randomTypeName = fc.constantFrom(...(Object.keys(prand) as (keyof typeof p
 
 describe('QualifiedParameters', () => {
   describe('read', () => {
+    it('Should enable default plugins by default', () => {
+      expect(read().noDefaultPlugins).toBe(false);
+    });
+    it.each([false, true])('Should preserve noDefaultPlugins=%s in run parameters', (noDefaultPlugins) => {
+      const qparams = read({ noDefaultPlugins });
+      expect(qparams.noDefaultPlugins).toBe(noDefaultPlugins);
+      expect(qparams.toParameters().noDefaultPlugins).toBe(noDefaultPlugins);
+    });
     it('Should forward as-is values already set in Parameters', async () =>
       await fc.assert(
         fc.property(parametersArbitrary, (params) => {
