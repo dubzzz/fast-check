@@ -106,9 +106,6 @@ export interface Parameters<T = void> {
    * Plugins passed through `plugins` or installed globally via
    * {@link installGlobalPlugin} are still executed and may throw.
    *
-   * {@link assert} still returns a `Promise<void>`. To access {@link RunDetails},
-   * use a plugin's `onAllRunsComplete` callback.
-   *
    * @remarks Since 5.0.0
    */
   noDefaultPlugins?: boolean;
