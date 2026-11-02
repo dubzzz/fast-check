@@ -22,6 +22,7 @@ const parametersArbitrary = fc.record(
     examples: fc.array(fc.nat()),
     endOnFailure: fc.boolean(),
     includeErrorInReport: fc.boolean(),
+    noDefaultPlugins: fc.boolean(),
     plugins: fc.constant([] satisfies Plugin<any>[]),
   },
   { requiredKeys: [] },

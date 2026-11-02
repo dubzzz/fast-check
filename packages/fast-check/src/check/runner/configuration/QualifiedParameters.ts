@@ -27,6 +27,7 @@ export class QualifiedParameters<T> {
   examples: T[];
   endOnFailure: boolean;
   includeErrorInReport: boolean;
+  noDefaultPlugins: boolean;
   plugins: Plugin<T>[];
 
   constructor(op?: Parameters<T>) {
@@ -46,6 +47,7 @@ export class QualifiedParameters<T> {
     this.examples = p.examples !== undefined ? p.examples : [];
     this.endOnFailure = p.endOnFailure === true;
     this.includeErrorInReport = p.includeErrorInReport === true;
+    this.noDefaultPlugins = p.noDefaultPlugins === true;
     this.plugins = p.plugins !== undefined ? p.plugins : [];
   }
 
@@ -61,6 +63,7 @@ export class QualifiedParameters<T> {
       examples: this.examples,
       endOnFailure: this.endOnFailure,
       includeErrorInReport: this.includeErrorInReport,
+      noDefaultPlugins: this.noDefaultPlugins,
       plugins: this.plugins,
     };
     return parameters;

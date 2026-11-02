@@ -3,16 +3,40 @@ import { nil } from '../../utils/iterator.js';
 import * as fc from 'fast-check';
 
 import { Value } from '../arbitrary/definition/Value.js';
-import { check, assert as rAssert } from './Runner.js';
+import { check as rCheck, assert as rAssert } from './Runner.js';
 import type { Random } from '../../random/generator/Random.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import type { Property } from '../property/types/Property.js';
+import type { Parameters } from './configuration/Parameters.js';
 
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
-  describe('check', () => {
+  describe.each([
+    { name: 'check', check: rCheck },
+    {
+      name: 'assert with noDefaultPlugins',
+      check: async <Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> => {
+        let runDetails: RunDetails<Ts> | undefined;
+        const out = await rAssert(property, {
+          ...params,
+          noDefaultPlugins: true,
+          plugins: [
+            ...(params?.plugins ?? []),
+            () => ({
+              onAllRunsComplete: (details) => {
+                runDetails = details;
+              },
+            }),
+          ],
+        });
+        expect(out).toBeUndefined();
+        expect(runDetails).toBeDefined();
+        return runDetails!;
+      },
+    },
+  ])('$name', ({ check }) => {
     it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
@@ -240,8 +264,8 @@ describe('Runner', () => {
           };
           const data1: number[] = [];
           const data2: number[] = [];
-          check(buildPropertyFor(data1), { seed: seed });
-          check(buildPropertyFor(data2), { seed: seed });
+          await check(buildPropertyFor(data1), { seed: seed });
+          await check(buildPropertyFor(data2), { seed: seed });
           expect(data2).toEqual(data1);
           return true;
         }),
@@ -412,7 +436,7 @@ describe('Runner', () => {
     };
 
     it('Should never throw if no failure occured', async () => {
-      await rAssert(successProperty, { seed: 42 }); // no throw
+      await expect(rAssert(successProperty, { seed: 42 })).resolves.toBeUndefined();
     });
     it('Should throw on failure', async () => {
       await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError();

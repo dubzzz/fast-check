@@ -100,6 +100,16 @@ export interface Parameters<T = void> {
    */
   includeErrorInReport?: boolean;
   /**
+   * Disable the default plugins: `false` by default
+   *
+   * When set to `true`, {@link assert} skips default failure reporting.
+   * Plugins passed through `plugins` or installed globally via
+   * {@link installGlobalPlugin} are still executed and may throw.
+   *
+   * @remarks Since 5.0.0
+   */
+  noDefaultPlugins?: boolean;
+  /**
    * Set of plugins extending the way the property gets executed by the runner
    *
    * Each plugin is instantiated once per run.

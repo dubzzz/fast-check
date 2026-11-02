@@ -55,10 +55,12 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
 }
 
 /**
- * Run the property, throw in case of failure
+ * Run the property and reject if a plugin reports the run as an error
+ *
+ * With the default setup, failed runs are rejected.
  *
  * It can be called directly from describe/it blocks of Mocha.
- * No meaningful results are produced in case of success.
+ * No meaningful results are produced. Use a plugin's `onAllRunsComplete` callback to access run details.
  *
  * WARNING: Has to be awaited
  *
@@ -70,7 +72,11 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
  */
 function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
   const out = check(property, params);
-  return out.then(reportRunDetails);
+  return out.then((runDetails) => {
+    if (!runDetails.runConfiguration.noDefaultPlugins) {
+      return reportRunDetails(runDetails);
+    }
+  });
 }
 
 export { check, assert };
