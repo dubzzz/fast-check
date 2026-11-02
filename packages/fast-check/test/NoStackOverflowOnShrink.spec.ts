@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import * as fc from '../src/fast-check.js';
-import { runDetails } from './__test-helpers__/RunDetails.js';
+import { assertAndGetRunDetails } from './__test-helpers__/AssertAndGetRunDetails.js';
 import { seed } from './seed.js';
 
 const computeMaximalStackSize = () => {
@@ -59,7 +59,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
       }
     }
 
-    const out = await runDetails(
+    const out = await assertAndGetRunDetails(
       fc.property(new InfiniteShrinkingDepth(), (_n) => false),
       { seed },
     );

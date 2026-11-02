@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../src/fast-check.js';
-import { runDetails } from './__test-helpers__/RunDetails.js';
+import { assertAndGetRunDetails } from './__test-helpers__/AssertAndGetRunDetails.js';
 import { seed } from './seed.js';
 
 describe(`ComplexShrink (seed: ${seed})`, () => {
@@ -40,7 +40,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // While it was able to reach and report the precise minimal failing case,
     // the shrinker was too slow to be useful (given the range of values generated).
     const MaximalValue = 1000000;
-    const out = await runDetails(
+    const out = await assertAndGetRunDetails(
       fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
@@ -70,7 +70,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // Very similar to the case above except that this time
     // if (a, b) fails, (b, a) will also fail.
     const MaximalValue = 1000000;
-    const out = await runDetails(
+    const out = await assertAndGetRunDetails(
       fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
@@ -108,7 +108,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     }
 
     it('distinct', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.array(fc.integer()), (ls) => {
           return new Set(ls).size < 3;
         }),
@@ -132,7 +132,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     });
 
     it('large_union_list', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.array(fc.array(fc.integer())), (ls) => {
           return new Set(flat(ls)).size < 5;
         }),
@@ -156,7 +156,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     });
 
     it('nestedlists', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.array(fc.array(fc.constant(0))), (ls) => {
           return ls.map((l) => l.length).reduce((a, b) => a + b, 0) <= 10;
         }),
@@ -176,7 +176,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     });
 
     it('reverse', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.array(fc.integer()), (ls) => {
           const rev = [...ls].reverse();
           expect(rev).toEqual(ls);

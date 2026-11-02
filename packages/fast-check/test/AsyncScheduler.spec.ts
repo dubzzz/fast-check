@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../src/fast-check.js';
-import { runDetails } from './__test-helpers__/RunDetails.js';
+import { assertAndGetRunDetails } from './__test-helpers__/AssertAndGetRunDetails.js';
 import { seed } from './seed.js';
 
 describe(`AsyncScheduler (seed: ${seed})`, () => {
@@ -26,7 +26,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         return `got: ${heroes.find((h) => h.name === heroName!.toLowerCase())}`;
       }
     }
-    const out = await runDetails(
+    const out = await assertAndGetRunDetails(
       fc.property(fc.scheduler(), async (s) => {
         const scheduledFetchHeroName = s.scheduleFunction(function fetchHeroName() {
           return Promise.resolve('James Bond');
@@ -111,7 +111,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       await feedCache(initialPackageName);
       return cache; // we just return the cache instead of the garph for simplicity
     };
-    const out = await runDetails(
+    const out = await assertAndGetRunDetails(
       fc.property(fc.constantFrom(...Object.keys(allPackages)), fc.scheduler(), async (initialPackageName, s) => {
         let numFetches = 0;
         const originalFetch = (packageName: string) => {
@@ -155,7 +155,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       expect(value).toBe(3);
     };
 
-    const out = await runDetails(fc.property(fc.scheduler(), propertyValidator));
+    const out = await assertAndGetRunDetails(fc.property(fc.scheduler(), propertyValidator));
     expect(out.failed).toBe(true);
 
     const schedulerTemplatedString = String(out.counterexample![0]);
@@ -169,7 +169,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       return ${schedulerTemplatedString};
     })()`);
 
-    const outRetry = await runDetails(fc.property(fc.scheduler(), propertyValidator), {
+    const outRetry = await assertAndGetRunDetails(fc.property(fc.scheduler(), propertyValidator), {
       examples: [[(fc.schedulerFor() as any)(...argsForSchedulerFor)]],
     });
     expect(outRetry.failed).toBe(true);
@@ -212,10 +212,10 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       return taskCount < 6 && ran[0] === 0;
     });
 
-    const report = await runDetails(firstTaskRunsFirst, { seed });
+    const report = await assertAndGetRunDetails(firstTaskRunsFirst, { seed });
     expect(report.failed).toBe(true);
 
-    const replay = await runDetails(firstTaskRunsFirst, {
+    const replay = await assertAndGetRunDetails(firstTaskRunsFirst, {
       seed: report.seed,
       path: report.counterexamplePath!,
       endOnFailure: true,

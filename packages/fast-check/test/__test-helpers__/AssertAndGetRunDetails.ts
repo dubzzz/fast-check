@@ -1,7 +1,10 @@
 import * as fc from '../../src/fast-check.js';
 
-/** Collect run details through a plugin without the default failure reporting. */
-export function runDetails<Ts>(property: fc.Property<Ts>, params?: fc.Parameters<Ts>): Promise<fc.RunDetails<Ts>> {
+/** Run assert and collect its run details through a plugin without default failure reporting. */
+export function assertAndGetRunDetails<Ts>(
+  property: fc.Property<Ts>,
+  params?: fc.Parameters<Ts>,
+): Promise<fc.RunDetails<Ts>> {
   let details!: fc.RunDetails<Ts>;
   return fc
     .assert(property, {

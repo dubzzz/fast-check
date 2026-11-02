@@ -1,19 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
-import { runDetails } from '../__test-helpers__/RunDetails.js';
+import { assertAndGetRunDetails } from '../__test-helpers__/AssertAndGetRunDetails.js';
 import { seed } from '../seed.js';
 
 describe(`IntegerArbitrary (seed: ${seed})`, () => {
   describe('integer', () => {
     it('Should generate integer within the range', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.integer({ min: -42, max: -10 }), (v: number) => -42 <= v && v <= -10),
         { seed: seed },
       );
       expect(out.failed).toBe(false);
     });
     it('Should shrink integer with strictly negative range', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.integer({ min: -1000, max: -10 }), (v: number) => v > -100),
         { seed: seed },
       );
@@ -23,14 +23,14 @@ describe(`IntegerArbitrary (seed: ${seed})`, () => {
   });
   describe('nat', () => {
     it('Should generate natural numbers', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.nat(), (v: number) => v >= 0),
         { seed: seed },
       );
       expect(out.failed).toBe(false);
     });
     it('Should shrink natural number', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.nat(), (v: number) => v < 100),
         { seed: seed },
       );
@@ -38,7 +38,7 @@ describe(`IntegerArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual([100]);
     });
     it('Should detect overflow', async () => {
-      const out = await runDetails(
+      const out = await assertAndGetRunDetails(
         fc.property(
           fc.nat(Number.MAX_SAFE_INTEGER),
           fc.nat(Number.MAX_SAFE_INTEGER),
