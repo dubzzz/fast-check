@@ -40,7 +40,7 @@ export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
  */
 export interface RunDetailsFailureTooManySkips<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
-  interrupted: false;
+  interrupted: true;
   counterexample: null;
   counterexamplePath: null;
   errorInstance: null;
