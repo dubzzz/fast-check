@@ -94,10 +94,10 @@ describe(`Plugins (seed: ${seed})`, () => {
       probes.push('assert done');
 
       // Assert
-      expect(out).toMatchObject({ failed: true, counterexample: [42] });
+      expect(out).toBeUndefined();
       expect(seenRunDetails).toHaveLength(2);
-      expect(seenRunDetails[0]).toBe(out);
-      expect(seenRunDetails[1]).toBe(out);
+      expect(seenRunDetails[0]).toMatchObject({ failed: true, counterexample: [42] });
+      expect(seenRunDetails[1]).toBe(seenRunDetails[0]);
       expect(probes).toEqual([
         'global instantiated',
         'local instantiated',

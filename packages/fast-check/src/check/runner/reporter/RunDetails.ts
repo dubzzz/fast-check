@@ -3,7 +3,7 @@ import type { ExecutionTree } from './ExecutionTree.js';
 import type { Parameters } from '../configuration/Parameters.js';
 
 /**
- * Post-run details produced by {@link check} or {@link assert} with `noDefaultPlugins: true`
+ * Post-run details produced by {@link check}
  *
  * A failing property can easily detected by checking the `failed` flag of this structure
  *

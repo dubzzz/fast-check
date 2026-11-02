@@ -102,12 +102,12 @@ export interface Parameters<T = void> {
   /**
    * Disable the default plugins: `false` by default
    *
-   * When set to `true`, {@link assert} returns {@link RunDetails} without reporting failures,
-   * just like {@link check}. Plugins passed through `plugins` or installed globally via
+   * When set to `true`, {@link assert} does not report failures, just like {@link check}.
+   * Plugins passed through `plugins` or installed globally via
    * {@link installGlobalPlugin} are still executed and may throw.
    *
-   * Pass `noDefaultPlugins: true` directly to {@link assert} to infer its result as {@link RunDetails},
-   * even when this option is already enabled via {@link configureGlobal}.
+   * {@link assert} still returns a `Promise<void>`. To access {@link RunDetails},
+   * use a plugin's `onAllRunsComplete` callback.
    *
    * @remarks Since 5.0.0
    */

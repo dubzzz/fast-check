@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, it, expect } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from '../src/fast-check.js';
 
 describe('GlobalParameters', () => {
@@ -111,10 +111,20 @@ describe('GlobalParameters', () => {
     fc.resetConfigureGlobal();
   });
 
-  it('should return run details when noDefaultPlugins is globally enabled', async () => {
+  it('should disable default plugins when noDefaultPlugins is globally enabled', async () => {
     fc.configureGlobal({ noDefaultPlugins: true });
+    const onAllRunsComplete = vi.fn();
 
-    await expect(fc.assert(fc.property(fc.constant(42), () => false))).resolves.toMatchObject({
+    await expect(
+      fc.assert(
+        fc.property(fc.constant(42), () => false),
+        {
+          plugins: [() => ({ onAllRunsComplete })],
+        },
+      ),
+    ).resolves.toBeUndefined();
+    expect(onAllRunsComplete).toHaveBeenCalledOnce();
+    expect(onAllRunsComplete.mock.calls[0][0]).toMatchObject({
       failed: true,
       counterexample: [42],
       runConfiguration: { noDefaultPlugins: true },
@@ -140,29 +150,32 @@ describe('GlobalParameters', () => {
         fc.property(fc.constant(42), () => false),
         { noDefaultPlugins: true },
       ),
-    ).resolves.toMatchObject({
-      failed: true,
-      counterexample: [42],
-      runConfiguration: { noDefaultPlugins: true },
-    });
+    ).resolves.toBeUndefined();
   });
 
   it.each([true, false])(
     'should preserve noDefaultPlugins=%s for an ongoing run when global configuration changes',
     async (noDefaultPlugins) => {
       fc.configureGlobal({ noDefaultPlugins });
+      const onAllRunsComplete = vi.fn();
       const out = fc.assert(
         fc.property(fc.constant(42), async () => {
           fc.configureGlobal({ noDefaultPlugins: !noDefaultPlugins });
           return false;
         }),
+        { plugins: [() => ({ onAllRunsComplete })] },
       );
 
       if (noDefaultPlugins) {
-        await expect(out).resolves.toMatchObject({ failed: true, runConfiguration: { noDefaultPlugins: true } });
+        await expect(out).resolves.toBeUndefined();
       } else {
         await expect(out).rejects.toThrowError('Property failed');
       }
+      expect(onAllRunsComplete).toHaveBeenCalledOnce();
+      expect(onAllRunsComplete.mock.calls[0][0]).toMatchObject({
+        failed: true,
+        runConfiguration: { noDefaultPlugins },
+      });
     },
   );
 });

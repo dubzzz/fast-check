@@ -17,8 +17,24 @@ describe('Runner', () => {
     { name: 'check', check: rCheck },
     {
       name: 'assert with noDefaultPlugins',
-      check: <Ts>(property: Property<Ts>, params?: Parameters<Ts>) =>
-        rAssert(property, { ...params, noDefaultPlugins: true }),
+      check: async <Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> => {
+        let runDetails: RunDetails<Ts> | undefined;
+        const out = await rAssert(property, {
+          ...params,
+          noDefaultPlugins: true,
+          plugins: [
+            ...(params?.plugins ?? []),
+            () => ({
+              onAllRunsComplete: (details) => {
+                runDetails = details;
+              },
+            }),
+          ],
+        });
+        expect(out).toBeUndefined();
+        expect(runDetails).toBeDefined();
+        return runDetails!;
+      },
     },
   ])('$name', ({ check }) => {
     it('Should call the property 100 times by default (on success)', async () => {
@@ -248,8 +264,8 @@ describe('Runner', () => {
           };
           const data1: number[] = [];
           const data2: number[] = [];
-          check(buildPropertyFor(data1), { seed: seed });
-          check(buildPropertyFor(data2), { seed: seed });
+          await check(buildPropertyFor(data1), { seed: seed });
+          await check(buildPropertyFor(data2), { seed: seed });
           expect(data2).toEqual(data1);
           return true;
         }),

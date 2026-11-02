@@ -10,30 +10,20 @@ import { expectTypeOf } from 'vitest';
 expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Promise<void>>();
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
-// assert exposes run details when default plugins are disabled
+// assert keeps its return type when default plugins are disabled
 expectTypeOf(
   fc.assert(
     fc.property(fc.nat(), async () => {}),
     { noDefaultPlugins: true },
   ),
-).toEqualTypeOf<Promise<fc.RunDetails<[number]>>>();
-// assert exposes run details even with a synchronous predicate
+).toEqualTypeOf<Promise<void>>();
+// assert keeps its return type even with a synchronous predicate
 expectTypeOf(
   fc.assert(
     fc.property(fc.nat(), () => {}),
     { noDefaultPlugins: true },
   ),
-).toEqualTypeOf<Promise<fc.RunDetails<[number]>>>();
-// assert preserves the full generated tuple when returning run details
-expectTypeOf(
-  fc.assert(
-    fc.property(fc.nat(), fc.string(), () => {}),
-    {
-      noDefaultPlugins: true,
-      examples: [[42, 'example'] as [number, string]],
-    },
-  ),
-).toEqualTypeOf<Promise<fc.RunDetails<[number, string]>>>();
+).toEqualTypeOf<Promise<void>>();
 // assert keeps its default return type when default plugins are explicitly enabled
 expectTypeOf(
   fc.assert(
@@ -48,7 +38,7 @@ expectTypeOf(
     fc.property(fc.nat(), () => {}),
     { noDefaultPlugins },
   ),
-).toEqualTypeOf<Promise<void | fc.RunDetails<[number]>>>();
+).toEqualTypeOf<Promise<void>>();
 // assert accepts parameters whose flag may be true, false, or omitted
 declare const assertionParameters: fc.Parameters<[number]>;
 expectTypeOf(
@@ -56,15 +46,15 @@ expectTypeOf(
     fc.property(fc.nat(), () => {}),
     assertionParameters,
   ),
-).toEqualTypeOf<Promise<void | fc.RunDetails<[number]>>>();
-// assert accepts optional parameters without losing the possible run details
+).toEqualTypeOf<Promise<void>>();
+// assert keeps its return type with optional parameters
 declare const optionalAssertionParameters: fc.Parameters<[number]> | undefined;
 expectTypeOf(
   fc.assert(
     fc.property(fc.nat(), () => {}),
     optionalAssertionParameters,
   ),
-).toEqualTypeOf<Promise<void | fc.RunDetails<[number]>>>();
+).toEqualTypeOf<Promise<void>>();
 
 // property
 // "property" instantiates instances compatible with Property
@@ -560,7 +550,23 @@ expectTypeOf(
       plugins: [stringArgPlugin()],
     },
   ),
-).toEqualTypeOf<Promise<fc.RunDetails<[string]>>>();
+).toEqualTypeOf<Promise<void>>();
+// plugins receive typed run details when default plugins are disabled
+expectTypeOf(
+  fc.assert(
+    fc.property(fc.nat(), fc.string(), () => {}),
+    {
+      noDefaultPlugins: true,
+      plugins: [
+        () => ({
+          onAllRunsComplete: (runDetails) => {
+            expectTypeOf(runDetails).toEqualTypeOf<fc.RunDetails<[number, string]>>();
+          },
+        }),
+      ],
+    },
+  ),
+).toEqualTypeOf<Promise<void>>();
 // disabling default plugins does not permit incompatible explicit plugins
 // prettier-ignore
 // @ts-expect-error - string and number are incompatible
