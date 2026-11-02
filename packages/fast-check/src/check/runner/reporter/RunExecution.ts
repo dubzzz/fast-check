@@ -1,7 +1,12 @@
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from './ExecutionStatus.js';
 import type { ExecutionTree } from './ExecutionTree.js';
-import type { RunDetails } from './RunDetails.js';
+import type {
+  RunDetails,
+  RunDetailsFailureProperty,
+  RunDetailsFailureTooManySkips,
+  RunDetailsSuccess,
+} from './RunDetails.js';
 import type { QualifiedParameters } from '../configuration/QualifiedParameters.js';
 import type { PropertyFailure } from '../../property/types/PropertyFailure.js';
 
@@ -133,30 +138,41 @@ export class RunExecution<Ts> {
         executionSummary: this.rootExecutionTrees,
         verbose: this.verbosity,
         runConfiguration: qParams.toParameters(),
-      };
+      } satisfies RunDetailsFailureProperty<Ts>;
     }
 
-    const considerInterruptedAsFailure = this.numSuccesses === 0;
-    const tooManySkippedRuns = this.numSkips > this.maxSkips;
-    const interruptedNotBecauseOfSkips = !tooManySkippedRuns && this.interrupted;
-    const failed = tooManySkippedRuns || (interruptedNotBecauseOfSkips && considerInterruptedAsFailure);
-    const out = {
-      failed,
-      // For now we don't want to report "too many skipped runs" as interrupted, but we will change that!
-      interrupted: interruptedNotBecauseOfSkips,
+    if (this.interrupted && this.numSkips > this.maxSkips) {
+      return {
+        failed: true,
+        interrupted: this.interrupted,
+        numRuns: this.numSuccesses,
+        numSkips: this.numSkips,
+        numShrinks: 0,
+        seed,
+        counterexample: null,
+        counterexamplePath: null,
+        errorInstance: null,
+        failures: [],
+        executionSummary: this.rootExecutionTrees,
+        verbose: this.verbosity,
+        runConfiguration: qParams.toParameters(),
+      } satisfies RunDetailsFailureTooManySkips<Ts>;
+    }
+
+    return {
+      failed: false,
+      interrupted: this.interrupted,
       numRuns: this.numSuccesses,
       numSkips: this.numSkips,
       numShrinks: 0,
       seed,
       counterexample: null,
       counterexamplePath: null,
-      error: null,
       errorInstance: null,
       failures: [],
       executionSummary: this.rootExecutionTrees,
       verbose: this.verbosity,
       runConfiguration: qParams.toParameters(),
-    };
-    return out;
+    } satisfies RunDetailsSuccess<Ts>;
   }
 }

@@ -10,11 +10,7 @@ import type { Parameters } from '../configuration/Parameters.js';
  * @remarks Since 0.0.7
  * @public
  */
-export type RunDetails<Ts> =
-  | RunDetailsFailureProperty<Ts>
-  | RunDetailsFailureTooManySkips<Ts>
-  | RunDetailsFailureInterrupted<Ts>
-  | RunDetailsSuccess<Ts>;
+export type RunDetails<Ts> = RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsSuccess<Ts>;
 
 /**
  * Run reported as failed because
@@ -43,23 +39,6 @@ export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
  * @public
  */
 export interface RunDetailsFailureTooManySkips<Ts> extends RunDetailsCommon<Ts> {
-  failed: true;
-  interrupted: false;
-  counterexample: null;
-  counterexamplePath: null;
-  errorInstance: null;
-}
-
-/**
- * Run reported as failed because
- * it took too long and thus has been interrupted
- *
- * Refer to {@link RunDetailsCommon} for more details
- *
- * @remarks Since 1.25.0
- * @public
- */
-export interface RunDetailsFailureInterrupted<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: true;
   counterexample: null;

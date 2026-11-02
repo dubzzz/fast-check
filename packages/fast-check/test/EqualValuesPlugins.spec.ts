@@ -31,7 +31,7 @@ describe(`IgnoreEqualValues (seed: ${seed})`, () => {
         { plugins: [fc.skipEqualValues()] },
       );
       expect(out.failed).toBe(true);
-      expect(out.interrupted).toBe(false);
+      expect(out.interrupted).toBe(true);
       expect(out.numRuns).toBe(4);
       expect(out.numShrinks).toBe(0);
       expect(out.numSkips).not.toBe(0);

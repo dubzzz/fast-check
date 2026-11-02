@@ -1,8 +1,7 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import type { Property } from '../property/types/Property.js';
-import type { RunDetailsFailureInterrupted, RunDetailsSuccess } from '../runner/reporter/RunDetails.js';
-import { reportRunDetails } from '../runner/utils/RunDetailsFormatter.js';
+import { reportError } from '../runner/utils/RunDetailsFormatter.js';
 import type { PluginInstance, UniversalPlugin } from './Plugin.js';
 import { mergeSignals, signalAsPromise } from './utils/Signals.js';
 
@@ -131,15 +130,19 @@ export function interruptAfterTimeLimit(
         timeLimitRunner(interrupt, nestedRun, value, executionContext, probe),
       onAllRunsComplete: (runDetails) => {
         interrupt.clear();
-        if (options.failOnInterrupt && !runDetails.failed && runDetails.interrupted && probe.interruptedWhileRunning) {
-          const successRunDetails: RunDetailsSuccess<Ts> = runDetails;
-          const interruptedRunDetails: RunDetailsFailureInterrupted<Ts> = {
-            ...successRunDetails,
-            failed: true,
-            interrupted: true,
-          };
-          // TODO(v5) - Move to the async version instead
-          return reportRunDetails(interruptedRunDetails);
+        if (
+          // run got interrupted without being marked as failed (aka successful run)
+          !runDetails.failed &&
+          runDetails.interrupted &&
+          // we own this interrupt, it got interrupted by us
+          probe.interruptedWhileRunning &&
+          // we consider it as a failure because either interrupt is asked to be marked as a failure or no run occured
+          (options.failOnInterrupt || runDetails.numRuns === 0)
+        ) {
+          return reportError(() => {
+            const message = `Property interrupted after ${runDetails.numRuns} tests\n{ seed: ${runDetails.seed} }`;
+            return { message };
+          }, runDetails);
         }
       },
     };

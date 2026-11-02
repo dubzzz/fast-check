@@ -8,7 +8,6 @@ export type {
   RunDetails,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
-  RunDetailsFailureInterrupted,
   RunDetailsSuccess,
   RunDetailsCommon,
 } from './check/runner/reporter/RunDetails.js';
