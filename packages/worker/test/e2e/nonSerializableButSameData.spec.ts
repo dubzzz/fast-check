@@ -1,6 +1,6 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters, RunDetails } from 'fast-check';
-import { assert as assertInMainThread, stringify, timeout } from 'fast-check';
+import { assert, stringify, timeout } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 
