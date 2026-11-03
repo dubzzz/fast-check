@@ -19,5 +19,5 @@ export function assertAndGetRunDetails<Ts>(
         }),
       ],
     })
-    .then(() => details);
+    .then(() => details, () => details);
 }
