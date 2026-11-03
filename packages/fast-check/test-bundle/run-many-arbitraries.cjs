@@ -30,6 +30,7 @@ async function testArbitrary(arb) {
 
   // should be able to replay a failing case
   runId = 0;
+  var details;
   await fc.assert(
     fc.property(arb, function () {
       return runId++ % 3 === 0;
@@ -39,15 +40,17 @@ async function testArbitrary(arb) {
       plugins: [
         function () {
           return {
-            onAllRunsComplete: function (details) {
-              var replay = fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
-              assert.deepEqual(replay[0], details.counterexample[0]);
+            onAllRunsComplete: function (runDetails) {
+              details = runDetails;
             },
           };
         },
       ],
     },
   );
+
+  var replay = fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
+  assert.deepEqual(replay[0], details.counterexample[0]);
 
   // should be able to retrieve statistics
   var stats = [];

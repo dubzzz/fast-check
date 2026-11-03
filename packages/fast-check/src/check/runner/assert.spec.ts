@@ -3,7 +3,7 @@ import { nil } from '../../utils/iterator.js';
 import * as fc from 'fast-check';
 
 import { Value } from '../arbitrary/definition/Value.js';
-import { assert as rAssert } from './Runner.js';
+import { assert as rAssert } from './assert.js';
 import type { Random } from '../../random/generator/Random.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
@@ -12,7 +12,7 @@ import type { Property } from '../property/types/Property.js';
 import type { Parameters } from './configuration/Parameters.js';
 
 const MAX_NUM_RUNS = 1000;
-describe('Runner', () => {
+describe('assert', () => {
   describe('assert with noDefaultPlugins', () => {
     const assertAndGetRunDetails = async <Ts>(
       property: Property<Ts>,
