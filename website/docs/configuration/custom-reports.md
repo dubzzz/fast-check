@@ -53,6 +53,8 @@ await fc.assert(
 )
 ```
 
+The default reporter throws for any run with `failed: true` and ignores all other outcomes. Your plugin runs before it: if your plugin throws or rejects, its error takes precedence over any error subsequently thrown by the default reporter. When multiple plugins report errors, the first error wins. Returning normally from your plugin leaves the default reporting in place.
+
 :::info[Deprecated `reporter`]
 Before the introduction of plugins, custom reporting used to be achieved by passing a custom `reporter` to `assert`:
 
@@ -73,24 +75,28 @@ await fc.assert(fc.property(...), {
 
 ### Disable the default report
 
-Set `noDefaultPlugins: true` to handle the outcome entirely in your plugins. In this mode, `assert` does not reject just because the property failed. A plugin can still throw or reject from `onAllRunsComplete` to report an error.
+Set `noDefaultPlugins: true` to replace the default report with your own reporting. Handle the run details directly in `onAllRunsComplete`: throw to report a failure, or return nothing when the outcome is acceptable. In this mode, `assert` does not reject just because the property failed, so your reporter must throw for the outcomes you want to report as failures.
 
 ```js
-let runDetails;
 await fc.assert(property, {
   noDefaultPlugins: true,
   plugins: [
     () => ({
       onAllRunsComplete(out) {
-        runDetails = out;
+        if (out.failed) {
+          throw new Error(`Property failed after ${out.numRuns} tests`, {
+            cause: out.errorInstance,
+          });
+        }
       },
     }),
   ],
 });
-// Use runDetails to inspect or report the outcome.
 ```
 
-The returned promise resolves after all completion callbacks have finished. You can also return a promise from `onAllRunsComplete` when reporting requires asynchronous work.
+For asynchronous reporting, use an `async onAllRunsComplete` callback: let it resolve without a value when the outcome is acceptable, or throw to reject it. `assert` waits for all completion callbacks and cleanup before settling.
+
+Other plugins can still report errors when `noDefaultPlugins` is enabled. In particular, plugins requesting interruptions usually handle their own reporting. See [run details](/docs/core-blocks/runners/#run-details) for the distinction between `failed`, `interrupted` and errors reported by plugins.
 
 ## CodeSandbox Reporter
 

@@ -9,7 +9,7 @@ Execute your properties.
 
 ## assert
 
-Probably the most useful of all the runners provided within fast-check. This runner takes a property and executes it. It throws automatically in case of failure. Thrown error is formatted to make it easily readable and actionable for the user.
+Probably the most useful of all the runners provided within fast-check. This runner takes a property and executes it. By default, it throws automatically in case of failure. Thrown error is formatted to make it easily readable and actionable for the user.
 
 Its signature can be summarized by:
 
@@ -26,33 +26,45 @@ Available since 0.0.1.
 
 ### Run details
 
-Use a plugin's `onAllRunsComplete` callback to inspect the results of a run. Set `noDefaultPlugins: true` when you want to handle the outcome yourself, including failed runs, without the default report of `assert`.
+Handle the `RunDetails` value directly in a plugin's `onAllRunsComplete` callback. Throw an error to report a failure, or return nothing when the outcome is acceptable. Set `noDefaultPlugins: true` to replace the default report of `assert` with your own reporting:
 
 ```js
-let runDetails;
 await fc.assert(property, {
   noDefaultPlugins: true,
   plugins: [
     () => ({
       onAllRunsComplete(out) {
-        runDetails = out;
+        if (out.failed) {
+          throw new Error(`Property failed after ${out.numRuns} tests`, {
+            cause: out.errorInstance,
+          });
+        }
       },
     }),
   ],
 });
-// Inspect runDetails here after all runs and completion callbacks have finished.
 ```
 
-The structure `RunDetails` provides all the details needed to report what happened. There are four major reasons for a run to end:
+The default reporter throws whenever `failed` is `true` and ignores all other outcomes. Currently, `failed: true` covers these cases:
 
-| Reasons                                                 | `failed` | `interrupted`  | `counterexample`/`counterexamplePath`/`errorInstance` |
-| ------------------------------------------------------- | :------: | :------------: | :---------------------------------------------------: |
-| failure of the predicate                                |  `true`  | `true`/`false` |                       _not null_                      |
-| too many pre-conditions failures                        |  `true`  |    `false`     |                         `null`                        |
-| execution took too long given `interruptAfterTimeLimit` |  `true`  |     `true`     |                         `null`                        |
-| successful run                                          | `false`  | `true`/`false` |                         `null`                        |
+| Reason                   | `failed` | `interrupted`  | `counterexample`/`counterexamplePath` |
+| ------------------------ | :------: | :------------: | :-----------------------------------: |
+| failure of the predicate |  `true`  | `true`/`false` |               _not null_              |
+| too many skipped values  |  `true`  |     `true`     |                 `null`                |
 
-A plugin can throw or reject from `onAllRunsComplete` to report a failure even when `noDefaultPlugins` is enabled. See [custom reports](/docs/configuration/custom-reports/) for examples.
+Skipped values can come from pre-condition failures or plugins such as [`skipEqualValues`](/docs/core-blocks/plugins/values/#skipequalvalues). The `errorInstance` field contains the failure reason for a predicate failure, and is `null` for too many skipped values.
+
+Plugins run before the default reporter and can provide their own reporting. The first error thrown or rejected by a plugin takes precedence. The default reporter still runs, but any error it throws for the same failed run is ignored. Returning normally from a plugin leaves the default reporting in place; use `noDefaultPlugins: true` to disable it entirely.
+
+:::info[Other outcomes and plugin interruptions]
+When `failed` is `false`, the default reporter returns without throwing. A completed successful run has `interrupted: false`. A run interrupted without a predicate failure or too many skips has `failed: false` and `interrupted: true`; its `counterexample`, `counterexamplePath` and `errorInstance` are all `null`.
+
+Plugins can interrupt runs for reasons beyond elapsed time, and the plugin requesting an interruption usually handles its reporting. For example, [`interruptAfterTimeLimit`](/docs/core-blocks/plugins/time-limits/#interruptaftertimelimit) reports its own interruption as an error when no execution succeeded or when `failOnInterrupt` is enabled.
+
+Such a plugin can make `assert` reject even though `RunDetails.failed` is `false`. The flags describe the property execution, not errors reported by plugins.
+:::
+
+See [custom reports](/docs/configuration/custom-reports/) for more reporting examples, including asynchronous callbacks.
 
 Resources: [RunDetails API reference](/docs/api/types/RunDetails).
 

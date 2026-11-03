@@ -3,5 +3,5 @@
 ---
 
 Remove the `check` runner. Use `await fc.assert(property, parameters)` to run a property.
-To inspect run details, capture them in a plugin's `onAllRunsComplete` callback.
-Set `noDefaultPlugins: true` to disable default failure reporting when handling the results yourself.
+Handle run details directly in a plugin's `onAllRunsComplete` callback: throw to report a failure, or return nothing when the outcome is acceptable.
+Set `noDefaultPlugins: true` to replace default failure reporting with your own reporting.
