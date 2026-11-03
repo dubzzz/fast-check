@@ -2,4 +2,4 @@
 "fast-check": patch
 ---
 
-⚡️ Drop defensive checks from the property runner
+⚡️ Drop defensive checks from `check`
