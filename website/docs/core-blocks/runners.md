@@ -47,17 +47,13 @@ await fc.assert(property, {
 
 The default reporter throws when `failed` is `true` and ignores other outcomes:
 
-- Predicate failure.
-- Too many skipped values (`interrupted: true`), from pre-conditions or plugins such as [`skipEqualValues`](/docs/core-blocks/plugins/values/#skipequalvalues).
+- **Predicate failure:** `errorInstance` contains the failure reason.
+- **Too many skips:** `interrupted: true`, `errorInstance: null`. Skips can come from pre-conditions or [`skipEqualValues`](/docs/core-blocks/plugins/values/#skipequalvalues).
 
-Plugins run before the default reporter and can provide their own reporting. The first error thrown or rejected by a plugin takes precedence. The default reporter still runs, but any error it throws for the same failed run is ignored. Returning normally from a plugin leaves the default reporting in place; use `noDefaultPlugins: true` to disable it entirely.
+Plugins run first. Their first error takes precedence over the default reporter's error. Returning normally keeps default reporting; `noDefaultPlugins: true` disables it.
 
 :::info[Other outcomes and plugin interruptions]
-When `failed` is `false`, the default reporter returns without throwing. A completed successful run has `interrupted: false`. A run interrupted without a predicate failure or too many skips has `failed: false` and `interrupted: true`; its `counterexample`, `counterexamplePath` and `errorInstance` are all `null`.
-
-Plugins can interrupt runs for reasons beyond elapsed time, and the plugin requesting an interruption usually handles its reporting. For example, [`interruptAfterTimeLimit`](/docs/core-blocks/plugins/time-limits/#interruptaftertimelimit) reports its own interruption as an error when no execution succeeded or when `failOnInterrupt` is enabled.
-
-Such a plugin can make `assert` reject even though `RunDetails.failed` is `false`. The flags describe the property execution, not errors reported by plugins.
+Plugins can interrupt for various reasons and usually handle reporting themselves. They may reject `assert` even with `failed: false` and `interrupted: true`; see [`interruptAfterTimeLimit`](/docs/core-blocks/plugins/time-limits/#interruptaftertimelimit).
 :::
 
 See [custom reports](/docs/configuration/custom-reports/) for more reporting examples, including asynchronous callbacks.
