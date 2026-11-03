@@ -75,7 +75,9 @@ await fc.assert(fc.property(...), {
 
 ### Disable the default report
 
-Set `noDefaultPlugins: true` to replace the default report with your own reporting. Handle the run details directly in `onAllRunsComplete`: throw to report a failure, or return nothing when the outcome is acceptable. In this mode, `assert` does not reject just because the property failed, so your reporter must throw for the outcomes you want to report as failures.
+Set `noDefaultPlugins: true` to drop the default report and eventually come with your own reporting.
+
+You can handle the outcomes of an `assert` run directly via plugins in `onAllRunsComplete`: throw to report a failure, or return nothing when the outcome is acceptable. In this mode, `assert` does not reject anything. So your reporters must throw for the outcomes you want to report as failures.
 
 ```js
 await fc.assert(property, {
