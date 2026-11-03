@@ -45,10 +45,13 @@ await fc.assert(property, {
 });
 ```
 
-The default reporter throws when `failed` is `true` and ignores other outcomes:
+The default reporter throws when `failed` is `true` and ignores other outcomes.
 
-- **Predicate failure:** `errorInstance` contains the failure reason.
-- **Too many skips:** `interrupted: true`, `errorInstance: null`. Skips can come from pre-conditions or [`skipEqualValues`](/docs/core-blocks/plugins/values/#skipequalvalues).
+| Reason                   | `failed` | `interrupted`  | `counterexample`/`counterexamplePath` |
+| ------------------------ | :------: | :------------: | :-----------------------------------: |
+| failure of the predicate |  `true`  | `true`/`false` |              _not null_               |
+| too many skipped values  |  `true`  |     `true`     |                `null`                 |
+| successful run           | `false`  | `true`/`false` |                `null`                 |
 
 :::info[Plugin reporting]
 
