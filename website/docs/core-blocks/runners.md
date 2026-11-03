@@ -45,14 +45,10 @@ await fc.assert(property, {
 });
 ```
 
-The default reporter throws whenever `failed` is `true` and ignores all other outcomes. Currently, `failed: true` covers these cases:
+The default reporter throws when `failed` is `true` and ignores other outcomes:
 
-| Reason                   | `failed` | `interrupted`  | `counterexample`/`counterexamplePath` |
-| ------------------------ | :------: | :------------: | :-----------------------------------: |
-| failure of the predicate |  `true`  | `true`/`false` |               _not null_              |
-| too many skipped values  |  `true`  |     `true`     |                 `null`                |
-
-Skipped values can come from pre-condition failures or plugins such as [`skipEqualValues`](/docs/core-blocks/plugins/values/#skipequalvalues). The `errorInstance` field contains the failure reason for a predicate failure, and is `null` for too many skipped values.
+- Predicate failure.
+- Too many skipped values (`interrupted: true`), from pre-conditions or plugins such as [`skipEqualValues`](/docs/core-blocks/plugins/values/#skipequalvalues).
 
 Plugins run before the default reporter and can provide their own reporting. The first error thrown or rejected by a plugin takes precedence. The default reporter still runs, but any error it throws for the same failed run is ignored. Returning normally from a plugin leaves the default reporting in place; use `noDefaultPlugins: true` to disable it entirely.
 
