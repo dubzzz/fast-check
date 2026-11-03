@@ -26,7 +26,7 @@ Available since 0.0.1.
 
 ### Run details
 
-Handle the `RunDetails` value directly in a plugin's `onAllRunsComplete` callback. Throw an error to report a failure, or return nothing when the outcome is acceptable. Set `noDefaultPlugins: true` to replace the default report of `assert` with your own reporting:
+Handle the `RunDetails` value directly in a plugin's `onAllRunsComplete` callback. Throw an error to report a failure, or return nothing when the outcome is acceptable. Set `noDefaultPlugins: true` to drop and replace the default report of `assert` with your own reporting:
 
 ```js
 await fc.assert(property, {
