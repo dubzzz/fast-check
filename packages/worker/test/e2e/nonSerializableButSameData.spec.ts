@@ -64,7 +64,7 @@ if (isMainThread) {
           const path = pathRegex.exec(message)![1];
           const workerValue = workerValueRegex.exec(message)![1];
           let runDetails!: RunDetails<unknown>;
-          await assertInMainThread(nonSerializableButSameDataRawProperty, {
+          await assert(nonSerializableButSameDataRawProperty, {
             ...defaultOptions,
             seed: +seed,
             path,
