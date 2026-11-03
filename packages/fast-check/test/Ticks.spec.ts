@@ -40,7 +40,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 1, // 1 to handle the wrapped result
-        fixedCompletionTicks: 5, // 2 hook continuations, 2 result propagations, 1 check continuation
+        fixedCompletionTicks: 4, // 2 hook continuations, 1 result propagation, 1 check continuation
       },
       description: 'Promise.resolve pass-through plugin',
     },
@@ -50,7 +50,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 0, // Promise.resolve reuses nestedRun's promise
-        fixedCompletionTicks: 4, // 2 hook continuations, 2 result propagations
+        fixedCompletionTicks: 3, // 2 hook continuations, 1 result propagation
       },
       description: 'Promise.resolve pass-through plugin',
     },

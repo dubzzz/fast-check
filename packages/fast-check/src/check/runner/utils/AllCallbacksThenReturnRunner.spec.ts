@@ -111,6 +111,46 @@ describe('runAllCallbacksAndReturn', () => {
     );
   });
 
+  it('should return the original value after mixed synchronous and asynchronous callbacks', async () => {
+    // Arrange
+    const value = { marker: Symbol() };
+    const callbacks = [() => {}, () => Promise.resolve(), () => {}, () => Promise.resolve()];
+
+    // Act
+    const out = runAllCallbacksAndReturn(value, (index) => callbacks[index](), callbacks.length);
+
+    // Assert
+    await expect(out).resolves.toBe(value);
+  });
+
+  it.each([{ isSync: true }, { isSync: false }])(
+    'should preserve an undefined first error and still finish all callbacks (isSync: $isSync)',
+    async ({ isSync }) => {
+      // Arrange
+      const firstError = undefined;
+      let cleanupCompleted = false;
+      const callbacks = [
+        () => {
+          if (isSync) {
+            throw firstError;
+          }
+          return Promise.reject(firstError);
+        },
+        () => Promise.reject(new Error('Later failure')),
+        () => {
+          cleanupCompleted = true;
+        },
+      ];
+
+      // Act
+      const out = runAllCallbacksAndReturn(Symbol(), (index) => callbacks[index](), callbacks.length);
+
+      // Assert
+      await expect(out).rejects.toBeUndefined();
+      expect(cleanupCompleted).toBe(true);
+    },
+  );
+
   it.each([{ callbacksCount: 0 }, { callbacksCount: 1 }, { callbacksCount: 5 }])(
     'should return the value synchonously if all callbacks are synchronous and successful (callbacks count: $callbacksCount)',
     async ({ callbacksCount }) => {
