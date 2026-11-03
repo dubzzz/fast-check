@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { runAllCallbacksAndReturn } from './AllCallbacksThenReturnRunner.js';
 
@@ -128,38 +128,35 @@ describe('runAllCallbacksAndReturn', () => {
   });
 
   it('should preserve the first error and still finish all callbacks', async () => {
+    const successMethodArb = fc.constantFrom('mockReturnValueOnce', 'mockResolvedValueOnce');
+    const failureMethodArb = fc.constantFrom('mockThrowOnce', 'mockRejectedValueOnce');
     await fc.assert(
       fc.property(
         fc.anything(),
-        fc.array(fc.boolean()),
-        fc.boolean(),
-        fc.array(fc.record({ isSync: fc.boolean(), isSuccess: fc.boolean() })),
-        async (firstError, syncFlagsBefore, firstErrorIsSync, callbacksResponsesAfter) => {
+        fc.array(successMethodArb),
+        failureMethodArb,
+        fc.array(fc.oneof(successMethodArb, failureMethodArb)),
+        async (firstError, successMethodsBefore, firstFailureMethod, methodsAfter) => {
           // Arrange
-          const callbacksResponses = [
-            ...syncFlagsBefore.map((isSync) => ({ isSync, isSuccess: true })),
-            { isSync: firstErrorIsSync, isSuccess: false },
-            ...callbacksResponsesAfter,
-          ];
-          const firstErrorIndex = syncFlagsBefore.length;
-          let completedCallbacks = 0;
-          const callbacks = callbacksResponses.map((response, index) => () => {
-            const complete = () => {
-              ++completedCallbacks;
-              if (!response.isSuccess) {
-                const error = index === firstErrorIndex ? firstError : new Error('Later failure');
-                throw error;
-              }
-            };
-            return response.isSync ? complete() : Promise.resolve().then(complete);
-          });
+          const beforeFailure = successMethodsBefore.reduce(
+            (mock, method) => mock[method](undefined),
+            vi.fn<(index: number) => void | Promise<void>>(),
+          );
+          const runCallback = methodsAfter.reduce((mock, method) => {
+            if (method === 'mockThrowOnce' || method === 'mockRejectedValueOnce') {
+              return mock[method](new Error('Later failure'));
+            }
+            return mock[method](undefined);
+          }, beforeFailure[firstFailureMethod](firstError));
+          const callbacksCount = successMethodsBefore.length + 1 + methodsAfter.length;
 
           // Act
-          const out = runAllCallbacksAndReturn(Symbol(), (index) => callbacks[index](), callbacks.length);
+          const out = runAllCallbacksAndReturn(Symbol(), runCallback, callbacksCount);
 
           // Assert
           await expect(out).rejects.toBe(firstError);
-          expect(completedCallbacks).toBe(callbacks.length);
+          expect(runCallback.mock.calls).toEqual(Array.from({ length: callbacksCount }, (_, index) => [index]));
+          expect(runCallback.mock.settledResults.every((result) => result.type !== 'incomplete')).toBe(true);
         },
       ),
     );
