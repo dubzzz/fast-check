@@ -50,10 +50,12 @@ The default reporter throws when `failed` is `true` and ignores other outcomes:
 - **Predicate failure:** `errorInstance` contains the failure reason.
 - **Too many skips:** `interrupted: true`, `errorInstance: null`. Skips can come from pre-conditions or [`skipEqualValues`](/docs/core-blocks/plugins/values/#skipequalvalues).
 
-Plugins run first. Their first error takes precedence over the default reporter's error. Returning normally keeps default reporting; `noDefaultPlugins: true` disables it.
+:::info[Plugin reporting]
 
-:::info[Other outcomes and plugin interruptions]
-Plugins can interrupt for various reasons and usually handle reporting themselves. They may reject `assert` even with `failed: false` and `interrupted: true`; see [`interruptAfterTimeLimit`](/docs/core-blocks/plugins/time-limits/#interruptaftertimelimit).
+- Plugins run first; their first error takes precedence over the default reporter's error.
+- Returning normally keeps default reporting; `noDefaultPlugins: true` disables it.
+- Plugins usually handle their own interruptions and may reject `assert` even with `failed: false` and `interrupted: true`. See [`interruptAfterTimeLimit`](/docs/core-blocks/plugins/time-limits/#interruptaftertimelimit) for an example.
+
 :::
 
 See [custom reports](/docs/configuration/custom-reports/) for more reporting examples, including asynchronous callbacks.
