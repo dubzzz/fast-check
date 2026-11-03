@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../src/fast-check.js';
+import { assertAndGetRunDetails } from './__test-helpers__/AssertAndGetRunDetails.js';
 import { seed } from './seed.js';
 
 interface IList<T> {
@@ -61,7 +62,7 @@ describe(`Model Based (seed: ${seed})`, () => {
     );
   });
   it('should detect an issue on fixed size circular list', async () => {
-    const out = await fc.check(
+    const out = await assertAndGetRunDetails(
       fc.property(fc.integer({ min: 1, max: 1000 }), fc.commands(allCommands, { size: '+1' }), (size, cmds) => {
         class CircularList implements IList<number> {
           start = 0;

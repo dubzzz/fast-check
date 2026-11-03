@@ -9,7 +9,7 @@ Execute your properties.
 
 ## assert
 
-Probably the most useful of all the runners provided within fast-check. This runner takes a property and executes it. It throws automatically in case of failure. Thrown error is formatted to make it easily readable and actionable for the user.
+Probably the most useful of all the runners provided within fast-check. This runner takes a property and executes it. By default, it throws automatically in case of failure. Thrown error is formatted to make it easily readable and actionable for the user.
 
 Its signature can be summarized by:
 
@@ -24,44 +24,41 @@ Check [`Parameters`](/docs/api/interfaces/Parameters) to run `assert` with advan
 Resources: [API reference](/docs/api/functions/assert).  
 Available since 0.0.1.
 
-## check
+### Run details
 
-Similar to `assert` except that caller is responsible to handle the output.
-
-In terms of signatures, `check` provides the following:
-
-```ts
-function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
-```
-
-The structure `RunDetails` provides all the details needed to report what happened. There are four major reasons for `check` to end:
-
-| Reasons                                                 | `failed` | `interrupted`  | `counterexample`/`counterexamplePath`/`error` |
-| ------------------------------------------------------- | :------: | :------------: | :-------------------------------------------: |
-| failure of the predicate                                |  `true`  | `true`/`false` |                  _not null_                   |
-| too many pre-conditions failures                        |  `true`  |    `false`     |                    `null`                     |
-| execution took too long given `interruptAfterTimeLimit` |  `true`  |     `true`     |                    `null`                     |
-| successful run                                          | `false`  | `true`/`false` |                    `null`                     |
-
-:::tip[Build a custom assertion with `check`]
-
-Use `check` to throw your own error on failure. This example produces a custom message instead of the default report of `assert`.
+Handle the `RunDetails` value directly in a plugin's `onAllRunsComplete` callback. Throw an error to report a failure, or return nothing when the outcome is acceptable. Set `noDefaultPlugins: true` to drop and replace the default report of `assert` with your own reporting:
 
 ```js
-async function customAssert(property, params) {
-  const out = await fc.check(property, params);
-  if (out.failed) {
-    throw new Error(`Property failed after ${out.numRuns} tests`, {
-      cause: out.errorInstance,
-    });
-  }
-}
+await fc.assert(property, {
+  noDefaultPlugins: true,
+  plugins: [
+    () => ({
+      onAllRunsComplete(out) {
+        if (out.failed) {
+          throw new Error(`Property failed after ${out.numRuns} tests`, {
+            cause: out.errorInstance,
+          });
+        }
+      },
+    }),
+  ],
+});
 ```
 
+The default reporter throws when `failed` is `true` and ignores other outcomes.
+
+| Reason                   | `failed` | `interrupted`  | `counterexample`/`counterexamplePath` |
+| ------------------------ | -------- | -------------- | ------------------------------------- |
+| failure of the predicate | `true`   | `true`/`false` | _not null_                            |
+| too many skipped values  | `true`   | `true`         | `null`                                |
+| successful run           | `false`  | `true`/`false` | `null`                                |
+
+:::info[Plugin reporting]
+See the [custom reports](/docs/configuration/custom-reports/) guide.
 :::
 
-Resources: [API reference](/docs/api/functions/check).  
-Available since 0.0.1.
+Resources: [API reference](/docs/api/type-aliases/RunDetails).  
+Available since 0.0.7.
 
 ## sample
 

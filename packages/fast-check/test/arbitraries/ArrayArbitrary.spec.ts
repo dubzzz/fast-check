@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check.js';
+import { assertAndGetRunDetails } from '../__test-helpers__/AssertAndGetRunDetails.js';
 import { seed } from '../seed.js';
 
 describe(`ArrayArbitrary (seed: ${seed})`, () => {
   describe('array', () => {
     it('Should shrink on the size of the array', async () => {
-      const out = await fc.check(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.array(fc.nat()), (arr: number[]) => arr.length < 2),
         { seed: seed },
       );
@@ -14,7 +15,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample![0]).toHaveLength(2);
     });
     it('Should shrink on the content of the array', async () => {
-      const out = await fc.check(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.array(fc.integer({ min: 3, max: 10 })), (arr: number[]) => arr.length < 2),
         { seed: seed },
       );
@@ -22,7 +23,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual([[3, 3]]);
     });
     it('Should shrink removing unecessary entries in the array', async () => {
-      const out = await fc.check(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.array(fc.integer({ min: 0, max: 10 })), (arr: number[]) => arr.filter((v) => v >= 5).length < 2),
         { seed: seed },
       );
@@ -47,7 +48,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
     // Falsy implementation of removeDuplicates
     const removeDuplicates = (arr: T[]) => [...arr];
     // Expect a failure
-    const out = await fc.check(
+    const out = await assertAndGetRunDetails(
       fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
         expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates (but will find some)
@@ -62,7 +63,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
     // Falsy implementation of removeDuplicates
     const removeDuplicates = (arr: T[]) => [...arr];
     // Expect a failure
-    const out = await fc.check(
+    const out = await assertAndGetRunDetails(
       fc.property(fc.array(arb), (arr: T[]) => {
         const filtered = removeDuplicates(arr);
         expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates

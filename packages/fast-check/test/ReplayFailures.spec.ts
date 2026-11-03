@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../src/fast-check.js';
+import { assertAndGetRunDetails } from './__test-helpers__/AssertAndGetRunDetails.js';
 import { seed } from './seed.js';
 
 describe(`ReplayFailures (seed: ${seed})`, () => {
@@ -18,7 +19,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
 
   describe('fc.sample', () => {
     it('Should rebuild counterexample using sample and (path, seed)', async () => {
-      const out = await fc.check(prop, { seed: seed });
+      const out = await assertAndGetRunDetails(prop, { seed: seed });
       expect(out.failed).toBe(true);
       expect(fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath!, numRuns: 1 })).toEqual(
         out.counterexample,
@@ -26,7 +27,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
     });
     it('Should rebuild the whole shrink path using sample', async () => {
       const failuresRecorded: string[][] = [];
-      const out = await fc.check(
+      const out = await assertAndGetRunDetails(
         fc.property(propArbitrary, (data) => {
           if (propCheck(data)) return true;
           failuresRecorded.push(data);
@@ -48,13 +49,13 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
   });
   describe('fc.assert', () => {
     it('Should start from the minimal counterexample given its path', async () => {
-      const out = await fc.check(prop, { seed: seed });
+      const out = await assertAndGetRunDetails(prop, { seed: seed });
       expect(out.failed).toBe(true);
 
       let numCalls = 0;
       let numValidCalls = 0;
       let validCallIndex = -1;
-      const out2 = await fc.check(
+      const out2 = await assertAndGetRunDetails(
         fc.property(propArbitrary, (data) => {
           try {
             expect(data).toEqual(out.counterexample![0]);
@@ -76,13 +77,13 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       expect(out2.counterexample).toEqual(out.counterexample);
     });
     it('Should start from any position in the path', async () => {
-      const out = await fc.check(prop, { seed: seed });
+      const out = await assertAndGetRunDetails(prop, { seed: seed });
       expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
       for (let idx = 1; idx !== segments.length + 1; ++idx) {
         const p = segments.slice(0, idx).join(':');
-        const outMiddlePath = await fc.check(prop, { seed: seed, path: p });
+        const outMiddlePath = await assertAndGetRunDetails(prop, { seed: seed, path: p });
         expect(outMiddlePath.numRuns).toEqual(1);
         expect(outMiddlePath.numShrinks).toEqual(out.numShrinks - idx + 1);
         expect(outMiddlePath.counterexamplePath).toEqual(out.counterexamplePath);
@@ -90,20 +91,20 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       }
     });
     it('Should only execute one test given path for failure and noShrink flag', async () => {
-      const out = await fc.check(prop, { seed: seed });
+      const out = await assertAndGetRunDetails(prop, { seed: seed });
       expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
       for (let idx = 1; idx !== segments.length + 1; ++idx) {
         const p = segments.slice(0, idx).join(':');
-        const outMiddlePath = await fc.check(prop, { seed: seed, path: p, endOnFailure: true });
+        const outMiddlePath = await assertAndGetRunDetails(prop, { seed: seed, path: p, endOnFailure: true });
         expect(outMiddlePath.numRuns).toEqual(1);
         expect(outMiddlePath.numShrinks).toEqual(0);
         expect(outMiddlePath.counterexamplePath).toEqual(p);
       }
     });
     it('Should take initial path into account when computing path', async () => {
-      const out = await fc.check(prop, { seed: seed });
+      const out = await assertAndGetRunDetails(prop, { seed: seed });
       expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
@@ -111,7 +112,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
 
       for (let offset = 0; offset !== +segments[playOnIndex]; ++offset) {
         const p = [...segments.slice(0, playOnIndex), offset].join(':');
-        const outMiddlePath = await fc.check(prop, { seed: seed, path: p });
+        const outMiddlePath = await assertAndGetRunDetails(prop, { seed: seed, path: p });
         expect(outMiddlePath.counterexamplePath).toEqual(out.counterexamplePath);
         expect(outMiddlePath.counterexample).toEqual(out.counterexample);
       }
@@ -124,7 +125,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
           (internalSeed, path) => {
             // Sync throw!!!
             expect(() =>
-              fc.check(
+              assertAndGetRunDetails(
                 fc.property(fc.constant(0), () => {}), // no shrink available on constant, our path should break
                 { seed: internalSeed, path },
               ),

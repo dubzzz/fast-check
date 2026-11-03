@@ -2,7 +2,7 @@ import type { Property } from '../property/types/Property.js';
 import type { RunDetails } from '../runner/reporter/RunDetails.js';
 
 /**
- * Storage shared by all the plugins instantiated for one call to {@link check} or {@link assert}.
+ * Storage shared by all the plugins instantiated for one call to {@link assert}.
  * Use it to cooperate across plugins.
  *
  * @remarks Since 4.10.0
@@ -82,7 +82,7 @@ export type PluginInstance<Ts> = {
 
 /**
  * Builder instantiating a plugin.
- * Each property will instantiate its own plugin when starting to be assessed via {@link check} or {@link assert}.
+ * Each property will instantiate its own plugin when starting to be assessed via {@link assert}.
  *
  * Parameters received by the Plugin function:
  * - 1st argument or pluginIndex: Corresponds to the index of the plugin within the run (starts at zero).

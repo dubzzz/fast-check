@@ -53,6 +53,8 @@ await fc.assert(
 )
 ```
 
+The default reporter throws for any run with `failed: true` and ignores all other outcomes. Your plugin runs before it: if your plugin throws or rejects, its error takes precedence over any error subsequently thrown by the default reporter. When multiple plugins report errors, the first error wins. Returning normally from your plugin leaves the default reporting in place.
+
 :::info[Deprecated `reporter`]
 Before the introduction of plugins, custom reporting used to be achieved by passing a custom `reporter` to `assert`:
 
@@ -71,27 +73,32 @@ await fc.assert(fc.property(...), {
 `reporter` is now deprecated: prefer a plugin relying on the `onAllRunsComplete` hook.
 :::
 
-:::info[Before `reporter`]
-In the past, writing your own reporter would have been done as follow:
+### Disable the default report
+
+Set `noDefaultPlugins: true` to drop the default report and eventually come with your own reporting.
+
+You can handle the outcomes of an `assert` run directly via plugins in `onAllRunsComplete`: throw to report a failure, or return nothing when the outcome is acceptable. In this mode, `assert` does not reject because the property failed. Your reporters must throw for the outcomes you want to report as failures.
 
 ```js
-const throwIfFailed = async (out) => {
-  if (out.failed) {
-    throw new Error(`Property failed after ${out.numRuns} tests`, {
-      cause: out.errorInstance,
-    });
-  }
-};
-const myCustomAssert = async (property, parameters) => {
-  const runDetails = await fc.check(property, parameters);
-  await throwIfFailed(runDetails);
-};
+await fc.assert(property, {
+  noDefaultPlugins: true,
+  plugins: [
+    () => ({
+      onAllRunsComplete(out) {
+        if (out.failed) {
+          throw new Error(`Property failed after ${out.numRuns} tests`, {
+            cause: out.errorInstance,
+          });
+        }
+      },
+    }),
+  ],
+});
 ```
 
-This approach based on `fc.check` stays fully supported and remains the way to go whenever the default report of `assert` has to be dropped entirely, including its "throw on failure" behavior.
+For asynchronous reporting, use an `async onAllRunsComplete` callback: let it resolve without a value when the outcome is acceptable, or throw to reject it. `assert` waits for all completion callbacks and cleanup before settling.
 
-These examples produce a custom message instead of reproducing the default report of `assert`.
-:::
+Other plugins can still report errors when `noDefaultPlugins` is enabled. In particular, plugins requesting interruptions usually handle their own reporting. See [run details](/docs/core-blocks/runners/#run-details) for the distinction between `failed`, `interrupted` and errors reported by plugins.
 
 ## CodeSandbox Reporter
 

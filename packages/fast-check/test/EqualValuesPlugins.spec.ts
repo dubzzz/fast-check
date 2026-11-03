@@ -1,12 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { seed } from './seed.js';
 import * as fc from '../src/fast-check.js';
+import { assertAndGetRunDetails } from './__test-helpers__/AssertAndGetRunDetails.js';
 
 describe(`IgnoreEqualValues (seed: ${seed})`, () => {
   describe('ignoreEqualValues', () => {
     it('should not run more than 4 times', async () => {
       let numRuns = 0;
-      const out = await fc.check(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.boolean(), fc.boolean(), () => {
           ++numRuns;
         }),
@@ -24,7 +25,7 @@ describe(`IgnoreEqualValues (seed: ${seed})`, () => {
   describe('skipEqualValues', () => {
     it('should not run more than 4 times but mark run as failed due to too many skipped values', async () => {
       let numRuns = 0;
-      const out = await fc.check(
+      const out = await assertAndGetRunDetails(
         fc.property(fc.boolean(), fc.boolean(), () => {
           ++numRuns;
         }),

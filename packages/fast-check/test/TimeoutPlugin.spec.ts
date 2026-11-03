@@ -19,6 +19,7 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
     async ({ timeoutFirst }) => {
       // Arrange
       const fc = await import('../src/fast-check.js');
+      const { assertAndGetRunDetails } = await import('./__test-helpers__/AssertAndGetRunDetails.js');
       let numRuns = 0;
       const beforeEach = vi.fn();
       const afterEach = vi.fn();
@@ -26,7 +27,7 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
       const plugins = timeoutFirst ? [fc.timeout(10), ...hooksPlugins] : [...hooksPlugins, fc.timeout(10)];
 
       // Act
-      const outPromise = fc.check(
+      const outPromise = assertAndGetRunDetails(
         fc.property(fc.noShrink(fc.integer()), async (_x) => {
           ++numRuns;
           await new Promise((resolve) => {
@@ -60,10 +61,11 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
   it('should have no effect on synchronous predicates', async () => {
     // Arrange
     const fc = await import('../src/fast-check.js');
+    const { assertAndGetRunDetails } = await import('./__test-helpers__/AssertAndGetRunDetails.js');
     let numRuns = 0;
 
     // Act
-    const out = await fc.check(
+    const out = await assertAndGetRunDetails(
       fc.property(fc.integer(), (_x) => {
         ++numRuns;
       }),

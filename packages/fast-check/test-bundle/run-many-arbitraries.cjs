@@ -30,10 +30,23 @@ async function testArbitrary(arb) {
 
   // should be able to replay a failing case
   runId = 0;
-  var details = await fc.check(
+  var details;
+  await fc.assert(
     fc.property(arb, function () {
       return runId++ % 3 === 0;
     }),
+    {
+      noDefaultPlugins: true,
+      plugins: [
+        function () {
+          return {
+            onAllRunsComplete: function (runDetails) {
+              details = runDetails;
+            },
+          };
+        },
+      ],
+    },
   );
   var replay = fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
   assert.deepEqual(replay[0], details.counterexample[0]);
