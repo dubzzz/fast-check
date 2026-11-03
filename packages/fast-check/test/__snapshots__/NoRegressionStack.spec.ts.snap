@@ -47,6 +47,7 @@ Got error: Property failed by returning false
     at propertyRunner (packages/fast-check/src/check/runner/PropertyRunner.ts:?:?)
     at Module.assert (packages/fast-check/src/check/runner/assert.ts:?:?)
     at packages/fast-check/test/__test-helpers__/StackSanitizer.ts:?:?
+    at Reflect.get (<anonymous>)
 
 Hint: Increase the verbosity level to see more details about the run]
 `;

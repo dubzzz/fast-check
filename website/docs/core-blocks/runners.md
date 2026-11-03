@@ -48,16 +48,16 @@ await fc.assert(property, {
 The default reporter throws when `failed` is `true` and ignores other outcomes.
 
 | Reason                   | `failed` | `interrupted`  | `counterexample`/`counterexamplePath` |
-| ------------------------ | :------: | :------------: | :-----------------------------------: |
-| failure of the predicate |  `true`  | `true`/`false` |              _not null_               |
-| too many skipped values  |  `true`  |     `true`     |                `null`                 |
-| successful run           | `false`  | `true`/`false` |                `null`                 |
+| ------------------------ | -------- | -------------- | ------------------------------------- |
+| failure of the predicate | `true`   | `true`/`false` | _not null_                            |
+| too many skipped values  | `true`   | `true`         | `null`                                |
+| successful run           | `false`  | `true`/`false` | `null`                                |
 
 :::info[Plugin reporting]
 See the [custom reports](/docs/configuration/custom-reports/) guide.
 :::
 
-Resources: [API reference](/docs/api/types/RunDetails).  
+Resources: [API reference](/docs/api/type-aliases/RunDetails).  
 Available since 0.0.7.
 
 ## sample
