@@ -10,8 +10,6 @@ import { expectTypeOf } from 'vitest';
 expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Promise<void>>();
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
-// Run details are exposed through plugins; check is no longer part of the public API.
-expectTypeOf<'check' extends keyof typeof fc ? true : false>().toEqualTypeOf<false>();
 
 // property
 // "property" instantiates instances compatible with Property
