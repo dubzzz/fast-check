@@ -54,6 +54,3 @@ export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Pro
         ),
       );
 }
-
-
-export { assert };
