@@ -127,13 +127,14 @@ describe('runAllCallbacksAndReturn', () => {
     );
   });
 
-  it('should preserve an undefined first error and still finish all callbacks', async () => {
+  it('should preserve the first error and still finish all callbacks', async () => {
     await fc.assert(
       fc.property(
+        fc.anything(),
         fc.array(fc.boolean()),
         fc.boolean(),
         fc.array(fc.record({ isSync: fc.boolean(), isSuccess: fc.boolean() })),
-        async (syncFlagsBefore, firstErrorIsSync, callbacksResponsesAfter) => {
+        async (firstError, syncFlagsBefore, firstErrorIsSync, callbacksResponsesAfter) => {
           // Arrange
           const callbacksResponses = [
             ...syncFlagsBefore.map((isSync) => ({ isSync, isSuccess: true })),
@@ -146,7 +147,7 @@ describe('runAllCallbacksAndReturn', () => {
             const complete = () => {
               ++completedCallbacks;
               if (!response.isSuccess) {
-                const error = index === firstErrorIndex ? undefined : new Error('Later failure');
+                const error = index === firstErrorIndex ? firstError : new Error('Later failure');
                 throw error;
               }
             };
@@ -157,7 +158,7 @@ describe('runAllCallbacksAndReturn', () => {
           const out = runAllCallbacksAndReturn(Symbol(), (index) => callbacks[index](), callbacks.length);
 
           // Assert
-          await expect(out).rejects.toBeUndefined();
+          await expect(out).rejects.toBe(firstError);
           expect(completedCallbacks).toBe(callbacks.length);
         },
       ),
