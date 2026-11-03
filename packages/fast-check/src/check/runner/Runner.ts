@@ -17,7 +17,7 @@ import {
  *
  * With the default setup, failed runs are rejected.
  *
- * It can be called directly from describe/it blocks of Mocha.
+ * It can be called directly from describe/it blocks of your favorite test runner.
  * No meaningful results are produced. Use a plugin's `onAllRunsComplete` callback to access run details.
  *
  * WARNING: Has to be awaited
