@@ -1,3 +1,33 @@
+async function runAllCallbacksAndReturnAsync<T>(
+  value: T,
+  runCallbackAtIndex: (index: number) => void | Promise<void>,
+  firstCallbackResult: Promise<void>,
+  callbackIndex: number,
+  callbacksCount: number,
+  hasInitialError: boolean,
+  initialError: unknown,
+): Promise<T> {
+  let interceptedOnce = hasInitialError;
+  let interceptedError = initialError;
+  for (let index = callbackIndex; index !== callbacksCount; ++index) {
+    try {
+      const out = index === callbackIndex ? firstCallbackResult : runCallbackAtIndex(index);
+      if (out !== undefined) {
+        await out;
+      }
+    } catch (error) {
+      if (!interceptedOnce) {
+        interceptedOnce = true;
+        interceptedError = error;
+      }
+    }
+  }
+  if (interceptedOnce) {
+    throw interceptedError;
+  }
+  return value;
+}
+
 /**
  * Run all callbacks in-order without any overlap.
  * Returns the originally passed value if all callbacks succeed, otherwise rejects with the first encountered error.
@@ -13,36 +43,25 @@ export function runAllCallbacksAndReturn<T>(
 ): T | Promise<T> {
   let interceptedOnce = false;
   let interceptedError: unknown = undefined;
-  const interceptError = (error: unknown) => {
-    if (!interceptedOnce) {
-      interceptedOnce = true;
-      interceptedError = error;
-    }
-  };
-
   for (let index = 0; index !== callbacksCount; ++index) {
     try {
       const out = runCallbackAtIndex(index);
       if (out !== undefined) {
-        return (async (): Promise<T> => {
-          for (let nextIndex = index; nextIndex !== callbacksCount; ++nextIndex) {
-            try {
-              const next = nextIndex === index ? out : runCallbackAtIndex(nextIndex);
-              if (next !== undefined) {
-                await next;
-              }
-            } catch (error) {
-              interceptError(error);
-            }
-          }
-          if (interceptedOnce) {
-            throw interceptedError;
-          }
-          return value;
-        })();
+        return runAllCallbacksAndReturnAsync(
+          value,
+          runCallbackAtIndex,
+          out,
+          index,
+          callbacksCount,
+          interceptedOnce,
+          interceptedError,
+        );
       }
     } catch (error) {
-      interceptError(error);
+      if (!interceptedOnce) {
+        interceptedOnce = true;
+        interceptedError = error;
+      }
     }
   }
   if (interceptedOnce) {
