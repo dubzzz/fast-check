@@ -54,14 +54,8 @@ The default reporter throws when `failed` is `true` and ignores other outcomes.
 | successful run           | `false`  | `true`/`false` |                `null`                 |
 
 :::info[Plugin reporting]
-
-- Plugins run first; their first error takes precedence over the default reporter's error.
-- Returning normally keeps default reporting; `noDefaultPlugins: true` disables it.
-- Plugins usually handle their own interruptions and may reject `assert` even with `failed: false` and `interrupted: true`. See [`interruptAfterTimeLimit`](/docs/core-blocks/plugins/time-limits/#interruptaftertimelimit) for an example.
-
+See the [custom reports](/docs/configuration/custom-reports/) guide.
 :::
-
-See [custom reports](/docs/configuration/custom-reports/) for more reporting examples, including asynchronous callbacks.
 
 Resources: [RunDetails API reference](/docs/api/types/RunDetails).
 
