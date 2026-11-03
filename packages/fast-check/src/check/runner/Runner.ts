@@ -28,7 +28,7 @@ import {
  * @remarks Since 0.0.7
  * @public
  */
-function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
+export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
   const qParams: QualifiedParameters<Ts> = read<Ts>({
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
