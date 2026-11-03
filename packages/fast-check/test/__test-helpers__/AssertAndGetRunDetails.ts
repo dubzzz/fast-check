@@ -1,6 +1,6 @@
 import * as fc from '../../src/fast-check.js';
 
-/** Run assert and collect its run details through a plugin without default failure reporting. */
+/** Run assert and collect its run details */
 export function assertAndGetRunDetails<Ts>(
   property: fc.Property<Ts>,
   params?: fc.Parameters<Ts>,
