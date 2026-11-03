@@ -57,7 +57,8 @@ The default reporter throws when `failed` is `true` and ignores other outcomes.
 See the [custom reports](/docs/configuration/custom-reports/) guide.
 :::
 
-Resources: [RunDetails API reference](/docs/api/types/RunDetails).
+Resources: [API reference](/docs/api/types/RunDetails).  
+Available since 0.0.7.
 
 ## sample
 
