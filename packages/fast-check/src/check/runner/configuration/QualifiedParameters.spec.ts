@@ -23,6 +23,7 @@ const parametersArbitrary = fc.record(
     endOnFailure: fc.boolean(),
     includeErrorInReport: fc.boolean(),
     noDefaultPlugins: fc.boolean(),
+    noGlobalPlugins: fc.boolean(),
     plugins: fc.constant([] satisfies Plugin<any>[]),
   },
   { requiredKeys: [] },

@@ -104,18 +104,30 @@ export interface Parameters<T = void> {
    *
    * When set to `true`, {@link assert} skips default failure reporting.
    * Plugins passed through `plugins` or installed globally via
-   * {@link installGlobalPlugin} are still executed and may throw.
+   * {@link installGlobalPlugin} are still executed and may throw, unless
+   * globally installed plugins are disabled with `noGlobalPlugins`.
    *
    * @remarks Since 5.0.0
    */
   noDefaultPlugins?: boolean;
+  /**
+   * Disable globally installed plugins: `false` by default
+   *
+   * When set to `true`, plugins installed via {@link installGlobalPlugin}
+   * are not instantiated for this run. Plugins passed through `plugins` and
+   * default plugins are unaffected. Use `noDefaultPlugins` to disable defaults.
+   * Other parameters set via {@link configureGlobal} still apply.
+   *
+   * @remarks Since 5.0.0
+   */
+  noGlobalPlugins?: boolean;
   /**
    * Set of plugins extending the way the property gets executed by the runner
    *
    * Each plugin is instantiated once per run.
    * They can be leveraged to control and enrich the execution flow of each predicate.
    *
-   * They come after the plugins installed globally via {@link installGlobalPlugin}.
+   * They come after the plugins installed globally via {@link installGlobalPlugin}, unless `noGlobalPlugins` is set.
    * At execution time, the first plugin of the resulting array is entered first while the last one is the closest to the predicate.
    * Plugins are instantiated in order.
    *

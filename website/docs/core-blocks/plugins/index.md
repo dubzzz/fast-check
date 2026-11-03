@@ -34,6 +34,21 @@ fc.installGlobalPlugin(pluginA());
 
 Installed plugins run before the ones passed to the runner, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB()]`.
 
+To skip globally installed plugins for one assertion, set `noGlobalPlugins: true`:
+
+```ts
+await fc.assert(myProp, {
+  noGlobalPlugins: true,
+  plugins: [pluginB()],
+});
+```
+
+Global plugins are not instantiated for this assertion. Plugins passed through `plugins` and default failure reporting still apply. The installed plugins remain available to other assertions, and other settings from `configureGlobal`, such as `seed` and `numRuns`, still apply.
+
+`noGlobalPlugins` and `noDefaultPlugins` are independent. Set both to `true` to run only the plugins explicitly passed through `plugins`. Passing `plugins: []` alone does not disable globally installed plugins or default plugins.
+
+You can also set `noGlobalPlugins` through `configureGlobal`. A per-assertion `noGlobalPlugins: false` re-enables globally installed plugins when the global configuration disables them.
+
 ## Combining plugins
 
 Plugins have been designed to be combined together. When multiple plugins get defined for the same assertion, they execute in declaration order. The first plugin runs first and wraps the execution of the second one until we reach the main operation. Plugins can wrap various stages of the flow, including the execution of the predicate function.
