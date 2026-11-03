@@ -19,6 +19,8 @@ Shrunk 66 time(s)
 Got error: AssertionError: expected 1000000000 to be less than or equal to 2
 ```
 
+This behavior is provided by the built-in [`defaultReporter` plugin](/docs/core-blocks/plugins/reporting/#defaultreporter). `assert` adds it after your global and local plugins unless `noDefaultPlugins: true` is set. You can pass `fc.defaultReporter()` explicitly to restore default reporting or choose its position among your plugins.
+
 While easily redeable, you may want to format it differently. Explaining how you can do that is the aim of this page.
 
 :::info[How to read such reports?]
