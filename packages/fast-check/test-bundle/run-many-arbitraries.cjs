@@ -48,7 +48,6 @@ async function testArbitrary(arb) {
       ],
     },
   );
-
   var replay = fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
   assert.deepEqual(replay[0], details.counterexample[0]);
 
