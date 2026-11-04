@@ -93,6 +93,15 @@ const config: Config = {
           position: 'right',
           className: 'header-tangled-link',
         },
+        {
+          href: 'https://fast-check.dev/new',
+          'aria-label': 'Open the fast-check playground',
+          title: 'Try fast-check online',
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          position: 'right',
+          className: 'header-playground-link',
+        },
       ],
     },
     docs: {
