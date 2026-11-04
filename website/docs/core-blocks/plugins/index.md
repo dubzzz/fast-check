@@ -43,7 +43,7 @@ await fc.assert(myProp, {
 });
 ```
 
-Global plugins are not instantiated for this assertion. Plugins passed through `plugins` and default failure reporting still apply. The installed plugins remain available to other assertions.
+Global plugins are not instantiated for this assertion. Plugins passed through `plugins` and default ones still apply. The installed plugins remain available to other assertions.
 
 `noGlobalPlugins` and `noDefaultPlugins` are independent. Set both to `true` to run only the plugins explicitly passed through `plugins`. Passing `plugins: []` alone does not disable globally installed plugins or default plugins.
 
