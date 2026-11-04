@@ -1,6 +1,6 @@
 import { isMainThread } from 'node:worker_threads';
-import type { Parameters } from 'fast-check';
-import { check, stringify, timeout } from 'fast-check';
+import type { Parameters, RunDetails } from 'fast-check';
+import { assert as assertInMainThread, stringify, timeout } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 
@@ -63,14 +63,24 @@ if (isMainThread) {
           const seed = seedRegex.exec(message)![1];
           const path = pathRegex.exec(message)![1];
           const workerValue = workerValueRegex.exec(message)![1];
-          const out = await check(nonSerializableButSameDataRawProperty, {
+          let runDetails!: RunDetails<unknown>;
+          await assertInMainThread(nonSerializableButSameDataRawProperty, {
             ...defaultOptions,
             seed: +seed,
             path,
             numRuns: 1,
             endOnFailure: true,
+            noDefaultPlugins: true,
+            plugins: [
+              ...defaultOptions.plugins!,
+              () => ({
+                onAllRunsComplete: (out) => {
+                  runDetails = out;
+                },
+              }),
+            ],
           });
-          const sampledValue = (out.counterexample as [symbol])[0];
+          const sampledValue = (runDetails.counterexample as [symbol])[0];
           const extraDetails = { seed, path };
           expect({ ...extraDetails, value: stringify(sampledValue) }).toEqual({ ...extraDetails, value: workerValue });
         }

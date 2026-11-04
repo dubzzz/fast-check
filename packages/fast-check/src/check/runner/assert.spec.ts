@@ -3,7 +3,7 @@ import { nil } from '../../utils/iterator.js';
 import * as fc from 'fast-check';
 
 import { Value } from '../arbitrary/definition/Value.js';
-import { check as rCheck, assert as rAssert } from './Runner.js';
+import { assert as rAssert } from './assert.js';
 import type { Random } from '../../random/generator/Random.js';
 import type { RunDetails } from './reporter/RunDetails.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
@@ -12,31 +12,29 @@ import type { Property } from '../property/types/Property.js';
 import type { Parameters } from './configuration/Parameters.js';
 
 const MAX_NUM_RUNS = 1000;
-describe('Runner', () => {
-  describe.each([
-    { name: 'check', check: rCheck },
-    {
-      name: 'assert with noDefaultPlugins',
-      check: async <Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> => {
-        let runDetails: RunDetails<Ts> | undefined;
-        const out = await rAssert(property, {
-          ...params,
-          noDefaultPlugins: true,
-          plugins: [
-            ...(params?.plugins ?? []),
-            () => ({
-              onAllRunsComplete: (details) => {
-                runDetails = details;
-              },
-            }),
-          ],
-        });
-        expect(out).toBeUndefined();
-        expect(runDetails).toBeDefined();
-        return runDetails!;
-      },
-    },
-  ])('$name', ({ check }) => {
+describe('assert', () => {
+  describe('assert with noDefaultPlugins', () => {
+    const assertAndGetRunDetails = async <Ts>(
+      property: Property<Ts>,
+      params?: Parameters<Ts>,
+    ): Promise<RunDetails<Ts>> => {
+      let capturedRunDetails: RunDetails<Ts> | undefined;
+      const out = await rAssert(property, {
+        ...params,
+        noDefaultPlugins: true,
+        plugins: [
+          ...(params?.plugins ?? []),
+          () => ({
+            onAllRunsComplete: (details) => {
+              capturedRunDetails = details;
+            },
+          }),
+        ],
+      });
+      expect(out).toBeUndefined();
+      expect(capturedRunDetails).toBeDefined();
+      return capturedRunDetails!;
+    };
     it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
@@ -53,7 +51,7 @@ describe('Runner', () => {
           return null;
         },
       };
-      const out = await check(p);
+      const out = await assertAndGetRunDetails(p);
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
@@ -74,7 +72,7 @@ describe('Runner', () => {
           return null;
         },
       };
-      const out = await check(p, { path: '3002' });
+      const out = await assertAndGetRunDetails(p, { path: '3002' });
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
@@ -103,7 +101,7 @@ describe('Runner', () => {
           return null;
         },
       };
-      const out = await check(p, { path: '3002:0' });
+      const out = await assertAndGetRunDetails(p, { path: '3002:0' });
       expect(numCallsGenerate).toEqual(1);
       expect(numCallsRun).toEqual(1234);
       expect(out.failed).toBe(false);
@@ -130,7 +128,7 @@ describe('Runner', () => {
               return new PreconditionFailure();
             },
           };
-          const out = await check(p);
+          const out = await assertAndGetRunDetails(p);
           if (failAtId == null) {
             const expectedGenerate = successIds[successIds.length - 1] + 1;
             const expectedSkips = expectedGenerate - 100;
@@ -167,7 +165,7 @@ describe('Runner', () => {
                 return new PreconditionFailure();
               },
             };
-            const out = await check(p, { numRuns: 2, maxSkipsPerRun: settings.maxSkipsPerRun });
+            const out = await assertAndGetRunDetails(p, { numRuns: 2, maxSkipsPerRun: settings.maxSkipsPerRun });
             const expectedSkips = 2 * settings.maxSkipsPerRun + 1;
             const expectedRuns = settings.onlySuccessId === expectedSkips ? 0 : 1;
             expect(out.numRuns).toEqual(expectedRuns);
@@ -194,7 +192,7 @@ describe('Runner', () => {
           return null;
         },
       };
-      const out = await check(p);
+      const out = await assertAndGetRunDetails(p);
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
@@ -214,7 +212,7 @@ describe('Runner', () => {
               return ++numCallsRun < num ? null : { error: new Error('error') };
             },
           };
-          const out = await check(p, { seed: seed });
+          const out = await assertAndGetRunDetails(p, { seed: seed });
           expect(numCallsGenerate).toEqual(num); // stopped generate at first failing run
           expect(numCallsRun).toEqual(num); //  no shrink for first failing run
           expect(out.failed).toBe(true);
@@ -239,7 +237,7 @@ describe('Runner', () => {
               return null;
             },
           };
-          const out = await check(p, { numRuns: num });
+          const out = await assertAndGetRunDetails(p, { numRuns: num });
           expect(numCallsGenerate).toEqual(num);
           expect(numCallsRun).toEqual(num);
           expect(out.failed).toBe(false);
@@ -264,8 +262,8 @@ describe('Runner', () => {
           };
           const data1: number[] = [];
           const data2: number[] = [];
-          await check(buildPropertyFor(data1), { seed: seed });
-          await check(buildPropertyFor(data2), { seed: seed });
+          await assertAndGetRunDetails(buildPropertyFor(data1), { seed: seed });
+          await assertAndGetRunDetails(buildPropertyFor(data2), { seed: seed });
           expect(data2).toEqual(data1);
           return true;
         }),
@@ -282,7 +280,7 @@ describe('Runner', () => {
           return { error: new Error('failure') };
         },
       };
-      const out = await check(p, { endOnFailure: true });
+      const out = await assertAndGetRunDetails(p, { endOnFailure: true });
       expect(out.failed).toBe(true);
       expect(out.numShrinks).toEqual(0);
     });
@@ -301,7 +299,7 @@ describe('Runner', () => {
           return value[0] === 42 ? { error: new Error('failure') } : null;
         },
       };
-      const out = await check(p, { path: '0:0', endOnFailure: true });
+      const out = await assertAndGetRunDetails(p, { path: '0:0', endOnFailure: true });
       expect(out.failed).toBe(true);
       expect(out.numShrinks).toEqual(0);
     });
@@ -311,7 +309,7 @@ describe('Runner', () => {
         shrink: () => nil,
         run: () => ({ error: new Error('failure') }),
       };
-      const out = await check(p);
+      const out = await assertAndGetRunDetails(p);
       expect(out.failures).toHaveLength(0);
     });
     it('Should provide the list of failures in verbose mode', async () => {
@@ -322,7 +320,7 @@ describe('Runner', () => {
         },
         run: () => ({ error: new Error('failure') }),
       };
-      const out = await check(p, { verbose: true });
+      const out = await assertAndGetRunDetails(p, { verbose: true });
       expect(out.failures).not.toHaveLength(0);
       expect(out.failures).toEqual([[42], [48]]);
     });
@@ -358,7 +356,7 @@ describe('Runner', () => {
               },
             };
             const expectedFailurePath = failurePoints.join(':');
-            const out = await check(p, { seed: seed });
+            const out = await assertAndGetRunDetails(p, { seed: seed });
             expect(out.failed).toBe(true);
             expect(out.seed).toEqual(seed);
             expect(out.numRuns).toEqual(failurePoints[0] + 1);
@@ -391,7 +389,7 @@ describe('Runner', () => {
               return ++numCallsRun < num ? null : { error: new Error('error') };
             },
           };
-          const checker = check(p, { seed: seed }) as Promise<RunDetails<[number]>>;
+          const checker = assertAndGetRunDetails(p, { seed: seed }) as Promise<RunDetails<[number]>>;
           checker.then(() => (runnerHasCompleted = true));
 
           await delay();

@@ -59,14 +59,14 @@ export function applyPluginRunDecorators<Ts>(
 export function runPluginCompletionCallbacks<Ts>(
   pluginInstances: PluginInstance<Ts>[],
   runDetails: RunDetails<Ts>,
-): RunDetails<Ts> | Promise<RunDetails<Ts>> {
+): void | Promise<void> {
   if (pluginInstances.length === 0) {
-    return runDetails;
+    return;
   }
   const halfCount = pluginInstances.length;
   const count = halfCount * 2;
   return runAllCallbacksAndReturn(
-    runDetails,
+    undefined,
     (index) =>
       index < halfCount
         ? pluginInstances[index].onAllRunsComplete?.(runDetails)

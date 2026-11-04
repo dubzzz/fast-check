@@ -61,31 +61,6 @@ describe('GlobalParameters', () => {
     fc.resetConfigureGlobal();
   });
 
-  it('should merge global parameters with local ones in fc.check', async () => {
-    const globalConfig = { seed: 42, numRuns: 10 };
-    const overridenNumRuns = 100;
-
-    const withLocalConfiguration: number[] = [];
-    await fc.check(
-      fc.property(fc.nat(), (v) => {
-        withLocalConfiguration.push(v);
-      }),
-      { ...globalConfig, numRuns: overridenNumRuns },
-    );
-
-    fc.configureGlobal(globalConfig);
-    const withGlobalConfigurationOverriden: number[] = [];
-    await fc.check(
-      fc.property(fc.nat(), (v) => {
-        withGlobalConfigurationOverriden.push(v);
-      }),
-      { numRuns: overridenNumRuns },
-    );
-
-    expect(withGlobalConfigurationOverriden).toEqual(withLocalConfiguration);
-    fc.resetConfigureGlobal();
-  });
-
   it('should merge global parameters with local ones in fc.assert', async () => {
     const globalConfig = { seed: 42, numRuns: 10 };
     const overridenNumRuns = 100;

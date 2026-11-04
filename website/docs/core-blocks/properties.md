@@ -45,7 +45,7 @@ The predicate can:
 - either throw in case of failure by relying on `assert`, `expect` or even directly throwing,
 - or return `true` or `undefined` for success and `false` for failure.
 
-Predicates can be synchronous or asynchronous. Use `fc.property` for both, and always await `fc.assert` or `fc.check` when running them:
+Predicates can be synchronous or asynchronous. Use `fc.property` for both, and always await `fc.assert` when running them:
 
 ```js
 await fc.assert(fc.property(fc.string(), (value) => typeof value === 'string'));
@@ -63,7 +63,7 @@ The predicate function should not change the inputs it received. If it needs to,
 
 ### Setup and teardown
 
-Use the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/) to run setup or teardown steps around each execution of the predicate, including executions during shrinking. Pass them to `fc.assert` or `fc.check` via the `plugins` parameter.
+Use the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/) to run setup or teardown steps around each execution of the predicate, including executions during shrinking. Pass them to `fc.assert` via the `plugins` parameter.
 
 ```js
 await fc.assert(
