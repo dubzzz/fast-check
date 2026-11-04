@@ -1,9 +1,9 @@
+import { defaultReporter } from '../../plugin/DefaultReporterPlugin.js';
 import type { Plugin, PluginInstance } from '../../plugin/Plugin.js';
 import type { Property } from '../../property/types/Property.js';
 import { readInstalledGlobalPlugins } from '../configuration/GlobalPlugins.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import { runAllCallbacksAndReturn } from './AllCallbacksThenReturnRunner.js';
-import { defaultReporter } from './RunDetailsFormatter.js';
 
 export function instantiatePlugins<Ts>(localPlugins: Plugin<Ts>[], addDefaultPlugins: boolean): PluginInstance<Ts>[] {
   const globalPlugins = readInstalledGlobalPlugins();
