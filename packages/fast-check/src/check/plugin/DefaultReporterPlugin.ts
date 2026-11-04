@@ -78,12 +78,6 @@ function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
  * Report failed runs using fast-check's default error message.
  * Successful runs are left unchanged.
  *
- * Added automatically after global and local plugins by {@link assert},
- * unless `noDefaultPlugins` is set to `true`. Not added automatically by {@link check}.
- *
- * The first `onAllRunsComplete` hook to throw determines the reported error.
- * All completion and cleanup hooks still run, even when this plugin reports a failure.
- *
  * @example
  * ```ts
  * await fc.assert(
