@@ -28,7 +28,7 @@ function formatHints(hints: string[]): string {
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
 }
 
-function buildErrorMessage(formatted: ReportContent): string {
+function formatReportContent(formatted: ReportContent): string {
   let errorMessage = formatted.message;
   if (formatted.details !== undefined) errorMessage += `\n\n${formatted.details}`;
   if (formatted.hints.length > 0) errorMessage += `\n\n${formatHints(formatted.hints)}`;
@@ -95,10 +95,9 @@ function buildReportContent<Ts>(
   };
 }
 
-function buildReportedErrorInternal<TOut>(
+function buildErrorMessageInternal(
   buildContent: (stringifyValue: FormatStringifier) => ReportContent,
-  wrapOutput: (output: string) => TOut,
-): Promise<TOut> | TOut {
+): Promise<string> | string {
   // The asynchronous version might require two passes:
   // - the first one will register the asynchronous values that will need to be stringified
   // - the second one will take the computed values
@@ -116,7 +115,7 @@ function buildReportedErrorInternal<TOut>(
   // Checks if async mode would have changed the message
   if (pendingStringifieds.length === 0) {
     // No asynchronous stringify have been queued: the computation was synchronous
-    return wrapOutput(buildErrorMessage(initialContent));
+    return formatReportContent(initialContent);
   }
 
   // Retry with async stringified versions in mind
@@ -131,25 +130,13 @@ function buildReportedErrorInternal<TOut>(
       // on usual paths, the ones not having any async generated values
       return stringify(value);
     }
-    return wrapOutput(buildErrorMessage(buildContent(stringifySecond)));
+    return formatReportContent(buildContent(stringifySecond));
   });
 }
 
-function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts>) {
-  if (out.runConfiguration.includeErrorInReport) {
-    throw new Error(errorMessage);
-  }
-  return new Error(errorMessage, { cause: out.errorInstance });
-}
-
-export function reportError<Ts>(
+export function buildErrorMessage<Ts>(
   format: (stringifyValue: FormatStringifier) => FormatOutput,
   out: RunDetails<Ts>,
-): Promise<never> | never {
-  return buildReportedErrorInternal(
-    (stringifier) => buildReportContent(out, format(stringifier), stringifier),
-    (message) => {
-      throw buildError<Ts>(message, out);
-    },
-  );
+): Promise<string> | string {
+  return buildErrorMessageInternal((stringifier) => buildReportContent(out, format(stringifier), stringifier));
 }
