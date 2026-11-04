@@ -41,6 +41,6 @@ export function installGlobalPlugin(plugin: UniversalPlugin | Plugin<unknown>, p
   globalPlugins[position].push(plugin as UniversalPlugin);
 }
 
-export function readInstalledGlobalPlugins(position: 'pre' | 'post'): UniversalPlugin[] {
-  return globalPlugins[position];
+export function readInstalledGlobalPlugins(position?: 'pre' | 'post'): UniversalPlugin[] {
+  return position === undefined ? [...globalPlugins.pre, ...globalPlugins.post] : globalPlugins[position];
 }

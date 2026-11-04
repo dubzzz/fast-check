@@ -184,8 +184,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
     'should match expected tick counts for $kind predicates with $description',
     async ({ kind, plugins, extraTicks }) => {
       // Arrange
-      expect(readInstalledGlobalPlugins('pre')).toHaveLength(0);
-      expect(readInstalledGlobalPlugins('post')).toHaveLength(0);
+      expect(readInstalledGlobalPlugins()).toHaveLength(0);
       using clock = startMicroTaskClock();
       const defaultTicks = extractExpectedTicks(kind);
       const startupTicks = defaultTicks.startupTicks + (extraTicks.startupTicks ?? 0);
