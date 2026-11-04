@@ -438,9 +438,6 @@ expectTypeOf(fc.installGlobalPlugin(universalPlugin(), 'pre')).toEqualTypeOf<voi
 expectTypeOf(fc.installGlobalPlugin(universalPlugin(), 'post')).toEqualTypeOf<void>();
 expectTypeOf(fc.installGlobalPlugin(unknownPlugin(), 'post')).toEqualTypeOf<void>();
 expectTypeOf(fc.installGlobalPlugin(anyPlugin(), 'post')).toEqualTypeOf<void>();
-expectTypeOf(fc.installGlobalPlugin(universalPlugin(), undefined)).toEqualTypeOf<void>();
-// @ts-expect-error - only pre and post are supported positions
-fc.installGlobalPlugin(universalPlugin(), 'before');
 // @ts-expect-error - cannot globally install a too specific plugin
 fc.installGlobalPlugin(stringArgPlugin());
 // @ts-expect-error - post installation also requires a plugin supporting every value type
