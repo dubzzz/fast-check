@@ -144,10 +144,7 @@ export function interruptAfterTimeLimit(
             return { message };
           }, runDetails);
           const throwError = (message: string): never => {
-            throw new Error(
-              message,
-              runDetails.runConfiguration.includeErrorInReport ? undefined : { cause: runDetails.errorInstance },
-            );
+            throw new Error(message);
           };
           return typeof errorMessage === 'string' ? throwError(errorMessage) : errorMessage.then(throwError);
         }

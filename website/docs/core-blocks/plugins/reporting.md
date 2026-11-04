@@ -30,8 +30,12 @@ await fc.assert(
 );
 ```
 
-An explicit `includeErrorInReport` value overrides the run configuration for this reporter only.
-When omitted, the reporter uses the run configuration's `includeErrorInReport` setting (`false` by default).
+`includeErrorInReport` defaults to `false` and can only be set on `defaultReporter`, not in
+`fc.assert` parameters or `fc.configureGlobal` settings. To use it globally, install the reporter:
+
+```ts
+fc.installGlobalPlugin(fc.defaultReporter({ includeErrorInReport: true }));
+```
 
 :::note
 This plugin is part of fast-check's default plugins. As such, `fc.assert` and other built-in runners enable it by default.

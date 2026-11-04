@@ -563,3 +563,8 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>();
+
+// Error formatting belongs to the default reporter, not runner or global parameters.
+expectTypeOf<Extract<'includeErrorInReport', keyof fc.Parameters>>().toEqualTypeOf<never>();
+expectTypeOf<Extract<'includeErrorInReport', keyof fc.GlobalParameters>>().toEqualTypeOf<never>();
+expectTypeOf<fc.DefaultReporterOptions['includeErrorInReport']>().toEqualTypeOf<boolean | undefined>();

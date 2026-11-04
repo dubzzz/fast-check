@@ -21,7 +21,6 @@ const parametersArbitrary = fc.record(
     verbose: fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
     examples: fc.array(fc.nat()),
     endOnFailure: fc.boolean(),
-    includeErrorInReport: fc.boolean(),
     noDefaultPlugins: fc.boolean(),
     noGlobalPlugins: fc.boolean(),
     plugins: fc.constant([] satisfies Plugin<any>[]),
@@ -33,6 +32,12 @@ const randomTypeName = fc.constantFrom(...(Object.keys(prand) as (keyof typeof p
 
 describe('QualifiedParameters', () => {
   describe('read', () => {
+    it('should not expose includeErrorInReport in normalized parameters', () => {
+      const parameters = read();
+      expect(parameters).not.toHaveProperty('includeErrorInReport');
+      expect(parameters.toParameters()).not.toHaveProperty('includeErrorInReport');
+    });
+
     it('Should forward as-is values already set in Parameters', async () =>
       await fc.assert(
         fc.property(parametersArbitrary, (params) => {

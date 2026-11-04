@@ -466,10 +466,18 @@ describe('assert', () => {
         })(),
       ).rejects.toThrowError('error in failingProperty');
     });
+    it('Should ignore the removed runner option at runtime', async () => {
+      const legacyParameters = { seed: 42, includeErrorInReport: true };
+      await expect(rAssert(failingProperty, legacyParameters)).rejects.toHaveProperty('cause');
+    });
     it('Should put the original error in error message when includeErrorInReport', async () => {
-      await expect(rAssert(failingProperty, { seed: 42, includeErrorInReport: true })).rejects.toThrowError(
-        `Got error: error in failingProperty`,
-      );
+      await expect(
+        rAssert(failingProperty, {
+          seed: 42,
+          noDefaultPlugins: true,
+          plugins: [fc.defaultReporter({ includeErrorInReport: true })],
+        }),
+      ).rejects.toThrowError(`Got error: error in failingProperty`);
     });
     describe('Impact of VerbosityLevel in case of failure', () => {
       const baseErrorMessage = 'Property failed';
