@@ -116,7 +116,6 @@ export interface Parameters<T = void> {
    * When set to `true`, plugins installed via {@link installGlobalPlugin}
    * are not instantiated for this run. Plugins passed through `plugins` and
    * default plugins are unaffected. Use `noDefaultPlugins` to disable defaults.
-   * Other parameters set via {@link configureGlobal} still apply.
    *
    * @remarks Since 5.0.0
    */
