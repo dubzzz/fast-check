@@ -20,6 +20,6 @@ The `defaultReporter` plugin throws clear errors for failed runs.
 
 It distinguishes property failures from failures caused by too many skipped runs.
 
-`fc.assert` enables this plugin by default.
+`fc.assert` and any other built-in runners enable this plugin by default as part of the default plugins.
 
 Resources: [API reference](/docs/api/functions/defaultReporter).
