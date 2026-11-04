@@ -33,6 +33,7 @@ const parametersArbitrary = fc.record(
     asyncReporter: fc.func(fc.constant(Promise.resolve(undefined))),
     includeErrorInReport: fc.boolean(),
     noDefaultPlugins: fc.boolean(),
+    noGlobalPlugins: fc.boolean(),
     plugins: fc.constant([] satisfies Plugin<any>[]),
   },
   { requiredKeys: [] },

@@ -213,11 +213,13 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   // Instantiate plugins
   const pluginStore = new SMap<symbol, any>();
   const pluginInstances: PluginInstance<Ts>[] = [];
-  for (let index = 0; index !== globalPlugins.length; ++index) {
-    pluginInstances.push(globalPlugins[index](index, pluginStore));
+  if (!qParams.noGlobalPlugins) {
+    for (let index = 0; index !== globalPlugins.length; ++index) {
+      pluginInstances.push(globalPlugins[index](pluginInstances.length, pluginStore));
+    }
   }
   for (let index = 0; index !== localPlugins.length; ++index) {
-    pluginInstances.push(localPlugins[index](globalPlugins.length + index, pluginStore));
+    pluginInstances.push(localPlugins[index](pluginInstances.length, pluginStore));
   }
 
   // Apply and decorate with plugins

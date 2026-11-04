@@ -45,6 +45,7 @@ export class QualifiedParameters<T> {
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | undefined;
   includeErrorInReport: boolean;
   noDefaultPlugins: boolean;
+  noGlobalPlugins: boolean;
   plugins: Plugin<T>[];
 
   constructor(op?: Parameters<T>) {
@@ -75,6 +76,7 @@ export class QualifiedParameters<T> {
     this.asyncReporter = p.asyncReporter;
     this.includeErrorInReport = p.includeErrorInReport === true;
     this.noDefaultPlugins = p.noDefaultPlugins === true;
+    this.noGlobalPlugins = p.noGlobalPlugins === true;
     this.plugins = p.plugins !== undefined ? p.plugins : [];
   }
 
@@ -100,6 +102,7 @@ export class QualifiedParameters<T> {
       asyncReporter: this.asyncReporter,
       includeErrorInReport: this.includeErrorInReport,
       noDefaultPlugins: this.noDefaultPlugins,
+      noGlobalPlugins: this.noGlobalPlugins,
       plugins: this.plugins,
     };
     return parameters;

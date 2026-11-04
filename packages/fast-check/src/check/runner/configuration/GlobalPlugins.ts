@@ -5,6 +5,7 @@ const globalPlugins: UniversalPlugin[] = [];
 /**
  * Install a plugin to be used by all the runners
  * Installed plugins come before the ones passed via the `plugins` option of the run.
+ * Set `noGlobalPlugins: true` to skip them for a particular run.
  *
  * In other words, they are the outermost ones: they are entered first when running the predicate.
  * Think of: `outer(inner(predicate))`.
