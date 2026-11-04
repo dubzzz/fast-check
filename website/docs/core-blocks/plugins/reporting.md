@@ -20,6 +20,8 @@ The `defaultReporter` plugin throws clear errors for failed runs.
 
 It distinguishes property failures from failures caused by too many skipped runs.
 
-`fc.assert` and any other built-in runners enable this plugin by default as part of the default plugins.
+:::note
+This plugin is part of fast-check's default plugins. As such, `fc.assert` and other built-in runners enable it by default.
+:::
 
 Resources: [API reference](/docs/api/functions/defaultReporter).
