@@ -8,9 +8,9 @@
     "test:run": "vitest run"
   },
   "devDependencies": {
-    "fast-check": "4.10.2",
-    "vitest": "5.1.0",
-    "@vitest/ui": "5.1.0"
+    "fast-check": "latest",
+    "vitest": "latest",
+    "@vitest/ui": "latest"
   },
   "stackblitz": {
     "startCommand": "npm run test:ui"
