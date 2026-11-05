@@ -9,11 +9,11 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "fast-check": "latest",
-    "vitest": "^5.1.0",
-    "@vitest/ui": "^5.1.0",
     "@types/node": "^26.6.6",
-    "typescript": "~7.0.2"
+    "@vitest/ui": "^5.1.0",
+    "fast-check": "latest",
+    "typescript": "~7.0.2",
+    "vitest": "^5.1.0"
   },
   "stackblitz": {
     "startCommand": "npm run test:ui"
