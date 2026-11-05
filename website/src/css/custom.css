@@ -109,3 +109,24 @@
     padding-left: 0.2em;
   }
 }
+
+.header-playground-link:hover {
+  opacity: 0.6;
+}
+
+.header-playground-link::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  display: flex;
+  background-color: currentColor;
+  -webkit-mask: url('/img/terminal.svg') center / contain no-repeat;
+  mask: url('/img/terminal.svg') center / contain no-repeat;
+}
+
+@media screen and (max-width: 996px) {
+  .header-playground-link::after {
+    content: 'Playground';
+    padding-left: 0.2em;
+  }
+}

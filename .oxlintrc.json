@@ -147,6 +147,7 @@
     "node_modules/",
     "coverage/",
     "examples/",
+    "playground/",
     "packages/*/coverage/",
     "packages/*/docs/",
     "packages/*/dist/",

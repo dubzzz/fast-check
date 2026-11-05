@@ -18,6 +18,7 @@
   "workspaces": [
     "examples",
     "packages/*",
+    "playground",
     "website"
   ],
   "scripts": {
