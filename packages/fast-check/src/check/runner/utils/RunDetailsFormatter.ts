@@ -1,9 +1,8 @@
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify.js';
-import type { UniversalPlugin } from '../../plugin/Plugin.js';
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from '../reporter/ExecutionStatus.js';
 import type { ExecutionTree } from '../reporter/ExecutionTree.js';
-import type { RunDetails, RunDetailsFailureProperty, RunDetailsFailureTooManySkips } from '../reporter/RunDetails.js';
+import type { RunDetails } from '../reporter/RunDetails.js';
 
 type FormatStringifier = (value: unknown) => string;
 type FormatOutput = {
@@ -29,7 +28,7 @@ function formatHints(hints: string[]): string {
   return hints.map((h, idx) => `Hint (${idx + 1}): ${h}`).join('\n');
 }
 
-function buildErrorMessage(formatted: ReportContent): string {
+function formatReportContent(formatted: ReportContent): string {
   let errorMessage = formatted.message;
   if (formatted.details !== undefined) errorMessage += `\n\n${formatted.details}`;
   if (formatted.hints.length > 0) errorMessage += `\n\n${formatHints(formatted.hints)}`;
@@ -75,70 +74,6 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringi
   return `Execution summary:\n${summaryLines.join('\n')}`;
 }
 
-function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>) {
-  const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
-  const hints = [
-    'Try to reduce the number of rejected values by combining map, chain and built-in arbitraries',
-    'Increase failure tolerance by setting maxSkipsPerRun to an higher value',
-  ];
-  return { message, hints };
-}
-
-function prettyError(errorInstance: unknown) {
-  // Print the Error message and its associated stacktrace
-  if (errorInstance instanceof Error && errorInstance.stack !== undefined) {
-    return errorInstance.stack; // stack includes the message
-  }
-
-  // First fallback: String(.)
-  try {
-    return String(errorInstance);
-  } catch (_err) {
-    // no-op
-  }
-
-  // Second fallback: Error::toString()
-  if (errorInstance instanceof Error) {
-    try {
-      return Error.prototype.toString.call(errorInstance);
-    } catch (_err) {
-      // no-op
-    }
-  }
-
-  // Third fallback: Object::toString()
-  if (errorInstance !== null && typeof errorInstance === 'object') {
-    try {
-      return Object.prototype.toString.call(errorInstance);
-    } catch (_err) {
-      // no-op
-    }
-  }
-
-  // Final fallback: Hardcoded string
-  return 'Failed to serialize errorInstance';
-}
-
-function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
-  const includeErrorInReport = out.runConfiguration.includeErrorInReport;
-  const messageErrorPart = includeErrorInReport
-    ? `\nGot ${prettyError(out.errorInstance).replace(/^Error: /, 'error: ')}`
-    : '';
-  const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
-    out.counterexamplePath
-  }", endOnFailure: true }\nCounterexample: ${stringifyOne(out.counterexample)}\nShrunk ${
-    out.numShrinks
-  } time(s)${messageErrorPart}`;
-  return { message };
-}
-
-function defaultReportMessageInternal<Ts>(
-  out: RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts>,
-  stringifyOne: (value: Ts) => string,
-): FormatOutput {
-  return out.counterexamplePath === null ? preFormatTooManySkipped(out) : preFormatFailure(out, stringifyOne);
-}
-
 function buildReportContent<Ts>(
   out: RunDetails<Ts>,
   formatted: FormatOutput,
@@ -160,10 +95,9 @@ function buildReportContent<Ts>(
   };
 }
 
-function buildReportedErrorInternal<TOut>(
+function buildErrorMessageInternal(
   buildContent: (stringifyValue: FormatStringifier) => ReportContent,
-  wrapOutput: (output: string) => TOut,
-): Promise<TOut> | TOut {
+): Promise<string> | string {
   // The asynchronous version might require two passes:
   // - the first one will register the asynchronous values that will need to be stringified
   // - the second one will take the computed values
@@ -181,7 +115,7 @@ function buildReportedErrorInternal<TOut>(
   // Checks if async mode would have changed the message
   if (pendingStringifieds.length === 0) {
     // No asynchronous stringify have been queued: the computation was synchronous
-    return wrapOutput(buildErrorMessage(initialContent));
+    return formatReportContent(initialContent);
   }
 
   // Retry with async stringified versions in mind
@@ -196,41 +130,13 @@ function buildReportedErrorInternal<TOut>(
       // on usual paths, the ones not having any async generated values
       return stringify(value);
     }
-    return wrapOutput(buildErrorMessage(buildContent(stringifySecond)));
+    return formatReportContent(buildContent(stringifySecond));
   });
 }
 
-function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts>) {
-  if (out.runConfiguration.includeErrorInReport) {
-    throw new Error(errorMessage);
-  }
-  return new Error(errorMessage, { cause: out.errorInstance });
-}
-
-export function reportError<Ts>(
+export function buildErrorMessage<Ts>(
   format: (stringifyValue: FormatStringifier) => FormatOutput,
   out: RunDetails<Ts>,
-): Promise<never> | never {
-  return buildReportedErrorInternal(
-    (stringifier) => buildReportContent(out, format(stringifier), stringifier),
-    (message) => {
-      throw buildError<Ts>(message, out);
-    },
-  );
-}
-
-function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
-  if (!out.failed) {
-    return;
-  }
-  return buildReportedErrorInternal(
-    (stringifier) => buildReportContent(out, defaultReportMessageInternal(out, stringifier), stringifier),
-    (message) => {
-      throw buildError<Ts>(message, out);
-    },
-  );
-}
-
-export function defaultReporter(): UniversalPlugin {
-  return () => ({ onAllRunsComplete: reportRunDetails });
+): Promise<string> | string {
+  return buildErrorMessageInternal((stringifier) => buildReportContent(out, format(stringifier), stringifier));
 }

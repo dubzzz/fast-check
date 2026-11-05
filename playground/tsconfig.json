@@ -1,23 +1,13 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "esnext"
-    ],
+    "lib": ["esnext"],
     "module": "node18",
-    "types": [
-      "node"
-    ],
-    "allowJs": true,
-    "checkJs": true,
+    "types": ["node"],
     "strict": true,
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": [
-    "**/*.js",
-    "**/*.mjs",
-    "**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"]
 }

@@ -33,7 +33,7 @@ export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Pro
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  const pluginInstances = instantiatePlugins(qParams.plugins, !qParams.noDefaultPlugins);
+  const pluginInstances = instantiatePlugins(qParams.plugins, !qParams.noDefaultPlugins, !qParams.noGlobalPlugins);
   const generator = applyPluginGeneratorDecorators(property, pluginInstances);
   const run = applyPluginRunDecorators(property, pluginInstances);
 

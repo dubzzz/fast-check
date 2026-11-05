@@ -204,6 +204,8 @@ export { ignoreEqualValues, skipEqualValues } from './check/plugin/EqualValuesPl
 export { interruptAfterTimeLimit } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
 export type { InterruptAfterTimeLimitOptions } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
 export { timeout } from './check/plugin/TimeoutPlugin.js';
+export { defaultReporter } from './check/plugin/DefaultReporterPlugin.js';
+export type { DefaultReporterOptions } from './check/plugin/DefaultReporterPlugin.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**

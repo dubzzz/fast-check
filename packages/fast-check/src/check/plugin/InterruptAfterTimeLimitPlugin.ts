@@ -1,7 +1,7 @@
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import type { Property } from '../property/types/Property.js';
-import { reportError } from '../runner/utils/RunDetailsFormatter.js';
+import { buildErrorMessage } from '../runner/utils/RunDetailsFormatter.js';
 import type { PluginInstance, UniversalPlugin } from './Plugin.js';
 import { mergeSignals, signalAsPromise } from './utils/Signals.js';
 
@@ -139,10 +139,16 @@ export function interruptAfterTimeLimit(
           // we consider it as a failure because either interrupt is asked to be marked as a failure or no run occured
           (options.failOnInterrupt || runDetails.numRuns === 0)
         ) {
-          return reportError(() => {
+          const errorMessage = buildErrorMessage(() => {
             const message = `Property interrupted after ${runDetails.numRuns} tests\n{ seed: ${runDetails.seed} }`;
             return { message };
           }, runDetails);
+          if (typeof errorMessage === 'string') {
+            throw new Error(errorMessage);
+          }
+          return errorMessage.then((message) => {
+            throw new Error(message);
+          });
         }
       },
     };
