@@ -67,16 +67,18 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
+      - name: Check format
+        run: node --run format:check
       - parallel:
-          - name: Check format
-            run: node --run format:check
           - name: Check lint
             run: node --run lint:check
           - name: Check dependency trust and deduplication
             run: pnpm dedupe --check --ignore-scripts
           - name: Typecheck
             run: |
-              sed -i '/"compilerOptions": {/a\    "paths": {\n      "fast-check": ["../packages/fast-check/src/fast-check.ts"]\n    },' playground/tsconfig.json
+              # Match the library's checks when importing its source instead of declarations.
+              sed -i '/"compilerOptions": {/a\    "paths": { "fast-check": ["../packages/fast-check/src/fast-check.ts"] },' playground/tsconfig.json
+              sed -i 's/"noUncheckedIndexedAccess": true/"noUncheckedIndexedAccess": false/; s/"exactOptionalPropertyTypes": true/"exactOptionalPropertyTypes": false/' playground/tsconfig.json
               node --run typecheck
   production_packages:
     name: 'Build production packages'
