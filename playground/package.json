@@ -5,12 +5,15 @@
   "scripts": {
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "fast-check": "latest",
     "vitest": "^5.1.0",
-    "@vitest/ui": "^5.1.0"
+    "@vitest/ui": "^5.1.0",
+    "@types/node": "^26.6.6",
+    "typescript": "~7.0.2"
   },
   "stackblitz": {
     "startCommand": "npm run test:ui"

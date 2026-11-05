@@ -9,6 +9,7 @@ const allProjects = [
     .map((dir) => join(dir.parentPath, dir.name)),
   // Other directories
   join(import.meta.dirname, 'examples'),
+  join(import.meta.dirname, 'playground'),
   join(import.meta.dirname, 'website'),
 ];
 

@@ -2,27 +2,46 @@
 
 [Open the playground](https://fast-check.dev/new) to try fast-check in your browser with StackBlitz and Vitest UI.
 StackBlitz installs the dependencies and starts the tests automatically.
-Edit `example.test.ts` to try a property or create a minimal reproduction, then save your StackBlitz project to share it.
+Edit `example.test.js` to try a property or create a minimal reproduction, then save your StackBlitz project to share it.
 
-## Run locally
+## Run from the repository
 
-From this directory:
-
-```sh
-npm install --workspaces=false
-npm run test:ui --workspaces=false
-```
-
-To run the tests once:
+From the repository root:
 
 ```sh
-npm run test:run --workspaces=false
+pnpm install
+pnpm --filter fast-check-playground test:ui
 ```
 
-This directory is a standalone project using the published npm version of fast-check.
-Keep its dependencies and configuration self-contained: StackBlitz imports only this directory.
-The local Vitest configuration also prevents the playground from loading the monorepo's configuration when run locally.
+To run the playground tests and check its JavaScript types:
+
+```sh
+pnpm exec vitest run --project fast-check-playground
+pnpm --filter fast-check-playground typecheck
+```
+
+The playground is included in the monorepo's test and typecheck runs.
+TypeScript checks the JavaScript example and Vitest configuration using `checkJs`, without emitting files.
+
+## Run a standalone copy
+
+Copy this directory outside the repository, then run from that copy:
+
+```sh
+npm install
+npm run test:ui
+```
+
+To run the tests once and check types:
+
+```sh
+npm run test:run
+npm run typecheck
+```
+
+Keep the playground's dependencies and configuration self-contained: StackBlitz imports only this directory.
+The local Vitest configuration also prevents standalone runs from loading the monorepo's configuration.
 
 The starter URL is:
 
-<https://stackblitz.com/fork/github/dubzzz/fast-check/tree/main/playground?initialPath=__vitest__/&file=example.test.ts>
+<https://stackblitz.com/fork/github/dubzzz/fast-check/tree/main/playground?initialPath=__vitest__/&file=example.test.js>
