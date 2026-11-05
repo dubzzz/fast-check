@@ -24,6 +24,7 @@ console.log(`Posted to Bluesky: ${result.uri}`);
 
 // Helpers
 
+/** @param {string} name */
 function requireEnv(name) {
   const value = process.env[name];
   if (value === undefined || value === '') {
@@ -32,6 +33,7 @@ function requireEnv(name) {
   return value;
 }
 
+/** @param {string} tag */
 function formatReleaseLabel(tag) {
   const slashIndex = tag.indexOf('/');
   if (slashIndex === -1) {

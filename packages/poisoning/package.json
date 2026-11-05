@@ -28,10 +28,10 @@
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@types/node": "^26.6.5",
-    "rolldown": "^1.2.15",
+    "@types/node": "^26.6.6",
+    "rolldown": "^1.2.16",
     "typescript": "~7.0.2",
-    "vitest": "^5.0.5"
+    "vitest": "^5.1.0"
   },
   "keywords": [
     "poisoning",

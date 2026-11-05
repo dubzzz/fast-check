@@ -1,7 +1,12 @@
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from './ExecutionStatus.js';
 import type { ExecutionTree } from './ExecutionTree.js';
-import type { RunDetails } from './RunDetails.js';
+import type {
+  RunDetails,
+  RunDetailsFailureProperty,
+  RunDetailsFailureTooManySkips,
+  RunDetailsSuccess,
+} from './RunDetails.js';
 import type { QualifiedParameters } from '../configuration/QualifiedParameters.js';
 import type { PropertyFailure } from '../../property/types/PropertyFailure.js';
 
@@ -20,7 +25,10 @@ export class RunExecution<Ts> {
   numSuccesses: number;
   interrupted: boolean;
 
-  constructor(readonly verbosity: VerbosityLevel) {
+  constructor(
+    readonly verbosity: VerbosityLevel,
+    readonly maxSkips: number,
+  ) {
     this.rootExecutionTrees = [];
     this.currentLevelExecutionTrees = this.rootExecutionTrees;
     this.failure = null;
@@ -51,6 +59,9 @@ export class RunExecution<Ts> {
     }
     if (this.pathToFailure === undefined) {
       ++this.numSkips;
+      if (this.numSkips > this.maxSkips) {
+        this.interrupted = true;
+      }
     }
   }
   success(value: Ts): void {
@@ -99,7 +110,7 @@ export class RunExecution<Ts> {
     return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
   }
 
-  toRunDetails(seed: number, basePath: string, maxSkips: number, qParams: QualifiedParameters<Ts>): RunDetails<Ts> {
+  toRunDetails(seed: number, basePath: string, qParams: QualifiedParameters<Ts>): RunDetails<Ts> {
     if (!this.isSuccess()) {
       // encountered a property failure
       return {
@@ -127,26 +138,29 @@ export class RunExecution<Ts> {
         executionSummary: this.rootExecutionTrees,
         verbose: this.verbosity,
         runConfiguration: qParams.toParameters(),
-      };
+      } satisfies RunDetailsFailureProperty<Ts>;
     }
 
-    // Either 'too many skips' or 'interrupted' with flag interruptedAsFailure enabled
-    // The two cases are exclusive (the two cannot be true at the same time)
-    const considerInterruptedAsFailure = this.numSuccesses === 0;
-    const failed = this.numSkips > maxSkips || (this.interrupted && considerInterruptedAsFailure);
+    if (this.interrupted && this.numSkips > this.maxSkips) {
+      return {
+        failed: true,
+        interrupted: this.interrupted,
+        numRuns: this.numSuccesses,
+        numSkips: this.numSkips,
+        numShrinks: 0,
+        seed,
+        counterexample: null,
+        counterexamplePath: null,
+        errorInstance: null,
+        failures: [],
+        executionSummary: this.rootExecutionTrees,
+        verbose: this.verbosity,
+        runConfiguration: qParams.toParameters(),
+      } satisfies RunDetailsFailureTooManySkips<Ts>;
+    }
 
-    // -- Let's suppose: this.numSkips > maxSkips
-    // In the context of RunnerIterator we pull values from the stream
-    // using the underlying SourceValuesIterator until we reach a first failure.
-    // By definition this.numSkips > maxSkips means that we were not even able to generate
-    // enough values to reach this point. So we never reached first failure.
-    // For each of these values, we call one of: fail, skip, interrupt or success.
-    // In case of skip we also notify the SourceValuesIterator for the skip.
-    // SourceValuesIterator automatically ends as soon as we skip too many values
-    // so no subsequent values will be pulled from it, so no call to interrupt after this last skip.
-    // -- Similarly, when interrupted, RunnerIterator stops everything so no call to skip after being interrupted.
-    const out = {
-      failed,
+    return {
+      failed: false,
       interrupted: this.interrupted,
       numRuns: this.numSuccesses,
       numSkips: this.numSkips,
@@ -154,13 +168,11 @@ export class RunExecution<Ts> {
       seed,
       counterexample: null,
       counterexamplePath: null,
-      error: null,
       errorInstance: null,
       failures: [],
       executionSummary: this.rootExecutionTrees,
       verbose: this.verbosity,
       runConfiguration: qParams.toParameters(),
-    };
-    return out;
+    } satisfies RunDetailsSuccess<Ts>;
   }
 }

@@ -88,24 +88,33 @@ export interface Parameters<T = void> {
    */
   endOnFailure?: boolean;
   /**
-   * By default the Error causing the failure of the predicate will not be directly exposed within the message
-   * of the Error thown by fast-check. It will be exposed by a cause field attached to the Error.
+   * Disable the default plugins: `false` by default
    *
-   * The Error with cause has been supported by Node since 16.14.0 and is properly supported in many test runners.
+   * When set to `true`, {@link assert} skips default failure reporting.
+   * Plugins passed through `plugins` or installed globally via
+   * {@link installGlobalPlugin} are still executed and may throw, unless
+   * globally installed plugins are disabled with `noGlobalPlugins`.
    *
-   * But if the original Error fails to appear within your test runner,
-   * Or if you prefer the Error to be included directly as part of the message of the resulted Error,
-   * you can toggle this flag and the Error produced by fast-check in case of failure will expose the source Error
-   * as part of the message and not as a cause.
+   * @remarks Since 5.0.0
    */
-  includeErrorInReport?: boolean;
+  noDefaultPlugins?: boolean;
+  /**
+   * Disable globally installed plugins: `false` by default
+   *
+   * When set to `true`, plugins installed via {@link installGlobalPlugin}
+   * are not instantiated for this run. Plugins passed through `plugins` and
+   * default plugins are unaffected. Use `noDefaultPlugins` to disable defaults.
+   *
+   * @remarks Since 5.0.0
+   */
+  noGlobalPlugins?: boolean;
   /**
    * Set of plugins extending the way the property gets executed by the runner
    *
    * Each plugin is instantiated once per run.
    * They can be leveraged to control and enrich the execution flow of each predicate.
    *
-   * They come after the plugins installed globally via {@link installGlobalPlugin}.
+   * They come after the plugins installed globally via {@link installGlobalPlugin} and before the default ones.
    * At execution time, the first plugin of the resulting array is entered first while the last one is the closest to the predicate.
    * Plugins are instantiated in order.
    *

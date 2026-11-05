@@ -8,11 +8,10 @@ export type {
   RunDetails,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
-  RunDetailsFailureInterrupted,
   RunDetailsSuccess,
   RunDetailsCommon,
 } from './check/runner/reporter/RunDetails.js';
-export { assert, check } from './check/runner/Runner.js';
+export { assert } from './check/runner/assert.js';
 export { sample, statistics } from './check/runner/Sampler.js';
 
 export type { GeneratorValue } from './arbitrary/gen.js';
@@ -166,7 +165,6 @@ export type {
   SchedulerConstraints,
 } from './arbitrary/scheduler.js';
 export { scheduler, schedulerFor } from './arbitrary/scheduler.js';
-export { defaultReportMessage } from './check/runner/utils/RunDetailsFormatter.js';
 export type { CommandsContraints } from './check/model/commands/CommandsContraints.js';
 export { PreconditionFailure } from './check/precondition/PreconditionFailure.js';
 export type { IntArrayConstraints } from './arbitrary/int8Array.js';
@@ -206,6 +204,8 @@ export { ignoreEqualValues, skipEqualValues } from './check/plugin/EqualValuesPl
 export { interruptAfterTimeLimit } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
 export type { InterruptAfterTimeLimitOptions } from './check/plugin/InterruptAfterTimeLimitPlugin.js';
 export { timeout } from './check/plugin/TimeoutPlugin.js';
+export { defaultReporter } from './check/plugin/DefaultReporterPlugin.js';
+export type { DefaultReporterOptions } from './check/plugin/DefaultReporterPlugin.js';
 
 // Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**

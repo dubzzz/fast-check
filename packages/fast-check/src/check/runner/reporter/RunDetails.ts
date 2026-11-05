@@ -3,18 +3,14 @@ import type { ExecutionTree } from './ExecutionTree.js';
 import type { Parameters } from '../configuration/Parameters.js';
 
 /**
- * Post-run details produced by {@link check}
+ * Post-run details provided to plugins by {@link assert} via `onAllRunsComplete`
  *
  * A failing property can easily detected by checking the `failed` flag of this structure
  *
  * @remarks Since 0.0.7
  * @public
  */
-export type RunDetails<Ts> =
-  | RunDetailsFailureProperty<Ts>
-  | RunDetailsFailureTooManySkips<Ts>
-  | RunDetailsFailureInterrupted<Ts>
-  | RunDetailsSuccess<Ts>;
+export type RunDetails<Ts> = RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsSuccess<Ts>;
 
 /**
  * Run reported as failed because
@@ -43,23 +39,6 @@ export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
  * @public
  */
 export interface RunDetailsFailureTooManySkips<Ts> extends RunDetailsCommon<Ts> {
-  failed: true;
-  interrupted: false;
-  counterexample: null;
-  counterexamplePath: null;
-  errorInstance: null;
-}
-
-/**
- * Run reported as failed because
- * it took too long and thus has been interrupted
- *
- * Refer to {@link RunDetailsCommon} for more details
- *
- * @remarks Since 1.25.0
- * @public
- */
-export interface RunDetailsFailureInterrupted<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: true;
   counterexample: null;
@@ -90,7 +69,7 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
  */
 export interface RunDetailsCommon<Ts> {
   /**
-   * Does the property failed during the execution of {@link check}?
+   * Did the property fail during the execution of {@link assert}?
    * @remarks Since 0.0.1
    */
   failed: boolean;
@@ -125,7 +104,7 @@ export interface RunDetailsCommon<Ts> {
   /**
    * Seed that have been used by the run
    *
-   * It can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
+   * It can be forced in {@link assert}, {@link sample} and {@link statistics} using `Parameters`
    * @remarks Since 0.0.1
    */
   seed: number;
@@ -142,7 +121,7 @@ export interface RunDetailsCommon<Ts> {
   /**
    * In case of failure: path to the counterexample
    *
-   * For replay purposes, it can be forced in {@link assert}, {@link check}, {@link sample} and {@link statistics} using `Parameters`
+   * For replay purposes, it can be forced in {@link assert}, {@link sample} and {@link statistics} using `Parameters`
    *
    * @remarks Since 1.0.0
    */
@@ -178,7 +157,7 @@ export interface RunDetailsCommon<Ts> {
   /**
    * Configuration of the run
    *
-   * It includes both local parameters set on {@link check} or {@link assert}
+   * It includes both local parameters set on {@link assert}
    * and global ones specified using {@link configureGlobal}
    *
    * @remarks Since 1.25.0

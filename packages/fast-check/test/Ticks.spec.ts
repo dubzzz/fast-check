@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import * as fc from '../src/fast-check.js';
-import { readInstalledGlobalPlugins } from '../src/check/runner/configuration/GlobalPlugins.js';
 import { seed } from './seed.js';
 
 describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
@@ -40,7 +39,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 1, // 1 to handle the wrapped result
-        fixedCompletionTicks: 5, // 2 hook continuations, 2 result propagations, 1 check continuation
+        fixedCompletionTicks: 4, // 2 hook continuations, 1 result propagation, 1 runner completion continuation
       },
       description: 'Promise.resolve pass-through plugin',
     },
@@ -50,7 +49,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       extraTicks: {
         startupTicks: 0, // No extra delay before the first predicate
         ticksPerRun: 0, // Promise.resolve reuses nestedRun's promise
-        fixedCompletionTicks: 4, // 2 hook continuations, 2 result propagations
+        fixedCompletionTicks: 3, // 2 hook continuations, 1 result propagation
       },
       description: 'Promise.resolve pass-through plugin',
     },
@@ -184,7 +183,6 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
     'should match expected tick counts for $kind predicates with $description',
     async ({ kind, plugins, extraTicks }) => {
       // Arrange
-      expect(readInstalledGlobalPlugins()).toHaveLength(0);
       using clock = startMicroTaskClock();
       const defaultTicks = extractExpectedTicks(kind);
       const startupTicks = defaultTicks.startupTicks + (extraTicks.startupTicks ?? 0);
@@ -202,7 +200,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
           lastPredicateRunTick = clock.tick;
           return kind === 'async' ? Promise.resolve() : undefined;
         }),
-        { numRuns, plugins },
+        { numRuns, plugins, noGlobalPlugins: true },
       );
       const assertionCompletionTick = clock.tick;
 
@@ -253,13 +251,13 @@ function extractExpectedTicks(kind: 'async' | 'sync') {
     return {
       startupTicks: 0, // The runner invokes the first predicate before yielding to any microtask
       ticksPerRun: 0, // Synchronous results are handled inline, so all predicate starts on the same tick
-      fixedCompletionTicks: 2, // One tick runs assert's reportRunDetails callback, another resumes the it's await
+      fixedCompletionTicks: 1, // One tick resumes the it's await after inline completion callbacks
     };
   }
   return {
     startupTicks: 0, // The runner invokes the first predicate before yielding to any microtask
     ticksPerRun: 2, // 1 to convert the predicate result, 1 to resume the runner
-    fixedCompletionTicks: 3, // check, assert and the it's await each add one tick
+    fixedCompletionTicks: 2, // Plugin completion and the it's await each add one tick
   };
 }
 

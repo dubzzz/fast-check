@@ -3,10 +3,8 @@ import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import type { RunDetails } from './reporter/RunDetails.js';
 import { propertyRunner } from './PropertyRunner.js';
 import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
-import { reportRunDetails } from './utils/RunDetailsFormatter.js';
 import {
   applyPluginGeneratorDecorators,
   applyPluginRunDecorators,
@@ -15,24 +13,27 @@ import {
 } from './utils/PluginIntegration.js';
 
 /**
- * Run the property, do not throw contrary to {@link assert}
+ * Run the property and reject if a plugin reports the run as an error
+ *
+ * With the default setup, failed runs are rejected.
+ *
+ * It can be called directly from describe/it blocks of your favorite test runner.
+ * No meaningful results are produced. Use a plugin's `onAllRunsComplete` callback to access run details.
  *
  * WARNING: Has to be awaited
  *
  * @param property - Asynchronous property to be checked
  * @param params - Optional parameters to customize the execution
  *
- * @returns Test status and other useful details
- *
  * @remarks Since 0.0.7
  * @public
  */
-function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
+export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
   const qParams: QualifiedParameters<Ts> = read<Ts>({
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  const pluginInstances = instantiatePlugins(qParams.plugins);
+  const pluginInstances = instantiatePlugins(qParams.plugins, !qParams.noDefaultPlugins, !qParams.noGlobalPlugins);
   const generator = applyPluginGeneratorDecorators(property, pluginInstances);
   const run = applyPluginRunDecorators(property, pluginInstances);
 
@@ -43,34 +44,13 @@ function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<Run
     ? Promise.resolve(
         runPluginCompletionCallbacks(
           pluginInstances,
-          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
         ),
       )
     : propertyRunnerOut.then(() =>
         runPluginCompletionCallbacks(
           pluginInstances,
-          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
         ),
       );
 }
-
-/**
- * Run the property, throw in case of failure
- *
- * It can be called directly from describe/it blocks of Mocha.
- * No meaningful results are produced in case of success.
- *
- * WARNING: Has to be awaited
- *
- * @param property - Asynchronous property to be checked
- * @param params - Optional parameters to customize the execution
- *
- * @remarks Since 0.0.7
- * @public
- */
-function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
-  const out = check(property, params);
-  return out.then(reportRunDetails);
-}
-
-export { check, assert };

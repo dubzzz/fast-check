@@ -1,6 +1,6 @@
 import { isMainThread } from 'node:worker_threads';
-import type { Parameters } from 'fast-check';
-import { check, stringify, timeout } from 'fast-check';
+import type { Parameters, RunDetails } from 'fast-check';
+import { assert as assertInMainThread, stringify, defaultReporter, timeout } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 
@@ -14,7 +14,10 @@ if (isMainThread) {
   describe('@fast-check/worker', () => {
     const testTimeout = 30000;
     const assertTimeout = 5000;
-    const defaultOptions: Parameters<unknown> = { plugins: [timeout(assertTimeout)], includeErrorInReport: true };
+    const defaultOptions: Parameters<unknown> = {
+      noDefaultPlugins: true,
+      plugins: [timeout(assertTimeout), defaultReporter({ includeErrorInReport: true })],
+    };
 
     it(
       'should produce the same data in worker and main thread',
@@ -63,14 +66,24 @@ if (isMainThread) {
           const seed = seedRegex.exec(message)![1];
           const path = pathRegex.exec(message)![1];
           const workerValue = workerValueRegex.exec(message)![1];
-          const out = await check(nonSerializableButSameDataRawProperty, {
+          let runDetails!: RunDetails<unknown>;
+          await assertInMainThread(nonSerializableButSameDataRawProperty, {
             ...defaultOptions,
             seed: +seed,
             path,
             numRuns: 1,
             endOnFailure: true,
+            noDefaultPlugins: true,
+            plugins: [
+              timeout(assertTimeout),
+              () => ({
+                onAllRunsComplete: (out) => {
+                  runDetails = out;
+                },
+              }),
+            ],
           });
-          const sampledValue = (out.counterexample as [symbol])[0];
+          const sampledValue = (runDetails.counterexample as [symbol])[0];
           const extraDetails = { seed, path };
           expect({ ...extraDetails, value: stringify(sampledValue) }).toEqual({ ...extraDetails, value: workerValue });
         }

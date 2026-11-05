@@ -26,7 +26,8 @@ export class QualifiedParameters<T> {
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
-  includeErrorInReport: boolean;
+  noDefaultPlugins: boolean;
+  noGlobalPlugins: boolean;
   plugins: Plugin<T>[];
 
   constructor(op?: Parameters<T>) {
@@ -40,13 +41,13 @@ export class QualifiedParameters<T> {
       p.logger !== undefined
         ? p.logger
         : (v: string) => {
-            // tslint:disable-next-line:no-console
             console.log(v);
           };
     this.path = p.path !== undefined ? p.path : '';
     this.examples = p.examples !== undefined ? p.examples : [];
     this.endOnFailure = p.endOnFailure === true;
-    this.includeErrorInReport = p.includeErrorInReport === true;
+    this.noDefaultPlugins = p.noDefaultPlugins === true;
+    this.noGlobalPlugins = p.noGlobalPlugins === true;
     this.plugins = p.plugins !== undefined ? p.plugins : [];
   }
 
@@ -61,7 +62,8 @@ export class QualifiedParameters<T> {
       verbose: this.verbose,
       examples: this.examples,
       endOnFailure: this.endOnFailure,
-      includeErrorInReport: this.includeErrorInReport,
+      noDefaultPlugins: this.noDefaultPlugins,
+      noGlobalPlugins: this.noGlobalPlugins,
       plugins: this.plugins,
     };
     return parameters;

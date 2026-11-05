@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["es2022"],
+    "module": "nodenext",
+    "types": ["node"],
+    "allowJs": true,
+    "checkJs": true,
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "files": ["post-bluesky.mjs"]
+}
