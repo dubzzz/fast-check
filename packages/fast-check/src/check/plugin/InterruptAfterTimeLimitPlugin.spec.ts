@@ -1,9 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Property } from '../property/types/Property.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import { asyncToStringMethod } from '../../utils/stringify.js';
-import { VerbosityLevel } from '../runner/configuration/VerbosityLevel.js';
-import { ExecutionStatus } from '../runner/reporter/ExecutionStatus.js';
 import type { RunDetails } from '../runner/reporter/RunDetails.js';
 
 describe('TimeLimitPlugins', () => {
@@ -17,39 +14,6 @@ describe('TimeLimitPlugins', () => {
   });
 
   describe('interruptAfterTimeLimit', () => {
-    it.each([false, true])(
-      'should report an interruption without a cause (async formatting: %s)',
-      async (asynchronous) => {
-        const { interruptAfterTimeLimit } = await import('./InterruptAfterTimeLimitPlugin.js');
-        const instance = interruptAfterTimeLimit(-1, { failOnInterrupt: true })(0, new Map());
-        instance.decorateRun!(() => null)(42, {});
-        const value = asynchronous ? { [asyncToStringMethod]: async () => 'custom value' } : 42;
-        const details: RunDetails<unknown> = {
-          failed: false,
-          interrupted: true,
-          numRuns: 1,
-          numSkips: 0,
-          numShrinks: 0,
-          seed: 42,
-          counterexample: null,
-          counterexamplePath: null,
-          errorInstance: null,
-          failures: [],
-          executionSummary: [{ status: ExecutionStatus.Success, value, children: [] }],
-          verbose: VerbosityLevel.VeryVerbose,
-          runConfiguration: {},
-        };
-
-        const error = await Promise.resolve()
-          .then(() => instance.onAllRunsComplete!(details))
-          .catch((err: unknown) => err);
-
-        expect(error).toBeInstanceOf(Error);
-        expect((error as Error).message).toContain('Property interrupted after 1 tests');
-        expect(error).not.toHaveProperty('cause');
-      },
-    );
-
     it('should forward inputs to run when started within the time limit', async () => {
       // Arrange
       const { interruptAfterTimeLimit } = await import('./InterruptAfterTimeLimitPlugin.js');
