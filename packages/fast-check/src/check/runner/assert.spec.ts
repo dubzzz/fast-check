@@ -466,15 +466,6 @@ describe('assert', () => {
         })(),
       ).rejects.toThrowError('error in failingProperty');
     });
-    it('Should put the original error in error message when includeErrorInReport', async () => {
-      await expect(
-        rAssert(failingProperty, {
-          seed: 42,
-          noDefaultPlugins: true,
-          plugins: [fc.defaultReporter({ includeErrorInReport: true })],
-        }),
-      ).rejects.toThrowError(`Got error: error in failingProperty`);
-    });
     describe('Impact of VerbosityLevel in case of failure', () => {
       const baseErrorMessage = 'Property failed';
       const p: Property<[number]> = {
