@@ -76,7 +76,7 @@ jobs:
             run: pnpm dedupe --check --ignore-scripts
           - name: Typecheck
             run: |
-              pnpm --filter fast-check build
+              sed -i '/"compilerOptions": {/a\    "paths": {\n      "fast-check": ["../packages/fast-check/src/fast-check.ts"]\n    },' playground/tsconfig.json
               node --run typecheck
   production_packages:
     name: 'Build production packages'
