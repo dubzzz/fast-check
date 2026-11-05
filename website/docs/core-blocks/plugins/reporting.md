@@ -30,12 +30,6 @@ await fc.assert(
 );
 ```
 
-To include the original error in reports globally, install the reporter:
-
-```ts
-fc.installGlobalPlugin(fc.defaultReporter({ includeErrorInReport: true }));
-```
-
 :::note
 This plugin is part of fast-check's default plugins. As such, `fc.assert` and other built-in runners enable it by default.
 :::
