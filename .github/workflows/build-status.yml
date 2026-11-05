@@ -77,7 +77,6 @@ jobs:
           - name: Typecheck
             run: |
               sed -i '/"compilerOptions": {/a\    "paths": { "fast-check": ["../packages/fast-check/src/fast-check.ts"] },' playground/tsconfig.json
-              sed -i 's/"noUncheckedIndexedAccess": true/"noUncheckedIndexedAccess": false/; s/"exactOptionalPropertyTypes": true/"exactOptionalPropertyTypes": false/' playground/tsconfig.json
               node --run typecheck
   production_packages:
     name: 'Build production packages'

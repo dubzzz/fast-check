@@ -10,9 +10,9 @@
     // Vitest handles transpilation; tsc only checks types.
     "noEmit": true,
 
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    // Relax these checks to match fast-check's source when typechecking in CI.
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
 
     // Recommended Options
     "strict": true,
