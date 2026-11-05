@@ -30,8 +30,7 @@ await fc.assert(
 );
 ```
 
-`includeErrorInReport` defaults to `false` and can only be set on `defaultReporter`, not in
-`fc.assert` parameters or `fc.configureGlobal` settings. To use it globally, install the reporter:
+To include the original error in reports globally, install the reporter:
 
 ```ts
 fc.installGlobalPlugin(fc.defaultReporter({ includeErrorInReport: true }));
