@@ -70,7 +70,7 @@ function reportRunDetails<Ts>(out: RunDetails<Ts>, options: DefaultReporterOptio
   if (!out.failed) {
     return;
   }
-  const includeErrorInReport = options.includeErrorInReport ?? out.runConfiguration.includeErrorInReport ?? false;
+  const includeErrorInReport = options.includeErrorInReport ?? false;
   const errorMessage = buildErrorMessage(
     (stringifier) =>
       out.counterexamplePath === null
@@ -93,8 +93,8 @@ function reportRunDetails<Ts>(out: RunDetails<Ts>, options: DefaultReporterOptio
 export type DefaultReporterOptions = {
   /**
    * Include the original error in the report message instead of exposing it as the cause.
-   * When omitted, use `includeErrorInReport` from the run configuration (`false` by default).
-   * An explicit value overrides the run configuration for this reporter only.
+   *
+   * @defaultValue `false`
    *
    * @remarks Since 5.0.0
    */

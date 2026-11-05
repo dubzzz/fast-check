@@ -30,9 +30,6 @@ await fc.assert(
 );
 ```
 
-An explicit `includeErrorInReport` value overrides the run configuration for this reporter only.
-When omitted, the reporter uses the run configuration's `includeErrorInReport` setting (`false` by default).
-
 :::note
 This plugin is part of fast-check's default plugins. As such, `fc.assert` and other built-in runners enable it by default.
 :::

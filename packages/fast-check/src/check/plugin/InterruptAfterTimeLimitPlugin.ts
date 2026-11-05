@@ -143,13 +143,12 @@ export function interruptAfterTimeLimit(
             const message = `Property interrupted after ${runDetails.numRuns} tests\n{ seed: ${runDetails.seed} }`;
             return { message };
           }, runDetails);
-          const throwError = (message: string): never => {
-            throw new Error(
-              message,
-              runDetails.runConfiguration.includeErrorInReport ? undefined : { cause: runDetails.errorInstance },
-            );
-          };
-          return typeof errorMessage === 'string' ? throwError(errorMessage) : errorMessage.then(throwError);
+          if (typeof errorMessage === 'string') {
+            throw new Error(errorMessage);
+          }
+          return errorMessage.then((message) => {
+            throw new Error(message);
+          });
         }
       },
     };
