@@ -36,10 +36,9 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
                 // Remark: We should turn it back to 1 in case g never gets called by the first execution of the predicate
                 numRuns: config.numRuns ?? 1,
                 endOnFailure: config.endOnFailure ?? true,
-                ...(fc.defaultReporter !== undefined
-                  ? { plugins: [fc.defaultReporter({ includeErrorInReport: false })] }
-                  : { includeErrorInReport: false }), // Compatibility with fast-check versions before 5
-                // @ts-expect-error - Added for backward compatility with fast-check@3
+                // @ts-expect-error - Added for backward compatibility with fast-check@4
+                includeErrorInReport: false,
+                // Added for backward compatibility with fast-check@3
                 errorWithCause: true,
               };
               await fc.assert(
