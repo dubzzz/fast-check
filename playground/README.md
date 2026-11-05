@@ -25,4 +25,4 @@ The local Vitest configuration also prevents the playground from loading the mon
 
 The starter URL is:
 
-<https://stackblitz.com/fork/github/dubzzz/fast-check/tree/main/examples/playground?initialPath=__vitest__/&file=example.test.ts>
+<https://stackblitz.com/fork/github/dubzzz/fast-check/tree/main/playground?initialPath=__vitest__/&file=example.test.ts>
