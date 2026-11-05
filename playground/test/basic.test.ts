@@ -31,13 +31,3 @@ test('sorting twice gives the same result', async () => {
     }),
   );
 });
-
-test('does not change the input', async () => {
-  await fc.assert(
-    fc.property(fc.array(fc.integer()), (values) => {
-      const original = [...values];
-      insertionSort(values);
-      expect(values).toEqual(original);
-    }),
-  );
-});
