@@ -1,13 +1,26 @@
 {
+  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
+    // Environment Settings
+    "module": "nodenext",
     "target": "esnext",
-    "lib": ["esnext"],
-    "module": "node18",
     "types": ["node"],
+    "lib": ["esnext"],
+
+    // Vitest handles transpilation; tsc only checks types.
+    "noEmit": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Recommended Options
     "strict": true,
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-    "noEmit": true
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"]
 }
