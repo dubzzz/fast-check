@@ -2,8 +2,6 @@
 
 This directory gathers multiple examples of properties you might come with when using `fast-check`.
 
-Start with the [fast-check playground](https://fast-check.dev/new) to write and run properties in your browser with Vitest UI.
-
 Try online with [CodeSandbox](https://codesandbox.io/s/github/dubzzz/fast-check/tree/main/examples?previewwindow=tests).
 
 _Teach yourself property based through examples_
