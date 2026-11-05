@@ -1,15 +1,21 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`Plugins (seed: ${seed})`, () => {
-  it('should wait and queue onAllRunsComplete and afterAll', async () => {
+  it('should wait and queue beforeAll, onAllRunsComplete and afterAll', async () => {
     // Arrange
     const probes: string[] = [];
     const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
       return () => {
         probes.push(`${pluginName} instantiated`);
         return {
+          beforeAll: async () => {
+            probes.push(`${pluginName}::beforeAll started`);
+            await Promise.resolve(`${pluginName}1`);
+            await Promise.resolve(`${pluginName}2`);
+            probes.push(`${pluginName}::beforeAll done`);
+          },
           onAllRunsComplete: async () => {
             probes.push(`${pluginName}::onAllRunsComplete started`);
             await Promise.resolve(`${pluginName}1`);
@@ -31,8 +37,10 @@ describe(`Plugins (seed: ${seed})`, () => {
     // Act
     probes.push('assert started');
     await fc.assert(
-      fc.property(fc.integer(), async (_x) => true),
-      { plugins: [buildPlugin('a'), buildPlugin('b')] },
+      fc.property(fc.integer(), (_x) => {
+        probes.push('predicate');
+      }),
+      { plugins: [buildPlugin('a'), buildPlugin('b')], numRuns: 2 },
     );
     probes.push('assert done');
 
@@ -41,6 +49,12 @@ describe(`Plugins (seed: ${seed})`, () => {
       'assert started',
       'a instantiated',
       'b instantiated',
+      'a::beforeAll started',
+      'a::beforeAll done',
+      'b::beforeAll started',
+      'b::beforeAll done',
+      'predicate',
+      'predicate',
       'a::onAllRunsComplete started',
       'a::onAllRunsComplete done',
       'b::onAllRunsComplete started',
@@ -51,6 +65,168 @@ describe(`Plugins (seed: ${seed})`, () => {
       'a::afterAll done',
       'assert done',
     ]);
+  });
+
+  it('should keep synchronous setup and runs synchronous', async () => {
+    // Arrange
+    const probes: string[] = [];
+    const plugin: fc.Plugin<[number]> = () => ({
+      beforeAll: () => {
+        probes.push('beforeAll');
+      },
+      afterAll: () => {
+        probes.push('afterAll');
+      },
+    });
+
+    // Act
+    const assertion = fc.assert(
+      fc.property(fc.integer(), (_x) => {
+        probes.push('predicate');
+      }),
+      { plugins: [plugin], numRuns: 2 },
+    );
+
+    // Assert
+    expect(probes).toEqual(['beforeAll', 'predicate', 'predicate', 'afterAll']);
+    await assertion;
+  });
+
+  it.each([{ isAsync: false }, { isAsync: true }])(
+    'should run beforeAll once per assertion, including shrinking (async: $isAsync)',
+    async ({ isAsync }) => {
+      // Arrange
+      const beforeAll = vi.fn(() => (isAsync ? Promise.resolve() : undefined));
+      const predicate = vi.fn((_x: number) => false);
+      const property = fc.property(fc.integer({ min: 1, max: 100 }), predicate);
+      const plugin: fc.Plugin<[number]> = () => ({ beforeAll });
+
+      // Act
+      for (let index = 0; index !== 2; ++index) {
+        await fc.assert<[number]>(property, { plugins: [plugin], examples: [[100]], noDefaultPlugins: true });
+        expect(beforeAll).toHaveBeenCalledTimes(index + 1);
+      }
+
+      // Assert
+      expect(predicate.mock.calls.length).toBeGreaterThan(2);
+    },
+  );
+
+  it('should run beforeAll and afterAll even when no runs are requested', async () => {
+    // Arrange
+    const beforeAll = vi.fn();
+    const afterAll = vi.fn();
+    const predicate = vi.fn();
+
+    // Act
+    await fc.assert(fc.property(fc.integer(), predicate), {
+      plugins: [() => ({ beforeAll, afterAll })],
+      numRuns: 0,
+    });
+
+    // Assert
+    expect(beforeAll).toHaveBeenCalledOnce();
+    expect(afterAll).toHaveBeenCalledOnce();
+    expect(predicate).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { asyncFirst: false, asyncFailure: false },
+    { asyncFirst: false, asyncFailure: true },
+    { asyncFirst: true, asyncFailure: false },
+    { asyncFirst: true, asyncFailure: true },
+  ])(
+    'should stop setup on failure and clean up every plugin (async first: $asyncFirst, async failure: $asyncFailure)',
+    async ({ asyncFirst, asyncFailure }) => {
+      // Arrange
+      const probes: string[] = [];
+      const error = new Error('setup failed');
+      const onAllRunsComplete = vi.fn();
+      const decorateGenerate = vi.fn((nested) => nested);
+      const decorateRun = vi.fn((nested) => nested);
+      const predicate = vi.fn();
+      const pluginA: fc.Plugin<[number]> = () => ({
+        beforeAll: () => {
+          probes.push('a::beforeAll');
+          return asyncFirst ? Promise.resolve() : undefined;
+        },
+        afterAll: () => {
+          probes.push('a::afterAll');
+          throw new Error('a cleanup failed');
+        },
+        onAllRunsComplete,
+        decorateGenerate,
+        decorateRun,
+      });
+      const pluginB: fc.Plugin<[number]> = () => ({
+        beforeAll: () => {
+          probes.push('b::beforeAll');
+          if (asyncFailure) {
+            return Promise.reject(error);
+          }
+          throw error;
+        },
+        afterAll: async () => {
+          probes.push('b::afterAll started');
+          await Promise.resolve();
+          probes.push('b::afterAll done');
+          throw new Error('b cleanup failed');
+        },
+        onAllRunsComplete,
+      });
+      const pluginC: fc.Plugin<[number]> = () => ({
+        beforeAll: () => {
+          probes.push('c::beforeAll');
+        },
+        afterAll: () => {
+          probes.push('c::afterAll');
+        },
+        onAllRunsComplete,
+      });
+
+      // Act
+      const assertion = fc.assert(fc.property(fc.integer(), predicate), {
+        plugins: [pluginA, pluginB, pluginC],
+      });
+
+      // Assert
+      await expect(assertion).rejects.toBe(error);
+      expect(probes).toEqual([
+        'a::beforeAll',
+        'b::beforeAll',
+        'c::afterAll',
+        'b::afterAll started',
+        'b::afterAll done',
+        'a::afterAll',
+      ]);
+      expect(onAllRunsComplete).not.toHaveBeenCalled();
+      expect(decorateGenerate).not.toHaveBeenCalled();
+      expect(decorateRun).not.toHaveBeenCalled();
+      expect(predicate).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([undefined, null, 0, false])('should preserve a falsy beforeAll error (%s)', async (error) => {
+    // Arrange
+    const afterAll = vi.fn();
+
+    // Act / Assert
+    await expect(
+      fc.assert(
+        fc.property(fc.integer(), () => true),
+        {
+          plugins: [
+            () => ({
+              beforeAll: () => {
+                throw error;
+              },
+              afterAll,
+            }),
+          ],
+        },
+      ),
+    ).rejects.toBe(error);
+    expect(afterAll).toHaveBeenCalledOnce();
   });
 
   it('should run every onAllRunsComplete and afterAll even when many throw and only forward the first error', async () => {
@@ -286,6 +462,7 @@ describe(`Plugins (seed: ${seed})`, () => {
   });
 
   it.each([
+    { hook: 'beforeAll' as const, expectReversed: false },
     { hook: 'afterAll' as const, expectReversed: true },
     { hook: 'onAllRunsComplete' as const, expectReversed: false },
   ])('should support mixes of sync and async $hook', async ({ hook, expectReversed }) => {
@@ -317,7 +494,7 @@ describe(`Plugins (seed: ${seed})`, () => {
       fc.property(fc.integer(), async (_x) => true),
       {
         plugins: [
-          buildPlugin('a', true),
+          buildPlugin('a', false),
           buildPlugin('b', true),
           buildPlugin('c', false),
           buildPlugin('d', false),
@@ -350,6 +527,9 @@ describe(`Plugins (seed: ${seed})`, () => {
       return () => {
         probes.push(`plugin: instantiated`);
         return {
+          beforeAll: () => {
+            probes.push(`plugin: beforeAll`);
+          },
           decorateGenerate: (nested) => {
             probes.push(`plugin: decorateGenerate`);
             return (...args) => {
@@ -389,6 +569,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     expect(probes).toEqual([
       'assert started',
       'plugin: instantiated', // prepare phase
+      'plugin: beforeAll',
       'plugin: decorateGenerate',
       'plugin: decorateRun',
       'plugin: generate', // 1st run

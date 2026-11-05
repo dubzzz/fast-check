@@ -75,6 +75,27 @@ The plugin setup above makes use of two instances of the `timeout` plugin. The f
 
 This short example clearly highlights why the declaration order of plugins is crucial. Two different orders may result in totally different expectations. Correctly ordering them will make you capable of finely configuring your flows to fit your needs.
 
+## Setting up and cleaning up custom plugins
+
+A custom plugin can define `beforeAll` to prepare resources once per assertion and `afterAll` to release them after the full assessment, including shrinking:
+
+```ts
+const databasePlugin: fc.UniversalPlugin = () => ({
+  beforeAll: async () => {
+    await database.connect();
+  },
+  afterAll: async () => {
+    await database.disconnect();
+  },
+});
+
+await fc.assert(myProp, { plugins: [databasePlugin] });
+```
+
+All plugins are instantiated first. Their `beforeAll` hooks then run in declaration order, before generator or predicate decorators are applied. Each hook finishes before the next starts, including when synchronous and asynchronous hooks are mixed. Setup runs even when `numRuns` is zero.
+
+If a `beforeAll` throws or rejects, the remaining setup hooks, property assessment and `onAllRunsComplete` hooks are skipped. All `afterAll` hooks still run in reverse declaration order, including those belonging to plugins whose setup was skipped. Cleanup should therefore tolerate incomplete setup. The assertion rejects with the original setup error, even if cleanup also fails.
+
 ## The plugins
 
 We come up with a set of plugins to extend the library using built-in plugins. The following pages provide extended details and deep dive into each of them.

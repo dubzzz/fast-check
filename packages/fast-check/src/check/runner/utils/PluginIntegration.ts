@@ -25,6 +25,45 @@ export function instantiatePlugins<Ts>(
   return pluginInstances;
 }
 
+export function runPluginSetupCallbacks<Ts>(pluginInstances: PluginInstance<Ts>[]): void | Promise<void> {
+  let continuation: Promise<void> | undefined;
+  try {
+    for (const pluginInstance of pluginInstances) {
+      if (pluginInstance.beforeAll === undefined) {
+        continue;
+      }
+      if (continuation === undefined) {
+        const out = pluginInstance.beforeAll();
+        if (out !== undefined) {
+          continuation = out;
+        }
+      } else {
+        continuation = continuation.then(() => pluginInstance.beforeAll?.());
+      }
+    }
+  } catch (error) {
+    return Promise.reject(error);
+  }
+  return continuation;
+}
+
+export function runPluginFailureCallbacks<Ts>(
+  pluginInstances: PluginInstance<Ts>[],
+  error: unknown,
+): void | Promise<void> {
+  return runAllCallbacksAndReturn(
+    undefined,
+    (index) => {
+      // Record the setup error first so cleanup failures cannot replace it.
+      if (index === 0) {
+        throw error;
+      }
+      return pluginInstances[pluginInstances.length - index].afterAll?.();
+    },
+    pluginInstances.length + 1,
+  );
+}
+
 export function applyPluginGeneratorDecorators<Ts>(
   property: Property<Ts>,
   pluginInstances: PluginInstance<Ts>[],
