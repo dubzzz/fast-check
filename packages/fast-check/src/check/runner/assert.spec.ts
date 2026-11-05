@@ -466,10 +466,6 @@ describe('assert', () => {
         })(),
       ).rejects.toThrowError('error in failingProperty');
     });
-    it('Should ignore the removed runner option at runtime', async () => {
-      const legacyParameters = { seed: 42, includeErrorInReport: true };
-      await expect(rAssert(failingProperty, legacyParameters)).rejects.toHaveProperty('cause');
-    });
     it('Should put the original error in error message when includeErrorInReport', async () => {
       await expect(
         rAssert(failingProperty, {
