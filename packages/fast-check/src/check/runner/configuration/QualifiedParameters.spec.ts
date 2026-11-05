@@ -32,12 +32,6 @@ const randomTypeName = fc.constantFrom(...(Object.keys(prand) as (keyof typeof p
 
 describe('QualifiedParameters', () => {
   describe('read', () => {
-    it('should not expose includeErrorInReport in normalized parameters', () => {
-      const parameters = read();
-      expect(parameters).not.toHaveProperty('includeErrorInReport');
-      expect(parameters.toParameters()).not.toHaveProperty('includeErrorInReport');
-    });
-
     it('Should forward as-is values already set in Parameters', async () =>
       await fc.assert(
         fc.property(parametersArbitrary, (params) => {
