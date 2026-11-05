@@ -93,7 +93,6 @@ function reportRunDetails<Ts>(out: RunDetails<Ts>, options: DefaultReporterOptio
 export type DefaultReporterOptions = {
   /**
    * Include the original error in the report message instead of exposing it as the cause.
-   * Defaults to `false`. This option only applies to this reporter.
    *
    * @defaultValue `false`
    *
