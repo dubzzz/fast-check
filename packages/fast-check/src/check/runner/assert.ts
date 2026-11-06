@@ -10,7 +10,10 @@ import {
   applyPluginRunDecorators,
   instantiatePlugins,
   runPluginCompletionCallbacks,
+  runPluginPreparationCallbacks,
 } from './utils/PluginIntegration.js';
+import type { PluginInstance } from '../plugin/Plugin.js';
+import type { RunDetailsFailurePluginSetup } from './reporter/RunDetails.js';
 
 /**
  * Run the property and reject if a plugin reports the run as an error
@@ -33,7 +36,23 @@ export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Pro
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
+
   const pluginInstances = instantiatePlugins(qParams.plugins, !qParams.noDefaultPlugins, !qParams.noGlobalPlugins);
+  const preparationOutput = runPluginPreparationCallbacks(pluginInstances);
+  if (preparationOutput === undefined) {
+    return postPrepare(property, qParams, pluginInstances);
+  }
+  return preparationOutput.then(
+    () => postPrepare(property, qParams, pluginInstances),
+    (error) => runPluginCompletionCallbacks<Ts>(pluginInstances, failedSetupToRunDetails(qParams, error)),
+  );
+}
+
+function postPrepare<Ts>(
+  property: Property<Ts>,
+  qParams: QualifiedParameters<Ts>,
+  pluginInstances: PluginInstance<Ts>[],
+) {
   const generator = applyPluginGeneratorDecorators(property, pluginInstances);
   const run = applyPluginRunDecorators(property, pluginInstances);
 
@@ -53,4 +72,25 @@ export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Pro
           runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
         ),
       );
+}
+
+function failedSetupToRunDetails<Ts>(
+  qParams: QualifiedParameters<Ts>,
+  errorInstance: unknown,
+): RunDetailsFailurePluginSetup<Ts> {
+  return {
+    failed: true,
+    interrupted: false,
+    numRuns: 0,
+    numSkips: 0,
+    numShrinks: 0,
+    seed: qParams.seed,
+    counterexample: null,
+    counterexamplePath: null,
+    errorInstance,
+    failures: [],
+    executionSummary: [],
+    verbose: qParams.verbose,
+    runConfiguration: qParams.toParameters(),
+  };
 }

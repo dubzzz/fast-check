@@ -29,6 +29,13 @@ export function instantiatePlugins<Ts>(
   return pluginInstances;
 }
 
+export function runPluginPreparationCallbacks<Ts>(pluginInstances: PluginInstance<Ts>[]): void | Promise<void> {
+  if (pluginInstances.length === 0) {
+    return;
+  }
+  return runAllCallbacksAndReturn(undefined, (index) => pluginInstances[index].beforeAll?.(), pluginInstances.length);
+}
+
 export function applyPluginGeneratorDecorators<Ts>(
   property: Property<Ts>,
   pluginInstances: PluginInstance<Ts>[],
