@@ -32,15 +32,15 @@ Plugins needed by all your properties can be installed once, typically in a [set
 fc.installGlobalPlugin(pluginA());
 ```
 
-By default, installed plugins run before the ones passed to the runner, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB()]`. You can also pass `'pre'` explicitly as the second argument.
+By default, any installed plugins is flagged as pre-installed. As such run before the ones passed to the runner and the default ones, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB(), ...defaults]`. You can also pass `'pre'` explicitly as the second argument to make the position clearer.
 
-Pass `'post'` to install a plugin after the ones passed to the runner:
+But globally installed plugins can also be post-installed by passing `'post'`:
 
 ```ts
 fc.installGlobalPlugin(pluginC(), 'post');
 ```
 
-With both installations above, `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB(), pluginC()]`.
+With both installations above, `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB(), pluginC(), ...defaults]`.
 
 The resulting order is:
 
@@ -49,9 +49,7 @@ The resulting order is:
 3. Global plugins installed with `'post'`
 4. Default plugins
 
-Within each global position, plugins keep their installation order, even when calls installing `'pre'` and `'post'` plugins are interleaved. Both positions come before defaults so custom reporting plugins can override the default error report. A plugin passed directly to the runner can still override a global `'post'` reporter. The default reporter remains the fallback when no custom completion callback throws.
-
-This order describes instantiation, entering decorated operations, and `onAllRunsComplete` callbacks. Decorated operations unwind in reverse order, as do `afterAll` callbacks: `'post'` does not mean that all of its hooks run last.
+Within each global position, plugins keep their installation order, even when calls installing `'pre'` and `'post'` plugins are interleaved.
 
 To skip globally installed plugins for one assertion, set `noGlobalPlugins: true`:
 
