@@ -6,9 +6,9 @@ describe(`Plugins (seed: ${seed})`, () => {
   it('should run every beforeAll, onAllRunsComplete and afterAll even when one beforeAll threw but report first error', async () => {
     await fc.assert(
       fc.property(
-        fc.array(pluginDefinitionArbitrary({})),
-        pluginDefinitionArbitrary({ beforeAll: true }),
-        fc.array(pluginDefinitionArbitrary({})),
+        fc.array(pluginDefinitionArbitrary({ onAllRunsComplete: 'neverFailing' })),
+        pluginDefinitionArbitrary({ beforeAll: 'alwaysFailing', onAllRunsComplete: 'neverFailing' }),
+        fc.array(pluginDefinitionArbitrary({ onAllRunsComplete: 'neverFailing' })),
         async (beforeKnownFailure, knownFailure, afterFailure) => {
           // Arrange
           const { plugins, probes, firstFailingBeforeAll, beforeAllTraces, onAllRunsCompleteTraces, afterAllTraces } =
@@ -21,8 +21,11 @@ describe(`Plugins (seed: ${seed})`, () => {
               fc.property(fc.integer(), async (_x) => true),
               { plugins },
             ),
-          ).rejects.toThrow(firstFailingBeforeAll); // thrown by default reporter plugin
-          expect(probes).toEqual([...beforeAllTraces, ...onAllRunsCompleteTraces, ...afterAllTraces]);
+          ).rejects.toMatchObject({
+            message: expect.stringContaining('Property could not start because plugin setup failed'),
+            cause: { message: firstFailingBeforeAll },
+          }); // thrown by default reporter plugin
+          expect(probes).toEqual([...beforeAllTraces, ...onAllRunsCompleteTraces, ...afterAllTraces.toReversed()]);
         },
       ),
     );
@@ -435,12 +438,13 @@ describe(`Plugins (seed: ${seed})`, () => {
 
 // Helpers
 
+type PluginMethodStatus = 'alwaysFailing' | 'neverFailing';
 type PluginMethod = { isSync: boolean; isFailing: boolean };
 
-function pluginMethodArbitrary(alwaysFailing: boolean | undefined): fc.Arbitrary<PluginMethod> {
+function pluginMethodArbitrary(status: PluginMethodStatus | undefined): fc.Arbitrary<PluginMethod> {
   return fc.record({
     isSync: fc.boolean(),
-    isFailing: alwaysFailing ? fc.constant(true) : fc.boolean(),
+    isFailing: status !== undefined ? fc.constant(status === 'alwaysFailing') : fc.boolean(),
   });
 }
 
@@ -448,7 +452,7 @@ type PluginDefinitionArbitraryMethods = 'beforeAll' | 'onAllRunsComplete' | 'aft
 type PluginDefinition = Partial<Record<PluginDefinitionArbitraryMethods, PluginMethod>>;
 
 function pluginDefinitionArbitrary(
-  alwaysFailingMethods: Partial<Record<PluginDefinitionArbitraryMethods, boolean>>,
+  alwaysFailingMethods: Partial<Record<PluginDefinitionArbitraryMethods, 'alwaysFailing' | 'neverFailing'>>,
 ): fc.Arbitrary<PluginDefinition> {
   return fc.record(
     {
