@@ -18,7 +18,7 @@ The `defaultReporter` plugin throws clear errors for failed runs.
 }
 ```
 
-It distinguishes property failures from failures caused by too many skipped runs.
+It distinguishes property failures, failures caused by too many skipped runs and plugin setup failures. It handles any run marked as `failed: true`.
 
 By default, the original error is exposed as the `cause` of the reported error.
 Pass `includeErrorInReport: true` to include it directly in the report message instead:

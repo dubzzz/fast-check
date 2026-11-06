@@ -95,7 +95,8 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
  */
 export interface RunDetailsCommon<Ts> {
   /**
-   * Did the property fail during the execution of {@link assert}?
+   * Did the run fail during the execution of {@link assert}?
+   * This includes plugin setup failures occuring before any execution of the predicate.
    * @remarks Since 0.0.1
    */
   failed: boolean;
