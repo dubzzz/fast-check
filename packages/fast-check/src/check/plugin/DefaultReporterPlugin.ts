@@ -1,6 +1,7 @@
 import type { UniversalPlugin } from './Plugin.js';
 import type {
   RunDetails,
+  RunDetailsFailurePluginSetup,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
 } from '../runner/reporter/RunDetails.js';
@@ -50,6 +51,14 @@ function prettyError(errorInstance: unknown) {
   return 'Failed to serialize errorInstance';
 }
 
+function preFormatPluginSetupFailure<Ts>(out: RunDetailsFailurePluginSetup<Ts>, includeErrorInReport: boolean) {
+  const messageErrorPart = includeErrorInReport
+    ? `\nGot ${prettyError(out.errorInstance).replace(/^Error: /, 'error: ')}`
+    : '';
+  const message = `Property could not start because plugin setup failed${messageErrorPart}`;
+  return { message };
+}
+
 function preFormatFailure<Ts>(
   out: RunDetailsFailureProperty<Ts>,
   stringifyOne: (value: Ts) => string,
@@ -74,7 +83,9 @@ function reportRunDetails<Ts>(out: RunDetails<Ts>, options: DefaultReporterOptio
   const errorMessage = buildErrorMessage(
     (stringifier) =>
       out.counterexamplePath === null
-        ? preFormatTooManySkipped(out)
+        ? out.interrupted
+          ? preFormatTooManySkipped(out)
+          : preFormatPluginSetupFailure(out, includeErrorInReport)
         : preFormatFailure(out, stringifier, includeErrorInReport),
     out,
   );
