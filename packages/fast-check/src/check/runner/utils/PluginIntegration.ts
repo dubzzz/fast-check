@@ -51,23 +51,6 @@ export function runPluginSetupCallbacks<Ts>(pluginInstances: PluginInstance<Ts>[
   return continuation;
 }
 
-export function runPluginFailureCallbacks<Ts>(
-  pluginInstances: PluginInstance<Ts>[],
-  error: unknown,
-): void | Promise<void> {
-  return runAllCallbacksAndReturn(
-    undefined,
-    (index) => {
-      // Record the setup error first so cleanup failures cannot replace it.
-      if (index === 0) {
-        throw error;
-      }
-      return pluginInstances[pluginInstances.length - index].afterAll?.();
-    },
-    pluginInstances.length + 1,
-  );
-}
-
 export function applyPluginGeneratorDecorators<Ts>(
   property: Property<Ts>,
   pluginInstances: PluginInstance<Ts>[],

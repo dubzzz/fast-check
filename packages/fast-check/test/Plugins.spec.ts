@@ -136,12 +136,13 @@ describe(`Plugins (seed: ${seed})`, () => {
     { asyncFirst: true, asyncFailure: false },
     { asyncFirst: true, asyncFailure: true },
   ])(
-    'should stop setup on failure and clean up every plugin (async first: $asyncFirst, async failure: $asyncFailure)',
+    'should stop setup on failure without teardown (async first: $asyncFirst, async failure: $asyncFailure)',
     async ({ asyncFirst, asyncFailure }) => {
       // Arrange
       const probes: string[] = [];
       const error = new Error('setup failed');
       const onAllRunsComplete = vi.fn();
+      const afterAll = vi.fn();
       const decorateGenerate = vi.fn((nested) => nested);
       const decorateRun = vi.fn((nested) => nested);
       const predicate = vi.fn();
@@ -150,10 +151,7 @@ describe(`Plugins (seed: ${seed})`, () => {
           probes.push('a::beforeAll');
           return asyncFirst ? Promise.resolve() : undefined;
         },
-        afterAll: () => {
-          probes.push('a::afterAll');
-          throw new Error('a cleanup failed');
-        },
+        afterAll,
         onAllRunsComplete,
         decorateGenerate,
         decorateRun,
@@ -166,21 +164,14 @@ describe(`Plugins (seed: ${seed})`, () => {
           }
           throw error;
         },
-        afterAll: async () => {
-          probes.push('b::afterAll started');
-          await Promise.resolve();
-          probes.push('b::afterAll done');
-          throw new Error('b cleanup failed');
-        },
+        afterAll,
         onAllRunsComplete,
       });
       const pluginC: fc.Plugin<[number]> = () => ({
         beforeAll: () => {
           probes.push('c::beforeAll');
         },
-        afterAll: () => {
-          probes.push('c::afterAll');
-        },
+        afterAll,
         onAllRunsComplete,
       });
 
@@ -191,15 +182,9 @@ describe(`Plugins (seed: ${seed})`, () => {
 
       // Assert
       await expect(assertion).rejects.toBe(error);
-      expect(probes).toEqual([
-        'a::beforeAll',
-        'b::beforeAll',
-        'c::afterAll',
-        'b::afterAll started',
-        'b::afterAll done',
-        'a::afterAll',
-      ]);
+      expect(probes).toEqual(['a::beforeAll', 'b::beforeAll']);
       expect(onAllRunsComplete).not.toHaveBeenCalled();
+      expect(afterAll).not.toHaveBeenCalled();
       expect(decorateGenerate).not.toHaveBeenCalled();
       expect(decorateRun).not.toHaveBeenCalled();
       expect(predicate).not.toHaveBeenCalled();
@@ -226,7 +211,7 @@ describe(`Plugins (seed: ${seed})`, () => {
         },
       ),
     ).rejects.toBe(error);
-    expect(afterAll).toHaveBeenCalledOnce();
+    expect(afterAll).not.toHaveBeenCalled();
   });
 
   it('should run every onAllRunsComplete and afterAll even when many throw and only forward the first error', async () => {

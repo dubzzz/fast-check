@@ -11,7 +11,6 @@ import {
   applyPluginRunDecorators,
   instantiatePlugins,
   runPluginCompletionCallbacks,
-  runPluginFailureCallbacks,
   runPluginSetupCallbacks,
 } from './utils/PluginIntegration.js';
 
@@ -66,8 +65,5 @@ export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Pro
   const setupOut = runPluginSetupCallbacks(pluginInstances);
   return setupOut === undefined
     ? assertAfterPluginSetup(property, qParams, pluginInstances)
-    : setupOut.then(
-        () => assertAfterPluginSetup(property, qParams, pluginInstances),
-        (error) => runPluginFailureCallbacks(pluginInstances, error),
-      );
+    : setupOut.then(() => assertAfterPluginSetup(property, qParams, pluginInstances));
 }

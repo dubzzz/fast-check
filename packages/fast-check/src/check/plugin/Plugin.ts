@@ -42,8 +42,7 @@ export type PluginInstance<Ts> = {
    *
    * Hooks run in declaration order, waiting for each returned promise before continuing.
    * If a hook throws or rejects, remaining `beforeAll` hooks and the assessment are skipped,
-   * including `onAllRunsComplete`. Every `afterAll` still runs in reverse declaration order,
-   * and the assertion rejects with the original setup error.
+   * including `onAllRunsComplete` and `afterAll`. The assertion rejects with the original setup error.
    *
    * @remarks Since 5.0.0
    */
@@ -84,9 +83,9 @@ export type PluginInstance<Ts> = {
    * Called once at the end of the full property assessment, after all other methods of the plugin.
    * Use it to clean up and release resources acquired by the plugin.
    *
-   * Every `afterAll` is guaranteed to run, even if a `beforeAll`, an `onAllRunsComplete` or another `afterAll` threw.
-   * This includes plugins whose `beforeAll` was skipped after an earlier setup failure.
-   * In case several hooks throw, only the first failure is reported, the others will be swallowed.
+   * After successful setup, every `afterAll` is guaranteed to run, even if an `onAllRunsComplete` or another `afterAll` threw.
+   * No `afterAll` runs if a `beforeAll` throws or rejects.
+   * In case several `onAllRunsComplete` or `afterAll` throw, only the first failure is reported, the others will be swallowed.
    *
    * WARNING: Always return synchronously for synchronous properties.
    *
