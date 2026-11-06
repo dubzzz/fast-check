@@ -18,6 +18,23 @@ export type RunDetails<Ts> = RunDetailsFailureProperty<Ts> | RunDetailsFailureTo
  *
  * Refer to {@link RunDetailsCommon} for more details
  *
+ * @remarks Since 5.0.0
+ * @public
+ */
+export interface RunDetailsFailureSetupPlugins<Ts> extends RunDetailsCommon<Ts> {
+  failed: true;
+  interrupted: false;
+  counterexample: null;
+  counterexamplePath: null;
+  errorInstance: unknown;
+}
+
+/**
+ * Run reported as failed because
+ * the property failed
+ *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
  * @remarks Since 1.25.0
  * @public
  */
