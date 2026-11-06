@@ -1,8 +1,33 @@
-import { afterAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`Plugins (seed: ${seed})`, () => {
+  it('should run every beforeAll, onAllRunsComplete and afterAll even when one beforeAll threw but report first error', async () => {
+    await fc.assert(
+      fc.property(
+        fc.array(pluginDefinitionArbitrary({})),
+        pluginDefinitionArbitrary({ beforeAll: true }),
+        fc.array(pluginDefinitionArbitrary({})),
+        async (beforeKnownFailure, knownFailure, afterFailure) => {
+          // Arrange
+          const { plugins, probes, firstFailingBeforeAll, beforeAllTraces, onAllRunsCompleteTraces, afterAllTraces } =
+            buildPlugins<[number]>([...beforeKnownFailure, knownFailure, ...afterFailure]);
+          expect(firstFailingBeforeAll).toBeDefined();
+
+          // Act / Assert
+          await expect(
+            fc.assert(
+              fc.property(fc.integer(), async (_x) => true),
+              { plugins },
+            ),
+          ).rejects.toThrow(firstFailingBeforeAll); // thrown by default reporter plugin
+          expect(probes).toEqual([...beforeAllTraces, ...onAllRunsCompleteTraces, ...afterAllTraces]);
+        },
+      ),
+    );
+  });
+
   it('should wait and queue onAllRunsComplete and afterAll', async () => {
     // Arrange
     const probes: string[] = [];
@@ -50,113 +75,6 @@ describe(`Plugins (seed: ${seed})`, () => {
       'a::afterAll started',
       'a::afterAll done',
       'assert done',
-    ]);
-  });
-
-  it('should run every onAllRunsComplete and afterAll even when one beforeAll throws', async () => {
-    const pluginMethodArbitrary = (alwaysFailing: boolean) =>
-      fc.record({ isSync: fc.boolean(), isFailing: alwaysFailing ? fc.constant(false) : fc.boolean() });
-    const pluginDefinitionArbitrary = (alwaysFailing: boolean) =>
-      fc.record(
-        {
-          beforeAll: pluginMethodArbitrary(alwaysFailing),
-          onAllRunsComplete: pluginMethodArbitrary(false),
-          afterAll: pluginMethodArbitrary(false),
-        },
-        { requiredKeys: (alwaysFailing ? ['beforeAll'] : []) as [] },
-      );
-    await fc.assert(
-      fc.property(
-        fc.array(pluginDefinitionArbitrary(false)),
-        pluginDefinitionArbitrary(true),
-        fc.array(pluginDefinitionArbitrary(false)),
-        (beforeKnownFailure, knownFailure, afterFailure) => {
-          // Arrange
-          let firstFailingBeforeAll: number | undefined = undefined;
-          const expectedBeforeAllTraces: string[] = [];
-          const expectedOnAllRunsCompleteTraces: string[] = [];
-          const expectedAfterAllTraces: string[] = [];
-          const probes: string[] = [];
-          function buildMethod(trace: string, method: { isSync: boolean; isFailing: boolean }) {
-            return () => {
-              probes.push(trace);
-              if (method.isSync) {
-                if (method.isFailing) {
-                  throw new Error(trace);
-                }
-                return;
-              }
-              return method.isFailing ? Promise.reject(new Error(trace)) : Promise.resolve();
-            };
-          }
-          const plugins: fc.Plugin<[number]>[] = [...beforeKnownFailure, knownFailure, ...afterFailure].map(
-            (definition, index) => {
-              const pluginInstance: fc.PluginInstance<[number]> = {};
-              if (definition.beforeAll !== undefined) {
-                const method = definition.beforeAll;
-                if (method.isFailing) {
-                  firstFailingBeforeAll ??= index;
-                }
-                const trace = `beforeAll(${index})`;
-                expectedBeforeAllTraces.push(trace);
-                pluginInstance.beforeAll = buildMethod(trace, method);
-              }
-              if (definition.onAllRunsComplete !== undefined) {
-                const method = definition.onAllRunsComplete;
-                const trace = `onAllRunsComplete(${index})`;
-                expectedOnAllRunsCompleteTraces.push(trace);
-                pluginInstance.onAllRunsComplete = buildMethod(trace, method);
-              }
-              if (definition.afterAll !== undefined) {
-                const method = definition.afterAll;
-                const trace = `afterAll(${index})`;
-                expectedAfterAllTraces.push(trace);
-                pluginInstance.afterAll = buildMethod(trace, method);
-              }
-              return () => pluginInstance;
-            },
-          );
-        },
-      ),
-    );
-    // Arrange
-    const probes: string[] = [];
-    const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
-      return () => {
-        return {
-          beforeAll: async () => {
-            probes.push(`${pluginName}::beforeAll`);
-            if (pluginName === 'b') {
-              throw new Error(`error from ${pluginName}::beforeAll`);
-            }
-          },
-          onAllRunsComplete: async () => {
-            probes.push(`${pluginName}::onAllRunsComplete`);
-          },
-          afterAll: async () => {
-            probes.push(`${pluginName}::afterAll`);
-          },
-        };
-      };
-    };
-
-    // Act / Assert
-    await expect(
-      fc.assert(
-        fc.property(fc.integer(), async (_x) => true),
-        { plugins: [buildPlugin('a'), buildPlugin('b'), buildPlugin('c')] },
-      ),
-    ).rejects.toThrow(/^error from a::beforeAll$/); // defaults plugin!
-    expect(probes).toEqual([
-      'a::beforeAll',
-      'b::beforeAll',
-      'c::beforeAll',
-      'a::onAllRunsComplete',
-      'b::onAllRunsComplete',
-      'c::onAllRunsComplete',
-      'c::afterAll',
-      'b::afterAll',
-      'a::afterAll',
     ]);
   });
 
@@ -514,3 +432,97 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 });
+
+// Helpers
+
+type PluginMethod = { isSync: boolean; isFailing: boolean };
+
+function pluginMethodArbitrary(alwaysFailing: boolean | undefined): fc.Arbitrary<PluginMethod> {
+  return fc.record({
+    isSync: fc.boolean(),
+    isFailing: alwaysFailing ? fc.constant(true) : fc.boolean(),
+  });
+}
+
+type PluginDefinitionArbitraryMethods = 'beforeAll' | 'onAllRunsComplete' | 'afterAll';
+type PluginDefinition = Partial<Record<PluginDefinitionArbitraryMethods, PluginMethod>>;
+
+function pluginDefinitionArbitrary(
+  alwaysFailingMethods: Partial<Record<PluginDefinitionArbitraryMethods, boolean>>,
+): fc.Arbitrary<PluginDefinition> {
+  return fc.record(
+    {
+      beforeAll: pluginMethodArbitrary(alwaysFailingMethods['beforeAll']),
+      onAllRunsComplete: pluginMethodArbitrary(alwaysFailingMethods['onAllRunsComplete']),
+      afterAll: pluginMethodArbitrary(alwaysFailingMethods['afterAll']),
+    },
+    {
+      requiredKeys: Object.entries(alwaysFailingMethods)
+        .filter((entry) => entry[1])
+        .map((entry) => entry[0] as keyof typeof alwaysFailingMethods) as [],
+    },
+  );
+}
+
+function buildPlugins<Ts>(definitions: PluginDefinition[]) {
+  let firstFailingBeforeAll: string | undefined = undefined;
+  let firstFailingOnAllRunsComplete: string | undefined = undefined;
+  let firstFailingAfterAll: string | undefined = undefined;
+  const beforeAllTraces: string[] = [];
+  const onAllRunsCompleteTraces: string[] = [];
+  const afterAllTraces: string[] = [];
+  const probes: string[] = [];
+  function buildMethod(trace: string, method: { isSync: boolean; isFailing: boolean }) {
+    return () => {
+      probes.push(trace);
+      if (method.isSync) {
+        if (method.isFailing) {
+          throw new Error(trace);
+        }
+        return;
+      }
+      return method.isFailing ? Promise.reject(new Error(trace)) : Promise.resolve();
+    };
+  }
+  const plugins = definitions.map((definition, index): fc.Plugin<Ts> => {
+    const pluginInstance: fc.PluginInstance<Ts> = {};
+    if (definition.beforeAll !== undefined) {
+      const method = definition.beforeAll;
+      const trace = `beforeAll(${index})`;
+      if (method.isFailing) {
+        firstFailingBeforeAll ??= trace;
+      }
+      beforeAllTraces.push(trace);
+      pluginInstance.beforeAll = buildMethod(trace, method);
+    }
+    if (definition.onAllRunsComplete !== undefined) {
+      const method = definition.onAllRunsComplete;
+      const trace = `onAllRunsComplete(${index})`;
+      if (method.isFailing) {
+        firstFailingOnAllRunsComplete ??= trace;
+      }
+      onAllRunsCompleteTraces.push(trace);
+      pluginInstance.onAllRunsComplete = buildMethod(trace, method);
+    }
+    if (definition.afterAll !== undefined) {
+      const method = definition.afterAll;
+      const trace = `afterAll(${index})`;
+      if (method.isFailing) {
+        firstFailingAfterAll ??= trace;
+      }
+      afterAllTraces.push(trace);
+      pluginInstance.afterAll = buildMethod(trace, method);
+    }
+    return () => pluginInstance;
+  });
+  return {
+    plugins,
+    probes,
+    firstFailingBeforeAll,
+    firstFailingOnAllRunsComplete,
+    firstFailingAfterAll,
+    beforeAllTraces,
+    onAllRunsCompleteTraces,
+    afterAllTraces,
+  };
+}
