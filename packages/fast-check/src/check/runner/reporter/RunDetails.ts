@@ -101,7 +101,8 @@ export interface RunDetailsCommon<Ts> {
    */
   failed: boolean;
   /**
-   * Was the execution interrupted?
+   * Was the assessment of the predicate interrupted?
+   * Plugin setup failures do not count as interruptions as they occur even before the assessment starts.
    * @remarks Since 1.19.0
    */
   interrupted: boolean;
