@@ -206,20 +206,25 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   if (qParams.asyncReporter !== undefined && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
-
-  const globalPlugins = readInstalledGlobalPlugins();
   const localPlugins = qParams.plugins;
 
   // Instantiate plugins
   const pluginStore = new SMap<symbol, any>();
   const pluginInstances: PluginInstance<Ts>[] = [];
   if (!qParams.noGlobalPlugins) {
-    for (let index = 0; index !== globalPlugins.length; ++index) {
-      pluginInstances.push(globalPlugins[index](pluginInstances.length, pluginStore));
+    const globalPrePlugins = readInstalledGlobalPlugins('pre');
+    for (let index = 0; index !== globalPrePlugins.length; ++index) {
+      pluginInstances.push(globalPrePlugins[index](pluginInstances.length, pluginStore));
     }
   }
   for (let index = 0; index !== localPlugins.length; ++index) {
     pluginInstances.push(localPlugins[index](pluginInstances.length, pluginStore));
+  }
+  if (!qParams.noGlobalPlugins) {
+    const globalPostPlugins = readInstalledGlobalPlugins('post');
+    for (let index = 0; index !== globalPostPlugins.length; ++index) {
+      pluginInstances.push(globalPostPlugins[index](pluginInstances.length, pluginStore));
+    }
   }
 
   // Apply and decorate with plugins
