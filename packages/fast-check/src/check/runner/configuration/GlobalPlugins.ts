@@ -15,20 +15,15 @@ const globalPlugins: { pre: UniversalPlugin[]; post: UniversalPlugin[] } = { pre
  *
  * @example
  * ```typescript
- * fc.installGlobalPlugin(myPlugin());
+ * fc.installGlobalPlugin(myPrePlugin1());
+ * fc.installGlobalPlugin(myPostPlugin1(), 'post');
+ * fc.installGlobalPlugin(myPrePlugin2());
+ * fc.installGlobalPlugin(myPostPlugin2(), 'post');
  * //...
  * fc.assert(myProp, { plugins: [myOtherPlugin()] })
- * // equivalent to { plugins: [myPlugin(), myOtherPlugin()] }
- * // myPlugin will wrap myOtherPlugin, itself wrapping the default behavior
- * ```
- *
- * @example
- * ```typescript
- * fc.installGlobalPlugin(myPlugin(), 'post');
- * //...
- * fc.assert(myProp, { plugins: [myOtherPlugin()] })
- * // equivalent to { plugins: [myOtherPlugin(), myPlugin()] }
- * // myOtherPlugin will wrap myPlugin, itself wrapping the default behavior
+ * // Plugin order: myPrePlugin1, myPrePlugin2, myOtherPlugin, myPostPlugin1, myPostPlugin2, followed by default plugins.
+ * // Each plugin wraps the plugins that follow it, so myPrePlugin1 is the outermost wrapper.
+ * // Pass `noGlobalPlugins: true` to skip global plugins or `noDefaultPlugins: true` for default ones.
  * ```
  *
  * @param plugin - Plugin to be installed globally
@@ -41,6 +36,6 @@ export function installGlobalPlugin(plugin: UniversalPlugin | Plugin<unknown>, p
   globalPlugins[position].push(plugin as UniversalPlugin);
 }
 
-export function readInstalledGlobalPlugins(position?: 'pre' | 'post'): UniversalPlugin[] {
-  return position === undefined ? [...globalPlugins.pre, ...globalPlugins.post] : globalPlugins[position];
+export function readInstalledGlobalPlugins(position: 'pre' | 'post'): UniversalPlugin[] {
+  return globalPlugins[position];
 }
