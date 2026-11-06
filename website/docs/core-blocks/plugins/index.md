@@ -30,9 +30,10 @@ Plugins needed by all your properties can be installed once, typically in a [set
 
 ```ts
 fc.installGlobalPlugin(pluginA());
+// equivalent to: fc.installGlobalPlugin(pluginA(), 'pre');
 ```
 
-By default, any installed plugins is flagged as pre-installed. As such run before the ones passed to the runner and the default ones, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB(), ...defaults]`. You can also pass `'pre'` explicitly as the second argument to make the position clearer.
+By default, any installed plugin is flagged as pre-installed. As such, it runs before the ones passed to the runner and the default ones, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` results in the plugin order `[pluginA(), pluginB(), ...defaults]`. You can also pass `'pre'` explicitly as the second argument to make the position clearer.
 
 But globally installed plugins can also be post-installed by passing `'post'`:
 
@@ -40,7 +41,7 @@ But globally installed plugins can also be post-installed by passing `'post'`:
 fc.installGlobalPlugin(pluginC(), 'post');
 ```
 
-With both installations above, `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB(), pluginC(), ...defaults]`.
+With both installations above, `fc.assert(myProp, { plugins: [pluginB()] })` results in the plugin order `[pluginA(), pluginB(), pluginC(), ...defaults]`.
 
 The resulting order is:
 
