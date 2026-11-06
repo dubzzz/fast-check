@@ -458,20 +458,24 @@ type PluginDefinitionArbitraryMethods = 'beforeAll' | 'onAllRunsComplete' | 'aft
 type PluginDefinition = Partial<Record<PluginDefinitionArbitraryMethods, PluginMethod>>;
 
 function pluginDefinitionArbitrary(
-  alwaysFailingMethods: Partial<Record<PluginDefinitionArbitraryMethods, 'alwaysFailing' | 'neverFailing'>>,
+  alwaysFailingMethods: Partial<Record<PluginDefinitionArbitraryMethods, PluginMethodStatus | 'omit'>>,
 ): fc.Arbitrary<PluginDefinition> {
-  return fc.record(
-    {
-      beforeAll: pluginMethodArbitrary(alwaysFailingMethods['beforeAll']),
-      onAllRunsComplete: pluginMethodArbitrary(alwaysFailingMethods['onAllRunsComplete']),
-      afterAll: pluginMethodArbitrary(alwaysFailingMethods['afterAll']),
-    },
-    {
-      requiredKeys: Object.entries(alwaysFailingMethods)
-        .filter((entry) => entry[1])
-        .map((entry) => entry[0] as keyof typeof alwaysFailingMethods) as [],
-    },
-  );
+  function buildFor(methodName: PluginDefinitionArbitraryMethods) {
+    const status = alwaysFailingMethods[methodName];
+    if (status === 'omit') {
+      return fc.constant(undefined);
+    }
+    const arb = pluginMethodArbitrary(status);
+    if (status !== undefined) {
+      return arb;
+    }
+    return fc.option(arb, { nil: undefined });
+  }
+  return fc.record({
+    beforeAll: buildFor('beforeAll'),
+    onAllRunsComplete: buildFor('onAllRunsComplete'),
+    afterAll: buildFor('afterAll'),
+  });
 }
 
 function delay0() {
