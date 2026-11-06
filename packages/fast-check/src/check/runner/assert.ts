@@ -13,7 +13,33 @@ import {
   runPluginPreparationCallbacks,
 } from './utils/PluginIntegration.js';
 import type { PluginInstance } from '../plugin/Plugin.js';
-import type { RunDetailsFailurePluginSetup } from './reporter/RunDetails.js';
+import { createPluginSetupFailureDetails } from './reporter/PluginSetupFailure.js';
+
+function runPropertyAndComplete<Ts>(
+  property: Property<Ts>,
+  qParams: QualifiedParameters<Ts>,
+  pluginInstances: PluginInstance<Ts>[],
+) {
+  const generator = applyPluginGeneratorDecorators(property, pluginInstances);
+  const run = applyPluginRunDecorators(property, pluginInstances);
+
+  const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
+  const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
+  const propertyRunnerOut = propertyRunner(runnerIterator, run);
+  return propertyRunnerOut === undefined
+    ? Promise.resolve(
+        runPluginCompletionCallbacks(
+          pluginInstances,
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
+        ),
+      )
+    : propertyRunnerOut.then(() =>
+        runPluginCompletionCallbacks(
+          pluginInstances,
+          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
+        ),
+      );
+}
 
 /**
  * Run the property and reject if a plugin reports the run as an error
@@ -40,57 +66,10 @@ export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Pro
   const pluginInstances = instantiatePlugins(qParams.plugins, !qParams.noDefaultPlugins, !qParams.noGlobalPlugins);
   const preparationOutput = runPluginPreparationCallbacks(pluginInstances);
   if (preparationOutput === undefined) {
-    return postPrepare(property, qParams, pluginInstances);
+    return runPropertyAndComplete(property, qParams, pluginInstances);
   }
   return preparationOutput.then(
-    () => postPrepare(property, qParams, pluginInstances),
-    (error) => runPluginCompletionCallbacks<Ts>(pluginInstances, failedSetupToRunDetails(qParams, error)),
+    () => runPropertyAndComplete(property, qParams, pluginInstances),
+    (error) => runPluginCompletionCallbacks<Ts>(pluginInstances, createPluginSetupFailureDetails(qParams, error)),
   );
-}
-
-function postPrepare<Ts>(
-  property: Property<Ts>,
-  qParams: QualifiedParameters<Ts>,
-  pluginInstances: PluginInstance<Ts>[],
-) {
-  const generator = applyPluginGeneratorDecorators(property, pluginInstances);
-  const run = applyPluginRunDecorators(property, pluginInstances);
-
-  const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
-  const runnerIterator = createRunnerIterator(property, generator, qParams, maxSkips);
-  const propertyRunnerOut = propertyRunner(runnerIterator, run);
-  return propertyRunnerOut === undefined
-    ? Promise.resolve(
-        runPluginCompletionCallbacks(
-          pluginInstances,
-          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
-        ),
-      )
-    : propertyRunnerOut.then(() =>
-        runPluginCompletionCallbacks(
-          pluginInstances,
-          runnerIterator.runExecution.toRunDetails(qParams.seed, qParams.path, qParams),
-        ),
-      );
-}
-
-function failedSetupToRunDetails<Ts>(
-  qParams: QualifiedParameters<Ts>,
-  errorInstance: unknown,
-): RunDetailsFailurePluginSetup<Ts> {
-  return {
-    failed: true,
-    interrupted: false,
-    numRuns: 0,
-    numSkips: 0,
-    numShrinks: 0,
-    seed: qParams.seed,
-    counterexample: null,
-    counterexamplePath: null,
-    errorInstance,
-    failures: [],
-    executionSummary: [],
-    verbose: qParams.verbose,
-    runConfiguration: qParams.toParameters(),
-  };
 }
