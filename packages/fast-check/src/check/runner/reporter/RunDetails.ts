@@ -10,7 +10,11 @@ import type { Parameters } from '../configuration/Parameters.js';
  * @remarks Since 0.0.7
  * @public
  */
-export type RunDetails<Ts> = RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsSuccess<Ts>;
+export type RunDetails<Ts> =
+  | RunDetailsFailureProperty<Ts>
+  | RunDetailsFailureTooManySkips<Ts>
+  | RunDetailsFailurePluginSetup<Ts>
+  | RunDetailsSuccess<Ts>;
 
 /**
  * Run reported as failed because a plugin hook, such as `beforeAll`,
