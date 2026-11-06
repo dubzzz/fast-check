@@ -3,7 +3,7 @@ import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`Plugins (seed: ${seed})`, () => {
-  it('should run every beforeAll, onAllRunsComplete and afterAll even when one beforeAll', async () => {
+  it('should run every beforeAll, onAllRunsComplete and afterAll even when one beforeAll fails', async () => {
     await fc.assert(
       fc.property(
         fc.array(pluginDefinitionArbitrary({ onAllRunsComplete: 'neverFailing' })),
