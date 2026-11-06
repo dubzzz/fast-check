@@ -68,7 +68,7 @@ export type PluginInstance<Ts> = {
    * Called once before the assessment of the property and any execution of the predicate.
    *
    * Every `beforeAll` is guaranteed to run, even if another `beforeAll` threw.
-   * In case of failure, predicate won't be executed and the run will be reported as {@link RunDetailsFailureSetupPlugins}.
+   * In case of failure, the predicate won't be executed and the run will be reported as {@link RunDetailsFailurePluginSetup}.
    *
    * @remarks Since 5.0.0
    */

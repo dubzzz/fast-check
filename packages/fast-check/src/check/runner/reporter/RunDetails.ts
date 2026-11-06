@@ -13,20 +13,25 @@ import type { Parameters } from '../configuration/Parameters.js';
 export type RunDetails<Ts> = RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsSuccess<Ts>;
 
 /**
- * Run reported as failed because
- * the property failed
+ * Run reported as failed because a plugin hook, such as `beforeAll`,
+ * threw or rejected before any execution of the predicate.
+ *
+ * The predicate was not executed and no counterexample is available.
  *
  * Refer to {@link RunDetailsCommon} for more details
  *
  * @remarks Since 5.0.0
  * @public
  */
-export interface RunDetailsFailureSetupPlugins<Ts> extends RunDetailsCommon<Ts> {
+export interface RunDetailsFailurePluginSetup<Ts> extends RunDetailsCommon<Ts> {
   failed: true;
   interrupted: false;
   counterexample: null;
   counterexamplePath: null;
   errorInstance: unknown;
+  numRuns: 0;
+  numSkips: 0;
+  numShrinks: 0;
 }
 
 /**
