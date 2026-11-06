@@ -3,7 +3,35 @@ import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`Plugins (seed: ${seed})`, () => {
-  it('should run every beforeAll, onAllRunsComplete and afterAll even when one beforeAll fails', async () => {
+  it('should always execute the predicate and clean-ups of plugins once all beforeAll succeeded', async () => {
+    await fc.assert(
+      fc.property(fc.array(pluginDefinitionArbitrary({ beforeAll: 'neverFailing' })), async (definitions) => {
+        // Arrange
+        const predicateProbe = 'predicate';
+        const { plugins, probes, firstFailingBeforeAll, beforeAllTraces, onAllRunsCompleteTraces, afterAllTraces } =
+          buildPlugins<[number]>(definitions);
+
+        // Act / Assert
+        expect(firstFailingBeforeAll).toBeUndefined();
+        await fc
+          .assert(
+            fc.property(fc.integer(), async (_x) => {
+              probes.push(predicateProbe);
+              return true;
+            }),
+            { plugins },
+          )
+          .catch(() => {}); // we don't care of the status, it may fail because of `onAllRunsComplete` or `afterAll` or any other reason
+        expect(probes).toContainEqual(predicateProbe);
+        expect(probes.slice(0, probes.indexOf(predicateProbe))).toEqual(withStartEnd(beforeAllTraces));
+        expect(probes.slice(probes.lastIndexOf(predicateProbe) + 1)).toEqual(
+          withStartEnd([...onAllRunsCompleteTraces, ...afterAllTraces.toReversed()]),
+        );
+      }),
+    );
+  });
+
+  it('should run every beforeAll, onAllRunsComplete and afterAll but no predicate when one beforeAll fails', async () => {
     await fc.assert(
       fc.property(
         fc.array(pluginDefinitionArbitrary({ onAllRunsComplete: 'neverFailing' })),
@@ -11,10 +39,12 @@ describe(`Plugins (seed: ${seed})`, () => {
         fc.array(pluginDefinitionArbitrary({ onAllRunsComplete: 'neverFailing' })),
         async (beforeKnownFailure, knownFailure, afterFailure) => {
           // Arrange
+          const predicateProbe = 'predicate';
           const { plugins, probes, firstFailingBeforeAll, beforeAllTraces, onAllRunsCompleteTraces, afterAllTraces } =
             buildPlugins<[number]>([...beforeKnownFailure, knownFailure, ...afterFailure]);
           const expectedProbes = withStartEnd([
             ...beforeAllTraces,
+            // no predicate
             ...onAllRunsCompleteTraces,
             ...afterAllTraces.toReversed(),
           ]);
@@ -23,7 +53,10 @@ describe(`Plugins (seed: ${seed})`, () => {
           expect(firstFailingBeforeAll).toBeDefined();
           await expect(
             fc.assert(
-              fc.property(fc.integer(), async (_x) => true),
+              fc.property(fc.integer(), async (_x) => {
+                probes.push(predicateProbe);
+                return true;
+              }),
               { plugins },
             ),
           ).rejects.toMatchObject({
@@ -32,6 +65,7 @@ describe(`Plugins (seed: ${seed})`, () => {
             cause: { message: firstFailingBeforeAll },
           });
           expect(probes).toEqual(expectedProbes);
+          expect(probes).not.toContainEqual(predicateProbe);
         },
       ),
     );
