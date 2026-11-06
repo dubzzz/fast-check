@@ -4,14 +4,14 @@ const globalPlugins: { pre: UniversalPlugin[]; post: UniversalPlugin[] } = { pre
 
 /**
  * Install a plugin to be used by all the runners
- * By default, installed plugins come before the ones passed via the `plugins` option of the run.
- * Pass `'post'` as the second argument to place them after those plugins instead.
- * Both positions come before the default plugins, preserving custom error reporting precedence.
- * Plugins installed at the same position keep their installation order.
+ *
+ * Pre-installed plugins (the default) come before the ones passed via the `plugins` option of the run.
+ * Post-installed ones come after but before the default plugins.
+ *
  * Set `noGlobalPlugins: true` to skip them for a particular run.
  *
- * Plugins installed at the default `'pre'` position are the outermost ones: they are entered first when running the predicate.
- * Think of: `outer(inner(predicate))`.
+ * In other words, pre-installed plugins are the outermost ones: they are entered first when running the predicate.
+ * Think of: `pre(local(post(default(predicate))))`.
  *
  * @example
  * ```typescript
