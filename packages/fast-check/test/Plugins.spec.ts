@@ -136,12 +136,14 @@ describe(`Plugins (seed: ${seed})`, () => {
     { asyncFirst: true, asyncFailure: false },
     { asyncFirst: true, asyncFailure: true },
   ])(
-    'should stop setup on failure without teardown (async first: $asyncFirst, async failure: $asyncFailure)',
+    'should run all setup hooks and report the first failure without teardown (async first: $asyncFirst, async failure: $asyncFailure)',
     async ({ asyncFirst, asyncFailure }) => {
       // Arrange
       const probes: string[] = [];
       const error = new Error('setup failed');
-      const onAllRunsComplete = vi.fn();
+      const onAllRunsComplete = vi.fn((_details: fc.RunDetails<[number]>) => {
+        probes.push('onAllRunsComplete');
+      });
       const afterAll = vi.fn();
       const decorateGenerate = vi.fn((nested) => nested);
       const decorateRun = vi.fn((nested) => nested);
@@ -168,8 +170,11 @@ describe(`Plugins (seed: ${seed})`, () => {
         onAllRunsComplete,
       });
       const pluginC: fc.Plugin<[number]> = () => ({
-        beforeAll: () => {
-          probes.push('c::beforeAll');
+        beforeAll: async () => {
+          probes.push('c::beforeAll started');
+          await Promise.resolve();
+          probes.push('c::beforeAll done');
+          throw new Error('later setup failure');
         },
         afterAll,
         onAllRunsComplete,
@@ -178,12 +183,52 @@ describe(`Plugins (seed: ${seed})`, () => {
       // Act
       const assertion = fc.assert(fc.property(fc.integer(), predicate), {
         plugins: [pluginA, pluginB, pluginC],
+        seed: 42,
+        path: '0:0',
+        numRuns: 10,
+        verbose: fc.VerbosityLevel.VeryVerbose,
       });
 
       // Assert
-      await expect(assertion).rejects.toBe(error);
-      expect(probes).toEqual(['a::beforeAll', 'b::beforeAll']);
-      expect(onAllRunsComplete).not.toHaveBeenCalled();
+      await expect(assertion).rejects.toMatchObject({
+        message: expect.stringContaining('Property setup failed in beforeAll'),
+        cause: error,
+      });
+      expect(probes).toEqual([
+        'a::beforeAll',
+        'b::beforeAll',
+        'c::beforeAll started',
+        'c::beforeAll done',
+        'onAllRunsComplete',
+        'onAllRunsComplete',
+        'onAllRunsComplete',
+      ]);
+      expect(onAllRunsComplete).toHaveBeenCalledTimes(3);
+      const runDetails = onAllRunsComplete.mock.calls[0][0];
+      expect(runDetails).toEqual({
+        failed: true,
+        interrupted: false,
+        numRuns: 0,
+        numSkips: 0,
+        numShrinks: 0,
+        seed: 42,
+        counterexample: null,
+        counterexamplePath: null,
+        errorInstance: error,
+        failures: [],
+        executionSummary: [],
+        verbose: fc.VerbosityLevel.VeryVerbose,
+        runConfiguration: expect.objectContaining({
+          seed: 42,
+          path: '0:0',
+          numRuns: 10,
+          verbose: fc.VerbosityLevel.VeryVerbose,
+        }),
+      });
+      expect(runDetails.errorInstance).toBe(error);
+      for (const [reported] of onAllRunsComplete.mock.calls) {
+        expect(reported).toBe(runDetails);
+      }
       expect(afterAll).not.toHaveBeenCalled();
       expect(decorateGenerate).not.toHaveBeenCalled();
       expect(decorateRun).not.toHaveBeenCalled();
@@ -194,6 +239,7 @@ describe(`Plugins (seed: ${seed})`, () => {
   it.each([undefined, null, 0, false])('should preserve a falsy beforeAll error (%s)', async (error) => {
     // Arrange
     const afterAll = vi.fn();
+    const onAllRunsComplete = vi.fn<(_details: fc.RunDetails<[number]>) => void>();
 
     // Act / Assert
     await expect(
@@ -205,14 +251,131 @@ describe(`Plugins (seed: ${seed})`, () => {
               beforeAll: () => {
                 throw error;
               },
+              onAllRunsComplete,
               afterAll,
             }),
           ],
         },
       ),
-    ).rejects.toBe(error);
+    ).rejects.toMatchObject({
+      message: expect.stringContaining('Property setup failed in beforeAll'),
+      cause: error,
+    });
+    expect(onAllRunsComplete).toHaveBeenCalledOnce();
+    expect(onAllRunsComplete.mock.calls[0][0].errorInstance).toBe(error);
     expect(afterAll).not.toHaveBeenCalled();
   });
+
+  it.each([0, 5])('should let reporters handle setup failures with noDefaultPlugins (numRuns: %s)', async (numRuns) => {
+    // Arrange
+    const error = new Error('setup failed');
+    const predicate = vi.fn();
+    const onAllRunsComplete = vi.fn<(_details: fc.RunDetails<[number]>) => void>();
+    const afterAll = vi.fn();
+
+    // Act / Assert
+    await expect(
+      fc.assert(fc.property(fc.integer(), predicate), {
+        numRuns,
+        noDefaultPlugins: true,
+        plugins: [
+          () => ({
+            beforeAll: () => {
+              throw error;
+            },
+            onAllRunsComplete,
+            afterAll,
+          }),
+        ],
+      }),
+    ).resolves.toBeUndefined();
+    expect(onAllRunsComplete).toHaveBeenCalledOnce();
+    expect(onAllRunsComplete.mock.calls[0][0]).toMatchObject({ failed: true, numRuns: 0, errorInstance: error });
+    expect(predicate).not.toHaveBeenCalled();
+    expect(afterAll).not.toHaveBeenCalled();
+  });
+
+  it('should finish all setup-failure reporters and forward the first reporting error', async () => {
+    // Arrange
+    const setupError = new Error('setup failed');
+    const reportingError = new Error('custom report');
+    const probes: string[] = [];
+    const afterAll = vi.fn();
+
+    // Act / Assert
+    await expect(
+      fc.assert(
+        fc.property(fc.integer(), () => true),
+        {
+          plugins: [
+            () => ({
+              beforeAll: () => {
+                throw setupError;
+              },
+              onAllRunsComplete: async (details) => {
+                expect(details.errorInstance).toBe(setupError);
+                probes.push('first started');
+                await Promise.resolve();
+                probes.push('first done');
+                throw reportingError;
+              },
+              afterAll,
+            }),
+            () => ({
+              onAllRunsComplete: (details) => {
+                expect(details.errorInstance).toBe(setupError);
+                probes.push('second');
+                throw new Error('later reporting failure');
+              },
+              afterAll,
+            }),
+          ],
+        },
+      ),
+    ).rejects.toBe(reportingError);
+    expect(probes).toEqual(['first started', 'first done', 'second']);
+    expect(afterAll).not.toHaveBeenCalled();
+  });
+
+  it.each([false, true])(
+    'should respect includeErrorInReport for setup failures (%s)',
+    async (includeErrorInReport) => {
+      // Arrange
+      const error = new Error('setup failed');
+
+      // Act
+      const assertion = fc.assert(
+        fc.property(fc.integer(), () => true),
+        {
+          seed: 42,
+          verbose: fc.VerbosityLevel.VeryVerbose,
+          noDefaultPlugins: true,
+          plugins: [
+            () => ({
+              beforeAll: () => {
+                throw error;
+              },
+            }),
+            fc.defaultReporter({ includeErrorInReport }),
+          ],
+        },
+      );
+
+      // Assert
+      await expect(assertion).rejects.toMatchObject({
+        message: expect.stringContaining('Property setup failed in beforeAll\n{ seed: 42 }\n\nRan 0 time(s)'),
+      });
+      if (includeErrorInReport) {
+        await expect(assertion).rejects.toThrow('Got error: setup failed');
+        await expect(assertion).rejects.not.toHaveProperty('cause');
+      } else {
+        await expect(assertion).rejects.toHaveProperty('cause', error);
+        await expect(assertion).rejects.not.toThrow('Got error:');
+      }
+      await expect(assertion).rejects.not.toThrow('pre-condition');
+      await expect(assertion).rejects.not.toThrow('Counterexample:');
+    },
+  );
 
   it('should run every onAllRunsComplete and afterAll even when many throw and only forward the first error', async () => {
     // Arrange

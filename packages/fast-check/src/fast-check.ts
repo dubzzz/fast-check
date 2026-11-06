@@ -7,6 +7,7 @@ export type { Parameters } from './check/runner/configuration/Parameters.js';
 export type {
   RunDetails,
   RunDetailsFailureProperty,
+  RunDetailsFailureSetup,
   RunDetailsFailureTooManySkips,
   RunDetailsSuccess,
   RunDetailsCommon,

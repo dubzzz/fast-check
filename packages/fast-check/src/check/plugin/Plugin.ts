@@ -41,8 +41,9 @@ export type PluginInstance<Ts> = {
    * Use it to acquire resources needed by the plugin.
    *
    * Hooks run in declaration order, waiting for each returned promise before continuing.
-   * If a hook throws or rejects, remaining `beforeAll` hooks and the assessment are skipped,
-   * including `onAllRunsComplete` and `afterAll`. The assertion rejects with the original setup error.
+   * Every `beforeAll` is guaranteed to run, even if another `beforeAll` throws or rejects.
+   * If any hook fails, generation, assessment and `afterAll` are skipped. Every `onAllRunsComplete`
+   * receives a {@link RunDetailsFailureSetup} with zero runs and the first setup error as `errorInstance`.
    *
    * @remarks Since 5.0.0
    */
@@ -67,7 +68,7 @@ export type PluginInstance<Ts> = {
    */
   decorateRun?: (nestedRun: Property<Ts>['run']) => Property<Ts>['run'];
   /**
-   * Called once at the end of the full property assessment, with the result of the execution.
+   * Called once with the result of the full property assessment or a setup failure.
    *
    * Throwing allows you to override the default error reporting provided by {@link assert}.
    *

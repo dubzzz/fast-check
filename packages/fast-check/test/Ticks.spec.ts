@@ -37,7 +37,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       kind: 'sync',
       plugins: [buildPromiseReturningPassThroughPlugin()],
       extraTicks: {
-        startupTicks: 1, // 1 to resume after beforeAll
+        startupTicks: 2, // 1 to settle beforeAll, 1 to start the assessment
         ticksPerRun: 1, // 1 to handle the wrapped result
         fixedCompletionTicks: 5, // 2 hook continuations, 1 result propagation, 1 runner completion continuation, 1 setup result propagation
       },
@@ -47,7 +47,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       kind: 'async',
       plugins: [buildPromiseReturningPassThroughPlugin()],
       extraTicks: {
-        startupTicks: 1, // 1 to resume after beforeAll
+        startupTicks: 2, // 1 to settle beforeAll, 1 to start the assessment
         ticksPerRun: 0, // Promise.resolve reuses nestedRun's promise
         fixedCompletionTicks: 4, // 2 hook continuations, 1 result propagation, 1 setup result propagation
       },

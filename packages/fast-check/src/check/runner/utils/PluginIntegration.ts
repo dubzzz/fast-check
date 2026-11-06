@@ -30,25 +30,7 @@ export function instantiatePlugins<Ts>(
 }
 
 export function runPluginSetupCallbacks<Ts>(pluginInstances: PluginInstance<Ts>[]): void | Promise<void> {
-  let continuation: Promise<void> | undefined;
-  try {
-    for (const pluginInstance of pluginInstances) {
-      if (pluginInstance.beforeAll === undefined) {
-        continue;
-      }
-      if (continuation === undefined) {
-        const out = pluginInstance.beforeAll();
-        if (out !== undefined) {
-          continuation = out;
-        }
-      } else {
-        continuation = continuation.then(() => pluginInstance.beforeAll?.());
-      }
-    }
-  } catch (error) {
-    return Promise.reject(error);
-  }
-  return continuation;
+  return runAllCallbacksAndReturn(undefined, (index) => pluginInstances[index].beforeAll?.(), pluginInstances.length);
 }
 
 export function applyPluginGeneratorDecorators<Ts>(
@@ -90,7 +72,8 @@ export function runPluginCompletionCallbacks<Ts>(
     return;
   }
   const halfCount = pluginInstances.length;
-  const count = halfCount * 2;
+  const skipTeardown = runDetails.failed && !runDetails.interrupted && runDetails.counterexamplePath === null;
+  const count = skipTeardown ? halfCount : halfCount * 2;
   return runAllCallbacksAndReturn(
     undefined,
     (index) =>

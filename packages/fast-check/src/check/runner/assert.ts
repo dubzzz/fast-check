@@ -5,6 +5,7 @@ import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { propertyRunner } from './PropertyRunner.js';
+import type { RunDetailsFailureSetup } from './reporter/RunDetails.js';
 import { createRunnerIterator } from './utils/RunnerIteratorBuilder.js';
 import {
   applyPluginGeneratorDecorators,
@@ -13,6 +14,29 @@ import {
   runPluginCompletionCallbacks,
   runPluginSetupCallbacks,
 } from './utils/PluginIntegration.js';
+
+function reportPluginSetupFailure<Ts>(
+  qParams: QualifiedParameters<Ts>,
+  pluginInstances: PluginInstance<Ts>[],
+  error: unknown,
+): void | Promise<void> {
+  const runDetails: RunDetailsFailureSetup<Ts> = {
+    failed: true,
+    interrupted: false,
+    numRuns: 0,
+    numSkips: 0,
+    numShrinks: 0,
+    seed: qParams.seed,
+    counterexample: null,
+    counterexamplePath: null,
+    errorInstance: error,
+    failures: [],
+    executionSummary: [],
+    verbose: qParams.verbose,
+    runConfiguration: qParams.toParameters(),
+  };
+  return runPluginCompletionCallbacks(pluginInstances, runDetails);
+}
 
 function assertAfterPluginSetup<Ts>(
   property: Property<Ts>,
@@ -65,5 +89,8 @@ export function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Pro
   const setupOut = runPluginSetupCallbacks(pluginInstances);
   return setupOut === undefined
     ? assertAfterPluginSetup(property, qParams, pluginInstances)
-    : setupOut.then(() => assertAfterPluginSetup(property, qParams, pluginInstances));
+    : setupOut.then(
+        () => assertAfterPluginSetup(property, qParams, pluginInstances),
+        (error) => reportPluginSetupFailure(qParams, pluginInstances, error),
+      );
 }

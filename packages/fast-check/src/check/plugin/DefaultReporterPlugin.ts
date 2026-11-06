@@ -2,6 +2,7 @@ import type { UniversalPlugin } from './Plugin.js';
 import type {
   RunDetails,
   RunDetailsFailureProperty,
+  RunDetailsFailureSetup,
   RunDetailsFailureTooManySkips,
 } from '../runner/reporter/RunDetails.js';
 import { buildErrorMessage } from '../runner/utils/RunDetailsFormatter.js';
@@ -66,18 +67,28 @@ function preFormatFailure<Ts>(
   return { message };
 }
 
+function formatSetupFailure<Ts>(out: RunDetailsFailureSetup<Ts>, includeErrorInReport: boolean) {
+  const messageErrorPart = includeErrorInReport
+    ? `\nGot ${prettyError(out.errorInstance).replace(/^Error: /, 'error: ')}`
+    : '';
+  return `Property setup failed in beforeAll\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)${messageErrorPart}`;
+}
+
 function reportRunDetails<Ts>(out: RunDetails<Ts>, options: DefaultReporterOptions): Promise<void> | void {
   if (!out.failed) {
     return;
   }
   const includeErrorInReport = options.includeErrorInReport ?? false;
-  const errorMessage = buildErrorMessage(
-    (stringifier) =>
-      out.counterexamplePath === null
-        ? preFormatTooManySkipped(out)
-        : preFormatFailure(out, stringifier, includeErrorInReport),
-    out,
-  );
+  const errorMessage =
+    out.counterexamplePath === null && !out.interrupted
+      ? formatSetupFailure(out, includeErrorInReport)
+      : buildErrorMessage(
+          (stringifier) =>
+            out.counterexamplePath === null
+              ? preFormatTooManySkipped(out)
+              : preFormatFailure(out, stringifier, includeErrorInReport),
+          out,
+        );
   const throwError = (message: string): never => {
     throw new Error(message, includeErrorInReport ? undefined : { cause: out.errorInstance });
   };

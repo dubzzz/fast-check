@@ -10,7 +10,11 @@ import type { Parameters } from '../configuration/Parameters.js';
  * @remarks Since 0.0.7
  * @public
  */
-export type RunDetails<Ts> = RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsSuccess<Ts>;
+export type RunDetails<Ts> =
+  | RunDetailsFailureProperty<Ts>
+  | RunDetailsFailureSetup<Ts>
+  | RunDetailsFailureTooManySkips<Ts>
+  | RunDetailsSuccess<Ts>;
 
 /**
  * Run reported as failed because
@@ -26,6 +30,26 @@ export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
   interrupted: boolean;
   counterexample: Ts;
   counterexamplePath: string;
+  errorInstance: unknown;
+}
+
+/**
+ * Run reported as failed because a plugin's `beforeAll` hook threw or rejected.
+ * No values were generated or assessed. The first setup error is preserved in `errorInstance`.
+ *
+ * Refer to {@link RunDetailsCommon} for more details.
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+export interface RunDetailsFailureSetup<Ts> extends RunDetailsCommon<Ts> {
+  failed: true;
+  interrupted: false;
+  numRuns: 0;
+  numSkips: 0;
+  numShrinks: 0;
+  counterexample: null;
+  counterexamplePath: null;
   errorInstance: unknown;
 }
 
@@ -82,6 +106,7 @@ export interface RunDetailsCommon<Ts> {
    * Number of runs
    *
    * - In case of failed property: Number of runs up to the first failure (including the failure run)
+   * - In case of failed setup: Zero, as the property was not assessed
    * - Otherwise: Number of successful executions
    *
    * @remarks Since 1.0.0

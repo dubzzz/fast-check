@@ -11,6 +11,14 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
+// RunDetails
+// Setup failures are distinct from property failures and too many skips, with no predicate runs.
+expectTypeOf<
+  Extract<fc.RunDetails<[number]>, { failed: true; interrupted: false; counterexamplePath: null }>
+>().toEqualTypeOf<fc.RunDetailsFailureSetup<[number]>>();
+expectTypeOf<fc.RunDetailsFailureSetup<[number]>['numRuns']>().toEqualTypeOf<0>();
+expectTypeOf<fc.RunDetailsFailureSetup<[number]>['errorInstance']>().toEqualTypeOf<unknown>();
+
 // property
 // "property" instantiates instances compatible with Property
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();

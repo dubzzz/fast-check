@@ -112,7 +112,11 @@ await fc.assert(myProp, { plugins: [databasePlugin] });
 
 All plugins are instantiated first. Their `beforeAll` hooks then run in declaration order, before generator or predicate decorators are applied. Each hook finishes before the next starts, including when synchronous and asynchronous hooks are mixed. Setup runs even when `numRuns` is zero.
 
-If a `beforeAll` throws or rejects, the remaining setup hooks, property assessment, `onAllRunsComplete` and `afterAll` hooks are skipped. The assertion rejects with the original setup error without running teardown. After successful setup, `afterAll` hooks run in reverse declaration order once the assessment completes.
+Every `beforeAll` runs, even if an earlier setup hook throws or rejects. Once all setup hooks finish, any setup failure skips generation, property assessment and `afterAll`.
+
+Every `onAllRunsComplete` receives the same `RunDetailsFailureSetup` result: `failed` is `true`, `interrupted` is `false`, the run, skip and shrink counts are zero, and both `counterexample` and `counterexamplePath` are `null`. Its `errorInstance` is the first setup error, preserved unchanged even if later setup hooks also fail. The failure list and execution summary are empty because no property values were assessed.
+
+Setup failures use the normal reporting flow. The default reporter rejects with a setup-failure message and exposes the original error as its cause. With `noDefaultPlugins: true`, your completion reporters decide whether the assertion rejects. After successful setup, `afterAll` hooks run in reverse declaration order once the assessment completes.
 
 ## The plugins
 
