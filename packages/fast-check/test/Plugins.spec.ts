@@ -3,7 +3,7 @@ import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`Plugins (seed: ${seed})`, () => {
-  it('should run every beforeAll, onAllRunsComplete and afterAll even when one beforeAll threw but report first error', async () => {
+  it('should run every beforeAll, onAllRunsComplete and afterAll even when one beforeAll', async () => {
     await fc.assert(
       fc.property(
         fc.array(pluginDefinitionArbitrary({ onAllRunsComplete: 'neverFailing' })),
@@ -13,19 +13,25 @@ describe(`Plugins (seed: ${seed})`, () => {
           // Arrange
           const { plugins, probes, firstFailingBeforeAll, beforeAllTraces, onAllRunsCompleteTraces, afterAllTraces } =
             buildPlugins<[number]>([...beforeKnownFailure, knownFailure, ...afterFailure]);
-          expect(firstFailingBeforeAll).toBeDefined();
+          const expectedProbes = withStartEnd([
+            ...beforeAllTraces,
+            ...onAllRunsCompleteTraces,
+            ...afterAllTraces.toReversed(),
+          ]);
 
           // Act / Assert
+          expect(firstFailingBeforeAll).toBeDefined();
           await expect(
             fc.assert(
               fc.property(fc.integer(), async (_x) => true),
               { plugins },
             ),
           ).rejects.toMatchObject({
+            // thrown by default reporter plugin as no onAllRunsComplete is failing
             message: expect.stringContaining('Property could not start because plugin setup failed'),
             cause: { message: firstFailingBeforeAll },
-          }); // thrown by default reporter plugin
-          expect(probes).toEqual([...beforeAllTraces, ...onAllRunsCompleteTraces, ...afterAllTraces.toReversed()]);
+          });
+          expect(probes).toEqual(expectedProbes);
         },
       ),
     );
@@ -468,6 +474,10 @@ function pluginDefinitionArbitrary(
   );
 }
 
+function delay0() {
+  return new Promise<void>((r) => setTimeout(r, 0));
+}
+
 function buildPlugins<Ts>(definitions: PluginDefinition[]) {
   let firstFailingBeforeAll: string | undefined = undefined;
   let firstFailingOnAllRunsComplete: string | undefined = undefined;
@@ -477,15 +487,24 @@ function buildPlugins<Ts>(definitions: PluginDefinition[]) {
   const afterAllTraces: string[] = [];
   const probes: string[] = [];
   function buildMethod(trace: string, method: { isSync: boolean; isFailing: boolean }) {
+    const startTrace = `${trace}//start`;
+    const endTrace = `${trace}//end`;
     return () => {
-      probes.push(trace);
+      probes.push(startTrace);
       if (method.isSync) {
+        probes.push(endTrace);
         if (method.isFailing) {
           throw new Error(trace);
         }
         return;
       }
-      return method.isFailing ? Promise.reject(new Error(trace)) : Promise.resolve();
+      return delay0().then(() => {
+        probes.push(endTrace);
+        if (method.isFailing) {
+          throw new Error(trace);
+        }
+        return;
+      });
     };
   }
   const plugins = definitions.map((definition, index): fc.Plugin<Ts> => {
@@ -529,4 +548,8 @@ function buildPlugins<Ts>(definitions: PluginDefinition[]) {
     onAllRunsCompleteTraces,
     afterAllTraces,
   };
+}
+
+function withStartEnd(traces: string[]) {
+  return traces.flatMap((trace) => [`${trace}//start`, `${trace}//end`]);
 }
