@@ -75,7 +75,9 @@ jobs:
           - name: Check dependency trust and deduplication
             run: pnpm dedupe --check --ignore-scripts
           - name: Typecheck
-            run: node --run typecheck
+            run: |
+              sed -i '/"compilerOptions": {/a\    "paths": { "fast-check": ["../packages/fast-check/src/fast-check.ts"] },' playground/tsconfig.json
+              node --run typecheck
   production_packages:
     name: 'Build production packages'
     needs: warmup_pnpm_cache

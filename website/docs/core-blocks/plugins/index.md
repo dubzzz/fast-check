@@ -30,9 +30,27 @@ Plugins needed by all your properties can be installed once, typically in a [set
 
 ```ts
 fc.installGlobalPlugin(pluginA());
+// equivalent to: fc.installGlobalPlugin(pluginA(), 'pre');
 ```
 
-Installed plugins run before the ones passed to the runner, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` is equivalent to `plugins: [pluginA(), pluginB()]`.
+By default, any installed plugin is flagged as pre-installed. As such, it runs before the ones passed to the runner and the default ones, so the snippet above followed by `fc.assert(myProp, { plugins: [pluginB()] })` results in the plugin order `[pluginA(), pluginB(), ...defaults]`. You can also pass `'pre'` explicitly as the second argument to make the position clearer.
+
+But globally installed plugins can also be post-installed by passing `'post'`:
+
+```ts
+fc.installGlobalPlugin(pluginC(), 'post');
+```
+
+With both installations above, `fc.assert(myProp, { plugins: [pluginB()] })` results in the plugin order `[pluginA(), pluginB(), pluginC(), ...defaults]`.
+
+The resulting order is:
+
+1. Global plugins installed with `'pre'` (the default)
+2. Plugins passed to the runner through `plugins`
+3. Global plugins installed with `'post'`
+4. Default plugins
+
+Within each global position, plugins keep their installation order, even when calls installing `'pre'` and `'post'` plugins are interleaved.
 
 To skip globally installed plugins for one assertion, set `noGlobalPlugins: true`:
 
@@ -43,7 +61,7 @@ await fc.assert(myProp, {
 });
 ```
 
-Global plugins are not instantiated for this assertion. Plugins passed through `plugins` and default ones still apply. The installed plugins remain available to other assertions.
+Global plugins at both positions are not instantiated for this assertion. Plugins passed through `plugins` and default ones still apply. The installed plugins remain available to other assertions.
 
 `noGlobalPlugins` and `noDefaultPlugins` are independent. Set both to `true` to run only the plugins explicitly passed through `plugins`. Passing `plugins: []` alone does not disable globally installed plugins or default plugins.
 

@@ -7,6 +7,11 @@ slug: /introduction/getting-started/
 
 Get started with fast-check in an existing project.
 
+## Try it online
+
+Try fast-check in your browser with the [playground](https://fast-check.dev/new).
+It opens an editable example on StackBlitz with Vitest UI, without installing anything locally.
+
 ## Install the package
 
 fast-check can be installed into any existing project by running the following command:

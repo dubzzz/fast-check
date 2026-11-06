@@ -10,14 +10,18 @@ export function instantiatePlugins<Ts>(
   addDefaultPlugins: boolean,
   addGlobalPlugins: boolean,
 ): PluginInstance<Ts>[] {
-  const globalPlugins = addGlobalPlugins ? readInstalledGlobalPlugins() : [];
+  const globalPrePlugins = addGlobalPlugins ? readInstalledGlobalPlugins('pre') : [];
+  const globalPostPlugins = addGlobalPlugins ? readInstalledGlobalPlugins('post') : [];
   const pluginStore = new Map<symbol, any>();
   const pluginInstances: PluginInstance<Ts>[] = [];
-  for (let index = 0; index !== globalPlugins.length; ++index) {
-    pluginInstances.push(globalPlugins[index](index, pluginStore));
+  for (let index = 0; index !== globalPrePlugins.length; ++index) {
+    pluginInstances.push(globalPrePlugins[index](pluginInstances.length, pluginStore));
   }
   for (let index = 0; index !== localPlugins.length; ++index) {
-    pluginInstances.push(localPlugins[index](globalPlugins.length + index, pluginStore));
+    pluginInstances.push(localPlugins[index](pluginInstances.length, pluginStore));
+  }
+  for (let index = 0; index !== globalPostPlugins.length; ++index) {
+    pluginInstances.push(globalPostPlugins[index](pluginInstances.length, pluginStore));
   }
   if (addDefaultPlugins) {
     pluginInstances.push(defaultReporter()<Ts>(pluginInstances.length, pluginStore));

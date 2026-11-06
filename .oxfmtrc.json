@@ -12,6 +12,7 @@
     "packages/*/lib-*/",
     "packages/fast-check/docs/",
     "packages/fast-check/documentation/Arbitraries.md",
+    "playground/tsconfig.json",
     "website/.docusaurus/",
     "website/build/",
     "pnpm-lock.yaml"

@@ -11,13 +11,14 @@
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "12.16.1",
+      "version": "12.18.0",
       "onFail": "download"
     }
   },
   "workspaces": [
     "examples",
     "packages/*",
+    "playground",
     "website"
   ],
   "scripts": {
