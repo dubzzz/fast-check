@@ -309,7 +309,7 @@ Generate objects (key/values).
 **Signatures:**
 
 - `fc.object()`
-- `fc.object({key?, depthSize?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, withSparseArray?, withUnicodeString?, stringUnit?, values?})`
+- `fc.object({key?, depthSize?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, withSparseArray?, stringUnit?, values?})`
 
 **with:**
 
@@ -327,7 +327,6 @@ Generate objects (key/values).
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
 - `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
-- `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters — shadowed by `stringUnit`_
 - `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root\* values - \*non-object ones_
 
@@ -387,14 +386,14 @@ fc.object({
   withSet: true,
   withTypedArray: true,
   withSparseArray: true,
-  withUnicodeString: true,
+  stringUnit: 'binary',
 });
 // Examples of generated values:
-// • {}
-// • {"𐝥򾫽򄓎𥸕򽊶󱂝綖":{__proto__:null,"򉘤𿴀􀡹񻞏􃆢󂼾󺉁𤻎󁑹󩨭":"new Number(5.458711183935786e+215)","\"\"":new Set([new Number(1686253219047085),true,Int16Array.from([10302,-27949,-29021,24723,-11763,-18801,-19663,-18459,12850])]),"new Number(5e-324)":"-0"},"\f\u0002𑬋\u0013尢񬏖𦛐򂆶ɠ":{__proto__:null,"󲴥󏜠򬃴":{},"񢬬𬘃񍦎𨴓򌥱򑲮󷋴򧡥𦹎񮮻":Uint8ClampedArray.from([]),"󢎆򐵂􍨌𣏓⢋򄓢𰌂􃙼":new Set([])},"𺾾\u0013":"[new Date(\"+199949-01-15T23:52:40.850Z\"),,new Map([]),,,,,,,,,,new Set([])]","":"[,,,,,,,,,[new Number(-4.795564171877426e+236)],,,,,,{__proto__:null},,,,,,,,,,Int8Array.from([-113,-67,-56])]","key":[,false,null,,new Number(9007199254740959),,,[new Boolean(false),new Number(3724061929566901),new Number(-7372615360579485),-7.361759871661146e-202,null],,,,,,,,,,,,,,,,new String("񂱹񘢡򳀛󀹧􃕱"),,{__proto__:null}],"򁵩󞮦򃲡񸟁𼣦𶽶򗧓񁠑":new Set([new String("𮂌ᖎ󫥝󜓱󳓀𑱺򱗦񼂠ࡖ"),-3.847406447449319e-89,new Number(8298211776614103),49n,undefined,new Boolean(true),new String("")]),"򰐒":["",new String("⿉𿪜􇗩"),new Boolean(false),new Date("+118146-08-05T10:05:56.688Z"),new String("򥃰𬦤򻍍"),{__proto__:null,"񓵆𦔥󈰼󟔭򑂬𖄋񉾻𭩼𗿎":new Number(6.522297597960645e-14),"":new Number(-6.728808432004023e+262),"򶂲򚥹񅢉󁊕񐚟":new String("򰳤􅶘"),"򬣩񓓇𶶔":3540588323489533,"󯡑󨞥򰉠򥫈󎣖󞜶":44119011850976948121895437905885116843861401549693331493760497255609461576504n,"򵶳񍏫𓹹":new Date("+226162-11-25T01:27:32.358Z"),"𤋡󚼔򻤌񺫢":new Number(-4884532756660935),"񱎅򘇈󅆲򚏵󪹫񌋬":-7.273699996711733e-158,"򓶺񸠋􈛛󇳪񑕻񪬞񎝥":-5215843404949390},-45101120397201666342622633693573916723456803034798756065250732521667458179229n],"㑦𣤢򱹧񢚓򣚫򳦃񋧰􉇼":1.7976931348623155e+308}
-// • {__proto__:null,"򄹝񀱭":Int32Array.from([]),"𹼵񴝊󁬄󔧿􋮓󛶿𐔕򑱌𗶅󤪰":{__proto__:null,"\"\\\"[,,,,,,,,,,,,,,,new Number(-4874476478860247),,,]\\\"\"":"false","𯊃򻱭񤒌񏈺󐓊ᙑ𽢕𩯛뤴񿬟":new Number(-6.836843406075715e+75),"򠋵򏷎􃜢𤂁𵖝𿝴򀙌":new Map([])},"񛵻񫳴􉳿􊼼쩱򱫗񣈪":"new Map([[\"󐗢򹛁䃫􏱾􁞤󍦾󽙲򆡭򠙺\",\"񾃪񭳵󞹛\"],[\"󟈒㙿窶󝩉񴋩􎈁򤚁򕇾𗓍\",new Number(-3.3040757852586915e+297)]])","򤻰󽎪":"new Map([[\"셎򟠗𷒚\",new String(\"񫾃񗌿򴹶󂀴򦝸񺯙󴣠󼶓򚜞򉚂\")],[\"𤧓媄󤑁󍠈򺽡򁥔󜻑񑴆\",-5.266986151946873e+167],[\"򻳡􋡔񊒜𙽍\",new Number(1.9045606177953824e-228)],[\"񳷠󁲚򆴘눡\",2.152516341623135e-119],[\"񁫹𾙼\",new Boolean(true)],[\"򊿬󦚔򝮵񳲢򲌲􆦌􉫴쳟󪐂\",-34792858776756117278644791631482107040200676854821362073707882618437886127898n],[\"󉴖𨻎򳯔񔻲\",new Boolean(false)]])","񜵊𢙻򊣐󘗎":Float32Array.from([3.953742898497385e+27,-1.4968198983941093e+37,2.1378159814006222e-19,-5.975647719970438e+27,-7.4963662101092645e+34,1006941660774400,2.3448919673383373e+37,3218825390587904,-2.207468445707193e-17])}
-// • {"󿤡񜰁󠸂":new Set([]),"\u000e󫴜𓍚":Int8Array.from([-46,-72,-12,-70,56,120,-31,124,52,-33]),"key":{"new Map([])":true,"\u0006\u000e򭈸":"","":new Boolean(false),"񔼚𥝸𳘔񅡾򂆇𔚋򜟛򫡁":[,,,,,,,,,,,,,,,,,,,,],"󵼎f􏿰call𮯙is":new Boolean(true)},"򡉖󇿎򢡡󠉛񣎌򇿚𧉟󦌭򜟨":["new Number(507999912516761)"]}
-// • {__proto__:null,"򱗫":new Map([]),"𷢑􉎦񯢉󅌓󤑵򙺿":Uint32Array.from([1826204194,2417112435,3273159995,841539727,2942351593,1381423026]),"𰂻󎂹򅳾򈼥򧇮򿌮":new Map([["",new Number(-6836057403391378)],["new Date(\"-258207-08-18T07:39:50.664Z\")",[,,,,,,undefined,,,"򒺩񐥐𘕌𖗦",,,,null,,,true,,,null,,,,new Number(1.671293499166144e+258),,,,,new String("𨒻")]],["𭔠󆄚𷯒􃤎򂜝򈐩󂵮𴎑",[]],["󔣇𩎛",7450092990975770512403169950929642875345590091738868787170647984611280981985n]]),"󫢀񲏑򥺪򤥲󥽏":new Map([[new Number(-7494229427661387),new String("򣻶򟉡𳬥𕫤󻣤𥏙󼭧򈓼򼧃")],[-23176574200426617453381026519592490931781297414960701128396696332593406842216n,new Number(2614490335475399)],[new Number(-1710329527405157),new Number(1600726382590017)],[2.4396515589282044e+33,-40062093534296937501748016010257849709288299651944876442585854714003078112906n],[new Number(-7.018516949158452e-87),-5410901546108148],[-4.6221687073338154e+265,new Date("+120633-04-04T13:13:22.144Z")],["󻐳󯋉󅧪𠱺񽁜綌𩕊򳭱򯬶",""],[true,-4508479720680676],[false,4.413487126217534e+163],[null,new Date("-062403-09-14T13:14:48.775Z")]]),"򥊋󏳬𖱀󼪉򡭓񗓱􇲝󯒘":new Date("+252329-01-04T02:02:12.616Z"),"󄘒":false,"󂮃":new String("򖠱􋵸𭊎􄀜󮲅򫾼񻷵󿚨")}
+// • {__proto__:null,"𰻱𑶤𺪑󃥪񊿈󶅉􈹾򹓡򆁟":new Set([new Number(-4.539245569755607e+78),true,new Date("-062662-10-13T03:47:43.925Z"),new String("􍩥񮃗񁅷􇷻󭛁"),1.0886235696968947e+240,null,new String("󧴻𩬶􀜘􀫋𮟩"),new Number(5260756349353269)])}
+// • {"𾃍󊿀򩵤󶭌":Uint32Array.from([3525331117]),"񂽪򌪟":{"󢔨𡇔𣍼󘏏":-4.581115131551448e+198,"𽞞򮵥򱥺􇔛󨣆򨓉񰁞":new Date("+072439-12-15T04:41:53.558Z"),"􊖇􈋂񡏂󄩄񉱫󓧈񺺑󕎤":false,"\"񽍢󡩍𛅙\"":new Map([]),"󽧫򴟲񿺷󕥆񱞃򦕃󮁹嗂":null,"󫢅񎞥񦅷񠩎򰉑":[true,null,-47176364463675964841238719861465503407680120771862815279408271999183036017209n,"󩉫򧎾􆡓",new String("󽏹񨰿󻉸򏩸𬲹򇵪󧺩񞫗𿏎𵽣"),new Boolean(true)]}}
+// • {__proto__:null,"valueOf":[905015983362557,"􊹅􄮀",Uint32Array.from([2179536137,16689176,1491003272,2263339788,3344434292,446240506,127364256,278108951,952474616,2126694980]),new Number(4991892160223293)],"񶦍򐐥󑠕󭂧񲴀򁜫󇏼ҕ񻤩":Int16Array.from([]),"𱲤򋝤􉅟񽬜𾫕󅾧":false,"恕阒":[2.4688589287798766e-167,8110989220561255,{},null,-4.505195455753882e-273],"񳒐\u0005򩙤\u0001󑵗𑊆񱱫񖌷󎍳":[new Number(13),-39075725674097423291782190797854690559182113260431387720985451121064733036268n,new Date("-132915-08-06T03:13:07.628Z"),null,-57896044618658097711785492504343953926634992332820282019728792003956564819928n,new Number(-7.4e-323),"񌍖\u0014񾫊\u0014󪍙\n",undefined,"Ṇ򧩖򼊮񳱼䒙","\r񼲐\n\u0006񴦔󻥚򑱣􏿱"],"":[false,,,Uint16Array.from([58410,13922]),,,,,,,,,,,,,,,,,,,,,,"\"[,,,,,,,,,,,,,,,,,,,,,,,,,,,]\""],"l":new Set([new Number(-4324877024762989),new String("ꥁ񡖪뛷"),"󯔬󟌸񿧎򻗵󒔂򷟺񳋡󞝪匂",undefined,-41061354347769021590585168711417922438300178603139828034513456683961995412447n,new Number(9.860336635010953e-61),new String("񱴝􉥊򁼤"),true,new Boolean(false)]),"\u0014\u0014\u0014\b":{"򥹪\u0010𤱨\u0000𥗏":[],"key":[new Date("+227125-02-22T06:42:48.648Z"),new Map([]),new Set([])]},"name":new Map([[-1.7976931348623125e+308,[]],["1.7976931348623153e+308","[]"],[{},[]]])}
+// • {__proto__:null,"󺜿򷸉󃰁򞾖󺔵":[,,,,,,,,,,,,,,,,],"󙗏򩸄񯬼𱰨򄞧􆅋񃳐𘌽":Uint16Array.from([3913,11691,14366,64582,22368,123,4015,34065]),"򤌿򸅇":["塍񝱦򠭅",new Number(1.7976931348623157e+308),new Number(-8998827767507172),new Boolean(true),new Number(-1.524376890020046e-237),new Number(-1.6338651267943743e+251),new Boolean(true),-1.1089019914669168e+174]}
+// • {__proto__:null,"󋼔򆩕򧣖󲹜󆌾":new Map([["𽕪򩏊󒉏􊅼򿜈𶥝󱯠",{}],["྿񡀻",null],["",undefined],["񌒉􀸿𔼩񡍓󷯘񳜈񄣖𬐗𦚴󾵪",[]]])}
 // • …
 
 fc.object({
@@ -421,7 +420,7 @@ Generate any kind of entities.
 **Signatures:**
 
 - `fc.anything()`
-- `fc.anything({key?, depthSize?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, withSparseArray?, withUnicodeString?, stringUnit?, values?})`
+- `fc.anything({key?, depthSize?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, withSparseArray?, stringUnit?, values?})`
 
 **with:**
 
@@ -439,8 +438,7 @@ Generate any kind of entities.
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
 - `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
-- `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters_
-- `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary — shadowed by `stringUnit`_
+- `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root\* values - \*non-object ones_
 
 **Usages:**
@@ -494,14 +492,14 @@ fc.anything({
   withSet: true,
   withTypedArray: true,
   withSparseArray: true,
-  withUnicodeString: true,
+  stringUnit: 'binary',
 });
 // Examples of generated values:
-// • {}
-// • Float32Array.from([])
-// • "񝾎򹬲񗑉󖑪"
-// • [,,,,,,,,,,,,,,"𰭜󈟛򐠛񣘮񺠢􏍎𕾴𐺫񪎯񢔆",,-5.3675543270540993e-284,[],,8219533680919757,null,new Number(2.1773262360012777e-144),new Boolean(false),,,,1.3222487924603757e-133,,,,]
-// • [,,,false,new Number(-1.599410877348038e+79),,43191232019149202439704040983801711618185659722841871029570904665841503300146n,,,,,undefined,-464687703824889,,,,,,,,,,,new String("򵠣󈱷󘠦񱵴"),,,,false,-1.2182093470461338e-165]
+// • "Uint16Array.from([53182,0,4,6,25929,65528,18436,59190])"
+// • {__proto__:null,"񆘫󯻕𓲓":"-0","toString":new Set([])}
+// • ""
+// • {__proto__:null,"name\fppl":-6941269085696329146163175412746620343296644761384769470252449906252644935385n,"񌚬󽿡񁺊𙯸񀙨椇򵔤":new Number(74711227181270.42),"󢫬􄜄":new Set([]),"𵍃񎪓򦍛򁄼򹔊":new Date("1969-12-31T23:59:59.969Z"),"":{__proto__:null}}
+// • [,,-1.7976931348623135e+308,,new Number(9007199254740976),,undefined,,,,,,,,,,,,,,,,,,,new Number(-4.052584823476833e-249),,{},,]
 // • …
 
 fc.anything({

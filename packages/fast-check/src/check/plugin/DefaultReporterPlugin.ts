@@ -4,7 +4,7 @@ import type {
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
 } from '../runner/reporter/RunDetails.js';
-import { reportError } from '../runner/utils/RunDetailsFormatter.js';
+import { buildErrorMessage } from '../runner/utils/RunDetailsFormatter.js';
 
 function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>) {
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
@@ -50,8 +50,11 @@ function prettyError(errorInstance: unknown) {
   return 'Failed to serialize errorInstance';
 }
 
-function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
-  const includeErrorInReport = out.runConfiguration.includeErrorInReport;
+function preFormatFailure<Ts>(
+  out: RunDetailsFailureProperty<Ts>,
+  stringifyOne: (value: Ts) => string,
+  includeErrorInReport: boolean,
+) {
   const messageErrorPart = includeErrorInReport
     ? `\nGot ${prettyError(out.errorInstance).replace(/^Error: /, 'error: ')}`
     : '';
@@ -63,16 +66,40 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
   return { message };
 }
 
-function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
+function reportRunDetails<Ts>(out: RunDetails<Ts>, options: DefaultReporterOptions): Promise<void> | void {
   if (!out.failed) {
     return;
   }
-  return reportError(
+  const includeErrorInReport = options.includeErrorInReport ?? false;
+  const errorMessage = buildErrorMessage(
     (stringifier) =>
-      out.counterexamplePath === null ? preFormatTooManySkipped(out) : preFormatFailure(out, stringifier),
+      out.counterexamplePath === null
+        ? preFormatTooManySkipped(out)
+        : preFormatFailure(out, stringifier, includeErrorInReport),
     out,
   );
+  const throwError = (message: string): never => {
+    throw new Error(message, includeErrorInReport ? undefined : { cause: out.errorInstance });
+  };
+  return typeof errorMessage === 'string' ? throwError(errorMessage) : errorMessage.then(throwError);
 }
+
+/**
+ * Options for {@link defaultReporter}.
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+export type DefaultReporterOptions = {
+  /**
+   * Include the original error in the report message instead of exposing it as the cause.
+   *
+   * @defaultValue `false`
+   *
+   * @remarks Since 5.0.0
+   */
+  includeErrorInReport?: boolean;
+};
 
 /**
  * Report failed runs using fast-check's default error message.
@@ -86,9 +113,11 @@ function reportRunDetails<Ts>(out: RunDetails<Ts>): Promise<void> | void {
  * );
  * ```
  *
+ * @param options - Options controlling how failures are reported
+ *
  * @remarks Since 5.0.0
  * @public
  */
-export function defaultReporter(): UniversalPlugin {
-  return () => ({ onAllRunsComplete: reportRunDetails });
+export function defaultReporter(options: DefaultReporterOptions = {}): UniversalPlugin {
+  return () => ({ onAllRunsComplete: (runDetails) => reportRunDetails(runDetails, options) });
 }

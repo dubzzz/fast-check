@@ -40,7 +40,7 @@ const anythingEnableAll: fc.ObjectConstraints = {
   withDate: true,
   withTypedArray: true,
   withSparseArray: true,
-  withUnicodeString: true,
+  stringUnit: 'binary',
   withBigInt: true,
 };
 

@@ -1,0 +1,21 @@
+{
+  "name": "fast-check-playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@vitest/ui": "^5.1.0",
+    "fast-check": "latest",
+    "typescript": "~7.0.2",
+    "vitest": "^5.1.0"
+  },
+  "stackblitz": {
+    "startCommand": "npm run test:ui"
+  }
+}

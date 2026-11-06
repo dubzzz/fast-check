@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import * as fc from '../src/fast-check.js';
-import { readInstalledGlobalPlugins } from '../src/check/runner/configuration/GlobalPlugins.js';
 import { seed } from './seed.js';
 
 describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
@@ -184,7 +183,6 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
     'should match expected tick counts for $kind predicates with $description',
     async ({ kind, plugins, extraTicks }) => {
       // Arrange
-      expect(readInstalledGlobalPlugins()).toHaveLength(0);
       using clock = startMicroTaskClock();
       const defaultTicks = extractExpectedTicks(kind);
       const startupTicks = defaultTicks.startupTicks + (extraTicks.startupTicks ?? 0);
@@ -202,7 +200,7 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
           lastPredicateRunTick = clock.tick;
           return kind === 'async' ? Promise.resolve() : undefined;
         }),
-        { numRuns, plugins },
+        { numRuns, plugins, noGlobalPlugins: true },
       );
       const assertionCompletionTick = clock.tick;
 

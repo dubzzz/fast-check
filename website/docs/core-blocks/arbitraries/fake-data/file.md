@@ -57,13 +57,12 @@ All the string values (from keys to values) are generated using `fc.string()`.
 **Signatures:**
 
 - `fc.json()`
-- `fc.json({depthSize?, maxDepth?, noUnicodeString?, stringUnit?})`
+- `fc.json({depthSize?, maxDepth?, stringUnit?})`
 
 **with:**
 
 - `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth of generated objects_
-- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters — shadowed by `stringUnit`_
 - `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 
 **Usages:**
@@ -78,13 +77,13 @@ fc.json();
 // • "[null,-1.5485504457576672e+192,null,{},-1.417727947024272e-287,null,null,null]"
 // • …
 
-fc.json({ noUnicodeString: false });
+fc.json({ stringUnit: 'binary' });
 // Examples of generated values:
+// • "true"
+// • "[{\"􆟂𝵑񜘶󏷿󎌗𠮠󬫁鍛񥚓񚮾\":[],\"񡐻𿝚󀀊񆲽񩾸򡐚񔸵𛖉󆻬񸣸\":{},\"雹򍲒󹖁𺰚󁢷񉽿󯹮𩩿\":1.018007307880622e-58},{\"񏯉󥐏\":false,\"陑񆶹𰰃\":[],\"񽀴򐂿􁭭ꃛ󖽹􇯥􉋾\":\"\",\"󕕞󰒬򌼚񍈀򞑡򈩴\":false,\"𥞮𴗫󭼫\":\"􋔝𣒗󭐿\",\"◁𴤵󳰜𦜗񙔢𲩐􂚵񢯢󉑣𧒂\":\"򒭹򣨜񮷂񨗚򜡳򩎭脟򹰵񆴶\",\"򹱷\":true},-1.416868484023308e-63,null]"
+// • "[[],[],true]"
+// • "false"
 // • "{}"
-// • "[{\"򦇘󜁳򁿳򎗯􈤘\":-6.105777408643394e-70,\"򈷩𫨹􏥃򤵪񥉨񢦜꣙\":[],\"񬘲񊺱򨩟𔹱󦌞􋚫𵢮򉲨򛨰𜥲\":null,\"􀤯\":\"񵟈뫖򖂅𦧠򎇩򁅥򹀿񱣒\",\"򲊷񥛡򂝱\":null,\"𩪎񡨫񝗻򱟬񖄕󿧶🣺𾹚\":\"񙏶𒝠𨚜󸟗񭗊􄓎򅆁\"},null,[false,null]]"
-// • "\"򁤇𫍯􏿬\\u0004񞋰\\u0005򟱉򳟔󽐾\""
-// • "[null,[6e-323],[]]"
-// • "[null,false]"
 // • …
 
 fc.json({ maxDepth: 0 });
@@ -120,13 +119,12 @@ As `JSON.parse` preserves `-0`, `jsonValue` can also have `-0` as a value.
 **Signatures:**
 
 - `fc.jsonValue()`
-- `fc.jsonValue({depthSize?, maxDepth?, noUnicodeString?, stringUnit?})`
+- `fc.jsonValue({depthSize?, maxDepth?, stringUnit?})`
 
 **with:**
 
 - `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
-- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters — shadowed by `stringUnit`_
 - `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 
 **Usages:**
@@ -141,8 +139,14 @@ fc.jsonValue();
 // • [null,true,true,"`l+$I","kSros",null]
 // • …
 
-fc.jsonValue({ noUnicodeString: false });
-// Examples of generated values: ["򴾼󹤷𡅤񤱓򛗡"], {"􎵔򲁼򀎈𸝔􃌅􊿛񹙦":[],"_":[556603.8398649627],"􏿽\u000b򸑽":{}}, [null,[]], "򐐩", []…
+fc.jsonValue({ stringUnit: 'binary' });
+// Examples of generated values:
+// • {"󐋚򲮃󺮞􍶈󂾓񅙎򼝄󒂁񌸩򌻜":null,"":[]}
+// • {"󠣈𲃭":null,"􏼺񢍃󤋐󩝌󛹅򾶤𷢱򖸮𽶑":"󛔃𤻧񞅖󽚪딿񬿎󇃡򸻛򠻔󭟧","񩪙󻇓":-1.7747824624786926e-217,"򽜶󏗶񁎠𞨪":null,"񴂍𑛡􋻧𶸊񗱺󚨝򄓐󠟋󷜬":false}
+// • {"򥠷":null,"򄗶򬴜񽪼":[],"򵧆󊶬󱚜񺆞򧄲򝞍󏡥𗊷򄷥":1.8966585788571038e+304,"defi":"\u0005񗷤񪅮򳛟𴷠󉥚\u0001񝚃\r\n","񰥭􌋦򾽡𔯛򒿩󝢡𬥘捯򇽩":false,"":"󖧯󸊞񨛎𞙖󎥘𺁆󧙜񉹊𯾯","\f􏿻":true,"񂏀":[]}
+// • {"򱶇򯥧󣆠󀂼򀗀𺃳𱓤󑬂":{}}
+// • [true,{"𡺉":-26234181.826592408,"ㅙ󾭽󮩪񟪛󮟁距񅉛􆡈񇈨򿦅":null,"񚜼𫓲璝򗪭򢘡𰋮𖤸":1.48811436300331e-132,"􅥽󴹴񟗧񦚩":"󤏕񧀶","":1.2189214074886491e+290,"󵩒񸾸򞤳򥭨󻻶򱁟󐷂":null,"򟂒":null,"󬧒򹥟󩙏򎎏񟤨󨏟񚢗񌝨񎸦":7.170172673247772e-132},{"򼨈񵄗򇟀𙘗񍆐򶫪򈈉󴙮񍈶":null}]
+// • …
 
 fc.jsonValue({ maxDepth: 0 });
 // Examples of generated values: true, null, false, "prototype", "L4)5M"…
