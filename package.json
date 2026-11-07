@@ -54,7 +54,7 @@
     "@vitest/coverage-v8": "^5.1.0",
     "all-contributors-cli": "^7.0.0",
     "cross-env": "^10.1.0",
-    "oxfmt": "^0.76.0",
+    "oxfmt": "^0.77.0",
     "oxlint": "^1.92.0",
     "oxlint-tsgolint": "^7.0.2006",
     "pkg-pr-new": "^0.0.93",
