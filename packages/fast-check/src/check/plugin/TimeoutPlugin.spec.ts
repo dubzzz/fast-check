@@ -99,21 +99,82 @@ describe('TimeoutPlugin', () => {
     { outcome: 'success', output: null },
     { outcome: 'failure', output: { error: new Error('plop') } },
     { outcome: 'precondition failure', output: new PreconditionFailure() },
-  ])('should preserve synchronous runs untouched and clear the started timeout on $outcome', async ({ output }) => {
+  ])(
+    'should preserve synchronous runs completing in time and clear the started timeout on $outcome',
+    async ({ output }) => {
+      // Arrange
+      vi.spyOn(global, 'setTimeout');
+      vi.spyOn(global, 'clearTimeout');
+      const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValueOnce(output);
+
+      // Act
+      const finalRun = await timeoutPluginRun(100, nestedRun);
+      const out = finalRun({}, {});
+
+      // Assert
+      expect(out).toBe(output); // sync run, sync output: nothing to race against the timeout
+      expect(setTimeout).toBeCalledTimes(1);
+      expect(clearTimeout).toBeCalledTimes(1);
+    },
+  );
+
+  it.each([
+    { outcome: 'success', output: null },
+    { outcome: 'failure', output: { error: new Error('plop') } },
+    { outcome: 'precondition failure', output: new PreconditionFailure() },
+  ])('should timeout synchronously when blocking work exceeds the limit before $outcome', async ({ output }) => {
     // Arrange
-    vi.spyOn(global, 'setTimeout');
-    vi.spyOn(global, 'clearTimeout');
-    const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValueOnce(output);
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const nestedRun = vi.fn<Property<unknown>['run']>(() => {
+      now.mockReturnValue(100); // elapsed time without giving timer callbacks a chance to run
+      return output;
+    });
 
     // Act
-    const finalRun = await timeoutPluginRun(100, nestedRun);
+    const finalRun = await timeoutPluginRun(10, nestedRun);
     const out = finalRun({}, {});
 
     // Assert
-    expect(out).toBe(output); // sync run, sync output: nothing to race against the timeout
-    expect(setTimeout).toBeCalledTimes(1);
-    expect(clearTimeout).toBeCalledTimes(1);
+    expect(out).toEqual({ error: new Error('Property timeout: exceeded limit of 10 milliseconds') });
+    const signal = nestedRun.mock.calls[0][1].signal!;
+    expect(signal.aborted).toBe(true);
+    expect(signal.reason).toBe((out as { error: unknown }).error);
+    expect(vi.getTimerCount()).toBe(0);
   });
+
+  it.each([
+    { phase: 'before the first await', waitFirst: false, withSignal: false },
+    { phase: 'after an await', waitFirst: true, withSignal: false },
+    { phase: 'before the first await', waitFirst: false, withSignal: true },
+    { phase: 'after an await', waitFirst: true, withSignal: true },
+  ])(
+    'should timeout when async runs block $phase (external signal: $withSignal)',
+    async ({ waitFirst, withSignal }) => {
+      // Arrange
+      const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+      const controller = new AbortController();
+      const executionContext = withSignal ? { signal: controller.signal } : {};
+      const nestedRun = vi.fn<Property<unknown>['run']>(async () => {
+        if (waitFirst) {
+          await Promise.resolve();
+        }
+        now.mockReturnValue(100); // elapsed time without giving timer callbacks a chance to run
+        return null;
+      });
+
+      // Act
+      const finalRun = await timeoutPluginRun(10, nestedRun);
+      const out = await finalRun({}, executionContext);
+
+      // Assert
+      expect(out).toEqual({ error: new Error('Property timeout: exceeded limit of 10 milliseconds') });
+      const signal = nestedRun.mock.calls[0][1].signal!;
+      expect(signal.aborted).toBe(true);
+      expect(signal.reason).toBe((out as { error: unknown }).error);
+      expect(controller.signal.aborted).toBe(false);
+      expect(vi.getTimerCount()).toBe(0);
+    },
+  );
 
   it('should abort the signal as soon as we reach the timeout and consider the run as failed even if it ended at the same time', async () => {
     // Arrange
