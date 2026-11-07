@@ -174,8 +174,8 @@ importers:
   .:
     devDependencies:
       '@atproto/api':
-        specifier: ^0.30.0
-        version: 0.30.0
+        specifier: ^0.30.3
+        version: 0.30.3
       '@changesets/cli':
         specifier: ^3.0.3
         version: 3.0.3
@@ -673,32 +673,32 @@ packages:
     peerDependencies:
       ajv: '>=8'
 
-  '@atproto/api@0.30.0':
-    resolution: {integrity: sha512-OMDouol2f0vGur07LywJ3MhLhsZ2YZu1Kn76zBnPLqzh/PWlVqZyrRQl++BkA1PXwXhTsbLQLKPHT52wlaMicA==}
+  '@atproto/api@0.30.3':
+    resolution: {integrity: sha512-9zN1al51/22pPOFX0BofgyggmgZTzLwv05jkoGDjG9Jdc+e5ZLCjLrlsObWW73EEud/b5t/IrY3c77ZIuy78sQ==}
     engines: {node: '>=22'}
 
-  '@atproto/common-web@0.5.15':
-    resolution: {integrity: sha512-1u/30RbRtF8h69soQFldCiYmvv90KIG38MvZyFYBnUn8ygQxE3TRL2SDU87hJeU5mSXySgAMcJc4GE7m/kZK/A==}
+  '@atproto/common-web@0.5.17':
+    resolution: {integrity: sha512-SdtlxRHVFYV0r5E7mIsnnRqrX5jrY1rhmVkQzK+OIcdk/WTd3wamsnM/vLPZq0YWw+HlZEPisR+1B4WCXET1Sg==}
     engines: {node: '>=22'}
 
-  '@atproto/lex-data@0.1.8':
-    resolution: {integrity: sha512-RuCIPXGT9sesyPC0frQgpXGD9egucqRjDRqQ8SPXEp+C6bO6EiXA1cAxNw83F1kpTLhtt6AJUaH/s8u0N7ip7g==}
+  '@atproto/lex-data@0.1.10':
+    resolution: {integrity: sha512-SLnmB30avSABQCwp1DX3q/D/pvjB3qMYf/G7VU8SbJIzDwZxzEY96Cxmukyx0JXN4iN6VRYhhTPK3v1oaO1+nA==}
     engines: {node: '>=22'}
 
-  '@atproto/lex-json@0.1.7':
-    resolution: {integrity: sha512-4ABSfAkv+zLiPHvexZ7n/xR8wCLShbpEqcGxvniejZGsFrms980nl+BOaWPuU+OgLRNzpicMwSVOYDF6X62IHg==}
+  '@atproto/lex-json@0.1.9':
+    resolution: {integrity: sha512-9geZuufwIVPSj9fniG7Ua3ZRq1DEpHCB9TGaHPHLpa0WKjjLvY2UMxvERpN97JIimusOWtPGOnzKtwQHMC371w==}
     engines: {node: '>=22'}
 
-  '@atproto/lexicon@0.7.17':
-    resolution: {integrity: sha512-FR2CPlsGVjAfzvvvTHnoW1wFOFS0Tl9GPlS5yvqjb5GTtRCrDzXmuX+DlFjEvKTUVizx8hWwzCgDihIKCm10HA==}
+  '@atproto/lexicon@0.7.19':
+    resolution: {integrity: sha512-O9Igzy9RAWQRoH+N6xC8O6qMtQ5UR55bQqbL9a7k7Ou8Z1WV/6ePR6NOFqTIQNFd4XEHxJhGXzcGDR8eM7QdIw==}
     engines: {node: '>=22'}
 
   '@atproto/syntax@0.7.7':
     resolution: {integrity: sha512-MJ+QUo8yzAGP2SOQKs2CBI2ouY5KaO9Pv5a7laX3xtrkfWmS/s96L/FCJm5VBHEvKXmd6ap/HSGypYclQcfoWA==}
     engines: {node: '>=22'}
 
-  '@atproto/xrpc@0.8.16':
-    resolution: {integrity: sha512-s7Kmb7J//g7q2kphDyoKIfbILKG8irLTMZ/JyQ0fMKEMRdEXaIRZlctljazjpT+jKbD5CFUDPIcI3pxeRjIm8Q==}
+  '@atproto/xrpc@0.8.18':
+    resolution: {integrity: sha512-MrWYmMV1KrXm1DM4E9CA67i/jAemoMBDh+Wo2N63daNOtf1cUWdRc3COF0tjJTuHG5qLmk4HTR5SfrgFyFEs0A==}
     engines: {node: '>=22'}
 
   '@babel/code-frame@7.29.7':
@@ -10607,38 +10607,38 @@ snapshots:
       jsonpointer: 5.0.1
       leven: 3.1.0
 
-  '@atproto/api@0.30.0':
+  '@atproto/api@0.30.3':
     dependencies:
-      '@atproto/common-web': 0.5.15
-      '@atproto/lexicon': 0.7.17
+      '@atproto/common-web': 0.5.17
+      '@atproto/lexicon': 0.7.19
       '@atproto/syntax': 0.7.7
-      '@atproto/xrpc': 0.8.16
+      '@atproto/xrpc': 0.8.18
       await-lock: 3.0.0
       multiformats: 13.4.2
       tlds: 1.261.0
       zod: 3.25.76
 
-  '@atproto/common-web@0.5.15':
+  '@atproto/common-web@0.5.17':
     dependencies:
-      '@atproto/lex-data': 0.1.8
-      '@atproto/lex-json': 0.1.7
+      '@atproto/lex-data': 0.1.10
+      '@atproto/lex-json': 0.1.9
       '@atproto/syntax': 0.7.7
       zod: 3.25.76
 
-  '@atproto/lex-data@0.1.8':
+  '@atproto/lex-data@0.1.10':
     dependencies:
       multiformats: 13.4.2
       tslib: 2.9.1
       unicode-segmenter: 0.14.5
 
-  '@atproto/lex-json@0.1.7':
+  '@atproto/lex-json@0.1.9':
     dependencies:
-      '@atproto/lex-data': 0.1.8
+      '@atproto/lex-data': 0.1.10
       tslib: 2.9.1
 
-  '@atproto/lexicon@0.7.17':
+  '@atproto/lexicon@0.7.19':
     dependencies:
-      '@atproto/common-web': 0.5.15
+      '@atproto/common-web': 0.5.17
       '@atproto/syntax': 0.7.7
       multiformats: 13.4.2
       zod: 3.25.76
@@ -10648,9 +10648,9 @@ snapshots:
       iso-datestring-validator: 2.2.2
       tslib: 2.9.1
 
-  '@atproto/xrpc@0.8.16':
+  '@atproto/xrpc@0.8.18':
     dependencies:
-      '@atproto/lexicon': 0.7.17
+      '@atproto/lexicon': 0.7.19
       zod: 3.25.76
 
   '@babel/code-frame@7.29.7':
