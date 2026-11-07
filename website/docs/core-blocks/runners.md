@@ -47,11 +47,14 @@ await fc.assert(property, {
 
 The default reporter throws when `failed` is `true` and ignores other outcomes.
 
-| Reason                   | `failed` | `interrupted`  | `counterexample`/`counterexamplePath` |
-| ------------------------ | -------- | -------------- | ------------------------------------- |
-| failure of the predicate | `true`   | `true`/`false` | _not null_                            |
-| too many skipped values  | `true`   | `true`         | `null`                                |
-| successful run           | `false`  | `true`/`false` | `null`                                |
+| Reason                   | `failed` | `interrupted`  | `counterexample`/`counterexamplePath` | `errorInstance` |
+| ------------------------ | -------- | -------------- | ------------------------------------- | --------------- |
+| failure of the predicate | `true`   | `true`/`false` | _not null\*_                          |
+| too many skipped values  | `true`   | `true`         | `null`                                | `null`          |
+| plugin setup failure     | `true`   | `false`        | `null`                                | _not null\*_    |
+| successful run           | `false`  | `true`/`false` | `null`                                | `null`          |
+
+_\*Not `null` except if the failing code explicitely threw `null` instead of a proper instance of `Error`, the value being received is just the one that got thrown_
 
 :::info[Plugin reporting]
 See the [custom reports](/docs/configuration/custom-reports/) guide.
