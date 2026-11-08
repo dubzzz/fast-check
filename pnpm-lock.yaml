@@ -283,8 +283,8 @@ importers:
         specifier: ^26.6.6
         version: 26.6.6
       ava:
-        specifier: ^8.3.0
-        version: 8.3.0(rollup@4.67.3)(supports-color@8.1.1)
+        specifier: ^8.4.0
+        version: 8.4.0(rollup@4.67.3)(supports-color@8.1.1)
       esm:
         specifier: ^3.2.25
         version: 3.2.25
@@ -4906,8 +4906,8 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
 
-  ava@8.3.0:
-    resolution: {integrity: sha512-Tr/p0fmC+oCJo5+m1oJdpmBxC1OO57xtVKlJfbN0gkz31yofpk08jl4Hzx654RdKq1FPc0XYiHF4ZzdqR+87gg==}
+  ava@8.4.0:
+    resolution: {integrity: sha512-thHHhRJa6al6+45y9L8ei7u1QYHFKpt5S3jy2A2t/bd9EoJ9wIEJgLuyXuRg5tEnwryqWxLuu4ig+QSPx6yfUA==}
     engines: {node: ^22.20 || ^24.12 || >=26}
     hasBin: true
     peerDependencies:
@@ -16019,7 +16019,7 @@ snapshots:
       postcss: 8.5.32
       postcss-value-parser: 4.2.0
 
-  ava@8.3.0(rollup@4.67.3)(supports-color@8.1.1):
+  ava@8.4.0(rollup@4.67.3)(supports-color@8.1.1):
     dependencies:
       '@vercel/nft': 1.11.0(rollup@4.67.3)(supports-color@8.1.1)
       acorn: 8.19.0
