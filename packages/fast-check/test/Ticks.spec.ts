@@ -37,9 +37,9 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       kind: 'sync',
       plugins: [buildPromiseReturningPassThroughPlugin()],
       extraTicks: {
-        startupTicks: 0, // No extra delay before the first predicate
+        startupTicks: 2, // 1 beforeAll continuation, 1 runner start
         ticksPerRun: 1, // 1 to handle the wrapped result
-        fixedCompletionTicks: 4, // 2 hook continuations, 1 result propagation, 1 runner completion continuation
+        fixedCompletionTicks: 5, // 2 hook continuations, 2 propagations, 1 runner continuation
       },
       description: 'Promise.resolve pass-through plugin',
     },
@@ -47,9 +47,9 @@ describe.each([10, 100])(`Ticks (%i runs, seed: ${seed})`, (numRuns) => {
       kind: 'async',
       plugins: [buildPromiseReturningPassThroughPlugin()],
       extraTicks: {
-        startupTicks: 0, // No extra delay before the first predicate
+        startupTicks: 2, // 1 beforeAll continuation, 1 runner start
         ticksPerRun: 0, // Promise.resolve reuses nestedRun's promise
-        fixedCompletionTicks: 3, // 2 hook continuations, 1 result propagation
+        fixedCompletionTicks: 4, // 2 hook continuations, 2 propagations
       },
       description: 'Promise.resolve pass-through plugin',
     },
@@ -263,6 +263,7 @@ function extractExpectedTicks(kind: 'async' | 'sync') {
 
 function buildSyncPassThroughPlugin(): fc.UniversalPlugin {
   return <Ts>(): Required<fc.PluginInstance<Ts>> => ({
+    beforeAll: () => {},
     decorateGenerate: (nestedGenerate) => (mrng, runId) => nestedGenerate(mrng, runId),
     decorateRun: (nestedRun) => (v, executionContext) => nestedRun(v, executionContext),
     onAllRunsComplete: (_runDetails) => {},
@@ -272,6 +273,7 @@ function buildSyncPassThroughPlugin(): fc.UniversalPlugin {
 
 function buildPromiseReturningPassThroughPlugin(): fc.UniversalPlugin {
   return <Ts>(): Required<fc.PluginInstance<Ts>> => ({
+    beforeAll: () => Promise.resolve(),
     decorateGenerate: (nestedGenerate) => (mrng, runId) => nestedGenerate(mrng, runId),
     // WARNING: not equivalent to `(nestedRun) => async (v, executionContext) => nestedRun(v, executionContext)` when considering ticks
     decorateRun: (nestedRun) => (v, executionContext) => Promise.resolve(nestedRun(v, executionContext)),

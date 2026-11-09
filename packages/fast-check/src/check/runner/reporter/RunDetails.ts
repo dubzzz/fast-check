@@ -10,7 +10,33 @@ import type { Parameters } from '../configuration/Parameters.js';
  * @remarks Since 0.0.7
  * @public
  */
-export type RunDetails<Ts> = RunDetailsFailureProperty<Ts> | RunDetailsFailureTooManySkips<Ts> | RunDetailsSuccess<Ts>;
+export type RunDetails<Ts> =
+  | RunDetailsFailureProperty<Ts>
+  | RunDetailsFailureTooManySkips<Ts>
+  | RunDetailsFailurePluginSetup<Ts>
+  | RunDetailsSuccess<Ts>;
+
+/**
+ * Run reported as failed because a plugin hook, such as `beforeAll`,
+ * threw or rejected before any execution of the predicate.
+ *
+ * The predicate was not executed and no counterexample is available.
+ *
+ * Refer to {@link RunDetailsCommon} for more details
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+export interface RunDetailsFailurePluginSetup<Ts> extends RunDetailsCommon<Ts> {
+  failed: true;
+  interrupted: false;
+  counterexample: null;
+  counterexamplePath: null;
+  errorInstance: unknown;
+  numRuns: 0;
+  numSkips: 0;
+  numShrinks: 0;
+}
 
 /**
  * Run reported as failed because
@@ -69,12 +95,14 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
  */
 export interface RunDetailsCommon<Ts> {
   /**
-   * Did the property fail during the execution of {@link assert}?
+   * Did the run fail during the execution of {@link assert}?
+   * This includes plugin setup failures occuring before any execution of the predicate.
    * @remarks Since 0.0.1
    */
   failed: boolean;
   /**
-   * Was the execution interrupted?
+   * Was the assessment of the predicate interrupted?
+   * Plugin setup failures do not count as interruptions as they occur even before the assessment starts.
    * @remarks Since 1.19.0
    */
   interrupted: boolean;

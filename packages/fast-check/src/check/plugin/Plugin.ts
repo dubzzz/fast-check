@@ -61,19 +61,24 @@ export type PluginInstance<Ts> = {
    * Every `onAllRunsComplete` is guaranteed to run, even if another `onAllRunsComplete` threw.
    * In case several of them throw, only the first failure is reported, the others will be swallowed.
    *
-   * WARNING: Always return synchronously for synchronous properties.
-   *
    * @remarks Since 4.10.0
    */
   onAllRunsComplete?: (runDetails: RunDetails<Ts>) => Promise<void> | void;
+  /**
+   * Called once before the assessment of the property and any execution of the predicate.
+   *
+   * Every `beforeAll` is guaranteed to run, even if another `beforeAll` threw.
+   * In case of failure, the predicate won't be executed and the run will be reported as {@link RunDetailsFailurePluginSetup}.
+   *
+   * @remarks Since 5.0.0
+   */
+  beforeAll?: () => Promise<void> | void;
   /**
    * Called once at the end of the full property assessment, after all other methods of the plugin.
    * Use it to clean up and release resources acquired by the plugin.
    *
    * Every `afterAll` is guaranteed to run, even if an `onAllRunsComplete` or another `afterAll` threw.
    * In case several `onAllRunsComplete` or `afterAll` throw, only the first failure is reported, the others will be swallowed.
-   *
-   * WARNING: Always return synchronously for synchronous properties.
    *
    * @remarks Since 4.10.0
    */
