@@ -1,0 +1,42 @@
+{
+  "name": "@fast-check/codemod",
+  "description": "Codemods to help migrate fast-check projects",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "bin": {
+    "fast-check-codemod": "./bin/codemod.cjs"
+  },
+  "files": [
+    "bin",
+    "transforms"
+  ],
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/codemod"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/codemod#readme",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "dependencies": {
+    "@babel/traverse": "^7.29.13",
+    "jscodeshift": "^17.4.0"
+  },
+  "devDependencies": {
+    "vitest": "^5.1.0"
+  },
+  "keywords": [
+    "codemod",
+    "fast-check",
+    "migration"
+  ]
+}
