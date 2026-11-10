@@ -1,6 +1,9 @@
-const traverse = require('@babel/traverse').default;
+import babelTraverse from '@babel/traverse';
+import type { FileInfo, JSCodeshift } from 'jscodeshift';
 
-module.exports = function transform(file, api) {
+const traverse = 'default' in babelTraverse ? babelTraverse.default : babelTraverse;
+
+export default function transform(file: FileInfo, api: { jscodeshift: JSCodeshift }): string {
   const parser = /\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx';
   const j = api.jscodeshift.withParser(parser);
   const root = j(file.source);
@@ -12,12 +15,19 @@ module.exports = function transform(file, api) {
         return;
       }
       for (const [index, specifier] of path.node.specifiers.entries()) {
-        if (specifier.importKind === 'type') {
+        if (specifier.type === 'ImportSpecifier' && specifier.importKind === 'type') {
           continue;
         }
         const localName = specifier.local.name;
         const binding = path.scope.getBinding(localName);
-        if (specifier.type === 'ImportSpecifier' && specifier.imported.name === 'asyncProperty') {
+        if (binding === undefined) {
+          continue;
+        }
+        const importedName =
+          specifier.type === 'ImportSpecifier' && specifier.imported.type === 'Identifier'
+            ? specifier.imported.name
+            : undefined;
+        if (specifier.type === 'ImportSpecifier' && importedName === 'asyncProperty') {
           // Keep aliases, including one when renaming would capture an existing `property`.
           if (
             localName === 'asyncProperty' &&
@@ -27,25 +37,36 @@ module.exports = function transform(file, api) {
           ) {
             binding.scope.rename(localName, 'property');
           }
-          const replacement = j.importSpecifier(j.identifier('property'), j.identifier(specifier.local.name));
-          replacement.comments = specifier.comments;
-          path.node.specifiers[index] = replacement;
+          path.node.specifiers[index] = {
+            type: 'ImportSpecifier',
+            imported: { type: 'Identifier', name: 'property' },
+            local: { type: 'Identifier', name: specifier.local.name },
+            ...('comments' in specifier ? { comments: specifier.comments } : {}),
+          };
           changed = true;
         } else if (
           specifier.type === 'ImportDefaultSpecifier' ||
           specifier.type === 'ImportNamespaceSpecifier' ||
-          (specifier.type === 'ImportSpecifier' && specifier.imported.name === 'default')
+          importedName === 'default'
         ) {
           for (const reference of binding.referencePaths) {
-            const member = reference.parentPath.node;
+            const member = reference.parentPath?.node;
             if (
               reference.key === 'object' &&
-              (member.type === 'MemberExpression' || member.type === 'OptionalMemberExpression')
+              (member?.type === 'MemberExpression' || member?.type === 'OptionalMemberExpression')
             ) {
-              if (!member.computed && member.property.name === 'asyncProperty') {
+              if (
+                !member.computed &&
+                member.property.type === 'Identifier' &&
+                member.property.name === 'asyncProperty'
+              ) {
                 member.property.name = 'property';
                 changed = true;
-              } else if (member.computed && member.property.value === 'asyncProperty') {
+              } else if (
+                member.computed &&
+                member.property.type === 'StringLiteral' &&
+                member.property.value === 'asyncProperty'
+              ) {
                 member.property.value = 'property';
                 changed = true;
               }
@@ -57,4 +78,4 @@ module.exports = function transform(file, api) {
   });
 
   return changed ? root.toSource({ quote: 'single' }) : file.source;
-};
+}

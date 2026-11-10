@@ -39,11 +39,13 @@ This first transform handles ES imports. CommonJS `require`, re-exports from `fa
 
 ## Development
 
-There is no build step: the CLI and transform are plain JavaScript. From the repository root:
+The CLI, transform, and tests are written in TypeScript. Rolldown compiles the CLI and transform into `lib/` for publication. From the repository root:
 
 ```sh
+pnpm --filter @fast-check/codemod build
+pnpm --filter @fast-check/codemod typecheck
 pnpm test --run --project @fast-check/codemod
-node packages/codemod/bin/codemod.cjs v5/no-asyncProperty <path> --dry --print
+node packages/codemod/lib/cli.cjs v5/no-asyncProperty <path> --dry --print
 ```
 
-Tests compare input/output strings, check repeat runs, and run the CLI against temporary files and directories.
+Tests compare input/output strings, check repeat runs, and build and run the compiled CLI against temporary files and directories.

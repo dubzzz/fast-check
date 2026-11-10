@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import jscodeshift from 'jscodeshift';
-import transform from '../transforms/v5/no-asyncProperty.cjs';
+import transform from '../src/transforms/v5/no-asyncProperty.js';
 
-function apply(source, path = 'test.js') {
+function apply(source: string, path = 'test.js'): string {
   return transform({ source, path }, { jscodeshift });
 }
 

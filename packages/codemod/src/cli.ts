@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { spawnSync } = require('node:child_process');
-const { existsSync } = require('node:fs');
+import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 
 const [transform, ...args] = process.argv.slice(2);
 const usage = 'Usage: fast-check-codemod v5/no-asyncProperty <path> [jscodeshift options]';
@@ -20,7 +20,7 @@ if (transform === '--help' || transform === '-h') {
     [
       require.resolve('jscodeshift/bin/jscodeshift.js'),
       '--transform',
-      require.resolve('../transforms/v5/no-asyncProperty.cjs'),
+      require.resolve('./transforms/v5/no-asyncProperty.cjs'),
       '--no-babel',
       '--extensions=js,jsx,ts,tsx,mjs,cjs,mts,cts',
       '--ignore-pattern=**/node_modules/**',

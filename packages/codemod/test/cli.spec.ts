@@ -1,23 +1,33 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const cli = fileURLToPath(new URL('../bin/codemod.cjs', import.meta.url));
-const directories = [];
+const cli = fileURLToPath(new URL('../lib/cli.cjs', import.meta.url));
+const directories: string[] = [];
 const source = "import fc from 'fast-check';\nfc.asyncProperty(arb, async (n) => n);\n";
 
-function fixture() {
+function fixture(): string {
   const directory = mkdtempSync(join(tmpdir(), 'fast-check-codemod-'));
   directories.push(directory);
   return directory;
 }
 
-function run(...args) {
+function run(...args: string[]): string {
   return execFileSync(process.execPath, [cli, 'v5/no-asyncProperty', ...args, '--run-in-band'], { encoding: 'utf8' });
 }
+
+beforeAll(() => {
+  execFileSync(
+    process.execPath,
+    [fileURLToPath(new URL('./bin/cli.mjs', import.meta.resolve('rolldown/package.json'))), '-c'],
+    {
+      cwd: fileURLToPath(new URL('..', import.meta.url)),
+    },
+  );
+});
 
 afterEach(() => {
   for (const directory of directories.splice(0)) {
