@@ -47,7 +47,9 @@ pnpm test --run --project @fast-check/codemod
 node packages/codemod/src/cli.ts v5/asyncProperty <path> --dry --print
 ```
 
-The E2E cases live in `test/v5/asyncProperty/fixtures/<name>/{actual,expected}.ts`. In `beforeAll`, `test/v5/asyncProperty.spec.ts` copies each `actual.ts` into `.test-artifacts/<name>.ts` and runs the CLI on that directory. An `it.each` compares every transformed file with its `expected.ts`. The generated files are kept for inspection, and a second run checks that the codemod is idempotent.
+The E2E cases live in `test/fixture/<version>/<codemod>/<name>/{actual,expected}.ts`, starting with `v5/asyncProperty`. The shared `test/fixtures.spec.ts` discovers the directories and nests a `describe.each` for versions, a `describe.each` for codemods, and an `it.each` for cases.
+
+One shared `beforeAll` copies inputs into `.test-artifacts/<version>/<codemod>/<name>.ts` and runs each codemod on its directory. Tests compare each transformed file with its `expected.ts` and check that a second run is idempotent. A shared `afterAll` removes the artifacts directory when the suite finishes, including when a test fails.
 
 Fixtures are source text to migrate, so they are excluded from typechecking, linting, and formatting. To add a case, add a new fixture directory with the two files.
 
