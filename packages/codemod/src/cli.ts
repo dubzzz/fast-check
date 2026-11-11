@@ -2,11 +2,9 @@
 
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { createRequire } from 'node:module';
 import { extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const require = createRequire(import.meta.url);
 const extension = extname(fileURLToPath(import.meta.url));
 
 const [transform, ...args] = process.argv.slice(2);
@@ -24,9 +22,9 @@ if (transform === '--help' || transform === '-h') {
   const result = spawnSync(
     process.execPath,
     [
-      require.resolve('jscodeshift/bin/jscodeshift.js'),
+      fileURLToPath(import.meta.resolve('jscodeshift/bin/jscodeshift.js')),
       '--transform',
-      require.resolve(`./transforms/v5/asyncProperty${extension}`),
+      fileURLToPath(import.meta.resolve(`./transforms/v5/asyncProperty${extension}`)),
       '--no-babel',
       '--extensions=js,jsx,ts,tsx,mjs,cjs,mts,cts',
       '--ignore-pattern=**/node_modules/**',
