@@ -153,6 +153,7 @@
     "packages/*/dist/",
     "packages/*/lib/",
     "packages/*/lib-*/",
+    "packages/codemod/test/**/fixtures/",
     "packages/*/rolldown.config.js",
     "packages/**/.test-artifacts/",
     "rolldown.common.config.js",

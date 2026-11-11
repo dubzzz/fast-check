@@ -2,13 +2,19 @@
 
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const require = createRequire(import.meta.url);
+const extension = extname(fileURLToPath(import.meta.url));
 
 const [transform, ...args] = process.argv.slice(2);
-const usage = 'Usage: fast-check-codemod v5/no-asyncProperty <path> [jscodeshift options]';
+const usage = 'Usage: fast-check-codemod v5/asyncProperty <path> [jscodeshift options]';
 
 if (transform === '--help' || transform === '-h') {
   console.log(usage);
-} else if (transform !== 'v5/no-asyncProperty' || args.length === 0 || args[0].startsWith('-')) {
+} else if (transform !== 'v5/asyncProperty' || args.length === 0 || args[0].startsWith('-')) {
   console.error(usage);
   process.exitCode = 1;
 } else if (!existsSync(args[0])) {
@@ -20,7 +26,7 @@ if (transform === '--help' || transform === '-h') {
     [
       require.resolve('jscodeshift/bin/jscodeshift.js'),
       '--transform',
-      require.resolve('./transforms/v5/no-asyncProperty.cjs'),
+      require.resolve(`./transforms/v5/asyncProperty${extension}`),
       '--no-babel',
       '--extensions=js,jsx,ts,tsx,mjs,cjs,mts,cts',
       '--ignore-pattern=**/node_modules/**',

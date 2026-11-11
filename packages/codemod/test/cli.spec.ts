@@ -1,11 +1,11 @@
-import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const cli = fileURLToPath(new URL('../lib/cli.cjs', import.meta.url));
+const cli = fileURLToPath(new URL('../src/cli.ts', import.meta.url));
 const directories: string[] = [];
 const source = "import fc from 'fast-check';\nfc.asyncProperty(arb, async (n) => n);\n";
 
@@ -16,18 +16,8 @@ function fixture(): string {
 }
 
 function run(...args: string[]): string {
-  return execFileSync(process.execPath, [cli, 'v5/no-asyncProperty', ...args, '--run-in-band'], { encoding: 'utf8' });
+  return execFileSync(process.execPath, [cli, 'v5/asyncProperty', ...args, '--run-in-band'], { encoding: 'utf8' });
 }
-
-beforeAll(() => {
-  execFileSync(
-    process.execPath,
-    [fileURLToPath(new URL('./bin/cli.mjs', import.meta.resolve('rolldown/package.json'))), '-c'],
-    {
-      cwd: fileURLToPath(new URL('..', import.meta.url)),
-    },
-  );
-});
 
 afterEach(() => {
   for (const directory of directories.splice(0)) {
@@ -62,7 +52,15 @@ describe('CLI', () => {
     expect(readFileSync(file, 'utf8')).toBe(source.replace('asyncProperty', 'property'));
   });
 
-  it.each([[], ['unknown', '.'], ['v5/no-asyncProperty'], ['v5/no-asyncProperty', '--dry']].map((args) => [args]))(
+  it.each(['jsx', 'tsx'])('parses JSX in .%s files', (extension) => {
+    const file = join(fixture(), `test.${extension}`);
+    const jsx = "import fc from 'fast-check';\nfc.asyncProperty(arb, async (n) => <div>{n}</div>);\n";
+    writeFileSync(file, jsx);
+    run(file);
+    expect(readFileSync(file, 'utf8')).toBe(jsx.replace('asyncProperty', 'property'));
+  });
+
+  it.each([[], ['unknown', '.'], ['v5/asyncProperty'], ['v5/asyncProperty', '--dry']].map((args) => [args]))(
     'rejects invalid arguments %j',
     (args) => {
       const result = spawnSync(process.execPath, [cli, ...args], { encoding: 'utf8' });
@@ -72,11 +70,11 @@ describe('CLI', () => {
   );
 
   it('prints help', () => {
-    expect(execFileSync(process.execPath, [cli, '--help'], { encoding: 'utf8' })).toContain('v5/no-asyncProperty');
+    expect(execFileSync(process.execPath, [cli, '--help'], { encoding: 'utf8' })).toContain('v5/asyncProperty');
   });
 
   it('rejects missing paths', () => {
-    const result = spawnSync(process.execPath, [cli, 'v5/no-asyncProperty', join(fixture(), 'missing')], {
+    const result = spawnSync(process.execPath, [cli, 'v5/asyncProperty', join(fixture(), 'missing')], {
       encoding: 'utf8',
     });
     expect(result.status).toBe(1);
@@ -86,7 +84,7 @@ describe('CLI', () => {
   it('reports parse errors with a nonzero exit code and keeps the file unchanged', () => {
     const file = join(fixture(), 'test.js');
     writeFileSync(file, 'const = ;');
-    const result = spawnSync(process.execPath, [cli, 'v5/no-asyncProperty', file, '--run-in-band']);
+    const result = spawnSync(process.execPath, [cli, 'v5/asyncProperty', file, '--run-in-band']);
     expect(result.status).not.toBe(0);
     expect(readFileSync(file, 'utf8')).toBe('const = ;');
   });

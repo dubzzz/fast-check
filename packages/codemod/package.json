@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "bin": {
-    "fast-check-codemod": "./lib/cli.cjs"
+    "fast-check-codemod": "./lib/cli.js"
   },
   "files": [
     "lib"
