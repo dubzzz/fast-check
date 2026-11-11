@@ -47,10 +47,16 @@ pnpm test --run --project @fast-check/codemod
 node packages/codemod/src/cli.ts v5/asyncProperty <path> --dry --print
 ```
 
-The E2E cases live in `test/fixture/<version>/<codemod>/<name>/{actual,expected}.ts`, starting with `v5/asyncProperty`. The shared `test/fixtures.spec.ts` discovers the directories and nests a `describe.each` for versions, a `describe.each` for codemods, and an `it.each` for cases.
+The E2E cases live in `test/fixture/<version>/<codemod>/<name>/{actual,expected}.ts`, starting with `v5/asyncProperty`. The shared `test/fixtures.spec.ts` discovers the directories and uses one `describe.each` named `Codemod <version>/<codemod>`, with an `it.each` for cases.
 
-One shared `beforeAll` copies inputs into `.test-artifacts/<version>/<codemod>/<name>.ts` and runs each codemod on its directory. Tests compare each transformed file with its `expected.ts` and check that a second run is idempotent. A shared `afterAll` removes the artifacts directory when the suite finishes, including when a test fails.
+One shared `beforeAll` copies inputs into `.test-artifacts/once/<version>/<codemod>/<name>.ts` and runs each codemod on its directory. It then copies the migrated files into `.test-artifacts/twice/` and runs the codemods there again. Each test uses `toMatchFileSnapshot` to compare the first migration with its `expected.ts` and compares both migrated files directly to verify `migrate(actual) = migrate(migrate(actual))`, even when updating snapshots. A shared `afterAll` removes both artifacts directories when the suite finishes, including when a test fails.
 
-Fixtures are source text to migrate, so they are excluded from typechecking, linting, and formatting. To add a case, add a new fixture directory with the two files.
+Fixtures are source text to migrate, so they are excluded from typechecking and linting. `actual.ts` files are formatted normally; `expected.ts` files are excluded from formatting to preserve the exact expected output. To add a case, add an `actual.ts` in a new fixture directory. Create or update the expected files with:
+
+```sh
+pnpm test --run --project @fast-check/codemod test/fixtures.spec.ts -u
+```
+
+Review the resulting changes to `expected.ts` before committing them.
 
 For publication, `pnpm --filter @fast-check/codemod build` uses Rolldown to compile the CLI and transform into `lib/`.

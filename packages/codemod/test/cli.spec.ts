@@ -26,7 +26,7 @@ afterEach(() => {
 });
 
 describe('CLI', () => {
-  it('migrates folders recursively, skips node_modules, and is safe to run twice', () => {
+  it('should migrate folders recursively, skip node_modules, and be safe to run twice', () => {
     const directory = fixture();
     mkdirSync(join(directory, 'nested'));
     mkdirSync(join(directory, 'node_modules'));
@@ -43,7 +43,7 @@ describe('CLI', () => {
     expect(readFileSync(join(directory, 'ignored.txt'), 'utf8')).toBe(source);
   });
 
-  it('supports a single file and dry runs', () => {
+  it('should support a single file and dry runs', () => {
     const file = join(fixture(), 'test.js');
     writeFileSync(file, source);
     expect(run(file, '--dry', '--print')).toContain('fc.property');
@@ -52,7 +52,7 @@ describe('CLI', () => {
     expect(readFileSync(file, 'utf8')).toBe(source.replace('asyncProperty', 'property'));
   });
 
-  it.each(['jsx', 'tsx'])('parses JSX in .%s files', (extension) => {
+  it.each(['jsx', 'tsx'])('should parse JSX in .%s files', (extension) => {
     const file = join(fixture(), `test.${extension}`);
     const jsx = "import fc from 'fast-check';\nfc.asyncProperty(arb, async (n) => <div>{n}</div>);\n";
     writeFileSync(file, jsx);
@@ -61,7 +61,7 @@ describe('CLI', () => {
   });
 
   it.each([[], ['unknown', '.'], ['v5/asyncProperty'], ['v5/asyncProperty', '--dry']].map((args) => [args]))(
-    'rejects invalid arguments %j',
+    'should reject invalid arguments %j',
     (args) => {
       const result = spawnSync(process.execPath, [cli, ...args], { encoding: 'utf8' });
       expect(result.status).toBe(1);
@@ -69,11 +69,11 @@ describe('CLI', () => {
     },
   );
 
-  it('prints help', () => {
+  it('should print help', () => {
     expect(execFileSync(process.execPath, [cli, '--help'], { encoding: 'utf8' })).toContain('v5/asyncProperty');
   });
 
-  it('rejects missing paths', () => {
+  it('should reject missing paths', () => {
     const result = spawnSync(process.execPath, [cli, 'v5/asyncProperty', join(fixture(), 'missing')], {
       encoding: 'utf8',
     });
@@ -81,7 +81,7 @@ describe('CLI', () => {
     expect(result.stderr).toContain('Path does not exist:');
   });
 
-  it('reports parse errors with a nonzero exit code and keeps the file unchanged', () => {
+  it('should report parse errors with a nonzero exit code and keep the file unchanged', () => {
     const file = join(fixture(), 'test.js');
     writeFileSync(file, 'const = ;');
     const result = spawnSync(process.execPath, [cli, 'v5/asyncProperty', file, '--run-in-band']);

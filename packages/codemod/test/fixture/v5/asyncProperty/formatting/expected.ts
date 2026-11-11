@@ -1,4 +1,4 @@
 // header
-import fc from "fast-check"
+import fc from 'fast-check';
 
-fc.property( /* keep */ arb, predicate )
+fc.property(/* keep */ arb, predicate);

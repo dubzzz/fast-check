@@ -10,7 +10,7 @@
     "packages/*/dist/",
     "packages/*/lib/",
     "packages/*/lib-*/",
-    "packages/codemod/test/fixture/",
+    "packages/codemod/test/fixture/**/expected.ts",
     "packages/fast-check/docs/",
     "packages/fast-check/documentation/Arbitraries.md",
     "playground/tsconfig.json",
