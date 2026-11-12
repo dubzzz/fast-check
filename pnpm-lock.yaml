@@ -174,8 +174,8 @@ importers:
   .:
     devDependencies:
       '@atproto/api':
-        specifier: ^0.30.3
-        version: 0.30.3
+        specifier: ^0.31.0
+        version: 0.31.0
       '@changesets/cli':
         specifier: ^3.0.3
         version: 3.0.3
@@ -673,8 +673,8 @@ packages:
     peerDependencies:
       ajv: '>=8'
 
-  '@atproto/api@0.30.3':
-    resolution: {integrity: sha512-9zN1al51/22pPOFX0BofgyggmgZTzLwv05jkoGDjG9Jdc+e5ZLCjLrlsObWW73EEud/b5t/IrY3c77ZIuy78sQ==}
+  '@atproto/api@0.31.0':
+    resolution: {integrity: sha512-zjhMfW1eWp56efQJAyT+s2gHUl4kezcdct5hGLvZtqCzTRa+VatmMw6m3B0HaGsK7A0SKSbAjRv+3IZYfoNQMA==}
     engines: {node: '>=22'}
 
   '@atproto/common-web@0.5.17':
@@ -10603,7 +10603,7 @@ snapshots:
       jsonpointer: 5.0.1
       leven: 3.1.0
 
-  '@atproto/api@0.30.3':
+  '@atproto/api@0.31.0':
     dependencies:
       '@atproto/common-web': 0.5.17
       '@atproto/lexicon': 0.7.19
