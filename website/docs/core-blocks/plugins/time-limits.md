@@ -6,7 +6,7 @@ slug: /core-blocks/plugins/time-limits/
 
 Time-limit plugins bound the time spent assessing your properties. They can come into play at various levels, from an isolated execution of a predicate to the full run of the assertion.
 
-They make the runner stop its ongoing task when the limit gets reached. As such, they cannot really stop the code they wrap but ignore its results.
+They let the runner move on after a time limit is reached, as soon as JavaScript gives them control. They cannot forcibly stop the code they wrap.
 
 ## `timeout`
 
@@ -58,7 +58,9 @@ Both plugins share the same limitations.
 
 There is no way to pause or kill a running synchronous script in JavaScript. A synchronous predicate will always run to its end before any of these plugins get the flow back.
 
-As such, `timeout` has no effect on purely synchronous predicates and `interruptAfterTimeLimit` can only prevent new executions from starting once the limit gets reached.
+Once a synchronous predicate returns, `timeout` checks its elapsed time and reports a failure if it exceeded the limit. It cannot report that failure while the synchronous code is still running.
+
+The `interruptAfterTimeLimit` plugin can only prevent new executions from starting once the limit gets reached.
 
 ### Asynchronous code can't be canceled
 

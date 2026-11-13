@@ -7,19 +7,30 @@ import { mergeSignals, signalAsPromise } from './utils/Signals.js';
 
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
+const safePerformanceNow = performance.now.bind(performance);
+
+function buildErrorMessage(timeMs: number) {
+  return `Property timeout: exceeded limit of ${timeMs} milliseconds`;
+}
 
 function timeoutAfter(timeMs: number) {
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
   const abortController = new AbortController();
+  const startTimeProbe = safePerformanceNow();
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = safeSetTimeout(() => {
-      const error = new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`);
+      const error = new Error(buildErrorMessage(timeMs));
       resolve({ error });
       abortController.abort(error);
     }, timeMs);
   });
   return {
-    clear: () => safeClearTimeout(timeoutHandle),
+    clear: () => {
+      safeClearTimeout(timeoutHandle);
+      if (safePerformanceNow() - startTimeProbe >= timeMs) {
+        return { error: new Error(buildErrorMessage(timeMs)) };
+      }
+    },
     promise,
     signal: abortController.signal,
   };
@@ -43,7 +54,10 @@ function timeoutRunner(
   const runOut = nestedRun(value, extendedExecutionContext);
   if (runOut === null || !('then' in runOut)) {
     // synchronous run: it already came to an end, nothing to race against the timeout
-    t.clear();
+    const overrideRunOut = t.clear();
+    if (overrideRunOut !== undefined) {
+      return overrideRunOut;
+    }
     return runOut;
   }
 
@@ -68,7 +82,7 @@ function timeoutRunner(
  * WARNING: It cannot stop a running predicate.
  * It mainly returns earlier so the test runner can move forward.
  *
- * NOTE: It has no effect on a synchronously running predicate.
+ * NOTE: Synchronous predicates are checked once they return and fail if they exceeded the limit.
  *
  * @example
  * ```ts
