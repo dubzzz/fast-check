@@ -23,6 +23,7 @@ describe('TimeLimitPlugins', () => {
 
       // Act
       const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
+      await instance.beforeAll!();
       const finalRun = instance.decorateRun!(nestedRun);
       const out = finalRun(expectedRunInput, executionContext);
 
@@ -42,6 +43,7 @@ describe('TimeLimitPlugins', () => {
 
       // Act
       const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
+      await instance.beforeAll!();
       const finalRun = instance.decorateRun!(nestedRun);
       vi.advanceTimersByTime(100);
       const out = finalRun({}, {});
@@ -59,6 +61,7 @@ describe('TimeLimitPlugins', () => {
 
       // Act
       const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
+      await instance.beforeAll!();
       const finalRun = instance.decorateRun!(nestedRun);
       const runPromise = finalRun({}, {});
       vi.advanceTimersByTime(10);
@@ -88,6 +91,7 @@ describe('TimeLimitPlugins', () => {
 
         // Act
         const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
+        await instance.beforeAll!();
         const finalRun = instance.decorateRun!(nestedRun);
         for (let i = 0; i !== numRuns; ++i) {
           await finalRun({}, {});
@@ -118,6 +122,7 @@ describe('TimeLimitPlugins', () => {
 
       // Act
       const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
+      await instance.beforeAll!();
       const finalRun = instance.decorateRun!(nestedRun);
       const runPromise = finalRun({}, {});
       vi.advanceTimersByTime(10);
@@ -153,6 +158,7 @@ describe('TimeLimitPlugins', () => {
 
         // Act
         const instance = interruptAfterTimeLimit(1000)(0, new Map<symbol, any>());
+        await instance.beforeAll!();
         const finalRun = instance.decorateRun!(nestedRun);
         const runPromise = finalRun({}, { signal: controller.signal });
         vi.advanceTimersByTime(10); // trigger the original signal before the predicate completes or the time limit expires
@@ -178,6 +184,7 @@ describe('TimeLimitPlugins', () => {
         // Act
         controller.abort(signalError);
         const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
+        await instance.beforeAll!();
         const finalRun = instance.decorateRun!(nestedRun);
         const runPromise = finalRun({}, { signal: controller.signal });
 
