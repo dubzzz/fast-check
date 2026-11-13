@@ -192,8 +192,8 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(vitest@5.1.0)
       all-contributors-cli:
-        specifier: ^7.0.1
-        version: 7.0.1(@types/node@26.6.6)
+        specifier: ^7.0.2
+        version: 7.0.2(@types/node@26.6.6)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -4770,8 +4770,8 @@ packages:
     resolution: {integrity: sha512-CFtHkGANnIAG6TY5g9s/h+yxZ0SN2/ICMjMY1EWj9gKGiS4LSGFrmMmTA/xxyxOH8AEazFD3YSfRZMh5vIEh2w==}
     engines: {node: '>= 14.0.0'}
 
-  all-contributors-cli@7.0.1:
-    resolution: {integrity: sha512-gMP/2fSB3aUjM147lCFIGoALT7d4+RzPNicUvmTFh1aCBp8eprureRWaOvmkAGg3Esc2IJTeW9mh/LB+RDQevQ==}
+  all-contributors-cli@7.0.2:
+    resolution: {integrity: sha512-dgZfjqyQ5mWo/InlyxtBNG58Ks4n7eGMot19euaXN5to4O3UdV5D352Aqqzw7qMnd3u3gWN9j4n7TFaj96Ia5Q==}
     engines: {node: '>=22.22.0'}
     hasBin: true
 
@@ -15895,7 +15895,7 @@ snapshots:
       '@algolia/requester-fetch': 5.61.0
       '@algolia/requester-node-http': 5.61.0
 
-  all-contributors-cli@7.0.1(@types/node@26.6.6):
+  all-contributors-cli@7.0.2(@types/node@26.6.6):
     dependencies:
       eta: 4.6.0
       inquirer: 14.2.5(@types/node@26.6.6)
