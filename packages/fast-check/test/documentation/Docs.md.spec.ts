@@ -157,6 +157,14 @@ function sanitizeNonCharacters(str: string): string {
   return result;
 }
 
+async function mapSequentially<T, U>(items: readonly T[], mapper: (item: T) => Promise<U>): Promise<U[]> {
+  const outputs: U[] = [];
+  for (const item of items) {
+    outputs.push(await mapper(item));
+  }
+  return outputs;
+}
+
 async function refreshContent(originalContent: string): Promise<{ content: string; numExecutedSnippets: number }> {
   // Re-run all the code (supported) snippets
   // Re-generate all the examples
@@ -166,123 +174,119 @@ async function refreshContent(originalContent: string): Promise<{ content: strin
   // Extract code blocks
   const extractedBlocks = extractJsCodeBlocks(originalContent);
 
-  // Execute code blocks
-  const refinedBlocks = await Promise.all(
-    extractedBlocks.map(async (block) => {
-      if (!isJsCodeBlock(block)) return block;
+  // Execute code blocks sequentially as statistics snippets temporarily override global configuration and console.log.
+  const refinedBlocks = await mapSequentially(extractedBlocks, async (block) => {
+    if (!isJsCodeBlock(block)) return block;
 
-      // Remove list of examples and statistics
-      const cleanedBlock = trimJsCodeBlock(block)
-        .replace(new RegExp(`${CommentForGeneratedValues}[^\n]*(\n//.*)*`, 'mg'), CommentForGeneratedValues)
-        .replace(new RegExp(`${CommentForStatistics}[^\n]*(\n//.*)*`, 'mg'), CommentForStatistics);
+    // Remove list of examples and statistics
+    const cleanedBlock = trimJsCodeBlock(block)
+      .replace(new RegExp(`${CommentForGeneratedValues}[^\n]*(\n//.*)*`, 'mg'), CommentForGeneratedValues)
+      .replace(new RegExp(`${CommentForStatistics}[^\n]*(\n//.*)*`, 'mg'), CommentForStatistics);
 
-      // Extract code snippets
-      const snippets = cleanedBlock
-        .split(`\n${CommentForGeneratedValues}`)
-        .map((snippet, index, all) =>
-          index !== all.length - 1 ? `${snippet}\n${CommentForGeneratedValues}` : snippet,
-        );
+    // Extract code snippets
+    const snippets = cleanedBlock
+      .split(`\n${CommentForGeneratedValues}`)
+      .map((snippet, index, all) => (index !== all.length - 1 ? `${snippet}\n${CommentForGeneratedValues}` : snippet));
 
-      // Execute blocks and set examples
-      const updatedSnippets = await Promise.all(
-        snippets.map(async (snippet) => {
-          if (!snippet.endsWith(CommentForGeneratedValues)) return snippet;
-
-          ++numExecutedSnippets;
-
-          // oxlint-disable-next-line no-unused-vars
-          const generatedValues = await (async function (fc): Promise<string[]> {
-            const numRuns = 5 * TargetNumExamples;
-            const lastIndexCommentForStatistics = snippet.lastIndexOf(CommentForStatistics);
-            const refinedSnippet =
-              lastIndexCommentForStatistics !== -1 ? snippet.substring(lastIndexCommentForStatistics) : snippet;
-            const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-            const indexArbitraryPart = refinedSnippet.indexOf(CommentForArbitraryIndicator);
-            const preparationPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(0, indexArbitraryPart) : '';
-            const arbitraryPart =
-              indexArbitraryPart !== -1 ? refinedSnippet.substring(indexArbitraryPart) : refinedSnippet;
-            const santitizeArbitraryPart = arbitraryPart
-              .trim()
-              .replace(/;$/, '')
-              .replace(/;\n\/\/.*$/m, '\n//');
-            const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).then(values => values.map(v => fc.stringify(withPulledFirstItems(v))))`;
-            try {
-              return await eval(evalCode);
-            } catch (err) {
-              throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
-                cause: err,
-              });
-            }
-          })(fc);
-
-          const uniqueGeneratedValues = Array.from(new Set(generatedValues.map(sanitizeNonCharacters))).slice(
-            0,
-            TargetNumExamples,
-          );
-          // If the display for generated values is too long, we split it into a list of items
-          if (
-            uniqueGeneratedValues.some((value) => value.includes('\n')) ||
-            uniqueGeneratedValues.reduce((totalLength, value) => totalLength + value.length, 0) > 120
-          ) {
-            return `${snippet}${[...uniqueGeneratedValues, '…']
-              .map((v) => `\n// • ${v.replace(/\n/gm, '\n//   ')}`)
-              .join('')}`;
-          } else {
-            return `${snippet} ${uniqueGeneratedValues.join(', ')}…`;
-          }
-        }),
-      );
-
-      // Extract statistics snippets
-      const statisticsSnippets = updatedSnippets
-        .join('')
-        .split(`\n${CommentForStatistics}`)
-        .map((snippet, index, all) => (index !== all.length - 1 ? `${snippet}\n${CommentForStatistics}` : snippet));
-
-      // Execute statistics
-      const updatedStatisticsSnippets = statisticsSnippets.map((snippet) => {
-        if (!snippet.endsWith(CommentForStatistics)) return snippet;
+    // Execute blocks and set examples
+    const updatedSnippets = await Promise.all(
+      snippets.map(async (snippet) => {
+        if (!snippet.endsWith(CommentForGeneratedValues)) return snippet;
 
         ++numExecutedSnippets;
 
-        const computedStatitics = (baseSize: fc.Size) =>
-          (function (fc): string[] {
-            const lastIndexCommentForGeneratedValues = snippet.lastIndexOf(CommentForGeneratedValues);
-            const refinedSnippet =
-              lastIndexCommentForGeneratedValues !== -1
-                ? snippet.substring(lastIndexCommentForGeneratedValues)
-                : snippet;
-            const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-            const evalCode = refinedSnippet;
-            const originalConsoleLog = console.log;
-            const originalGlobal = fc.readConfigureGlobal();
-            try {
-              const lines: string[] = [];
-              console.log = (line) => lines.push(line);
-              fc.configureGlobal({ seed, numRuns: 10000, baseSize });
-              eval(evalCode);
-              return lines;
-            } catch (err) {
-              throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
-                cause: err,
-              });
-            } finally {
-              console.log = originalConsoleLog;
-              fc.configureGlobal(originalGlobal);
-            }
-          })(fc);
-        const formatForSize = (size: fc.Size) =>
-          `// For size = "${size}":\n${computedStatitics(size)
-            .slice(0, TargetNumExamples)
-            .map((line) => `// • ${line}`)
-            .join('\n')}${computedStatitics.length > TargetNumExamples ? '\n// • …' : ''}`;
-        const sizes = ['xsmall', 'small', 'medium'] as const;
-        return `${snippet}\n${sizes.map((size) => formatForSize(size)).join('\n')}`;
-      });
+        // oxlint-disable-next-line no-unused-vars
+        const generatedValues = await (async function (fc): Promise<string[]> {
+          const numRuns = 5 * TargetNumExamples;
+          const lastIndexCommentForStatistics = snippet.lastIndexOf(CommentForStatistics);
+          const refinedSnippet =
+            lastIndexCommentForStatistics !== -1 ? snippet.substring(lastIndexCommentForStatistics) : snippet;
+          const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
+          const indexArbitraryPart = refinedSnippet.indexOf(CommentForArbitraryIndicator);
+          const preparationPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(0, indexArbitraryPart) : '';
+          const arbitraryPart =
+            indexArbitraryPart !== -1 ? refinedSnippet.substring(indexArbitraryPart) : refinedSnippet;
+          const santitizeArbitraryPart = arbitraryPart
+            .trim()
+            .replace(/;$/, '')
+            .replace(/;\n\/\/.*$/m, '\n//');
+          const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).then(values => values.map(v => fc.stringify(withPulledFirstItems(v))))`;
+          try {
+            return await eval(evalCode);
+          } catch (err) {
+            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
+              cause: err,
+            });
+          }
+        })(fc);
 
-      return addJsCodeBlock(updatedStatisticsSnippets.join(''));
-    }),
-  );
+        const uniqueGeneratedValues = Array.from(new Set(generatedValues.map(sanitizeNonCharacters))).slice(
+          0,
+          TargetNumExamples,
+        );
+        // If the display for generated values is too long, we split it into a list of items
+        if (
+          uniqueGeneratedValues.some((value) => value.includes('\n')) ||
+          uniqueGeneratedValues.reduce((totalLength, value) => totalLength + value.length, 0) > 120
+        ) {
+          return `${snippet}${[...uniqueGeneratedValues, '…']
+            .map((v) => `\n// • ${v.replace(/\n/gm, '\n//   ')}`)
+            .join('')}`;
+        } else {
+          return `${snippet} ${uniqueGeneratedValues.join(', ')}…`;
+        }
+      }),
+    );
+
+    // Extract statistics snippets
+    const statisticsSnippets = updatedSnippets
+      .join('')
+      .split(`\n${CommentForStatistics}`)
+      .map((snippet, index, all) => (index !== all.length - 1 ? `${snippet}\n${CommentForStatistics}` : snippet));
+
+    // Execute statistics
+    const updatedStatisticsSnippets = await mapSequentially(statisticsSnippets, async (snippet) => {
+      if (!snippet.endsWith(CommentForStatistics)) return snippet;
+
+      ++numExecutedSnippets;
+
+      const computedStatistics = (baseSize: fc.Size) =>
+        (async function (fc): Promise<string[]> {
+          const lastIndexCommentForGeneratedValues = snippet.lastIndexOf(CommentForGeneratedValues);
+          const refinedSnippet =
+            lastIndexCommentForGeneratedValues !== -1 ? snippet.substring(lastIndexCommentForGeneratedValues) : snippet;
+          const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
+          const evalCode = `(async () => { ${refinedSnippet}\n })()`;
+          const originalConsoleLog = console.log;
+          const originalGlobal = fc.readConfigureGlobal();
+          try {
+            const lines: string[] = [];
+            console.log = (line) => lines.push(line);
+            fc.configureGlobal({ seed, numRuns: 10000, baseSize });
+            await eval(evalCode);
+            return lines;
+          } catch (err) {
+            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
+              cause: err,
+            });
+          } finally {
+            console.log = originalConsoleLog;
+            fc.configureGlobal(originalGlobal);
+          }
+        })(fc);
+      const formatForSize = async (size: fc.Size) => {
+        const lines = await computedStatistics(size);
+        return `// For size = "${size}":\n${lines
+          .slice(0, TargetNumExamples)
+          .map((line) => `// • ${line}`)
+          .join('\n')}${lines.length > TargetNumExamples ? '\n// • …' : ''}`;
+      };
+      const sizes = ['xsmall', 'small', 'medium'] as const;
+      return `${snippet}\n${(await mapSequentially(sizes, formatForSize)).join('\n')}`;
+    });
+
+    return addJsCodeBlock(updatedStatisticsSnippets.join(''));
+  });
 
   return { content: refinedBlocks.join(''), numExecutedSnippets };
 }

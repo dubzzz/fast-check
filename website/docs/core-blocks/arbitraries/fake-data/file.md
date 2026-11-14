@@ -160,60 +160,65 @@ fc.jsonValue({ maxDepth: 1 });
 // • true
 // • …
 
-fc.statistics(fc.jsonValue(), (v) => {
-  function size(n) {
-    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
-    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
-    return 1;
-  }
-  const s = size(v);
-  let lower = 1;
-  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-  while (next(lower) <= s) {
-    lower = next(lower);
-  }
-  return `${lower} to ${next(lower) - 1} items`;
-});
+fc.defaultStatisticsLogger(
+  await fc.statistics(fc.jsonValue(), (v) => {
+    function size(n) {
+      if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+    while (next(lower) <= s) {
+      lower = next(lower);
+    }
+    return `${lower} to ${next(lower) - 1} items`;
+  }),
+);
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....49.55%
-// • 5 to 9 items....29.99%
-// • 10 to 49 items..20.46%
+// • 1 to 4 items....49.42%
+// • 5 to 9 items....30.73%
+// • 10 to 49 items..19.85%
 // For size = "medium":
-// • 50 to 99 items....33.95%
-// • 1 to 4 items......33.88%
-// • 10 to 49 items....25.23%
-// • 100 to 499 items...6.73%
-// • 500 to 999 items...0.12%
+// • 1 to 4 items......34.53%
+// • 50 to 99 items....34.32%
+// • 10 to 49 items....24.29%
+// • 100 to 499 items...6.74%
+// • 5 to 9 items.......0.09%
+// • …
 
-fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
-  function size(n) {
-    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
-    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
-    return 1;
-  }
-  const s = size(v);
-  let lower = 1;
-  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-  while (next(lower) <= s) {
-    lower = next(lower);
-  }
-  return `${lower} to ${next(lower) - 1} items`;
-});
+fc.defaultStatisticsLogger(
+  await fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
+    function size(n) {
+      if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+    while (next(lower) <= s) {
+      lower = next(lower);
+    }
+    return `${lower} to ${next(lower) - 1} items`;
+  }),
+);
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....50.02%
-// • 5 to 9 items....33.14%
-// • 10 to 49 items..16.84%
+// • 1 to 4 items....50.61%
+// • 5 to 9 items....32.89%
+// • 10 to 49 items..16.50%
 // For size = "medium":
-// • 1 to 4 items......34.60%
-// • 50 to 99 items....33.01%
-// • 10 to 49 items....26.56%
-// • 100 to 499 items...4.49%
+// • 1 to 4 items......35.37%
+// • 50 to 99 items....32.70%
+// • 10 to 49 items....25.86%
+// • 100 to 499 items...4.73%
 // • 5 to 9 items.......1.34%
 ```
 

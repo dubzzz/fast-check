@@ -22,7 +22,6 @@ export class QualifiedParameters<T> {
   numRuns: number;
   maxSkipsPerRun: number;
   path: string;
-  logger: (v: string) => void;
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
@@ -37,12 +36,6 @@ export class QualifiedParameters<T> {
     this.numRuns = readNumRuns(p);
     this.verbose = readVerbose(p);
     this.maxSkipsPerRun = p.maxSkipsPerRun !== undefined ? p.maxSkipsPerRun : 100;
-    this.logger =
-      p.logger !== undefined
-        ? p.logger
-        : (v: string) => {
-            console.log(v);
-          };
     this.path = p.path !== undefined ? p.path : '';
     this.examples = p.examples !== undefined ? p.examples : [];
     this.endOnFailure = p.endOnFailure === true;
@@ -58,7 +51,6 @@ export class QualifiedParameters<T> {
       numRuns: this.numRuns,
       maxSkipsPerRun: this.maxSkipsPerRun,
       path: this.path,
-      logger: this.logger,
       verbose: this.verbose,
       examples: this.examples,
       endOnFailure: this.endOnFailure,
