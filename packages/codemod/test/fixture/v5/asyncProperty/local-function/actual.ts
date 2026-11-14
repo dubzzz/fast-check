@@ -1,0 +1,2 @@
+function asyncProperty() {}
+asyncProperty();
