@@ -9,6 +9,7 @@ import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { assert } from './assert.js';
 import type { Plugin } from '../plugin/Plugin.js';
+import { PreconditionFailure } from 'fast-check';
 
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
@@ -55,8 +56,12 @@ function streamSample<Ts>(
  */
 async function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params: Parameters<Ts> = {}): Promise<Ts[]> {
   const extractedValue: Ts[] = [];
+  const requestedRuns = params.numRuns; // we ignore: readConfigureGlobal().numRuns in that context
   const extractor: Plugin<Ts> = () => ({
     decorateRun: () => (value) => {
+      if (requestedRuns !== undefined && extractedValue.length >= requestedRuns) {
+        return new PreconditionFailure(true);
+      }
       extractedValue.push(value);
       return null; // emulate a successful predicate
     },
