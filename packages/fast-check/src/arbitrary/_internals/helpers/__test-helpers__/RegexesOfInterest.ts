@@ -2,6 +2,7 @@ export const RegexesOfInterest: {
   regex: RegExp; // if declared with /u flag, they won't be run on non-unicode tests
   invalidInUnicodeMode?: boolean; // invalid with the /u flag
   unmatchable?: boolean; // no string can match
+  skipAstComparison?: boolean; // AST differs from regexp-tree or cannot be parsed by it
   unsupportedByStringMatching?: boolean; // unsupported by `fc.stringMatching`
 }[] = [
   // Characters
@@ -128,6 +129,18 @@ export const RegexesOfInterest: {
   { regex: /(function\s+)(?<name>[$_A-Z][$_A-Za-z0-9]*)/ },
   { regex: /(a(b)c)/ },
   { regex: /(?<la>a(?<lb>b)c)/ },
+
+  // Empty groups: regexp-tree uses null instead of an empty Alternative
+  { regex: new RegExp(''), skipAstComparison: true },
+  { regex: /^(?:)$/, skipAstComparison: true },
+  { regex: /^()$/, skipAstComparison: true },
+  { regex: /^(?<empty>)$/, skipAstComparison: true },
+  { regex: /^(?:(?:))$/, skipAstComparison: true },
+  { regex: /^(?:)*$/, skipAstComparison: true },
+  { regex: /^()+$/, skipAstComparison: true },
+  { regex: /^(?:){2,4}$/, skipAstComparison: true },
+  { regex: /^(?:a|(?:))$/, skipAstComparison: true },
+  { regex: /^x(?:)$/, skipAstComparison: true },
 
   // Alternation
   { regex: /a|b/ }, // 'or' with only two operands containing a single token each
