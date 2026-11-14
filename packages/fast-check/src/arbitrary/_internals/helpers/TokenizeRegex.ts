@@ -205,9 +205,6 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
         return { type: 'Char', kind: 'unicode', symbol, value: block, codePoint };
       }
 
-      case '0': {
-        return { type: 'Char', kind: 'decimal', symbol: '\0', value: block, codePoint: 0 };
-      }
       case 'n': {
         return metaEscapedChar(block, '\n');
       }
@@ -235,8 +232,11 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
       }
       default: {
         if (isDigit(next)) {
+          if (next === '8' || next === '9') {
+            return simpleChar(next, true);
+          }
           const allDigits = block.substring(1);
-          const codePoint = Number(allDigits);
+          const codePoint = Number.parseInt(allDigits, 8);
           const symbol = String.fromCodePoint(codePoint);
           return { type: 'Char', kind: 'decimal', symbol, value: block, codePoint };
         }
@@ -260,7 +260,7 @@ function pushTokens(
   tokens: RegexToken[],
   regexSource: string,
   unicodeMode: boolean,
-  groups: { lastIndex: number; named: Map<string, number> },
+  groups: { lastIndex: number; total: number; named: Map<string, number> },
 ): void {
   let disjunctions: (RegexToken | null)[] | null = null;
   for (
@@ -431,9 +431,11 @@ function pushTokens(
           tokens.push({ type: 'Assertion', kind: block });
         } else if (block[0] === '\\' && isDigit(block[1])) {
           const reference = Number(block.substring(1));
-          if (reference !== 0 && (unicodeMode || reference <= groups.lastIndex)) {
+          if (block[1] !== '0' && reference !== 0 && (unicodeMode || reference <= groups.total)) {
             tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
           } else {
+            // Only consume the octal prefix (or one identity-escaped digit), leaving any remaining digits as literals.
+            block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Character);
             tokens.push(blockToCharToken(block));
           }
         } else if (block[0] === '\\' && block[1] === 'k' && block.length !== 2) {
@@ -471,12 +473,37 @@ function pushTokens(
 }
 
 /**
+ * Count all capturing groups, including ones following a numeric escape.
+ */
+function countCapturingGroups(source: string): number {
+  let count = 0;
+  for (let index = 0; index < source.length; ++index) {
+    if (source[index] === '\\') {
+      ++index;
+    } else if (source[index] === '[') {
+      index += readFrom(source, index, false, TokenizerBlockMode.Full).length - 1;
+    } else if (
+      source[index] === '(' &&
+      (source[index + 1] !== '?' ||
+        (source[index + 2] === '<' && source[index + 3] !== '=' && source[index + 3] !== '!'))
+    ) {
+      ++count;
+    }
+  }
+  return count;
+}
+
+/**
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
   const unicodeMode = [...regex.flags].indexOf('u') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
-  pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });
+  pushTokens(tokens, regexSource, unicodeMode, {
+    lastIndex: 0,
+    total: countCapturingGroups(regexSource),
+    named: new Map<string, number>(),
+  });
   return toSingleToken(tokens);
 }

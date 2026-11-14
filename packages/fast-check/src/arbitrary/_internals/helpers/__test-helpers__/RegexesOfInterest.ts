@@ -2,6 +2,7 @@ export const RegexesOfInterest: {
   regex: RegExp; // if declared with /u flag, they won't be run on non-unicode tests
   invalidInUnicodeMode?: boolean; // invalid with the /u flag
   unmatchable?: boolean; // no string can match
+  incorrectlyParsedByRegexpTree?: boolean; // checked against native RegExp instead
   unsupportedByStringMatching?: boolean; // unsupported by `fc.stringMatching`
 }[] = [
   // Characters
@@ -66,12 +67,12 @@ export const RegexesOfInterest: {
 
   // Octal
   // @ts-expect-error Referencing non-existing group in Regex
-  { regex: /\125/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches 'U'
+  { regex: /\125/, invalidInUnicodeMode: true, incorrectlyParsedByRegexpTree: true }, // matches 'U'
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
   { regex: /\1/, invalidInUnicodeMode: true },
   // @ts-expect-error Referencing non-existing group in Regex
-  { regex: /\1000/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // in non-unicode: \100 then 0 ; matches '@0'
+  { regex: /\1000/, invalidInUnicodeMode: true, incorrectlyParsedByRegexpTree: true }, // in non-unicode: \100 then 0 ; matches '@0'
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
   { regex: /(a)\2/, invalidInUnicodeMode: true }, // in non-unicode: \2 is considered as an octal

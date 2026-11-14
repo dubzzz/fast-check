@@ -208,9 +208,12 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
         }
         default: {
           if (isDigit(next1)) {
-            const maxIndex = unicodeMode ? text.length : Math.min(from + 4, text.length);
+            // Read the full decimal escape outside classes so the tokenizer can identify backreferences first.
+            const decimal = unicodeMode || mode === TokenizerBlockMode.Full;
+            const maxLength = next1 <= '3' ? 4 : next1 <= '7' ? 3 : 2;
+            const maxIndex = decimal ? text.length : Math.min(from + maxLength, text.length);
             let subIndex = from + 2;
-            for (; subIndex < maxIndex && isDigit(text[subIndex]); ++subIndex) {
+            for (; subIndex < maxIndex && isDigit(text[subIndex]) && (decimal || text[subIndex] <= '7'); ++subIndex) {
               // nothing
             }
             return subIndex;
