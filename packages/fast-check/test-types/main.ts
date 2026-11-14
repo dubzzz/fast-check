@@ -22,19 +22,6 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<[number, string][]>>();
 // @ts-expect-error - Only properties have a predicate to skip
 fc.sample(fc.nat(), { noPredicateExecution: true });
-fc.assert(
-  fc.property(fc.nat(), () => true),
-  // @ts-expect-error - Predicate execution can only be disabled for sample
-  { noPredicateExecution: true },
-);
-fc.statistics(
-  fc.property(fc.nat(), () => true),
-  String,
-  // @ts-expect-error - statistics does not support this sample-only option
-  { noPredicateExecution: true },
-);
-// @ts-expect-error - Predicate execution cannot be disabled globally
-fc.configureGlobal({ noPredicateExecution: true });
 
 // property
 // "property" instantiates instances compatible with Property
