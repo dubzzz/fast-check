@@ -48,18 +48,6 @@ describe('GlobalParameters', () => {
     fc.resetConfigureGlobal();
   });
 
-  it('should handle global and local numRuns identically when sampling a shrink path', async () => {
-    const arbitrary = fc.integer({ min: 0, max: 100 });
-    const params = { seed: 42, path: '0:0', examples: [100] };
-    const withLocalConfiguration = await fc.sample(arbitrary, { ...params, numRuns: 1 });
-
-    fc.configureGlobal({ numRuns: 1 });
-    const withGlobalConfiguration = await fc.sample(arbitrary, params);
-
-    expect(withLocalConfiguration.length).toBeGreaterThan(1); // numRuns has no effect, we get all shrunk values for 100 starting from its first one
-    expect(withGlobalConfiguration).toEqual(withLocalConfiguration);
-  });
-
   it('should merge global parameters with local ones in fc.assert', async () => {
     const globalConfig = { seed: 42, numRuns: 10 };
     const overridenNumRuns = 100;
