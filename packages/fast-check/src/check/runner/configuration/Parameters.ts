@@ -53,11 +53,6 @@ export interface Parameters<T = void> {
    */
   path?: string;
   /**
-   * Logger (see {@link statistics}): `console.log` by default
-   * @remarks Since 0.0.6
-   */
-  logger?(v: string): void;
-  /**
    * Enable verbose mode: {@link VerbosityLevel.None} by default
    *
    * Using `verbose: true` is equivalent to `verbose: VerbosityLevel.Verbose`

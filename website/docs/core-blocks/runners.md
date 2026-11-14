@@ -102,18 +102,19 @@ Its signature is:
 function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: number | Parameters<Ts>,
-): void;
+  params?: Parameters<Ts>,
+): Promise<Map<string, number>>;
 ```
 
 Example of usage:
 
 ```js
-fc.statistics(
+const stats = await fc.statistics(
   fc.string(), // source arbitrary
   (v) => `${v.length} characters`, // classifier
   { numRuns: 100_000 }, // extra parameters
 );
+fc.defaultStatisticsLogger(stats);
 // Possible output:
 // >  0 characters...9.65%
 // >  2 characters...9.56%
@@ -128,5 +129,16 @@ fc.statistics(
 // >  5 characters...8.68%
 ```
 
-Resources: [API reference](/docs/api/functions/statistics).  
+`statistics` runs through the same runner as `sample` and `assert`, including plugins, and must be awaited. It returns a map from category labels to unrounded percentages of the values actually sampled, without logging. Values can belong to zero or more categories, so percentages do not necessarily sum to 100. With a shrink path, it classifies the same values as `sample`; pass `numRuns` locally to cap the number of sampled values.
+
+To keep the previous log format, pass the result to `defaultStatisticsLogger`. It sorts categories by descending percentage, rounds to two decimal places, and logs one line per category. A custom logger can be passed as the second argument:
+
+```js
+fc.defaultStatisticsLogger(stats, (line) => customLogger(line));
+```
+
+When migrating, replace numeric run counts with `{ numRuns }` and remove `logger` from runner parameters and global configuration.
+
+Resources: [API reference](/docs/api/functions/statistics), [default logger](/docs/api/functions/defaultStatisticsLogger).
+
 Available since 0.0.6.

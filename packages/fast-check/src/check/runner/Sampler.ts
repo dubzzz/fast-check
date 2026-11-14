@@ -1,39 +1,41 @@
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
 import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
-import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
-import { read } from './configuration/QualifiedParameters.js';
-import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import { lazyToss, toss } from './Tosser.js';
-import { pathWalk } from './utils/PathWalker.js';
 import { assert } from './assert.js';
 import type { Plugin } from '../plugin/Plugin.js';
-import { PreconditionFailure } from 'fast-check';
+import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 
-function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
-  const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
-    ? new PropertyImplem(generator as Arbitrary<Ts>, () => true)
-    : (generator as Property<Ts>);
-  return prop;
-}
-
-function streamSample<Ts>(
+async function forEachSample<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
-  params?: Parameters<Ts> | number,
-): IterableIterator<Ts> {
-  const extendedParams =
-    typeof params === 'number'
-      ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
-      : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
-  const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
-  const nextProperty = toProperty(generator);
-  const shrink = nextProperty.shrink.bind(nextProperty);
-  const tossedValues =
-    qParams.path.length === 0
-      ? toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples), shrink);
-  return tossedValues.take(qParams.numRuns).map((s) => s.value_);
+  onValue: (value: Ts) => void,
+  params: Parameters<Ts>,
+): Promise<number> {
+  let numValues = 0;
+  const requestedRuns = params.numRuns; // we ignore: readConfigureGlobal().numRuns in that context
+  const extractor: Plugin<Ts> = () => ({
+    decorateRun: () => (value) => {
+      if (requestedRuns !== undefined && numValues >= requestedRuns) {
+        return new PreconditionFailure(true);
+      }
+      try {
+        onValue(value);
+      } catch (error) {
+        return { error };
+      }
+      ++numValues;
+      return null; // emulate a successful predicate
+    },
+  });
+  const property: Property<Ts> =
+    'run' in generator && typeof generator.run === 'function'
+      ? generator
+      : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
+  await assert(property, {
+    ...params,
+    plugins: params.plugins !== undefined && params.plugins.length !== 0 ? [...params.plugins, extractor] : [extractor],
+  });
+  return numValues;
 }
 
 /**
@@ -59,24 +61,7 @@ function streamSample<Ts>(
  */
 async function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params: Parameters<Ts> = {}): Promise<Ts[]> {
   const extractedValue: Ts[] = [];
-  const requestedRuns = params.numRuns; // we ignore: readConfigureGlobal().numRuns in that context
-  const extractor: Plugin<Ts> = () => ({
-    decorateRun: () => (value) => {
-      if (requestedRuns !== undefined && extractedValue.length >= requestedRuns) {
-        return new PreconditionFailure(true);
-      }
-      extractedValue.push(value);
-      return null; // emulate a successful predicate
-    },
-  });
-  const property: Property<Ts> =
-    'run' in generator && typeof generator.run === 'function'
-      ? generator
-      : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
-  await assert(property, {
-    ...params,
-    plugins: params.plugins !== undefined && params.plugins.length !== 0 ? [...params.plugins, extractor] : [extractor],
-  });
+  await forEachSample(generator, (value) => extractedValue.push(value), params);
   return extractedValue;
 }
 
@@ -87,53 +72,84 @@ function round2(n: number): string {
 /**
  * Gather useful statistics concerning generated values
  *
- * Print the result in `console.log` or `params.logger` (if defined)
+ * WARNING: Has to be awaited
+ *
+ * Returns a map from category labels to unrounded percentages of the sampled values.
+ * Values classified into multiple categories contribute to each category, so percentages may sum to more than 100.
+ * Values classified into no categories still count towards the total number of sampled values.
+ * No output is logged. Use {@link defaultStatisticsLogger} to print the result.
+ *
+ * With a shrink path, classifies all shrunk values at that level starting from the path.
+ * Pass `numRuns` directly to `statistics` (not via global configuration) to cap the number of sampled values.
  *
  * @example
  * ```typescript
- * fc.statistics(
- *     fc.nat(999),
+ * const stats = await fc.statistics(
+ *     fc.nat({max: 999}),
  *     v => v < 100 ? 'Less than 100' : 'More or equal to 100',
- *     {numRuns: 1000, logger: console.log});
- * // Classify 1000 values generated by fc.nat(999) into two categories:
+ *     {numRuns: 1000});
+ * // Classify 1000 values generated by fc.nat({max: 999}) into two categories:
  * // - Less than 100
  * // - More or equal to 100
- * // The output will be sent line by line to the logger
+ * fc.defaultStatisticsLogger(stats); // print the statistics line by line
  * ```
  *
  * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
- * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
+ * @param params - `Parameters` passed to {@link assert}
  *
  * @remarks Since 0.0.6
  * @public
  */
-function statistics<Ts>(
+async function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: Parameters<Ts> | number,
-): void {
-  const extendedParams =
-    typeof params === 'number'
-      ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
-      : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
-  const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
-  const recorded: { [key: string]: number } = {};
-  for (const g of streamSample(generator, params)) {
-    const out = classify(g);
-    const categories: string[] = Array.isArray(out) ? out : [out];
-    for (const c of categories) {
-      recorded[c] = (recorded[c] || 0) + 1;
-    }
+  params: Parameters<Ts> = {},
+): Promise<Map<string, number>> {
+  const recorded = new Map<string, number>();
+  const numValues = await forEachSample(
+    generator,
+    (value) => {
+      const out = classify(value);
+      const categories = Array.isArray(out) ? out : [out];
+      for (const category of categories) {
+        recorded.set(category, (recorded.get(category) ?? 0) + 1);
+      }
+    },
+    params,
+  );
+  for (const [category, count] of recorded) {
+    recorded.set(category, (count * 100) / numValues);
   }
-  const data = Object.entries(recorded)
-    .sort((a, b) => b[1] - a[1])
-    .map((i) => [i[0], `${round2((i[1] * 100.0) / qParams.numRuns)}%`]);
+  return recorded;
+}
+
+/**
+ * Print statistics using the default format: labels and percentages aligned with dots,
+ * ordered from the highest percentage to the lowest and rounded to two decimal places.
+ *
+ * @example
+ * ```typescript
+ * fc.defaultStatisticsLogger(await fc.statistics(fc.nat(), v => v < 100 ? 'Small' : 'Large'));
+ * fc.defaultStatisticsLogger(await fc.statistics(fc.nat(), String), line => customLogger(line));
+ * ```
+ *
+ * @param stats - Map of category labels to percentages returned by {@link statistics}
+ * @param logger - Function receiving each formatted line, `console.log` by default
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+function defaultStatisticsLogger(
+  stats: ReadonlyMap<string, number>,
+  logger: (line: string) => void = console.log,
+): void {
+  const data = [...stats].sort((a, b) => b[1] - a[1]).map(([label, percent]) => [label, `${round2(percent)}%`]);
   const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
-    qParams.logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
+    logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
   }
 }
 
-export { sample, statistics };
+export { sample, statistics, defaultStatisticsLogger };

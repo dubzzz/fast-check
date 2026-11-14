@@ -53,21 +53,17 @@ async function testArbitrary(arb) {
 
   // should be able to retrieve statistics
   var stats = [];
-  fc.statistics(
-    arb,
-    function (data) {
-      const dataWithPrototype =
-        data !== null && typeof data === 'object' && Object.getPrototypeOf(data) === null
-          ? Object.assign({}, data) // String(<no-prototype>) throws, we just put an Object prototype to not throw
-          : data;
-      return String(String(dataWithPrototype).length);
-    },
-    {
-      logger: function (l) {
-        stats.push(l);
-      },
-    },
-  );
+  var distribution = await fc.statistics(arb, function (data) {
+    const dataWithPrototype =
+      data !== null && typeof data === 'object' && Object.getPrototypeOf(data) === null
+        ? Object.assign({}, data) // String(<no-prototype>) throws, we just put an Object prototype to not throw
+        : data;
+    return String(String(dataWithPrototype).length);
+  });
+  assert.ok(distribution instanceof Map);
+  fc.defaultStatisticsLogger(distribution, function (line) {
+    stats.push(line);
+  });
   assert.notEqual(stats.length, 0);
 }
 

@@ -117,83 +117,89 @@ fc.letrec((tie) => ({
 // • {"left":{__proto__:null,"left":749002681,"right":2069272340},"right":{__proto__:null,"left":16,"right":16}}
 // • …
 
-fc.statistics(
-  fc.letrec((tie) => ({
-    node: fc.record({
-      value: fc.nat(),
-      left: fc.option(tie('node')),
-      right: fc.option(tie('node')),
-    }),
-  })).node,
-  (v) => {
-    function size(n) {
-      if (n === null) return 0;
-      else return 1 + size(n.left) + size(n.right);
-    }
-    const s = size(v);
-    let lower = 1;
-    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-    while (next(lower) <= s) {
-      lower = next(lower);
-    }
-    return `${lower} to ${next(lower) - 1} items`;
-  },
+fc.defaultStatisticsLogger(
+  await fc.statistics(
+    fc.letrec((tie) => ({
+      node: fc.record({
+        value: fc.nat(),
+        left: fc.option(tie('node')),
+        right: fc.option(tie('node')),
+      }),
+    })).node,
+    (v) => {
+      function size(n) {
+        if (n === null) return 0;
+        else return 1 + size(n.left) + size(n.right);
+      }
+      const s = size(v);
+      let lower = 1;
+      const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+      while (next(lower) <= s) {
+        lower = next(lower);
+      }
+      return `${lower} to ${next(lower) - 1} items`;
+    },
+  ),
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
-// • 5 to 9 items....42.99%
-// • 10 to 49 items..39.82%
-// • 1 to 4 items....17.19%
+// • 5 to 9 items....44.36%
+// • 10 to 49 items..37.97%
+// • 1 to 4 items....17.67%
 // For size = "small":
-// • 10 to 49 items..85.95%
-// • 5 to 9 items.....5.35%
-// • 1 to 4 items.....4.35%
-// • 50 to 99 items...4.35%
+// • 10 to 49 items..85.29%
+// • 5 to 9 items.....5.51%
+// • 1 to 4 items.....5.02%
+// • 50 to 99 items...4.18%
 // For size = "medium":
-// • 100 to 499 items..83.03%
-// • 50 to 99 items....10.05%
-// • 1 to 4 items.......3.78%
-// • 10 to 49 items.....2.93%
-// • 5 to 9 items.......0.14%
+// • 100 to 499 items..82.53%
+// • 50 to 99 items....10.03%
+// • 1 to 4 items.......4.41%
+// • 10 to 49 items.....2.88%
+// • 5 to 9 items.......0.09%
+// • …
 
-fc.statistics(
-  fc.letrec((tie) => ({
-    node: fc.record({
-      value: fc.nat(),
-      children: fc.oneof(
-        { depthIdentifier: 'node' },
-        fc.constant([]),
-        fc.array(tie('node'), { depthIdentifier: 'node' }),
-      ),
-    }),
-  })).node,
-  (v) => {
-    function size(n) {
-      if (n === null) return 0;
-      else return 1 + n.children.reduce((acc, child) => acc + size(child), 0);
-    }
-    const s = size(v);
-    let lower = 1;
-    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-    while (next(lower) <= s) {
-      lower = next(lower);
-    }
-    return `${lower} to ${next(lower) - 1} items`;
-  },
+fc.defaultStatisticsLogger(
+  await fc.statistics(
+    fc.letrec((tie) => ({
+      node: fc.record({
+        value: fc.nat(),
+        children: fc.oneof(
+          { depthIdentifier: 'node' },
+          fc.constant([]),
+          fc.array(tie('node'), { depthIdentifier: 'node' }),
+        ),
+      }),
+    })).node,
+    (v) => {
+      function size(n) {
+        if (n === null) return 0;
+        else return 1 + n.children.reduce((acc, child) => acc + size(child), 0);
+      }
+      const s = size(v);
+      let lower = 1;
+      const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+      while (next(lower) <= s) {
+        lower = next(lower);
+      }
+      return `${lower} to ${next(lower) - 1} items`;
+    },
+  ),
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....64.22%
-// • 5 to 9 items....22.84%
-// • 10 to 49 items..12.94%
+// • 1 to 4 items....63.46%
+// • 5 to 9 items....23.22%
+// • 10 to 49 items..13.32%
 // For size = "medium":
-// • 1 to 4 items......51.31%
-// • 50 to 99 items....25.22%
-// • 10 to 49 items....19.50%
-// • 100 to 499 items...3.75%
-// • 5 to 9 items.......0.21%
+// • 1 to 4 items......51.00%
+// • 50 to 99 items....26.22%
+// • 10 to 49 items....19.06%
+// • 100 to 499 items...3.57%
+// • 5 to 9 items.......0.14%
+// • …
 ```
 
 Resources: [API reference](/docs/api/functions/letrec).  

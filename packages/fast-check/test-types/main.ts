@@ -11,6 +11,33 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
+// statistics
+expectTypeOf(
+  fc.statistics(fc.nat(), (value) => {
+    expectTypeOf(value).toEqualTypeOf<number>();
+    return String(value);
+  }),
+).toEqualTypeOf<Promise<Map<string, number>>>();
+expectTypeOf(
+  fc.statistics(
+    fc.property(fc.nat(), fc.string(), () => true),
+    (values) => {
+      expectTypeOf(values).toEqualTypeOf<[number, string]>();
+      return [];
+    },
+  ),
+).toEqualTypeOf<Promise<Map<string, number>>>();
+expectTypeOf(fc.defaultStatisticsLogger(new Map<string, number>())).toEqualTypeOf<void>();
+fc.defaultStatisticsLogger(new Map<string, number>() as ReadonlyMap<string, number>, (line) => {
+  expectTypeOf(line).toEqualTypeOf<string>();
+});
+// @ts-expect-error - Run counts must be passed through an options object
+fc.statistics(fc.nat(), String, 10);
+// @ts-expect-error - Logging is handled separately from collecting statistics
+fc.statistics(fc.nat(), String, { logger: console.log });
+// @ts-expect-error - Global runner parameters no longer include a logger
+fc.configureGlobal({ logger: console.log });
+
 // property
 // "property" instantiates instances compatible with Property
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
