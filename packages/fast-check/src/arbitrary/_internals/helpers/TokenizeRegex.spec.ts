@@ -5,7 +5,7 @@ import { RegexesOfInterest } from './__test-helpers__/RegexesOfInterest.js';
 
 describe('tokenizeRegex', () => {
   describe('non-unicode regex', () => {
-    it.each(RegexesOfInterest.filter((i) => !i.regex.flags.includes('u') && !i.incorrectlyParsedByRegexpTree))(
+    it.each(RegexesOfInterest.filter((i) => !i.regex.flags.includes('u') && !i.skipAstComparison))(
       'should properly tokenize the regex $regex',
       ({ regex }) => {
         const tokenized = tokenizeRegex(regex);
@@ -15,7 +15,7 @@ describe('tokenizeRegex', () => {
   });
 
   describe('unicode regex', () => {
-    it.each(RegexesOfInterest.filter((i) => !i.invalidInUnicodeMode && !i.incorrectlyParsedByRegexpTree))(
+    it.each(RegexesOfInterest.filter((i) => !i.invalidInUnicodeMode && !i.skipAstComparison))(
       'should properly tokenize the regex $regex in unicode mode',
       ({ regex }) => {
         const unicodeRegex = new RegExp(regex, 'u');
