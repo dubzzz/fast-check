@@ -6,6 +6,9 @@ import { addMissingDotStar } from './SanitizeRegexAst.js';
 
 describe('clampRegexAst', () => {
   it.each([
+    { source: /^(?:)$/, target: /^(?:)$/, maxLength: 0 }, // empty non-capturing group takes no space
+    { source: /^()$/, target: /^()$/, maxLength: 0 }, // empty capturing group takes no space
+    { source: /^(?<empty>)$/, target: /^(?<empty>)$/, maxLength: 0 }, // empty named group takes no space
     { source: /a/, target: /a/, maxLength: 10 }, // nothing can be clamped
     { source: /a{2,}/, target: /a{2,10}/, maxLength: 10 }, // unbound range must be clamped
     { source: /a{2,50}/, target: /a{2,10}/, maxLength: 10 }, // bound range with higher bound too high must be clamped
