@@ -8,6 +8,7 @@ import type { QualifiedParameters } from './configuration/QualifiedParameters.js
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { assert } from './assert.js';
+import type { Plugin } from '../plugin/Plugin.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
@@ -94,21 +95,20 @@ async function sample<Ts>(
     extractedValue.push(value);
     return out === null ? null : new PreconditionFailure(true);
   };
+  const extractor: Plugin<Ts> = () => ({
+    decorateRun: (nestedRun) => (value, context) => {
+      const out = params.noPredicateExecution === true ? null : nestedRun(value, context);
+      return out !== null && 'then' in out ? out.then((result) => collect(value, result)) : collect(value, out);
+    },
+  });
   const property: Property<Ts> =
     'run' in generator && typeof generator.run === 'function'
       ? generator
       : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
-  await assert(
-    {
-      generate: (mrng, runId) => property.generate(mrng, runId),
-      shrink: (value) => property.shrink(value),
-      run: (value, context) => {
-        const out = params.noPredicateExecution === true ? null : property.run(value, context);
-        return out !== null && 'then' in out ? out.then((result) => collect(value, result)) : collect(value, out);
-      },
-    },
-    params,
-  );
+  await assert(property, {
+    ...params,
+    plugins: [...(params.plugins ?? []), extractor],
+  });
   return extractedValue;
 }
 
