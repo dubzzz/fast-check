@@ -11,6 +11,33 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
+// sample
+expectTypeOf(fc.sample(fc.nat())).toEqualTypeOf<Promise<number[]>>();
+expectTypeOf(fc.sample(fc.property(fc.nat(), fc.string(), () => true))).toEqualTypeOf<Promise<[number, string][]>>();
+expectTypeOf(
+  fc.sample(
+    fc.property(fc.nat(), fc.string(), () => true),
+    { noPredicateExecution: true },
+  ),
+).toEqualTypeOf<Promise<[number, string][]>>();
+declare const sampleGenerator: fc.Arbitrary<[number]> | fc.Property<[number]>;
+expectTypeOf(fc.sample(sampleGenerator, { numRuns: 1 })).toEqualTypeOf<Promise<[number][]>>();
+// @ts-expect-error - Only properties have a predicate to skip
+fc.sample(fc.nat(), { noPredicateExecution: true });
+fc.assert(
+  fc.property(fc.nat(), () => true),
+  // @ts-expect-error - Predicate execution can only be disabled for sample
+  { noPredicateExecution: true },
+);
+fc.statistics(
+  fc.property(fc.nat(), () => true),
+  String,
+  // @ts-expect-error - statistics does not support this sample-only option
+  { noPredicateExecution: true },
+);
+// @ts-expect-error - Predicate execution cannot be disabled globally
+fc.configureGlobal({ noPredicateExecution: true });
+
 // property
 // "property" instantiates instances compatible with Property
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();

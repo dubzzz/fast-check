@@ -71,22 +71,43 @@ Its signature is:
 
 ```ts
 function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts>): Promise<Ts[]>;
+function sample<Ts>(
+  generator: Property<Ts>,
+  params?: Parameters<Ts> & { noPredicateExecution?: boolean },
+): Promise<Ts[]>;
 ```
 
 Example of usage:
 
 ```js
 const values = await fc.sample(fc.nat(), { numRuns: 10 });
-// equivalent to:
+// equivalent to sampling a property whose predicate always succeeds:
 // >  const wrappedValues = await fc.sample(
-// >    fc.property(fc.nat(), predicate),
+// >    fc.property(fc.nat(), () => true),
 // >    { numRuns: 10 }
 // >  );
 // >  const values = wrappedValues.map(([value]) => value);
 ```
 
-:::note
-With a shrink path, `sample` returns all shrunk values at that level starting from the path. Pass `numRuns` directly in `sample`'s parameters (not via global configuration) to cap the number of returned values.
+:::warning Passing a property executes its predicate
+`sample` runs the property's predicate, including any side effects, and awaits asynchronous predicates. Inputs rejected by a precondition such as `fc.pre(false)` are excluded from the returned array. Too many skips still cause the runner to fail according to `maxSkipsPerRun`.
+
+When the predicate returns `false`, throws, or rejects, `sample` includes that input and interrupts the run. It returns the values collected so far without shrinking or reporting the predicate error. Existing skips and interrupts are forwarded unchanged; their inputs are not collected. Plugins still run and may report their own errors.
+:::
+
+To inspect a property's inputs without executing its predicate or its preconditions, pass `noPredicateExecution: true`:
+
+```js
+const values = await fc.sample(fc.property(fc.nat(), predicate), {
+  numRuns: 10,
+  noPredicateExecution: true,
+});
+```
+
+This option only applies to `sample` with a property as its first argument. It is unavailable for arbitrary inputs, other runners, and global configuration. Plugins still execute when the option is enabled.
+
+:::note Shrink-path replay
+With a shrink path, `sample` visits the shrunk values at that level starting from the path until the predicate fails, execution is interrupted, or the candidates are exhausted. As with `assert`, `numRuns` does not cap shrink-path replay, whether configured locally or globally. Sampling an arbitrary or disabling the predicate visits all candidates at that level unless a plugin interrupts the run.
 :::
 
 Resources: [API reference](/docs/api/functions/sample).  

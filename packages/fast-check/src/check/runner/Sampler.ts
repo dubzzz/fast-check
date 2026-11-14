@@ -8,8 +8,7 @@ import type { QualifiedParameters } from './configuration/QualifiedParameters.js
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { assert } from './assert.js';
-import type { Plugin } from '../plugin/Plugin.js';
-import { PreconditionFailure } from 'fast-check';
+import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
@@ -37,12 +36,17 @@ function streamSample<Ts>(
 }
 
 /**
- * Generate an array containing all the values that would have been generated during {@link assert}
+ * Generate an array of values using the same runner as {@link assert}
  *
  * WARNING: Has to be awaited
  *
- * With a shrink path, returns all shrunk values at that level starting from the path.
- * Pass `numRuns` directly to `sample` (not via global configuration) to cap the number of returned values.
+ * Passing a property executes its predicate, including any side effects, and awaits asynchronous predicates.
+ * Values skipped by a precondition are excluded. A predicate failure includes the failing value and interrupts
+ * sampling without shrinking or reporting the predicate error. Existing interrupts are forwarded unchanged.
+ *
+ * With a shrink path, visits shrunk values at that level starting from the path until the predicate fails,
+ * execution is interrupted, or the candidates are exhausted. As with {@link assert}, `numRuns` does not cap
+ * shrink-path replay.
  *
  * @example
  * ```typescript
@@ -57,26 +61,54 @@ function streamSample<Ts>(
  * @remarks Since 0.0.6
  * @public
  */
-async function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params: Parameters<Ts> = {}): Promise<Ts[]> {
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts>): Promise<Ts[]>;
+/**
+ * Generate an array of values from a property, executing its predicate by default.
+ *
+ * Set `noPredicateExecution` to `true` to sample inputs without executing the predicate or its preconditions.
+ * Plugins still run. This option is only available on {@link sample} when its first argument is a property;
+ * it cannot be configured globally or passed to other runners.
+ *
+ * @param generator - {@link Property} to extract the values from
+ * @param params - `Parameters` passed to {@link assert}, with an optional predicate opt-out
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+function sample<Ts>(
+  generator: Property<Ts>,
+  params?: Parameters<Ts> & {
+    /** Skip executing the property's predicate. Defaults to `false`. Plugins still run. */
+    noPredicateExecution?: boolean;
+  },
+): Promise<Ts[]>;
+async function sample<Ts>(
+  generator: Property<Ts> | Arbitrary<Ts>,
+  params: Parameters<Ts> & { noPredicateExecution?: boolean } = {},
+): Promise<Ts[]> {
   const extractedValue: Ts[] = [];
-  const requestedRuns = params.numRuns; // we ignore: readConfigureGlobal().numRuns in that context
-  const extractor: Plugin<Ts> = () => ({
-    decorateRun: () => (value) => {
-      if (requestedRuns !== undefined && extractedValue.length >= requestedRuns) {
-        return new PreconditionFailure(true);
-      }
-      extractedValue.push(value);
-      return null; // emulate a successful predicate
-    },
-  });
+  const collect = (value: Ts, out: Awaited<ReturnType<Property<Ts>['run']>>) => {
+    if (PreconditionFailure.isFailure(out)) {
+      return out;
+    }
+    extractedValue.push(value);
+    return out === null ? null : new PreconditionFailure(true);
+  };
   const property: Property<Ts> =
     'run' in generator && typeof generator.run === 'function'
       ? generator
       : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
-  await assert(property, {
-    ...params,
-    plugins: params.plugins !== undefined && params.plugins.length !== 0 ? [...params.plugins, extractor] : [extractor],
-  });
+  await assert(
+    {
+      generate: (mrng, runId) => property.generate(mrng, runId),
+      shrink: (value) => property.shrink(value),
+      run: (value, context) => {
+        const out = params.noPredicateExecution === true ? null : property.run(value, context);
+        return out !== null && 'then' in out ? out.then((result) => collect(value, result)) : collect(value, out);
+      },
+    },
+    params,
+  );
   return extractedValue;
 }
 

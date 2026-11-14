@@ -21,9 +21,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
     it('Should rebuild counterexample using sample and (path, seed)', async () => {
       const out = await assertAndGetRunDetails(prop, { seed: seed });
       expect(out.failed).toBe(true);
-      expect(await fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath!, numRuns: 1 })).toEqual(
-        out.counterexample,
-      );
+      expect(await fc.sample(prop, { seed: seed, path: out.counterexamplePath! })).toEqual([out.counterexample]);
     });
     it('Should rebuild the whole shrink path using sample', async () => {
       const failuresRecorded: string[][] = [];
@@ -41,8 +39,9 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       const segments = out.counterexamplePath!.split(':');
       for (let idx = 1; idx !== segments.length + 1; ++idx) {
         const p = segments.slice(0, idx).join(':');
-        const g = await fc.sample(propArbitrary, { seed: seed, path: p, numRuns: 1 });
-        replayedFailures.push(g[0]);
+        const g = await fc.sample(prop, { seed: seed, path: p });
+        expect(g).toHaveLength(1);
+        replayedFailures.push(g[0][0]);
       }
       expect(replayedFailures).toEqual(failuresRecorded);
     });
