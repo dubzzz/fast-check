@@ -126,6 +126,13 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
     case '\\': {
       const next1 = text[from + 1];
       switch (next1) {
+        case 'c': {
+          const control = text[from + 2];
+          const isLetter = (control >= 'a' && control <= 'z') || (control >= 'A' && control <= 'Z');
+          const isLegacyClassControl =
+            !unicodeMode && mode === TokenizerBlockMode.Character && (isDigit(control) || control === '_');
+          return from + (isLetter || isLegacyClassControl ? 3 : 2);
+        }
         case 'x':
           if (isHexaDigit(text[from + 2]) && isHexaDigit(text[from + 3])) {
             return from + 4;
