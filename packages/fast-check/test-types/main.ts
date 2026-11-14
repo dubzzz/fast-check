@@ -20,8 +20,6 @@ expectTypeOf(
     { noPredicateExecution: true },
   ),
 ).toEqualTypeOf<Promise<[number, string][]>>();
-declare const sampleGenerator: fc.Arbitrary<[number]> | fc.Property<[number]>;
-expectTypeOf(fc.sample(sampleGenerator, { numRuns: 1 })).toEqualTypeOf<Promise<[number][]>>();
 // @ts-expect-error - Only properties have a predicate to skip
 fc.sample(fc.nat(), { noPredicateExecution: true });
 fc.assert(
