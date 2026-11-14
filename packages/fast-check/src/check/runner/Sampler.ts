@@ -3,6 +3,7 @@ import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
+import type { SampleParameters } from './configuration/SampleParameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { lazyToss, toss } from './Tosser.js';
@@ -37,17 +38,13 @@ function streamSample<Ts>(
 }
 
 /**
- * Generate an array of values using the same runner as {@link assert}
+ * Generate an array containing all the values that would have been generated during {@link assert}
  *
  * WARNING: Has to be awaited
  *
- * Passing a property executes its predicate, including any side effects, and awaits asynchronous predicates.
- * Values skipped by a precondition are excluded. A predicate failure includes the failing value and interrupts
- * sampling without shrinking or reporting the predicate error. Existing interrupts are forwarded unchanged.
+ * Passing a property runs its predicate. Skipped inputs are excluded and failures interrupt sampling without shrinking.
  *
- * With a shrink path, visits shrunk values at that level starting from the path until the predicate fails,
- * execution is interrupted, or the candidates are exhausted. As with {@link assert}, `numRuns` does not cap
- * shrink-path replay.
+ * With a shrink path, starts from the path; `numRuns` does not cap the returned values.
  *
  * @example
  * ```typescript
@@ -57,35 +54,20 @@ function streamSample<Ts>(
  * ```
  *
  * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
- * @param params - `Parameters` passed to {@link assert}
+ * @param params - {@link SampleParameters} to customize sampling
  *
  * @remarks Since 0.0.6
  * @public
  */
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts>): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
 /**
- * Generate an array of values from a property, executing its predicate by default.
- *
- * Set `noPredicateExecution` to `true` to sample inputs without executing the predicate or its preconditions.
- * Plugins still run. This option is only available on {@link sample} when its first argument is a property;
- * it cannot be configured globally or passed to other runners.
- *
- * @param generator - {@link Property} to extract the values from
- * @param params - `Parameters` passed to {@link assert}, with an optional predicate opt-out
- *
- * @remarks Since 5.0.0
+ * {@inheritDoc (sample:1)}
  * @public
  */
-function sample<Ts>(
-  generator: Property<Ts>,
-  params?: Parameters<Ts> & {
-    /** Skip executing the property's predicate. Defaults to `false`. Plugins still run. */
-    noPredicateExecution?: boolean;
-  },
-): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
 async function sample<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
-  params: Parameters<Ts> & { noPredicateExecution?: boolean } = {},
+  params: SampleParameters<Ts, 'property'> = {},
 ): Promise<Ts[]> {
   const extractedValue: Ts[] = [];
   const collect = (value: Ts, out: Awaited<ReturnType<Property<Ts>['run']>>) => {

@@ -70,11 +70,8 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts>): Promise<Ts[]>;
-function sample<Ts>(
-  generator: Property<Ts>,
-  params?: Parameters<Ts> & { noPredicateExecution?: boolean },
-): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
 ```
 
 Example of usage:
@@ -99,7 +96,7 @@ This behavior can be overridden by passing the parameter `noPredicateExecution: 
 
 :::note Shrink-path replay
 When passed a `path` via its parameters, `sample` visits the shrunk values at that level starting from the path until the predicate fails or the candidates are exhausted. As with `assert`, `numRuns` does not cap shrink-path replay, whether configured locally or globally. Sampling an arbitrary or disabling the predicate visits all candidates at that level unless a plugin interrupts the run.
- :::
+:::
 
 Resources: [API reference](/docs/api/functions/sample).  
 Available since 0.0.6.
