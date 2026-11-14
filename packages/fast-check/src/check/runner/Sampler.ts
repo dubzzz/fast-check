@@ -9,8 +9,7 @@ import type { QualifiedParameters } from './configuration/QualifiedParameters.js
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { assert } from './assert.js';
-import type { Plugin } from '../plugin/Plugin.js';
-import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import { runCollector } from '../plugin/RunCollectorPlugin.js';
 
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
@@ -70,26 +69,14 @@ async function sample<Ts>(
   params: SampleParameters<Ts, 'property'> = {},
 ): Promise<Ts[]> {
   const extractedValue: Ts[] = [];
-  const collect = (value: Ts, out: Awaited<ReturnType<Property<Ts>['run']>>) => {
-    if (PreconditionFailure.isFailure(out)) {
-      return out;
-    }
-    extractedValue.push(value);
-    return out === null ? null : new PreconditionFailure(true);
-  };
-  const extractor: Plugin<Ts> = () => ({
-    decorateRun: (nestedRun) => (value, context) => {
-      const out = params.noPredicateExecution === true ? null : nestedRun(value, context);
-      return out !== null && 'then' in out ? out.then((result) => collect(value, result)) : collect(value, out);
-    },
-  });
+  const collector = runCollector<Ts>((value) => extractedValue.push(value), params.noPredicateExecution !== true);
   const property: Property<Ts> =
     'run' in generator && typeof generator.run === 'function'
       ? generator
       : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
   await assert(property, {
     ...params,
-    plugins: [...(params.plugins ?? []), extractor],
+    plugins: [...(params.plugins ?? []), collector],
   });
   return extractedValue;
 }
