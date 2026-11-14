@@ -90,9 +90,11 @@ const values = await fc.sample(fc.nat(), { numRuns: 10 });
 ```
 
 :::warning Passing a property executes its predicate
-`sample` runs the property's predicate, including any side effects, and awaits asynchronous predicates. Inputs rejected by a precondition such as `fc.pre(false)` are excluded from the returned array. Too many skips still cause the runner to fail according to `maxSkipsPerRun`.
+By default, `sample` runs the predicate attached to the property. As such inputs rejected by call to `fc.pre(...)` are excluded from the returned array.
 
-When the predicate returns `false`, throws, or rejects, `sample` includes that input and interrupts the run. It returns the values collected so far without shrinking or reporting the predicate error. Existing skips and interrupts are forwarded unchanged; their inputs are not collected. Plugins still run and may report their own errors.
+A failure of the predicate interrupts the sampling without shrinking or reporting the predicate error.
+
+This behavior can be overridden by passing the parameter `noPredicateExecution: true` to `sample`. With that flagged toggled on, dampling will run without executing the predicate and this ignore runs rejected via `fc.pre(...)` and failed ones.
 :::
 
 To inspect a property's inputs without executing its predicate or its preconditions, pass `noPredicateExecution: true`:
