@@ -47,6 +47,7 @@ export type PluginInstance<Ts> = {
   /**
    * Enrich the execution of the predicate linked to the property with extra behaviors.
    * Called once per execution of the predicate.
+   * The returned function receives the current replay path as `executionContext.path`.
    *
    * WARNING: `nestedRun` never throws and neither should the function returned by `decorateRun`.
    *
