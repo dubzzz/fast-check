@@ -20,6 +20,15 @@
  */
 export interface PredicateExecutionContext {
   /**
+   * Replay path of the current execution, including the configured starting path and any shrinking.
+   * Supplied by {@link assert} to plugins and the predicate before each execution.
+   * Combine it with the same seed, arbitraries and examples to replay this value.
+   * May be absent when calling {@link Property.run} directly.
+   *
+   * @remarks Since 5.0.0
+   */
+  readonly path?: string | undefined;
+  /**
    * Signal supplied by plugins to request a cancellation
    * @remarks Since 5.0.0
    */

@@ -23,5 +23,6 @@ export function createRunnerIterator<Ts>(
     qParams.verbose,
     maxSkips,
     maxInitialIterations,
+    qParams.path,
   );
 }
