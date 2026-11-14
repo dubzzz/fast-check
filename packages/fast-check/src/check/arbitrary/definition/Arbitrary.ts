@@ -132,14 +132,18 @@ export abstract class Arbitrary<T> {
    * const arrayAndLimitArbitrary = fc.nat().chain((c: number) => fc.tuple( fc.array(fc.nat(c)), fc.constant(c)));
    * ```
    *
+   * When an unchainer is provided, user-defined values can be shrunk by the reconstructed chained arbitrary.
+   * The recovered source value stays fixed, as these values have no saved random generator for shrinking the source.
+   *
    * @param chainer - Chain function, to produce a new Arbitrary using a value from another Arbitrary
+   * @param unchainer - Optional reverse function recovering a source value from a user-defined value. Must throw if the value is incompatible (since 5.0.0)
    * @returns New arbitrary of new type
    *
    * @remarks Since 1.2.0
    */
-  chain<U>(chainer: (t: T) => Arbitrary<U>): Arbitrary<U> {
+  chain<U>(chainer: (t: T) => Arbitrary<U>, unchainer?: (possiblyU: unknown) => T): Arbitrary<U> {
     // oxlint-disable-next-line no-use-before-define
-    return new ChainArbitrary(this, chainer);
+    return new ChainArbitrary(this, chainer, unchainer);
   }
 }
 
@@ -150,13 +154,14 @@ type ChainArbitraryContext<T, U> = {
   stoppedForOriginal: boolean;
   chainedArbitrary: Arbitrary<U>;
   chainedContext: unknown;
-  clonedMrng: Random;
+  clonedMrng: Random | undefined;
 };
 
 class ChainArbitrary<T, U> extends Arbitrary<U> {
   constructor(
     readonly arb: Arbitrary<T>,
     readonly chainer: (t: T) => Arbitrary<U>,
+    readonly unchainer?: (possiblyU: unknown) => T,
   ) {
     super();
   }
@@ -165,17 +170,27 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
     const src = this.arb.generate(mrng, biasFactor);
     return this.valueChainer(src, mrng, clonedMrng, biasFactor);
   }
-  canShrinkWithoutContext(_value: unknown): _value is U {
-    // TODO Need unchainer
+  canShrinkWithoutContext(value: unknown): value is U {
+    if (this.unchainer !== undefined) {
+      try {
+        const originalValue = this.unchainer(value);
+        return (
+          this.arb.canShrinkWithoutContext(originalValue) && this.chainer(originalValue).canShrinkWithoutContext(value)
+        );
+      } catch {
+        return false;
+      }
+    }
     return false;
   }
   shrink(value: U, context?: unknown): IteratorObject<Value<U>> {
     if (this.isSafeContext(context)) {
+      const clonedMrng = context.clonedMrng;
       return joinAll([
-        !context.stoppedForOriginal
+        !context.stoppedForOriginal && clonedMrng !== undefined
           ? this.arb
               .shrink(context.originalValue, context.originalContext)
-              .map((v) => this.valueChainer(v, context.clonedMrng.clone(), context.clonedMrng, context.originalBias))
+              .map((v) => this.valueChainer(v, clonedMrng.clone(), clonedMrng, context.originalBias))
           : nil,
         context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
           const newContext: ChainArbitraryContext<T, U> = {
@@ -187,7 +202,19 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
         }),
       ]);
     }
-    // TODO Need unchainer
+    if (this.unchainer !== undefined) {
+      const originalValue = this.unchainer(value);
+      const recoveredContext: ChainArbitraryContext<T, U> = {
+        originalBias: undefined,
+        originalValue,
+        originalContext: undefined,
+        stoppedForOriginal: true,
+        chainedArbitrary: this.chainer(originalValue),
+        chainedContext: undefined,
+        clonedMrng: undefined,
+      };
+      return this.shrink(value, recoveredContext);
+    }
     return nil;
   }
   private valueChainer(
