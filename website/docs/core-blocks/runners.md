@@ -78,10 +78,11 @@ Example of usage:
 ```js
 const values = await fc.sample(fc.nat(), { numRuns: 10 });
 // equivalent to:
-// >  const values = await fc.sample(
+// >  const wrappedValues = await fc.sample(
 // >    fc.property(fc.nat(), predicate),
 // >    { numRuns: 10 }
 // >  );
+// >  const values = wrappedValues.map(([value]) => value);
 ```
 
 :::note
