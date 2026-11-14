@@ -56,7 +56,7 @@ describe('GlobalParameters', () => {
     fc.configureGlobal({ numRuns: 1 });
     const withGlobalConfiguration = await fc.sample(arbitrary, params);
 
-    expect(withLocalConfiguration.length).toBeGreaterThan(1);
+    expect(withLocalConfiguration.length).toBeGreaterThan(1); // numRuns has no effect, we get all shrunk values for 100 starting from its first one
     expect(withGlobalConfiguration).toEqual(withLocalConfiguration);
   });
 
