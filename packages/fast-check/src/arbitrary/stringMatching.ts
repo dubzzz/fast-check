@@ -6,6 +6,7 @@ import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex.js';
 import { tokenizeRegex } from './_internals/helpers/TokenizeRegex.js';
 import { unicodePropertyArbitrary } from './_internals/helpers/UnicodePropertyArbitraryHelper.js';
+import { segmentsToStringUnmapperFor } from './_internals/mappers/SegmentsToString.js';
 import { constant } from './constant.js';
 import { constantFrom } from './constantFrom.js';
 import { integer } from './integer.js';
@@ -161,8 +162,7 @@ function toMatchingArbitrary(
         return childrenArbitraries[0];
       }
       // Otherwise join their results
-      // TODO - No unmap implemented yet!
-      return tuple(...childrenArbitraries).map((vs) => vs.join(''));
+      return tuple(...childrenArbitraries).map((vs) => vs.join(''), segmentsToStringUnmapperFor(childrenArbitraries));
     }
     case 'CharacterClass':
       if (astNode.negative) {
