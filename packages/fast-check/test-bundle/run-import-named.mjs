@@ -1,3 +1,3 @@
 import { sample, nat } from 'fast-check';
 
-console.log(sample(nat(), { seed: 42, numRuns: 5 }));
+console.log(await sample(nat(), { seed: 42, numRuns: 5 }));

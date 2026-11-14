@@ -125,7 +125,7 @@ const Builder = zxTest.SeedGenerator({
   // 𐙘 use `exclude` to exclude certain schema types altogether (overrides `include`)
 });
 
-const [mySeed] = fc.sample(Builder['*'], 1);
+const [mySeed] = await fc.sample(Builder['*'], { numRuns: 1 });
 const mySchema = zxTest.seedToSchema(mySeed);
 const validData = zxTest.seedToValidData(mySeed);
 const invalidData = zxTest.seedToInvalidData(mySeed);

@@ -5,7 +5,7 @@ import { seed } from '../seed.js';
 
 describe(`LetRecArbitrary (seed: ${seed})`, () => {
   describe('letrec', () => {
-    it('Should be able to rebuild simple arbitraries', () => {
+    it('Should be able to rebuild simple arbitraries', async () => {
       const ref = fc.array(fc.tuple(fc.string(), fc.integer()));
       const { b } = fc.letrec((tie) => ({
         a: fc.integer(),
@@ -13,7 +13,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
         c: fc.tuple(tie('d'), tie('a')),
         d: fc.string(),
       }));
-      expect(fc.sample(b, { seed })).toEqual(fc.sample(ref, { seed }));
+      expect(await fc.sample(b, { seed })).toEqual(await fc.sample(ref, { seed }));
     });
     it('Should be usable to build deep tree instances', async () => {
       const { tree } = fc.letrec((tie) => ({

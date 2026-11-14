@@ -70,7 +70,18 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: number | Parameters<Ts>): Ts[];
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts>): Promise<Ts[]>;
+```
+
+Example of usage:
+
+```js
+const values = await fc.sample(fc.nat(), { numRuns: 10 });
+// equivalent to:
+// >  const values = await fc.sample(
+// >    fc.property(fc.nat(), predicate),
+// >    { numRuns: 10 }
+// >  );
 ```
 
 Resources: [API reference](/docs/api/functions/sample).  

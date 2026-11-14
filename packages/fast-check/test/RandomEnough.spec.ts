@@ -3,9 +3,9 @@ import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`RandomEnough (seed: ${seed})`, () => {
-  it('should not repeat values when noBias enabled', () => {
+  it('should not repeat values when noBias enabled', async () => {
     const alreadySeenValues = new Set<string>();
-    const allEmails = fc.sample(fc.noBias(fc.tuple(fc.emailAddress(), fc.emailAddress())), { seed });
+    const allEmails = await fc.sample(fc.noBias(fc.tuple(fc.emailAddress(), fc.emailAddress())), { seed });
     for (const [, email] of allEmails) {
       if (alreadySeenValues.has(email)) {
         throw new Error(`email ${email} has already been seen`);
@@ -13,9 +13,9 @@ describe(`RandomEnough (seed: ${seed})`, () => {
       alreadySeenValues.add(email);
     }
   });
-  it('should not repeat values across arbitraries of a tuple when noBias enabled', () => {
+  it('should not repeat values across arbitraries of a tuple when noBias enabled', async () => {
     const alreadySeenValues = new Set<string>();
-    const allEmails = fc.sample(fc.noBias(fc.tuple(fc.emailAddress(), fc.emailAddress())), { seed });
+    const allEmails = await fc.sample(fc.noBias(fc.tuple(fc.emailAddress(), fc.emailAddress())), { seed });
     for (const [emailA, emailB] of allEmails) {
       if (alreadySeenValues.has(emailA)) {
         throw new Error(`emailA ${emailA} has already been seen`);
@@ -27,8 +27,8 @@ describe(`RandomEnough (seed: ${seed})`, () => {
       alreadySeenValues.add(emailB);
     }
   });
-  it('should not repeat values between two consecutive sequences', () => {
-    const [seqA, seqB] = fc.sample(fc.noBias(fc.array(fc.integer(), { minLength: 1000, maxLength: 1000 })), {
+  it('should not repeat values between two consecutive sequences', async () => {
+    const [seqA, seqB] = await fc.sample(fc.noBias(fc.array(fc.integer(), { minLength: 1000, maxLength: 1000 })), {
       seed,
       numRuns: 2,
     });

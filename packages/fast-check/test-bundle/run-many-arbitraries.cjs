@@ -48,7 +48,7 @@ async function testArbitrary(arb) {
       ],
     },
   );
-  var replay = fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
+  var replay = await fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
   assert.deepEqual(replay[0], details.counterexample[0]);
 
   // should be able to retrieve statistics
