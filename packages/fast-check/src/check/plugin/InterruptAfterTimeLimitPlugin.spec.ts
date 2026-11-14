@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Property } from '../property/types/Property.js';
 import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { RunDetails } from '../runner/reporter/RunDetails.js';
+import type { PluginInstance } from './Plugin.js';
 
 describe('TimeLimitPlugins', () => {
   beforeEach(async () => {
@@ -23,9 +24,7 @@ describe('TimeLimitPlugins', () => {
 
       // Act
       const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
-      await instance.beforeAll!();
-      const finalRun = instance.decorateRun!(nestedRun);
-      const out = finalRun(expectedRunInput, executionContext);
+      const out = withInitializedPlugin(instance, nestedRun, (run) => run(expectedRunInput, executionContext));
 
       // Assert
       expect(out).toBe(null);
@@ -43,10 +42,10 @@ describe('TimeLimitPlugins', () => {
 
       // Act
       const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
-      await instance.beforeAll!();
-      const finalRun = instance.decorateRun!(nestedRun);
-      vi.advanceTimersByTime(100);
-      const out = finalRun({}, {});
+      const out = withInitializedPlugin(instance, nestedRun, (run) => {
+        vi.advanceTimersByTime(100);
+        return run({}, {});
+      });
 
       // Assert
       expect(nestedRun).not.toHaveBeenCalled();
@@ -61,13 +60,13 @@ describe('TimeLimitPlugins', () => {
 
       // Act
       const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
-      await instance.beforeAll!();
-      const finalRun = instance.decorateRun!(nestedRun);
-      const runPromise = finalRun({}, {});
-      vi.advanceTimersByTime(10);
+      const out = await withInitializedPlugin(instance, nestedRun, (run) => {
+        const runPromise = run({}, {});
+        vi.advanceTimersByTime(10);
+        return runPromise;
+      });
 
       // Assert
-      const out = await runPromise;
       expect(nestedRun).toHaveBeenCalledTimes(1);
       expect(PreconditionFailure.isFailure(out)).toBe(true);
       expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
@@ -91,12 +90,11 @@ describe('TimeLimitPlugins', () => {
 
         // Act
         const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
-        await instance.beforeAll!();
-        const finalRun = instance.decorateRun!(nestedRun);
-        for (let i = 0; i !== numRuns; ++i) {
-          await finalRun({}, {});
-        }
-        await instance.onAllRunsComplete!({} as RunDetails<unknown>);
+        await withInitializedPlugin(instance, nestedRun, async (run) => {
+          for (let i = 0; i !== numRuns; ++i) {
+            await run({}, {});
+          }
+        });
 
         // Assert
         expect(setTimeout).toBeCalledTimes(1); // only one timer for al runs
@@ -122,10 +120,11 @@ describe('TimeLimitPlugins', () => {
 
       // Act
       const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
-      await instance.beforeAll!();
-      const finalRun = instance.decorateRun!(nestedRun);
-      const runPromise = finalRun({}, {});
-      vi.advanceTimersByTime(10);
+      const out = await withInitializedPlugin(instance, nestedRun, (run) => {
+        const runPromise = run({}, {});
+        vi.advanceTimersByTime(10);
+        return runPromise;
+      });
 
       // Assert
       expect(nestedRun).toHaveBeenCalledWith(
@@ -136,7 +135,7 @@ describe('TimeLimitPlugins', () => {
       expect(signal.aborted).toBe(true);
       expect(PreconditionFailure.isFailure(signal.reason)).toBe(true);
       expect(signal.reason.interruptExecution).toBe(true);
-      expect(await runPromise).toBe(signal.reason);
+      expect(out).toBe(signal.reason);
     });
 
     it.each([
@@ -158,14 +157,15 @@ describe('TimeLimitPlugins', () => {
 
         // Act
         const instance = interruptAfterTimeLimit(1000)(0, new Map<symbol, any>());
-        await instance.beforeAll!();
-        const finalRun = instance.decorateRun!(nestedRun);
-        const runPromise = finalRun({}, { signal: controller.signal });
-        vi.advanceTimersByTime(10); // trigger the original signal before the predicate completes or the time limit expires
+        const out = await withInitializedPlugin(instance, nestedRun, (run) => {
+          const runPromise = run({}, { signal: controller.signal });
+          vi.advanceTimersByTime(10); // trigger the original signal before the predicate completes or the time limit expires
+          return runPromise;
+        });
 
         // Assert
         expect(nestedRun).toHaveBeenCalledTimes(1);
-        expect(await runPromise).toEqual(output);
+        expect(out).toEqual(output);
       },
     );
 
@@ -184,14 +184,46 @@ describe('TimeLimitPlugins', () => {
         // Act
         controller.abort(signalError);
         const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
-        await instance.beforeAll!();
-        const finalRun = instance.decorateRun!(nestedRun);
-        const runPromise = finalRun({}, { signal: controller.signal });
+        const out = withInitializedPlugin(instance, nestedRun, (run) => run({}, { signal: controller.signal }));
 
         // Assert
         expect(nestedRun).not.toHaveBeenCalled();
-        expect(await runPromise).toEqual(output);
+        expect(out).toEqual(output);
       },
     );
   });
 });
+
+// Helpers
+
+function withInitializedPlugin<T>(
+  instance: PluginInstance<unknown>,
+  nestedRun: Property<unknown>['run'],
+  run: (decoratedRun: Property<unknown>['run']) => T | Promise<T>,
+): T | Promise<T> {
+  const cleanup = () => {
+    try {
+      // Clear pending timeouts if any
+      // WARNING: The stubbed RunDetails don't fully reflect a real run
+      void instance.onAllRunsComplete!({} as RunDetails<unknown>)?.catch(() => {});
+    } catch {
+      // Ignore cleanup failures
+    }
+  };
+  const runWithCleanup = () => {
+    let out: T | Promise<T>;
+    try {
+      out = run(instance.decorateRun!(nestedRun));
+    } catch (error) {
+      cleanup();
+      throw error;
+    }
+    if (out instanceof Promise) {
+      return out.finally(cleanup);
+    }
+    cleanup();
+    return out;
+  };
+  const initialized = instance.beforeAll!();
+  return initialized === undefined ? runWithCleanup() : initialized.then(runWithCleanup);
+}
