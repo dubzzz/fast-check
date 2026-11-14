@@ -12,27 +12,14 @@ describe('GlobalParameters', () => {
     fc.resetConfigureGlobal();
   });
 
-  it('should merge global parameters with local ones in fc.sample', () => {
+  it('should merge global parameters with local ones in fc.sample', async () => {
     const globalConfig = { seed: 42, numRuns: 10 };
     const overridenNumRuns = 100;
 
-    const withLocalConfiguration = fc.sample(fc.nat(), { ...globalConfig, numRuns: overridenNumRuns });
+    const withLocalConfiguration = await fc.sample(fc.nat(), { ...globalConfig, numRuns: overridenNumRuns });
 
     fc.configureGlobal(globalConfig);
-    const withGlobalConfiguratioOverriden = fc.sample(fc.nat(), { numRuns: overridenNumRuns });
-
-    expect(withGlobalConfiguratioOverriden).toEqual(withLocalConfiguration);
-    fc.resetConfigureGlobal();
-  });
-
-  it('should merge global parameters with local numRuns in fc.sample', () => {
-    const globalConfig = { seed: 42, numRuns: 10 };
-    const overridenNumRuns = 100;
-
-    const withLocalConfiguration = fc.sample(fc.nat(), { ...globalConfig, numRuns: overridenNumRuns });
-
-    fc.configureGlobal(globalConfig);
-    const withGlobalConfiguratioOverriden = fc.sample(fc.nat(), overridenNumRuns);
+    const withGlobalConfiguratioOverriden = await fc.sample(fc.nat(), { numRuns: overridenNumRuns });
 
     expect(withGlobalConfiguratioOverriden).toEqual(withLocalConfiguration);
     fc.resetConfigureGlobal();

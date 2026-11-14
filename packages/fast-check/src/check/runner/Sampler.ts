@@ -7,6 +7,9 @@ import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
+import { assert } from './assert.js';
+import type { Plugin } from '../plugin/Plugin.js';
+import { PreconditionFailure } from 'fast-check';
 
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
@@ -36,20 +39,45 @@ function streamSample<Ts>(
 /**
  * Generate an array containing all the values that would have been generated during {@link assert}
  *
+ * WARNING: Has to be awaited
+ *
+ * With a shrink path, returns all shrunk values at that level starting from the path.
+ * Pass `numRuns` directly to `sample` (not via global configuration) to cap the number of returned values.
+ *
  * @example
  * ```typescript
- * fc.sample(fc.nat(), 10); // extract 10 values from fc.nat() Arbitrary
- * fc.sample(fc.nat(), {seed: 42}); // extract values from fc.nat() as if we were running fc.assert with seed=42
+ * await fc.sample(fc.nat(), {numRuns: 10}); // extract 10 values from fc.nat() Arbitrary
+ * await fc.sample(fc.nat(), {seed: 42}); // extract values from fc.nat() as if we were running fc.assert with seed=42
+ * await fc.sample(fc.property(fc.nat(), predicate), {seed: 42}); // extract values that would have been produced by the property as if we were running fc.assert with seed=42
  * ```
  *
  * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
- * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
+ * @param params - `Parameters` passed to {@link assert}
  *
  * @remarks Since 0.0.6
  * @public
  */
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts> | number): Ts[] {
-  return [...streamSample(generator, params)];
+async function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params: Parameters<Ts> = {}): Promise<Ts[]> {
+  const extractedValue: Ts[] = [];
+  const requestedRuns = params.numRuns; // we ignore: readConfigureGlobal().numRuns in that context
+  const extractor: Plugin<Ts> = () => ({
+    decorateRun: () => (value) => {
+      if (requestedRuns !== undefined && extractedValue.length >= requestedRuns) {
+        return new PreconditionFailure(true);
+      }
+      extractedValue.push(value);
+      return null; // emulate a successful predicate
+    },
+  });
+  const property: Property<Ts> =
+    'run' in generator && typeof generator.run === 'function'
+      ? generator
+      : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
+  await assert(property, {
+    ...params,
+    plugins: params.plugins !== undefined && params.plugins.length !== 0 ? [...params.plugins, extractor] : [extractor],
+  });
+  return extractedValue;
 }
 
 function round2(n: number): string {

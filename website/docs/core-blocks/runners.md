@@ -70,8 +70,24 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: number | Parameters<Ts>): Ts[];
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts>): Promise<Ts[]>;
 ```
+
+Example of usage:
+
+```js
+const values = await fc.sample(fc.nat(), { numRuns: 10 });
+// equivalent to:
+// >  const wrappedValues = await fc.sample(
+// >    fc.property(fc.nat(), predicate),
+// >    { numRuns: 10 }
+// >  );
+// >  const values = wrappedValues.map(([value]) => value);
+```
+
+:::note
+With a shrink path, `sample` returns all shrunk values at that level starting from the path. Pass `numRuns` directly in `sample`'s parameters (not via global configuration) to cap the number of returned values.
+:::
 
 Resources: [API reference](/docs/api/functions/sample).  
 Available since 0.0.6.
