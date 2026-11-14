@@ -41,6 +41,9 @@ function streamSample<Ts>(
  *
  * WARNING: Has to be awaited
  *
+ * With a shrink path, returns all shrunk values at that level starting from the path.
+ * Pass `numRuns` directly to `sample` (not via global configuration) to cap the number of returned values.
+ *
  * @example
  * ```typescript
  * await fc.sample(fc.nat(), {numRuns: 10}); // extract 10 values from fc.nat() Arbitrary

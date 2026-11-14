@@ -84,6 +84,10 @@ const values = await fc.sample(fc.nat(), { numRuns: 10 });
 // >  );
 ```
 
+:::note
+With a shrink path, `sample` returns all shrunk values at that level starting from the path. Pass `numRuns` directly in `sample`'s parameters (not via global configuration) to cap the number of returned values.
+:::
+
 Resources: [API reference](/docs/api/functions/sample).  
 Available since 0.0.6.
 
