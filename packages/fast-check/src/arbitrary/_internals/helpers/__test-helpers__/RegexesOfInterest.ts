@@ -2,6 +2,7 @@ export const RegexesOfInterest: {
   regex: RegExp; // if declared with /u flag, they won't be run on non-unicode tests
   invalidInUnicodeMode?: boolean; // invalid with the /u flag
   unmatchable?: boolean; // no string can match
+  skipAstComparison?: boolean; // AST differs from regexp-tree or cannot be parsed by it
   unsupportedByStringMatching?: boolean; // unsupported by `fc.stringMatching`
 }[] = [
   // Characters
@@ -99,6 +100,12 @@ export const RegexesOfInterest: {
   { regex: /[a-z^A-Z]/ },
   { regex: new RegExp('[\\xZ]'), invalidInUnicodeMode: true },
   { regex: new RegExp('[\\uZ]'), invalidInUnicodeMode: true },
+
+  // Backspace in classes: regexp-tree does not decode it as U+0008
+  { regex: /^[\b]$/, skipAstComparison: true },
+  { regex: /^[a\b]+$/, skipAstComparison: true },
+  { regex: /^[^\b]+$/, skipAstComparison: true },
+  { regex: /^[\b-\r]+$/, skipAstComparison: true },
 
   // Ranges
   { regex: /[a-z]/ },
