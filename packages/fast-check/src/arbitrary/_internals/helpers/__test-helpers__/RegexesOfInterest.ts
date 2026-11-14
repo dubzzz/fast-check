@@ -2,6 +2,7 @@ export const RegexesOfInterest: {
   regex: RegExp; // if declared with /u flag, they won't be run on non-unicode tests
   invalidInUnicodeMode?: boolean; // invalid with the /u flag
   unmatchable?: boolean; // no string can match
+  incorrectlyParsedByRegexpTree?: boolean; // checked against native RegExp instead
   unsupportedByStringMatching?: boolean; // unsupported by `fc.stringMatching`
 }[] = [
   // Characters
@@ -108,7 +109,7 @@ export const RegexesOfInterest: {
   { regex: /[A-Z][a-z]*/ },
   { regex: /[a\-z]/ },
   { regex: /[.-f]/ },
-  { regex: /[\w-z]/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches any character from A–Z, a–z, 0–9, _ or -
+  { regex: /[\w-z]/, invalidInUnicodeMode: true, incorrectlyParsedByRegexpTree: true }, // matches any character from A–Z, a–z, 0–9, _ or -
   { regex: /[-az]/ },
   { regex: /[\x41-\x5a]/ },
   { regex: /[\u{1f431}-\u{1f434}]/u },
