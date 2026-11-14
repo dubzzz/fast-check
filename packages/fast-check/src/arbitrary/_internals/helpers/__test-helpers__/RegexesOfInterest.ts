@@ -2,6 +2,7 @@ export const RegexesOfInterest: {
   regex: RegExp; // if declared with /u flag, they won't be run on non-unicode tests
   invalidInUnicodeMode?: boolean; // invalid with the /u flag
   unmatchable?: boolean; // no string can match
+  skipAstComparison?: boolean; // AST differs from regexp-tree or cannot be parsed by it
   unsupportedByStringMatching?: boolean; // unsupported by `fc.stringMatching`
 }[] = [
   // Characters
@@ -63,6 +64,21 @@ export const RegexesOfInterest: {
   { regex: /\u{100000}/u },
   { regex: /\u{10ffff}/u },
   { regex: /\u{00000000000061}/u },
+
+  // Control escapes: regexp-tree leaves the decoded symbol and code point unset
+  ...Array.from('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ').flatMap((letter) => [
+    { regex: new RegExp(`^\\c${letter}$`), skipAstComparison: true },
+    { regex: new RegExp(`^[\\c${letter}]$`), skipAstComparison: true },
+  ]),
+  { regex: /^\cj+$/, skipAstComparison: true },
+  { regex: /^[\cA-\cZ]+$/, skipAstComparison: true },
+  { regex: /^[^\cJ]+$/, skipAstComparison: true },
+  { regex: /^\\cJ$/ },
+  ...['0', '9', '_'].map((suffix) => ({
+    regex: new RegExp(`^[\\c${suffix}]$`),
+    invalidInUnicodeMode: true,
+    skipAstComparison: true,
+  })),
 
   // Octal
   // @ts-expect-error Referencing non-existing group in Regex
