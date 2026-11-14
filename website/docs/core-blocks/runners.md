@@ -97,20 +97,9 @@ A failure of the predicate interrupts the sampling without shrinking or reportin
 This behavior can be overridden by passing the parameter `noPredicateExecution: true` to `sample`. With that flagged toggled on, dampling will run without executing the predicate and this ignore runs rejected via `fc.pre(...)` and failed ones.
 :::
 
-To inspect a property's inputs without executing its predicate or its preconditions, pass `noPredicateExecution: true`:
-
-```js
-const values = await fc.sample(fc.property(fc.nat(), predicate), {
-  numRuns: 10,
-  noPredicateExecution: true,
-});
-```
-
-This option only applies to `sample` with a property as its first argument. It is unavailable for arbitrary inputs, other runners, and global configuration. Plugins still execute when the option is enabled.
-
 :::note Shrink-path replay
-With a shrink path, `sample` visits the shrunk values at that level starting from the path until the predicate fails, execution is interrupted, or the candidates are exhausted. As with `assert`, `numRuns` does not cap shrink-path replay, whether configured locally or globally. Sampling an arbitrary or disabling the predicate visits all candidates at that level unless a plugin interrupts the run.
-:::
+When passed a `path` via its parameters, `sample` visits the shrunk values at that level starting from the path until the predicate fails or the candidates are exhausted. As with `assert`, `numRuns` does not cap shrink-path replay, whether configured locally or globally. Sampling an arbitrary or disabling the predicate visits all candidates at that level unless a plugin interrupts the run.
+ :::
 
 Resources: [API reference](/docs/api/functions/sample).  
 Available since 0.0.6.
