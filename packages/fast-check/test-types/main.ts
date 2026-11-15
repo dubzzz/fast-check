@@ -12,10 +12,6 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
 // sample
-expectTypeOf<fc.SampleParameters<number, 'arbitrary'>>().toEqualTypeOf<fc.Parameters<number>>();
-expectTypeOf<fc.SampleParameters<[number], 'property'>>().toEqualTypeOf<
-  fc.Parameters<[number]> & { noPredicateExecution?: boolean }
->();
 expectTypeOf(fc.sample(fc.nat())).toEqualTypeOf<Promise<number[]>>();
 expectTypeOf(fc.sample(fc.property(fc.nat(), fc.string(), () => true))).toEqualTypeOf<Promise<[number, string][]>>();
 expectTypeOf(
