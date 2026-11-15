@@ -1,7 +1,7 @@
 import type { Parameters } from './Parameters.js';
 
 /**
- * Parameters for statistics
+ * Parameters for {@link statistics}
  * @remarks Since 5.0.0
  * @public
  */

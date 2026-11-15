@@ -125,6 +125,10 @@ interface StatisticsResult {
 }
 ```
 
+:::tip
+Check [`StatisticsParameters`](/docs/api/type-aliases/StatisticsParameters) to customize collection.
+:::
+
 Example of usage:
 
 ```js
@@ -156,10 +160,24 @@ If the classifier throws, `statistics` reports a failed run, completes plugin cl
 
 With a shrink path, it classifies the same values as `sample`; `numRuns` does not cap shrink-path replay.
 
-To keep the previous log format, pass the result to `defaultStatisticsLogger(stats)`. It calculates percentages using `numValues`, sorts categories by descending percentage, rounds to two decimal places, and logs one line per category to `console.log`. Pass a custom logging function as the second argument: `defaultStatisticsLogger(stats, logger)`. For custom formatting, use `stats.counts` and `stats.numValues` directly.
+To keep the previous log format, pass the result to `defaultStatisticsLogger(stats)`. It calculates percentages using `numValues`, sorts categories by descending percentage, rounds to two decimal places, and logs one line per category to `console.log`.
+
+```ts
+function defaultStatisticsLogger(stats: StatisticsResult, logger?: (line: string) => void): void;
+```
+
+Pass a logging function to send the formatted lines elsewhere:
+
+```js
+const stats = await fc.statistics(fc.nat(), (value) => (value % 2 === 0 ? 'even' : 'odd'));
+const lines = [];
+fc.defaultStatisticsLogger(stats, (line) => lines.push(line));
+```
+
+For custom formatting, use `stats.counts` and `stats.numValues` directly.
 
 When migrating, replace numeric run counts with `{ numRuns }` and remove `logger` from runner parameters and global configuration.
 
-Resources: [API reference](/docs/api/functions/statistics), [default logger](/docs/api/functions/defaultStatisticsLogger).
+Resources: [API reference](/docs/api/functions/statistics), [result](/docs/api/interfaces/StatisticsResult), [default logger](/docs/api/functions/defaultStatisticsLogger).
 
 Available since 0.0.6.
