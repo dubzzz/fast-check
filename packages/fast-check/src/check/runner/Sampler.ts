@@ -1,50 +1,18 @@
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
 import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
-import type { Parameters } from './configuration/Parameters.js';
+import type { SampleParameters } from './configuration/SampleParameters.js';
 import { assert } from './assert.js';
-import type { Plugin } from '../plugin/Plugin.js';
-import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-
-async function forEachSample<Ts>(
-  generator: Property<Ts> | Arbitrary<Ts>,
-  onValue: (value: Ts) => void,
-  params: Parameters<Ts>,
-): Promise<number> {
-  let numValues = 0;
-  const requestedRuns = params.numRuns; // we ignore: readConfigureGlobal().numRuns in that context
-  const extractor: Plugin<Ts> = () => ({
-    decorateRun: () => (value) => {
-      if (requestedRuns !== undefined && numValues >= requestedRuns) {
-        return new PreconditionFailure(true);
-      }
-      try {
-        onValue(value);
-      } catch (error) {
-        return { error };
-      }
-      ++numValues;
-      return null; // emulate a successful predicate
-    },
-  });
-  const property: Property<Ts> =
-    'run' in generator && typeof generator.run === 'function'
-      ? generator
-      : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
-  await assert(property, {
-    ...params,
-    plugins: params.plugins !== undefined && params.plugins.length !== 0 ? [...params.plugins, extractor] : [extractor],
-  });
-  return numValues;
-}
+import { runCollector } from '../plugin/RunCollectorPlugin.js';
 
 /**
  * Generate an array containing all the values that would have been generated during {@link assert}
  *
  * WARNING: Has to be awaited
  *
- * With a shrink path, returns all shrunk values at that level starting from the path.
- * Pass `numRuns` directly to `sample` (not via global configuration) to cap the number of returned values.
+ * Passing a property runs its predicate. Skipped inputs are excluded and failures interrupt sampling without shrinking.
+ *
+ * With a shrink path, starts from the path; `numRuns` does not cap the returned values.
  *
  * @example
  * ```typescript
@@ -54,14 +22,31 @@ async function forEachSample<Ts>(
  * ```
  *
  * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
- * @param params - `Parameters` passed to {@link assert}
+ * @param params - {@link SampleParameters} to customize sampling
  *
  * @remarks Since 0.0.6
  * @public
  */
-async function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params: Parameters<Ts> = {}): Promise<Ts[]> {
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
+/**
+ * {@inheritDoc (sample:1)}
+ * @public
+ */
+function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
+async function sample<Ts>(
+  generator: Property<Ts> | Arbitrary<Ts>,
+  params: SampleParameters<Ts, 'property'> = {},
+): Promise<Ts[]> {
   const extractedValue: Ts[] = [];
-  await forEachSample(generator, (value) => extractedValue.push(value), params);
+  const collector = runCollector<Ts>((value) => extractedValue.push(value), params.noPredicateExecution !== true);
+  const property: Property<Ts> =
+    'run' in generator && typeof generator.run === 'function'
+      ? generator
+      : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
+  await assert(property, {
+    ...params,
+    plugins: [...(params.plugins ?? []), collector],
+  });
   return extractedValue;
 }
 
@@ -79,8 +64,11 @@ function round2(n: number): string {
  * Values classified into no categories still count towards the total number of sampled values.
  * No output is logged. Use {@link defaultStatisticsLogger} to print the result.
  *
- * With a shrink path, classifies all shrunk values at that level starting from the path.
- * Pass `numRuns` directly to `statistics` (not via global configuration) to cap the number of sampled values.
+ * Passing a property runs its predicate before classifying each value. Skipped and interrupted inputs are excluded.
+ * Failing inputs are included, then collection stops without shrinking or reporting the predicate error.
+ * Pass `noPredicateExecution: true` to classify values without running the property's predicate.
+ *
+ * With a shrink path, starts from the path; `numRuns` does not cap the classified values.
  *
  * @example
  * ```typescript
@@ -96,28 +84,48 @@ function round2(n: number): string {
  *
  * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
- * @param params - `Parameters` passed to {@link assert}
+ * @param params - {@link SampleParameters} to customize collection
  *
  * @remarks Since 0.0.6
  * @public
  */
+function statistics<Ts>(
+  generator: Property<Ts> | Arbitrary<Ts>,
+  classify: (v: Ts) => string | string[],
+  params?: SampleParameters<Ts, 'arbitrary'>,
+): Promise<Map<string, number>>;
+/**
+ * {@inheritDoc (statistics:1)}
+ * @public
+ */
+function statistics<Ts>(
+  generator: Property<Ts>,
+  classify: (v: Ts) => string | string[],
+  params?: SampleParameters<Ts, 'property'>,
+): Promise<Map<string, number>>;
 async function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params: Parameters<Ts> = {},
+  params: SampleParameters<Ts, 'property'> = {},
 ): Promise<Map<string, number>> {
   const recorded = new Map<string, number>();
-  const numValues = await forEachSample(
-    generator,
-    (value) => {
-      const out = classify(value);
-      const categories = Array.isArray(out) ? out : [out];
-      for (const category of categories) {
-        recorded.set(category, (recorded.get(category) ?? 0) + 1);
-      }
-    },
-    params,
-  );
+  let numValues = 0;
+  const collector = runCollector<Ts>((value) => {
+    const out = classify(value);
+    const categories = Array.isArray(out) ? out : [out];
+    for (const category of categories) {
+      recorded.set(category, (recorded.get(category) ?? 0) + 1);
+    }
+    ++numValues;
+  }, params.noPredicateExecution !== true);
+  const property: Property<Ts> =
+    'run' in generator && typeof generator.run === 'function'
+      ? generator
+      : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
+  await assert(property, {
+    ...params,
+    plugins: [...(params.plugins ?? []), collector],
+  });
   for (const [category, count] of recorded) {
     recorded.set(category, (count * 100) / numValues);
   }

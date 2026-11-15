@@ -37,6 +37,28 @@ fc.statistics(fc.nat(), String, 10);
 fc.statistics(fc.nat(), String, { logger: console.log });
 // @ts-expect-error - Global runner parameters no longer include a logger
 fc.configureGlobal({ logger: console.log });
+fc.statistics(
+  fc.property(fc.nat(), () => true),
+  ([value]) => {
+    expectTypeOf(value).toEqualTypeOf<number>();
+    return String(value);
+  },
+  { noPredicateExecution: true },
+);
+// @ts-expect-error - Arbitraries have no predicate to disable
+fc.statistics(fc.nat(), String, { noPredicateExecution: true });
+
+// sample
+expectTypeOf(fc.sample(fc.nat())).toEqualTypeOf<Promise<number[]>>();
+expectTypeOf(fc.sample(fc.property(fc.nat(), fc.string(), () => true))).toEqualTypeOf<Promise<[number, string][]>>();
+expectTypeOf(
+  fc.sample(
+    fc.property(fc.nat(), fc.string(), () => true),
+    { noPredicateExecution: true },
+  ),
+).toEqualTypeOf<Promise<[number, string][]>>();
+// @ts-expect-error - Only properties have a predicate to skip
+fc.sample(fc.nat(), { noPredicateExecution: true });
 
 // property
 // "property" instantiates instances compatible with Property

@@ -4,6 +4,7 @@ export type { PredicateExecutionContext } from './check/property/types/Predicate
 export type { PropertyFailure } from './check/property/types/PropertyFailure.js';
 export type { Property } from './check/property/types/Property.js';
 export type { Parameters } from './check/runner/configuration/Parameters.js';
+export type { SampleParameters } from './check/runner/configuration/SampleParameters.js';
 export type {
   RunDetails,
   RunDetailsFailureProperty,

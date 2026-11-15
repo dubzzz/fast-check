@@ -70,23 +70,32 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts>): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
 ```
 
 Example of usage:
 
 ```js
 const values = await fc.sample(fc.nat(), { numRuns: 10 });
-// equivalent to:
+// equivalent to sampling a property whose predicate always succeeds:
 // >  const wrappedValues = await fc.sample(
-// >    fc.property(fc.nat(), predicate),
+// >    fc.property(fc.nat(), () => true),
 // >    { numRuns: 10 }
 // >  );
 // >  const values = wrappedValues.map(([value]) => value);
 ```
 
-:::note
-With a shrink path, `sample` returns all shrunk values at that level starting from the path. Pass `numRuns` directly in `sample`'s parameters (not via global configuration) to cap the number of returned values.
+:::warning Passing a property executes its predicate
+By default, `sample` runs the predicate attached to the property. As such inputs rejected by call to `fc.pre(...)` are excluded from the returned array.
+
+A failure of the predicate interrupts the sampling without shrinking or reporting the predicate error.
+
+This behavior can be overridden by passing the parameter `noPredicateExecution: true` to `sample`. With that flagged toggled on, sampling will run without executing the predicate and this ignore runs rejected via `fc.pre(...)` and failed ones.
+:::
+
+:::note Shrink-path replay
+When passed a `path` via its parameters, `sample` visits the shrunk values at that level starting from the path until the predicate fails or the candidates are exhausted. As with `assert`, `numRuns` does not cap shrink-path replay, whether configured locally or globally. Sampling an arbitrary or disabling the predicate visits all candidates at that level unless a plugin interrupts the run.
 :::
 
 Resources: [API reference](/docs/api/functions/sample).  
@@ -102,7 +111,12 @@ Its signature is:
 function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: Parameters<Ts>,
+  params?: SampleParameters<Ts, 'arbitrary'>,
+): Promise<Map<string, number>>;
+function statistics<Ts>(
+  generator: Property<Ts>,
+  classify: (v: Ts) => string | string[],
+  params?: SampleParameters<Ts, 'property'>,
 ): Promise<Map<string, number>>;
 ```
 
@@ -129,7 +143,11 @@ fc.defaultStatisticsLogger(stats);
 // >  5 characters...8.68%
 ```
 
-`statistics` runs through the same runner as `sample` and `assert`, including plugins, and must be awaited. It returns a map from category labels to unrounded percentages of the values actually sampled, without logging. Values can belong to zero or more categories, so percentages do not necessarily sum to 100. With a shrink path, it classifies the same values as `sample`; pass `numRuns` locally to cap the number of sampled values.
+`statistics` runs through the same runner as `sample` and `assert`, including plugins, and must be awaited. It returns a map from category labels to unrounded percentages of the values actually collected, without logging. Values can belong to zero or more categories, so percentages do not necessarily sum to 100.
+
+When passed a property, `statistics` awaits its predicate before classifying the input. Skipped and interrupted inputs are excluded. Failing inputs are included, then collection stops without shrinking or reporting the predicate error. Pass `noPredicateExecution: true` to classify inputs without executing the property's predicate.
+
+With a shrink path, it classifies the same values as `sample`; `numRuns` does not cap shrink-path replay.
 
 To keep the previous log format, pass the result to `defaultStatisticsLogger`. It sorts categories by descending percentage, rounds to two decimal places, and logs one line per category. A custom logger can be passed as the second argument:
 

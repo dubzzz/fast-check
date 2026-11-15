@@ -63,12 +63,130 @@ describe(`Sampler (seed: ${seed})`, () => {
     expect(values).toEqual([1, 2, 0, 0]);
   });
 
+  const requestedNumRuns = 1_000;
+  it.each([
+    {
+      behavior: 'ignore numRuns on predicate failure and exclude skipped inputs',
+      noPredicateExecution: false,
+      expectedLength: 3,
+      expectedFirstValues: [[0], [2], [3]],
+    },
+    {
+      behavior: 'honor numRuns when predicate execution is disabled',
+      noPredicateExecution: true,
+      expectedLength: requestedNumRuns,
+      expectedFirstValues: [[0], [1], [2], [3], [4]],
+    },
+  ])('should $behavior', async ({ noPredicateExecution, expectedLength, expectedFirstValues }) => {
+    const property = fc.property(fc.integer(), (value) => {
+      fc.pre(value !== 1);
+      return value !== 3;
+    });
+
+    const values = await fc.sample(property, {
+      numRuns: requestedNumRuns,
+      noPredicateExecution,
+      examples: [[0], [1], [2], [3], [4]],
+    });
+
+    expect(values).toHaveLength(expectedLength);
+    expect(values.slice(0, expectedFirstValues.length)).toEqual(expectedFirstValues);
+  });
+
+  it('should sample inputs without running the predicate when disabled', async () => {
+    const predicate = vi.fn(() => false);
+
+    const values = await fc.sample(fc.property(fc.integer(), predicate), {
+      noPredicateExecution: true,
+      numRuns: 3,
+      examples: [[1], [2], [3]],
+    });
+
+    expect(values).toEqual([[1], [2], [3]]);
+    expect(predicate).not.toHaveBeenCalled();
+  });
+
+  it('should not add a numRuns cap to shrink-path sampling', async () => {
+    const arbitrary = fc.integer({ min: 0, max: 100 });
+    const expected = Array.from(arbitrary.shrink(100, undefined), (value) => value.value);
+
+    const values = await fc.sample(arbitrary, { numRuns: 1, examples: [100], path: '0:0' });
+
+    expect(expected.length).toBeGreaterThan(1);
+    expect(values).toEqual(expected);
+  });
+
   describe('statistics', () => {
+    it.each([false, true])(
+      'should classify successful and failing predicate inputs, excluding skips (async: %s)',
+      async (isAsync) => {
+        const received: number[] = [];
+        const runPredicate = (value: number) => {
+          received.push(value);
+          fc.pre(value !== 1);
+          return value !== 3;
+        };
+        const predicate = isAsync
+          ? async (value: number) => {
+              await Promise.resolve();
+              return runPredicate(value);
+            }
+          : runPredicate;
+        const property = fc.property(fc.integer(), predicate);
+
+        const stats = await fc.statistics(property, ([value]) => String(value), {
+          numRuns: 1_000,
+          examples: [[0], [1], [2], [3], [4]],
+        });
+
+        expect(stats).toEqual(
+          new Map([
+            ['0', 100 / 3],
+            ['2', 100 / 3],
+            ['3', 100 / 3],
+          ]),
+        );
+        expect(received).toEqual([0, 1, 2, 3]);
+      },
+    );
+
+    it('should exclude inputs that interrupt the predicate', async () => {
+      const property = fc.property(fc.integer(), (value) => {
+        if (value === 2) throw new fc.PreconditionFailure(true);
+      });
+
+      const stats = await fc.statistics(property, ([value]) => String(value), {
+        numRuns: 10,
+        examples: [[0], [1], [2], [3]],
+      });
+
+      expect(stats).toEqual(
+        new Map([
+          ['0', 50],
+          ['1', 50],
+        ]),
+      );
+    });
+
+    it('should classify values after awaiting the predicate', async () => {
+      const property = fc.property(fc.constant<{ ready: boolean }>({ ready: false }), async (value) => {
+        await Promise.resolve();
+        value.ready = true;
+      });
+
+      const stats = await fc.statistics(property, ([value]) => (value.ready ? 'ready' : 'pending'), { numRuns: 1 });
+
+      expect(stats).toEqual(new Map([['ready', 100]]));
+    });
+
     it('should classify the same values when given a property or its arbitrary without running the predicate', async () => {
       const arbitrary = fc.integer();
       const predicate = vi.fn(async () => false);
 
-      const stats = await fc.statistics(fc.property(arbitrary, predicate), ([value]) => String(value), { seed });
+      const stats = await fc.statistics(fc.property(arbitrary, predicate), ([value]) => String(value), {
+        seed,
+        noPredicateExecution: true,
+      });
       const expectedStats = await fc.statistics(arbitrary, String, { seed });
 
       expect(stats).toEqual(expectedStats);
@@ -197,8 +315,7 @@ describe(`Sampler (seed: ${seed})`, () => {
         params,
       );
 
-      expect(values.length).toBeGreaterThan(0);
-      if (numRuns !== undefined) expect(values).toHaveLength(numRuns);
+      expect(values.length).toBeGreaterThan(1);
       expect(classified).toEqual(values);
       expect(stats).toEqual(new Map([['value', 100]]));
     });
