@@ -156,7 +156,9 @@ async function statistics<Ts>(
   } catch (error) {
     if (classificationFailure === undefined) throw error;
   }
-  if (classificationFailure !== undefined) throw classificationFailure.error;
+  if (classificationFailure !== undefined) {
+    throw classificationFailure.error;
+  }
   return { counts: recorded, numValues };
 }
 
