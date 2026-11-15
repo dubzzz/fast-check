@@ -58,12 +58,25 @@ function round2(n: number): string {
 }
 
 /**
+ * Category counts collected by {@link statistics}.
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+export interface StatisticsResult {
+  /** Number of occurrences of each category, in order of first appearance. */
+  counts: Map<string, number>;
+  /** Number of classified values, including values assigned to no categories. */
+  numValues: number;
+}
+
+/**
  * Gather useful statistics concerning generated values
  *
  * WARNING: Has to be awaited
  *
- * Returns a map from category labels to unrounded percentages of the sampled values.
- * Values classified into multiple categories contribute to each category, so percentages may sum to more than 100.
+ * Returns category counts and the total number of sampled values.
+ * Each occurrence of a category contributes to its count, including repeated categories for the same value.
  * Values classified into no categories still count towards the total number of sampled values.
  * No output is logged. Use {@link defaultStatisticsLogger} to print the result.
  *
@@ -98,7 +111,7 @@ function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: SampleParameters<Ts, 'arbitrary'>,
-): Promise<Map<string, number>>;
+): Promise<StatisticsResult>;
 /**
  * {@inheritDoc (statistics:1)}
  * @public
@@ -107,12 +120,12 @@ function statistics<Ts>(
   generator: Property<Ts>,
   classify: (v: Ts) => string | string[],
   params?: SampleParameters<Ts, 'property'>,
-): Promise<Map<string, number>>;
+): Promise<StatisticsResult>;
 async function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params: SampleParameters<Ts, 'property'> = {},
-): Promise<Map<string, number>> {
+): Promise<StatisticsResult> {
   const recorded = new Map<string, number>();
   let numValues = 0;
   let classificationFailure: PropertyFailure | undefined;
@@ -151,37 +164,32 @@ async function statistics<Ts>(
     if (classificationFailure === undefined) throw error;
   }
   if (classificationFailure !== undefined) throw classificationFailure.error;
-  for (const [category, count] of recorded) {
-    recorded.set(category, (count * 100) / numValues);
-  }
-  return recorded;
+  return { counts: recorded, numValues };
 }
 
 /**
  * Print statistics using the default format: labels and percentages aligned with dots,
  * ordered from the highest percentage to the lowest and rounded to two decimal places.
+ * Percentages are calculated from category counts and the number of sampled values.
  *
  * @example
  * ```typescript
  * fc.defaultStatisticsLogger(await fc.statistics(fc.nat(), v => v < 100 ? 'Small' : 'Large'));
- * fc.defaultStatisticsLogger(await fc.statistics(fc.nat(), String), line => customLogger(line));
  * ```
  *
- * @param stats - Map of category labels to percentages returned by {@link statistics}
- * @param logger - Function receiving each formatted line, `console.log` by default
+ * @param stats - Category counts and number of sampled values returned by {@link statistics}
  *
  * @remarks Since 5.0.0
  * @public
  */
-function defaultStatisticsLogger(
-  stats: ReadonlyMap<string, number>,
-  logger: (line: string) => void = console.log,
-): void {
-  const data = [...stats].sort((a, b) => b[1] - a[1]).map(([label, percent]) => [label, `${round2(percent)}%`]);
+function defaultStatisticsLogger(stats: StatisticsResult): void {
+  const data = [...stats.counts]
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => [label, `${round2((count * 100) / stats.numValues)}%`]);
   const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
-    logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
+    console.log(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
   }
 }
 

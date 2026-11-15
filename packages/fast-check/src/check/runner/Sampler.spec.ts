@@ -2,12 +2,24 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 
 import { sample, statistics, defaultStatisticsLogger } from './Sampler.js';
+import type { StatisticsResult } from './Sampler.js';
 
 import * as stubArb from '../../__test-helpers__/arbitraries.js';
 import { noShrink } from '../../arbitrary/noShrink.js';
 import { cloneMethod } from '../symbols.js';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
 import { Value } from '../arbitrary/definition/Value.js';
+
+function captureStatisticsLogs(stats: StatisticsResult): string[] {
+  const logs: string[] = [];
+  const logger = vi.spyOn(console, 'log').mockImplementation((line) => logs.push(line));
+  try {
+    defaultStatisticsLogger(stats);
+    return logs;
+  } finally {
+    logger.mockRestore();
+  }
+}
 
 const MAX_NUM_RUNS = 1000;
 describe('Sampler', () => {
@@ -75,17 +87,18 @@ describe('Sampler', () => {
   describe('statistics', () => {
     const customGen = (m = 7) => stubArb.forward().map((v) => ((v % m) + m) % m);
     const rePercent = /(\d+\.\d+)%$/;
-    it('Should return unrounded percentages without logging', async () => {
+    it('Should return category counts without logging', async () => {
       const logger = vi.spyOn(console, 'log').mockImplementation(() => {});
 
       const stats = await statistics(stubArb.counter(0), (v) => (v === 0 ? 'first' : 'others'), { numRuns: 3 });
 
-      expect(stats).toEqual(
-        new Map([
-          ['first', 100 / 3],
-          ['others', 200 / 3],
+      expect(stats).toEqual({
+        counts: new Map([
+          ['first', 1],
+          ['others', 2],
         ]),
-      );
+        numValues: 3,
+      });
       expect(logger).not.toHaveBeenCalled();
     });
     it('Should handle any string as a category', async () => {
@@ -93,36 +106,46 @@ describe('Sampler', () => {
 
       const stats = await statistics(stubArb.counter(0), (v) => categories[v], { numRuns: categories.length });
 
-      expect(stats).toEqual(new Map(categories.map((category) => [category, 25])));
+      expect(stats).toEqual({
+        counts: new Map(categories.map((category) => [category, 1])),
+        numValues: categories.length,
+      });
     });
     it('Should include unclassified values in the total', async () => {
       const stats = await statistics(stubArb.counter(0), (v) => (v === 0 ? [] : ['a', 'b']), { numRuns: 4 });
 
-      expect(stats).toEqual(
-        new Map([
-          ['a', 75],
-          ['b', 75],
+      expect(stats).toEqual({
+        counts: new Map([
+          ['a', 3],
+          ['b', 3],
         ]),
-      );
+        numValues: 4,
+      });
+      expect(captureStatisticsLogs(stats)).toEqual(['a..75.00%', 'b..75.00%']);
     });
     it('Should count each occurrence of a category', async () => {
       const stats = await statistics(stubArb.counter(0), () => ['a', 'a', 'b'], { numRuns: 4 });
 
-      expect(stats).toEqual(
-        new Map([
-          ['a', 200],
-          ['b', 100],
+      expect(stats).toEqual({
+        counts: new Map([
+          ['a', 8],
+          ['b', 4],
         ]),
-      );
+        numValues: 4,
+      });
+      expect(captureStatisticsLogs(stats)).toEqual(['a..200.00%', 'b..100.00%']);
     });
     it('Should return an empty map when no values are sampled', async () => {
       const classify = vi.fn(() => 'value');
 
-      expect(await statistics(stubArb.counter(0), classify, { numRuns: 0 })).toEqual(new Map());
+      expect(await statistics(stubArb.counter(0), classify, { numRuns: 0 })).toEqual({
+        counts: new Map(),
+        numValues: 0,
+      });
       expect(classify).not.toHaveBeenCalled();
     });
     it('Should return an empty map when no categories are returned', async () => {
-      expect(await statistics(stubArb.counter(0), () => [])).toEqual(new Map());
+      expect(await statistics(stubArb.counter(0), () => [])).toEqual({ counts: new Map(), numValues: 100 });
     });
     it.each(['invalid', '0:0:0'])('Should reject on invalid path %s', async (path) => {
       await expect(statistics(noShrink(stubArb.forward()), String, { seed: 42, path })).rejects.toThrowError();
@@ -130,31 +153,26 @@ describe('Sampler', () => {
     it('Should always produce for non null number of runs', async () =>
       await fc.assert(
         fc.property(fc.integer(), fc.integer({ min: 1, max: MAX_NUM_RUNS }), async (seed, runs) => {
-          const logs: string[] = [];
           const classify = (g: number) => g.toString();
-          defaultStatisticsLogger(await statistics(customGen(), classify, { seed, numRuns: runs }), (v) =>
-            logs.push(v),
-          );
-          expect(logs.length).not.toEqual(0); // at least one log
+          const stats = await statistics(customGen(), classify, { seed, numRuns: runs });
+          expect(stats.counts.size).not.toEqual(0);
+          expect(stats.numValues).toBe(runs);
         }),
       ));
     it('Should produce the same statistics given the same seed', async () =>
       await fc.assert(
         fc.property(fc.integer(), async (seed) => {
-          const logs1: string[] = [];
-          const logs2: string[] = [];
           const classify = (g: number) => g.toString();
-          defaultStatisticsLogger(await statistics(customGen(), classify, { seed }), (v) => logs1.push(v));
-          defaultStatisticsLogger(await statistics(customGen(), classify, { seed }), (v) => logs2.push(v));
-          expect(logs2).toEqual(logs1);
+          const stats1 = await statistics(customGen(), classify, { seed });
+          const stats2 = await statistics(customGen(), classify, { seed });
+          expect(stats2).toEqual(stats1);
         }),
       ));
     it('Should start log lines with labels', async () =>
       await fc.assert(
         fc.property(fc.integer(), async (seed) => {
-          const logs: string[] = [];
           const classify = (g: number) => `my_label_${g.toString()}!`;
-          defaultStatisticsLogger(await statistics(customGen(), classify, { seed }), (v) => logs.push(v));
+          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
           for (const l of logs) {
             expect(l).toMatch(/^my_label_(\d+)!\.+\d+\.\d+%$/); // my_label_123!.....DD%
           }
@@ -163,9 +181,8 @@ describe('Sampler', () => {
     it('Should end log lines with percentage', async () =>
       await fc.assert(
         fc.property(fc.integer(), async (seed) => {
-          const logs: string[] = [];
           const classify = (g: number) => g.toString();
-          defaultStatisticsLogger(await statistics(customGen(), classify, { seed }), (v) => logs.push(v));
+          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
           for (const l of logs) {
             expect(l).toMatch(rePercent); // end by the measured percentage
           }
@@ -174,9 +191,8 @@ describe('Sampler', () => {
     it('Should sum to 100% when provided a single classifier', async () =>
       await fc.assert(
         fc.property(fc.integer(), async (seed) => {
-          const logs: string[] = [];
           const classify = (g: number) => g.toString();
-          defaultStatisticsLogger(await statistics(customGen(), classify, { seed }), (v) => logs.push(v));
+          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
           const extractedPercents = logs.map((l) => parseFloat(rePercent.exec(l)![1]));
           const lowerBound = extractedPercents.reduce((p, c) => p + c - 0.01);
           const upperBound = extractedPercents.reduce((p, c) => p + c + 0.01);
@@ -187,9 +203,8 @@ describe('Sampler', () => {
     it('Should order percentages from the highest to the lowest', async () =>
       await fc.assert(
         fc.property(fc.integer(), async (seed) => {
-          const logs: string[] = [];
           const classify = (g: number) => g.toString();
-          defaultStatisticsLogger(await statistics(customGen(), classify, { seed }), (v) => logs.push(v));
+          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
           const extractedPercents = logs.map((l) => parseFloat(rePercent.exec(l)![1]));
           for (let idx = 1; idx < extractedPercents.length; ++idx) {
             expect(extractedPercents[idx - 1]).toBeGreaterThanOrEqual(extractedPercents[idx]);
@@ -199,9 +214,8 @@ describe('Sampler', () => {
     it('Should be able to handle multiple classifiers', async () =>
       await fc.assert(
         fc.property(fc.integer(), async (seed) => {
-          const logs: string[] = [];
           const classify = (g: number) => (g % 2 === 0 ? [`a::${g}`, `b::${g}`, `c::${g}`] : [`a::${g}`, `b::${g}`]);
-          defaultStatisticsLogger(await statistics(customGen(), classify, { seed }), (v) => logs.push(v));
+          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
           const extractedPercents = logs.map((l) => parseFloat(rePercent.exec(l)![1]));
           const lowerBound = extractedPercents.reduce((p, c) => p + c - 0.01);
           const upperBound = extractedPercents.reduce((p, c) => p + c + 0.01);
@@ -221,9 +235,8 @@ describe('Sampler', () => {
     it('Should not produce more logs than the number of classified values', async () =>
       await fc.assert(
         fc.property(fc.integer(), fc.integer({ min: 1, max: 100 }), async (seed, mod) => {
-          const logs: string[] = [];
           const classify = (g: number) => g.toString();
-          defaultStatisticsLogger(await statistics(customGen(mod), classify, { seed }), (v) => logs.push(v));
+          const logs = captureStatisticsLogs(await statistics(customGen(mod), classify, { seed }));
           expect(logs.length).toBeGreaterThanOrEqual(1); // at least one log
           expect(logs.length).toBeLessThanOrEqual(mod); // aggregate classified values together
         }),
@@ -239,44 +252,44 @@ describe('Sampler', () => {
       ));
   });
   describe('defaultStatisticsLogger', () => {
-    it('Should sort, align and round percentages without changing the map', () => {
-      const stats = new Map([
-        ['longer', 100 / 3],
-        ['x', 200 / 3],
-        ['tiny', 0.004],
-      ]);
-      const original = [...stats];
-      const logs: string[] = [];
+    it('Should sort, align and round percentages without changing the counts or total', () => {
+      const stats = {
+        counts: new Map([
+          ['longer', 10_000],
+          ['x', 20_000],
+          ['tiny', 1],
+        ]),
+        numValues: 30_000,
+      };
+      const original = { counts: [...stats.counts], numValues: stats.numValues };
 
-      defaultStatisticsLogger(stats, (line) => logs.push(line));
+      const logs = captureStatisticsLogs(stats);
 
       expect(logs).toEqual(['x.......66.67%', 'longer..33.33%', 'tiny.....0.00%']);
-      expect([...stats]).toEqual(original);
+      expect({ counts: [...stats.counts], numValues: stats.numValues }).toEqual(original);
     });
     it('Should preserve the order of categories with equal percentages', () => {
-      const logs: string[] = [];
-
-      defaultStatisticsLogger(
-        new Map([
-          ['b', 50],
-          ['a', 50],
+      const logs = captureStatisticsLogs({
+        counts: new Map([
+          ['b', 1],
+          ['a', 1],
         ]),
-        (line) => logs.push(line),
-      );
+        numValues: 2,
+      });
 
       expect(logs).toEqual(['b..50.00%', 'a..50.00%']);
     });
-    it('Should log to console.log by default', () => {
+    it('Should log to console.log', () => {
       const logger = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      defaultStatisticsLogger(new Map([['all', 100]]));
+      defaultStatisticsLogger({ counts: new Map([['all', 3]]), numValues: 3 });
 
       expect(logger).toHaveBeenCalledExactlyOnceWith('all..100.00%');
     });
-    it('Should not log empty statistics', () => {
-      const logger = vi.fn();
+    it.each([0, 100])('Should not log empty counts with %s sampled values', (numValues) => {
+      const logger = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      defaultStatisticsLogger(new Map(), logger);
+      defaultStatisticsLogger({ counts: new Map(), numValues });
 
       expect(logger).not.toHaveBeenCalled();
     });

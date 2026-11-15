@@ -60,10 +60,17 @@ async function testArbitrary(arb) {
         : data;
     return String(String(dataWithPrototype).length);
   });
-  assert.ok(distribution instanceof Map);
-  fc.defaultStatisticsLogger(distribution, function (line) {
-    stats.push(line);
-  });
+  assert.ok(distribution.counts instanceof Map);
+  assert.equal(distribution.numValues, 100);
+  var originalConsoleLog = console.log;
+  try {
+    console.log = function (line) {
+      stats.push(line);
+    };
+    fc.defaultStatisticsLogger(distribution);
+  } finally {
+    console.log = originalConsoleLog;
+  }
   assert.notEqual(stats.length, 0);
 }
 

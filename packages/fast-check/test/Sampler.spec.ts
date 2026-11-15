@@ -139,13 +139,14 @@ describe(`Sampler (seed: ${seed})`, () => {
           examples: [[0], [1], [2], [3], [4]],
         });
 
-        expect(stats).toEqual(
-          new Map([
-            ['0', 100 / 3],
-            ['2', 100 / 3],
-            ['3', 100 / 3],
+        expect(stats).toEqual({
+          counts: new Map([
+            ['0', 1],
+            ['2', 1],
+            ['3', 1],
           ]),
-        );
+          numValues: 3,
+        });
         expect(received).toEqual([0, 1, 2, 3]);
       },
     );
@@ -160,12 +161,13 @@ describe(`Sampler (seed: ${seed})`, () => {
         examples: [[0], [1], [2], [3]],
       });
 
-      expect(stats).toEqual(
-        new Map([
-          ['0', 50],
-          ['1', 50],
+      expect(stats).toEqual({
+        counts: new Map([
+          ['0', 1],
+          ['1', 1],
         ]),
-      );
+        numValues: 2,
+      });
     });
 
     it('should classify values after awaiting the predicate', async () => {
@@ -176,7 +178,7 @@ describe(`Sampler (seed: ${seed})`, () => {
 
       const stats = await fc.statistics(property, ([value]) => (value.ready ? 'ready' : 'pending'), { numRuns: 1 });
 
-      expect(stats).toEqual(new Map([['ready', 100]]));
+      expect(stats).toEqual({ counts: new Map([['ready', 1]]), numValues: 1 });
     });
 
     it('should classify the same values when given a property or its arbitrary without running the predicate', async () => {
@@ -196,13 +198,14 @@ describe(`Sampler (seed: ${seed})`, () => {
     it('should classify user-defined examples', async () => {
       const stats = await fc.statistics(fc.constant(0), String, { numRuns: 4, examples: [1, 2] });
 
-      expect(stats).toEqual(
-        new Map([
-          ['1', 25],
-          ['2', 25],
-          ['0', 50],
+      expect(stats).toEqual({
+        counts: new Map([
+          ['1', 1],
+          ['2', 1],
+          ['0', 2],
         ]),
-      );
+        numValues: 4,
+      });
     });
 
     it('should await plugin hooks and classify values from decorated generators', async () => {
@@ -235,7 +238,7 @@ describe(`Sampler (seed: ${seed})`, () => {
 
       const stats = await fc.statistics(fc.constant(0), String, { numRuns: 2, plugins: [plugin] });
 
-      expect(stats).toEqual(new Map([['1', 100]]));
+      expect(stats).toEqual({ counts: new Map([['1', 2]]), numValues: 2 });
       expect(probes).toEqual(['beforeAll', 'run', 'run', 'complete', 'afterAll']);
     });
 
@@ -272,7 +275,7 @@ describe(`Sampler (seed: ${seed})`, () => {
       expect(afterAll).toHaveBeenCalledOnce();
     });
 
-    it('should calculate percentages from the values actually sampled before interruption', async () => {
+    it('should count the values actually sampled before interruption', async () => {
       let numRuns = 0;
       const plugin: fc.Plugin<number> = () => ({
         decorateRun: (run) => (value, context) =>
@@ -281,7 +284,7 @@ describe(`Sampler (seed: ${seed})`, () => {
 
       const stats = await fc.statistics(fc.constant(0), String, { numRuns: 100, plugins: [plugin] });
 
-      expect(stats).toEqual(new Map([['0', 100]]));
+      expect(stats).toEqual({ counts: new Map([['0', 2]]), numValues: 2 });
     });
 
     describe.each([false, true])('with default reporting disabled: %s', (noDefaultPlugins) => {
@@ -369,7 +372,7 @@ describe(`Sampler (seed: ${seed})`, () => {
 
       expect(values.length).toBeGreaterThan(1);
       expect(classified).toEqual(values);
-      expect(stats).toEqual(new Map([['value', 100]]));
+      expect(stats).toEqual({ counts: new Map([['value', values.length]]), numValues: values.length });
     });
   });
 });

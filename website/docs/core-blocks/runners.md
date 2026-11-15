@@ -112,12 +112,17 @@ function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: SampleParameters<Ts, 'arbitrary'>,
-): Promise<Map<string, number>>;
+): Promise<StatisticsResult>;
 function statistics<Ts>(
   generator: Property<Ts>,
   classify: (v: Ts) => string | string[],
   params?: SampleParameters<Ts, 'property'>,
-): Promise<Map<string, number>>;
+): Promise<StatisticsResult>;
+
+interface StatisticsResult {
+  counts: Map<string, number>;
+  numValues: number;
+}
 ```
 
 Example of usage:
@@ -143,7 +148,7 @@ fc.defaultStatisticsLogger(stats);
 // >  5 characters...8.68%
 ```
 
-`statistics` runs through the same runner as `sample` and `assert`, including plugins, and must be awaited. It returns a map from category labels to unrounded percentages of the values actually collected, without logging. Values can belong to zero or more categories, so percentages do not necessarily sum to 100.
+`statistics` runs through the same runner as `sample` and `assert`, including plugins, and must be awaited. It returns `{ counts, numValues }` without logging: `counts` maps each category to its number of occurrences, and `numValues` is the number of values actually collected. Values can belong to zero or more categories, so the sum of the counts may differ from `numValues`. Repeated categories for the same value are counted each time.
 
 When passed a property, `statistics` awaits its predicate before classifying the input. Skipped and interrupted inputs are excluded. Failing inputs are included, then collection stops without shrinking or reporting the predicate error. Pass `noPredicateExecution: true` to classify inputs without executing the property's predicate.
 
@@ -151,11 +156,7 @@ If the classifier throws, `statistics` reports a failed run, completes plugin cl
 
 With a shrink path, it classifies the same values as `sample`; `numRuns` does not cap shrink-path replay.
 
-To keep the previous log format, pass the result to `defaultStatisticsLogger`. It sorts categories by descending percentage, rounds to two decimal places, and logs one line per category. A custom logger can be passed as the second argument:
-
-```js
-fc.defaultStatisticsLogger(stats, (line) => customLogger(line));
-```
+To keep the previous log format, pass the result as the sole argument to `defaultStatisticsLogger(stats)`. It calculates percentages using `numValues`, sorts categories by descending percentage, rounds to two decimal places, and logs one line per category to `console.log`. For custom output, use `stats.counts` and `stats.numValues` directly.
 
 When migrating, replace numeric run counts with `{ numRuns }` and remove `logger` from runner parameters and global configuration.
 

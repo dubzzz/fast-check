@@ -17,7 +17,7 @@ expectTypeOf(
     expectTypeOf(value).toEqualTypeOf<number>();
     return String(value);
   }),
-).toEqualTypeOf<Promise<Map<string, number>>>();
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
 expectTypeOf(
   fc.statistics(
     fc.property(fc.nat(), fc.string(), () => true),
@@ -26,11 +26,13 @@ expectTypeOf(
       return [];
     },
   ),
-).toEqualTypeOf<Promise<Map<string, number>>>();
-expectTypeOf(fc.defaultStatisticsLogger(new Map<string, number>())).toEqualTypeOf<void>();
-fc.defaultStatisticsLogger(new Map<string, number>() as ReadonlyMap<string, number>, (line) => {
-  expectTypeOf(line).toEqualTypeOf<string>();
-});
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
+const stats: fc.StatisticsResult = { counts: new Map<string, number>(), numValues: 0 };
+expectTypeOf(stats.counts).toEqualTypeOf<Map<string, number>>();
+expectTypeOf(stats.numValues).toEqualTypeOf<number>();
+expectTypeOf(fc.defaultStatisticsLogger(stats)).toEqualTypeOf<void>();
+// @ts-expect-error - The logger only accepts the statistics result
+fc.defaultStatisticsLogger(stats, console.log);
 // @ts-expect-error - Run counts must be passed through an options object
 fc.statistics(fc.nat(), String, 10);
 // @ts-expect-error - Logging is handled separately from collecting statistics
