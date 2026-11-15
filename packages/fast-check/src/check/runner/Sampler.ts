@@ -135,7 +135,9 @@ async function statistics<Ts>(
   const classificationFailurePlugin: Plugin<Ts> = () => ({
     decorateRun: (run) => (value, context) => {
       // Do not retry classification while the runner unwinds a failed run.
-      if (classificationFailure !== undefined) return new PreconditionFailure(true);
+      if (classificationFailure !== undefined) {
+        return new PreconditionFailure(true);
+      }
       const out = run(value, context);
       return out !== null && 'then' in out
         ? out.then((result) => classificationFailure ?? result)
