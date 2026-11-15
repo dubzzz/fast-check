@@ -91,7 +91,7 @@ By default, `sample` runs the predicate attached to the property. As such inputs
 
 A failure of the predicate interrupts the sampling without shrinking or reporting the predicate error.
 
-This behavior can be overridden by passing the parameter `noPredicateExecution: true` to `sample`. With that flagged toggled on, dampling will run without executing the predicate and this ignore runs rejected via `fc.pre(...)` and failed ones.
+This behavior can be overridden by passing the parameter `noPredicateExecution: true` to `sample`. With that flagged toggled on, sampling will run without executing the predicate and this ignore runs rejected via `fc.pre(...)` and failed ones.
 :::
 
 :::note Shrink-path replay
