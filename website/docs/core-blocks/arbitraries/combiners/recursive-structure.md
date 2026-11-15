@@ -117,7 +117,7 @@ fc.letrec((tie) => ({
 // • {"left":{__proto__:null,"left":749002681,"right":2069272340},"right":{__proto__:null,"left":16,"right":16}}
 // • …
 
-fc.defaultStatisticsLogger(
+fc.logStatistics(
   await fc.statistics(
     fc.letrec((tie) => ({
       node: fc.record({
@@ -143,23 +143,23 @@ fc.defaultStatisticsLogger(
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
-// • 5 to 9 items....44.36%
-// • 10 to 49 items..37.97%
-// • 1 to 4 items....17.67%
+// • 5 to 9 items....45.11%
+// • 10 to 49 items..37.59%
+// • 1 to 4 items....17.30%
 // For size = "small":
-// • 10 to 49 items..85.29%
-// • 5 to 9 items.....5.51%
-// • 1 to 4 items.....5.02%
-// • 50 to 99 items...4.18%
+// • 10 to 49 items..85.90%
+// • 5 to 9 items.....5.30%
+// • 50 to 99 items...4.49%
+// • 1 to 4 items.....4.31%
 // For size = "medium":
-// • 100 to 499 items..82.53%
-// • 50 to 99 items....10.03%
-// • 1 to 4 items.......4.41%
-// • 10 to 49 items.....2.88%
-// • 5 to 9 items.......0.09%
+// • 100 to 499 items..83.32%
+// • 50 to 99 items.....9.94%
+// • 1 to 4 items.......3.77%
+// • 10 to 49 items.....2.80%
+// • 5 to 9 items.......0.14%
 // • …
 
-fc.defaultStatisticsLogger(
+fc.logStatistics(
   await fc.statistics(
     fc.letrec((tie) => ({
       node: fc.record({
@@ -190,15 +190,15 @@ fc.defaultStatisticsLogger(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....63.46%
-// • 5 to 9 items....23.22%
-// • 10 to 49 items..13.32%
+// • 1 to 4 items....64.79%
+// • 5 to 9 items....22.32%
+// • 10 to 49 items..12.89%
 // For size = "medium":
-// • 1 to 4 items......51.00%
-// • 50 to 99 items....26.22%
-// • 10 to 49 items....19.06%
-// • 100 to 499 items...3.57%
-// • 5 to 9 items.......0.14%
+// • 1 to 4 items......51.98%
+// • 50 to 99 items....24.82%
+// • 10 to 49 items....19.09%
+// • 100 to 499 items...3.97%
+// • 5 to 9 items.......0.13%
 // • …
 ```
 

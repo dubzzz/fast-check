@@ -35,9 +35,9 @@ expectTypeOf(
 const stats: fc.StatisticsResult = { counts: new Map<string, number>(), numValues: 0 };
 expectTypeOf(stats.counts).toEqualTypeOf<Map<string, number>>();
 expectTypeOf(stats.numValues).toEqualTypeOf<number>();
-expectTypeOf(fc.defaultStatisticsLogger(stats)).toEqualTypeOf<void>();
+expectTypeOf(fc.logStatistics(stats)).toEqualTypeOf<void>();
 expectTypeOf(
-  fc.defaultStatisticsLogger(stats, (line) => {
+  fc.logStatistics(stats, (line) => {
     expectTypeOf(line).toEqualTypeOf<string>();
   }),
 ).toEqualTypeOf<void>();

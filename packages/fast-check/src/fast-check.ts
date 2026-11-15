@@ -15,7 +15,7 @@ export type {
   RunDetailsCommon,
 } from './check/runner/reporter/RunDetails.js';
 export { assert } from './check/runner/assert.js';
-export { sample, statistics, defaultStatisticsLogger } from './check/runner/Sampler.js';
+export { sample, statistics, logStatistics } from './check/runner/Sampler.js';
 export type { StatisticsResult } from './check/runner/Sampler.js';
 
 export type { GeneratorValue } from './arbitrary/gen.js';

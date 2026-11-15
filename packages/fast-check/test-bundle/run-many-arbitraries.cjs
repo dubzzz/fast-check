@@ -62,15 +62,9 @@ async function testArbitrary(arb) {
   });
   assert.ok(distribution.counts instanceof Map);
   assert.equal(distribution.numValues, 100);
-  var originalConsoleLog = console.log;
-  try {
-    console.log = function (line) {
-      stats.push(line);
-    };
-    fc.defaultStatisticsLogger(distribution);
-  } finally {
-    console.log = originalConsoleLog;
-  }
+  fc.logStatistics(distribution, function (line) {
+    stats.push(line);
+  });
   assert.notEqual(stats.length, 0);
 }
 

@@ -160,7 +160,7 @@ fc.jsonValue({ maxDepth: 1 });
 // • true
 // • …
 
-fc.defaultStatisticsLogger(
+fc.logStatistics(
   await fc.statistics(fc.jsonValue(), (v) => {
     function size(n) {
       if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
@@ -180,18 +180,18 @@ fc.defaultStatisticsLogger(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....49.42%
-// • 5 to 9 items....30.73%
-// • 10 to 49 items..19.85%
+// • 1 to 4 items....50.22%
+// • 5 to 9 items....29.73%
+// • 10 to 49 items..20.05%
 // For size = "medium":
-// • 1 to 4 items......34.53%
+// • 1 to 4 items......34.32%
 // • 50 to 99 items....34.32%
-// • 10 to 49 items....24.29%
-// • 100 to 499 items...6.74%
-// • 5 to 9 items.......0.09%
+// • 10 to 49 items....24.96%
+// • 100 to 499 items...6.23%
+// • 500 to 999 items...0.09%
 // • …
 
-fc.defaultStatisticsLogger(
+fc.logStatistics(
   await fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
     function size(n) {
       if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
@@ -211,14 +211,14 @@ fc.defaultStatisticsLogger(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....50.61%
-// • 5 to 9 items....32.89%
-// • 10 to 49 items..16.50%
+// • 1 to 4 items....50.62%
+// • 5 to 9 items....32.81%
+// • 10 to 49 items..16.57%
 // For size = "medium":
-// • 1 to 4 items......35.37%
-// • 50 to 99 items....32.70%
-// • 10 to 49 items....25.86%
-// • 100 to 499 items...4.73%
+// • 1 to 4 items......35.43%
+// • 50 to 99 items....32.97%
+// • 10 to 49 items....25.32%
+// • 100 to 499 items...4.94%
 // • 5 to 9 items.......1.34%
 ```
 

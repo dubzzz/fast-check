@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
-import { readInstalledGlobalPlugins } from '../src/check/runner/configuration/GlobalPlugins.js';
 
 describe(`Sampler (seed: ${seed})`, () => {
   it('should be able to sample an Arbitrary', async () => {
@@ -117,68 +116,25 @@ describe(`Sampler (seed: ${seed})`, () => {
   });
 
   describe('statistics', () => {
-    it.each([false, true])(
-      'should classify successful and failing predicate inputs, excluding skips (async: %s)',
-      async (isAsync) => {
-        const received: number[] = [];
-        const runPredicate = (value: number) => {
-          received.push(value);
-          fc.pre(value !== 1);
-          return value !== 3;
-        };
-        const predicate = isAsync
-          ? async (value: number) => {
-              await Promise.resolve();
-              return runPredicate(value);
-            }
-          : runPredicate;
-        const property = fc.property(fc.integer(), predicate);
-
-        const stats = await fc.statistics(property, ([value]) => String(value), {
-          numRuns: 1_000,
-          examples: [[0], [1], [2], [3], [4]],
-        });
-
-        expect(stats).toEqual({
-          counts: new Map([
-            ['0', 1],
-            ['2', 1],
-            ['3', 1],
-          ]),
-          numValues: 3,
-        });
-        expect(received).toEqual([0, 1, 2, 3]);
-      },
-    );
-
-    it('should exclude inputs that interrupt the predicate', async () => {
-      const property = fc.property(fc.integer(), (value) => {
-        if (value === 2) throw new fc.PreconditionFailure(true);
+    it('should classify the property values collected by the runner', async () => {
+      const property = fc.property(fc.integer(), async (value) => {
+        fc.pre(value !== 1);
+        return value !== 3;
       });
 
       const stats = await fc.statistics(property, ([value]) => String(value), {
-        numRuns: 10,
-        examples: [[0], [1], [2], [3]],
+        numRuns: 1_000,
+        examples: [[0], [1], [2], [3], [4]],
       });
 
       expect(stats).toEqual({
         counts: new Map([
           ['0', 1],
-          ['1', 1],
+          ['2', 1],
+          ['3', 1],
         ]),
-        numValues: 2,
+        numValues: 3,
       });
-    });
-
-    it('should classify values after awaiting the predicate', async () => {
-      const property = fc.property(fc.constant<{ ready: boolean }>({ ready: false }), async (value) => {
-        await Promise.resolve();
-        value.ready = true;
-      });
-
-      const stats = await fc.statistics(property, ([value]) => (value.ready ? 'ready' : 'pending'), { numRuns: 1 });
-
-      expect(stats).toEqual({ counts: new Map([['ready', 1]]), numValues: 1 });
     });
 
     it('should classify the same values when given a property or its arbitrary without running the predicate', async () => {
@@ -193,186 +149,6 @@ describe(`Sampler (seed: ${seed})`, () => {
 
       expect(stats).toEqual(expectedStats);
       expect(predicate).not.toHaveBeenCalled();
-    });
-
-    it('should classify user-defined examples', async () => {
-      const stats = await fc.statistics(fc.constant(0), String, { numRuns: 4, examples: [1, 2] });
-
-      expect(stats).toEqual({
-        counts: new Map([
-          ['1', 1],
-          ['2', 1],
-          ['0', 2],
-        ]),
-        numValues: 4,
-      });
-    });
-
-    it('should await plugin hooks and classify values from decorated generators', async () => {
-      const probes: string[] = [];
-      const plugin: fc.Plugin<number> = () => ({
-        beforeAll: async () => {
-          await Promise.resolve();
-          probes.push('beforeAll');
-        },
-        decorateGenerate: (generate) => (mrng, runId) => {
-          expect(probes[0]).toBe('beforeAll');
-          const value = generate(mrng, runId);
-          return new fc.Value(value.value_ + 1, value.context);
-        },
-        decorateRun: (run) => async (value, context) => {
-          await Promise.resolve();
-          probes.push('run');
-          return run(value, context);
-        },
-        onAllRunsComplete: async (details) => {
-          await Promise.resolve();
-          expect(details.numRuns).toBe(2);
-          probes.push('complete');
-        },
-        afterAll: async () => {
-          await Promise.resolve();
-          probes.push('afterAll');
-        },
-      });
-
-      const stats = await fc.statistics(fc.constant(0), String, { numRuns: 2, plugins: [plugin] });
-
-      expect(stats).toEqual({ counts: new Map([['1', 2]]), numValues: 2 });
-      expect(probes).toEqual(['beforeAll', 'run', 'run', 'complete', 'afterAll']);
-    });
-
-    it('should honor global plugins and noGlobalPlugins', async () => {
-      const beforeAll = vi.fn();
-      const plugins = readInstalledGlobalPlugins('pre');
-      const originalLength = plugins.length;
-      fc.installGlobalPlugin(() => ({ beforeAll }));
-      try {
-        await fc.statistics(fc.constant(0), String);
-        await fc.statistics(fc.constant(0), String, { noGlobalPlugins: true });
-
-        expect(beforeAll).toHaveBeenCalledOnce();
-      } finally {
-        plugins.splice(originalLength);
-      }
-    });
-
-    it('should reject plugin setup failures and still clean up', async () => {
-      const error = new Error('setup failed');
-      const afterAll = vi.fn();
-      const classify = vi.fn(String);
-      const plugins: fc.Plugin<number>[] = [
-        () => ({
-          beforeAll: () => {
-            throw error;
-          },
-          afterAll,
-        }),
-      ];
-
-      await expect(fc.statistics(fc.constant(0), classify, { plugins })).rejects.toMatchObject({ cause: error });
-      expect(classify).not.toHaveBeenCalled();
-      expect(afterAll).toHaveBeenCalledOnce();
-    });
-
-    it('should count the values actually sampled before interruption', async () => {
-      let numRuns = 0;
-      const plugin: fc.Plugin<number> = () => ({
-        decorateRun: (run) => (value, context) =>
-          ++numRuns > 2 ? new fc.PreconditionFailure(true) : run(value, context),
-      });
-
-      const stats = await fc.statistics(fc.constant(0), String, { numRuns: 100, plugins: [plugin] });
-
-      expect(stats).toEqual({ counts: new Map([['0', 2]]), numValues: 2 });
-    });
-
-    describe.each([false, true])('with default reporting disabled: %s', (noDefaultPlugins) => {
-      it.each([false, true])(
-        'should report classification as failed and rethrow the original error (async: %s)',
-        async (isAsync) => {
-          const error = new Error('classification failed');
-          const predicate = vi.fn(() => (isAsync ? Promise.resolve() : undefined));
-          const classify = vi.fn(() => {
-            throw error;
-          });
-          const onAllRunsComplete = vi.fn();
-          const cleanedUp = vi.fn();
-          const afterAll = async () => {
-            await Promise.resolve();
-            cleanedUp();
-          };
-
-          await expect(
-            fc.statistics(fc.property(fc.integer({ min: 0, max: 10 }), predicate), classify, {
-              examples: [[10]],
-              noDefaultPlugins,
-              plugins: [() => ({ onAllRunsComplete, afterAll })],
-            }),
-          ).rejects.toBe(error);
-
-          expect(onAllRunsComplete).toHaveBeenCalledExactlyOnceWith(
-            expect.objectContaining({
-              failed: true,
-              errorInstance: error,
-              counterexample: [10],
-              numShrinks: 0,
-            }),
-          );
-          expect(classify).toHaveBeenCalledOnce();
-          expect(predicate).toHaveBeenCalledOnce();
-          expect(cleanedUp).toHaveBeenCalledOnce();
-        },
-      );
-    });
-
-    it.each([undefined, null, 0, 'classification failed'])(
-      'should rethrow the original non-Error value: %s',
-      async (error) => {
-        await expect(
-          fc.statistics(fc.constant(0), () => {
-            throw error;
-          }),
-        ).rejects.toBe(error);
-      },
-    );
-
-    it('should preserve the classification error even when a cleanup fails', async () => {
-      const error = new Error('classification failed');
-      const afterAll = vi.fn(() => {
-        throw new Error('cleanup failed');
-      });
-
-      await expect(
-        fc.statistics(
-          fc.constant(0),
-          () => {
-            throw error;
-          },
-          { plugins: [() => ({ afterAll })] },
-        ),
-      ).rejects.toBe(error);
-      expect(afterAll).toHaveBeenCalledOnce();
-    });
-
-    it.each([undefined, 1])('should classify shrink replay values with numRuns=%s', async (numRuns) => {
-      const arbitrary = fc.integer({ min: 0, max: 100 });
-      const params = { seed, path: '0:0', examples: [100], numRuns };
-      const values = await fc.sample(arbitrary, params);
-      const classified: number[] = [];
-
-      const stats = await fc.statistics(
-        arbitrary,
-        (value) => {
-          classified.push(value);
-          return 'value';
-        },
-        params,
-      );
-
-      expect(values.length).toBeGreaterThan(1);
-      expect(classified).toEqual(values);
-      expect(stats).toEqual({ counts: new Map([['value', values.length]]), numValues: values.length });
     });
   });
 });

@@ -137,7 +137,7 @@ const stats = await fc.statistics(
   (v) => `${v.length} characters`, // classifier
   { numRuns: 100_000 }, // extra parameters
 );
-fc.defaultStatisticsLogger(stats);
+fc.logStatistics(stats);
 // Possible output:
 // >  0 characters...9.65%
 // >  2 characters...9.56%
@@ -156,14 +156,16 @@ fc.defaultStatisticsLogger(stats);
 
 When passed a property, `statistics` awaits its predicate before classifying the input. Skipped and interrupted inputs are excluded. Failing inputs are included, then collection stops without shrinking or reporting the predicate error. Pass `noPredicateExecution: true` to classify inputs without executing the property's predicate.
 
-If the classifier throws, `statistics` reports a failed run, completes plugin cleanup, and rejects with the original thrown value. Disabling default reporting does not suppress classification errors.
+:::warning
+The classifier must not throw.
+:::
 
 With a shrink path, it classifies the same values as `sample`; `numRuns` does not cap shrink-path replay.
 
-To keep the previous log format, pass the result to `defaultStatisticsLogger(stats)`. It calculates percentages using `numValues`, sorts categories by descending percentage, rounds to two decimal places, and logs one line per category to `console.log`.
+To keep the previous log format, pass the result to `logStatistics(stats)`. It calculates percentages using `numValues`, sorts categories by descending percentage, rounds to two decimal places, and logs one line per category to `console.log`.
 
 ```ts
-function defaultStatisticsLogger(stats: StatisticsResult, logger?: (line: string) => void): void;
+function logStatistics(stats: StatisticsResult, logger?: (line: string) => void): void;
 ```
 
 Pass a logging function to send the formatted lines elsewhere:
@@ -171,13 +173,13 @@ Pass a logging function to send the formatted lines elsewhere:
 ```js
 const stats = await fc.statistics(fc.nat(), (value) => (value % 2 === 0 ? 'even' : 'odd'));
 const lines = [];
-fc.defaultStatisticsLogger(stats, (line) => lines.push(line));
+fc.logStatistics(stats, (line) => lines.push(line));
 ```
 
 For custom formatting, use `stats.counts` and `stats.numValues` directly.
 
 When migrating, replace numeric run counts with `{ numRuns }` and remove `logger` from runner parameters and global configuration.
 
-Resources: [API reference](/docs/api/functions/statistics), [result](/docs/api/interfaces/StatisticsResult), [default logger](/docs/api/functions/defaultStatisticsLogger).
+Resources: [API reference](/docs/api/functions/statistics), [result](/docs/api/interfaces/StatisticsResult), [default logger](/docs/api/functions/logStatistics).
 
 Available since 0.0.6.
