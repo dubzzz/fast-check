@@ -38,19 +38,6 @@ describe('RunCollectorPlugin', () => {
       expect(onCollect).toHaveBeenCalledExactlyOnceWith(value);
     });
 
-    it('should report collection errors as failures', async () => {
-      const error = new Error('collection failed');
-      const onCollect = () => {
-        throw error;
-      };
-      const nestedRun = vi.fn<Property<unknown>['run']>().mockReturnValue(isAsync ? Promise.resolve(null) : null);
-      const finalRun = collectorRun(onCollect, true, nestedRun);
-
-      const out = isAsync ? await finalRun(Symbol('value'), {}) : finalRun(Symbol('value'), {});
-
-      expect(out).toEqual({ error });
-    });
-
     it.each([
       { name: 'skips', result: new PreconditionFailure() },
       { name: 'interrupts', result: new PreconditionFailure(true) },

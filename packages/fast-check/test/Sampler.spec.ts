@@ -284,9 +284,61 @@ describe(`Sampler (seed: ${seed})`, () => {
       expect(stats).toEqual(new Map([['0', 100]]));
     });
 
-    it('should report classifier errors through the runner and still clean up', async () => {
+    describe.each([false, true])('with default reporting disabled: %s', (noDefaultPlugins) => {
+      it.each([false, true])(
+        'should report classification as failed and rethrow the original error (async: %s)',
+        async (isAsync) => {
+          const error = new Error('classification failed');
+          const predicate = vi.fn(() => (isAsync ? Promise.resolve() : undefined));
+          const classify = vi.fn(() => {
+            throw error;
+          });
+          const onAllRunsComplete = vi.fn();
+          const cleanedUp = vi.fn();
+          const afterAll = async () => {
+            await Promise.resolve();
+            cleanedUp();
+          };
+
+          await expect(
+            fc.statistics(fc.property(fc.integer({ min: 0, max: 10 }), predicate), classify, {
+              examples: [[10]],
+              noDefaultPlugins,
+              plugins: [() => ({ onAllRunsComplete, afterAll })],
+            }),
+          ).rejects.toBe(error);
+
+          expect(onAllRunsComplete).toHaveBeenCalledExactlyOnceWith(
+            expect.objectContaining({
+              failed: true,
+              errorInstance: error,
+              counterexample: [10],
+              numShrinks: 0,
+            }),
+          );
+          expect(classify).toHaveBeenCalledOnce();
+          expect(predicate).toHaveBeenCalledOnce();
+          expect(cleanedUp).toHaveBeenCalledOnce();
+        },
+      );
+    });
+
+    it.each([undefined, null, 0, 'classification failed'])(
+      'should rethrow the original non-Error value: %s',
+      async (error) => {
+        await expect(
+          fc.statistics(fc.constant(0), () => {
+            throw error;
+          }),
+        ).rejects.toBe(error);
+      },
+    );
+
+    it('should preserve the classification error even when a cleanup fails', async () => {
       const error = new Error('classification failed');
-      const afterAll = vi.fn();
+      const afterAll = vi.fn(() => {
+        throw new Error('cleanup failed');
+      });
 
       await expect(
         fc.statistics(
@@ -296,7 +348,7 @@ describe(`Sampler (seed: ${seed})`, () => {
           },
           { plugins: [() => ({ afterAll })] },
         ),
-      ).rejects.toMatchObject({ cause: error });
+      ).rejects.toBe(error);
       expect(afterAll).toHaveBeenCalledOnce();
     });
 

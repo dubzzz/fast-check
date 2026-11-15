@@ -8,11 +8,7 @@ export function runCollector<Ts>(onCollect: (value: Ts) => void, runPredicate: b
     if (PreconditionFailure.isFailure(out)) {
       return out;
     }
-    try {
-      onCollect(value);
-    } catch (error) {
-      return { error };
-    }
+    onCollect(value);
     return out === null ? null : new PreconditionFailure(true);
   };
   return () => ({

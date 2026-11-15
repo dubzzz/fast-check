@@ -147,6 +147,8 @@ fc.defaultStatisticsLogger(stats);
 
 When passed a property, `statistics` awaits its predicate before classifying the input. Skipped and interrupted inputs are excluded. Failing inputs are included, then collection stops without shrinking or reporting the predicate error. Pass `noPredicateExecution: true` to classify inputs without executing the property's predicate.
 
+If the classifier throws, `statistics` reports a failed run, completes plugin cleanup, and rejects with the original thrown value. Disabling default reporting does not suppress classification errors.
+
 With a shrink path, it classifies the same values as `sample`; `numRuns` does not cap shrink-path replay.
 
 To keep the previous log format, pass the result to `defaultStatisticsLogger`. It sorts categories by descending percentage, rounds to two decimal places, and logs one line per category. A custom logger can be passed as the second argument:

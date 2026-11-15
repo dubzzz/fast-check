@@ -1,9 +1,12 @@
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
 import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
+import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { SampleParameters } from './configuration/SampleParameters.js';
 import { assert } from './assert.js';
 import { runCollector } from '../plugin/RunCollectorPlugin.js';
+import type { Plugin } from '../plugin/Plugin.js';
+import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 
 /**
  * Generate an array containing all the values that would have been generated during {@link assert}
@@ -68,6 +71,8 @@ function round2(n: number): string {
  * Failing inputs are included, then collection stops without shrinking or reporting the predicate error.
  * Pass `noPredicateExecution: true` to classify values without running the property's predicate.
  *
+ * If classification throws, statistics fails and rethrows the original value after plugin completion and cleanup.
+ *
  * With a shrink path, starts from the path; `numRuns` does not cap the classified values.
  *
  * @example
@@ -110,22 +115,42 @@ async function statistics<Ts>(
 ): Promise<Map<string, number>> {
   const recorded = new Map<string, number>();
   let numValues = 0;
+  let classificationFailure: PropertyFailure | undefined;
   const collector = runCollector<Ts>((value) => {
-    const out = classify(value);
-    const categories = Array.isArray(out) ? out : [out];
-    for (const category of categories) {
-      recorded.set(category, (recorded.get(category) ?? 0) + 1);
+    try {
+      const out = classify(value);
+      const categories = Array.isArray(out) ? out : [out];
+      for (const category of categories) {
+        recorded.set(category, (recorded.get(category) ?? 0) + 1);
+      }
+      ++numValues;
+    } catch (error) {
+      classificationFailure = { error };
     }
-    ++numValues;
   }, params.noPredicateExecution !== true);
+  const classificationFailurePlugin: Plugin<Ts> = () => ({
+    decorateRun: (run) => (value, context) => {
+      // Do not retry classification while the runner unwinds a failed run.
+      if (classificationFailure !== undefined) return new PreconditionFailure(true);
+      const out = run(value, context);
+      return out !== null && 'then' in out
+        ? out.then((result) => classificationFailure ?? result)
+        : (classificationFailure ?? out);
+    },
+  });
   const property: Property<Ts> =
     'run' in generator && typeof generator.run === 'function'
       ? generator
       : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
-  await assert(property, {
-    ...params,
-    plugins: [...(params.plugins ?? []), collector],
-  });
+  try {
+    await assert(property, {
+      ...params,
+      plugins: [...(params.plugins ?? []), classificationFailurePlugin, collector],
+    });
+  } catch (error) {
+    if (classificationFailure === undefined) throw error;
+  }
+  if (classificationFailure !== undefined) throw classificationFailure.error;
   for (const [category, count] of recorded) {
     recorded.set(category, (count * 100) / numValues);
   }
