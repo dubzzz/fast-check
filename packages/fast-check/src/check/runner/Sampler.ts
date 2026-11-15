@@ -76,17 +76,7 @@ export interface StatisticsResult {
  * WARNING: Has to be awaited
  *
  * Returns category counts and the total number of sampled values.
- * Each occurrence of a category contributes to its count, including repeated categories for the same value.
- * Values classified into no categories still count towards the total number of sampled values.
- * No output is logged. Use {@link defaultStatisticsLogger} to print the result.
- *
- * Passing a property runs its predicate before classifying each value. Skipped and interrupted inputs are excluded.
- * Failing inputs are included, then collection stops without shrinking or reporting the predicate error.
- * Pass `noPredicateExecution: true` to classify values without running the property's predicate.
- *
- * If classification throws, statistics fails and rethrows the original value after plugin completion and cleanup.
- *
- * With a shrink path, starts from the path; `numRuns` does not cap the classified values.
+ * Use {@link defaultStatisticsLogger} to print the result.
  *
  * @example
  * ```typescript
