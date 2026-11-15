@@ -11,6 +11,18 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
+// sample
+expectTypeOf(fc.sample(fc.nat())).toEqualTypeOf<Promise<number[]>>();
+expectTypeOf(fc.sample(fc.property(fc.nat(), fc.string(), () => true))).toEqualTypeOf<Promise<[number, string][]>>();
+expectTypeOf(
+  fc.sample(
+    fc.property(fc.nat(), fc.string(), () => true),
+    { noPredicateExecution: true },
+  ),
+).toEqualTypeOf<Promise<[number, string][]>>();
+// @ts-expect-error - Only properties have a predicate to skip
+fc.sample(fc.nat(), { noPredicateExecution: true });
+
 // property
 // "property" instantiates instances compatible with Property
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();

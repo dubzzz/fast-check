@@ -3,13 +3,13 @@ import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
+import type { SampleParameters } from './configuration/SampleParameters.js';
 import { read } from './configuration/QualifiedParameters.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { assert } from './assert.js';
-import type { Plugin } from '../plugin/Plugin.js';
-import { PreconditionFailure } from 'fast-check';
+import { runCollector } from '../plugin/RunCollectorPlugin.js';
 
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
@@ -41,8 +41,9 @@ function streamSample<Ts>(
  *
  * WARNING: Has to be awaited
  *
- * With a shrink path, returns all shrunk values at that level starting from the path.
- * Pass `numRuns` directly to `sample` (not via global configuration) to cap the number of returned values.
+ * Passing a property runs its predicate. Skipped inputs are excluded and failures interrupt sampling without shrinking.
+ *
+ * With a shrink path, starts from the path; `numRuns` does not cap the returned values.
  *
  * @example
  * ```typescript
@@ -52,30 +53,30 @@ function streamSample<Ts>(
  * ```
  *
  * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
- * @param params - `Parameters` passed to {@link assert}
+ * @param params - {@link SampleParameters} to customize sampling
  *
  * @remarks Since 0.0.6
  * @public
  */
-async function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params: Parameters<Ts> = {}): Promise<Ts[]> {
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
+/**
+ * {@inheritDoc (sample:1)}
+ * @public
+ */
+function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
+async function sample<Ts>(
+  generator: Property<Ts> | Arbitrary<Ts>,
+  params: SampleParameters<Ts, 'property'> = {},
+): Promise<Ts[]> {
   const extractedValue: Ts[] = [];
-  const requestedRuns = params.numRuns; // we ignore: readConfigureGlobal().numRuns in that context
-  const extractor: Plugin<Ts> = () => ({
-    decorateRun: () => (value) => {
-      if (requestedRuns !== undefined && extractedValue.length >= requestedRuns) {
-        return new PreconditionFailure(true);
-      }
-      extractedValue.push(value);
-      return null; // emulate a successful predicate
-    },
-  });
+  const collector = runCollector<Ts>((value) => extractedValue.push(value), params.noPredicateExecution !== true);
   const property: Property<Ts> =
     'run' in generator && typeof generator.run === 'function'
       ? generator
       : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
   await assert(property, {
     ...params,
-    plugins: params.plugins !== undefined && params.plugins.length !== 0 ? [...params.plugins, extractor] : [extractor],
+    plugins: [...(params.plugins ?? []), collector],
   });
   return extractedValue;
 }

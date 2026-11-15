@@ -70,23 +70,32 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: Parameters<Ts>): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
 ```
 
 Example of usage:
 
 ```js
 const values = await fc.sample(fc.nat(), { numRuns: 10 });
-// equivalent to:
+// equivalent to sampling a property whose predicate always succeeds:
 // >  const wrappedValues = await fc.sample(
-// >    fc.property(fc.nat(), predicate),
+// >    fc.property(fc.nat(), () => true),
 // >    { numRuns: 10 }
 // >  );
 // >  const values = wrappedValues.map(([value]) => value);
 ```
 
-:::note
-With a shrink path, `sample` returns all shrunk values at that level starting from the path. Pass `numRuns` directly in `sample`'s parameters (not via global configuration) to cap the number of returned values.
+:::warning Passing a property executes its predicate
+By default, `sample` runs the predicate attached to the property. As such inputs rejected by call to `fc.pre(...)` are excluded from the returned array.
+
+A failure of the predicate interrupts the sampling without shrinking or reporting the predicate error.
+
+This behavior can be overridden by passing the parameter `noPredicateExecution: true` to `sample`. With that flagged toggled on, sampling will run without executing the predicate and this ignore runs rejected via `fc.pre(...)` and failed ones.
+:::
+
+:::note Shrink-path replay
+When passed a `path` via its parameters, `sample` visits the shrunk values at that level starting from the path until the predicate fails or the candidates are exhausted. As with `assert`, `numRuns` does not cap shrink-path replay, whether configured locally or globally. Sampling an arbitrary or disabling the predicate visits all candidates at that level unless a plugin interrupts the run.
 :::
 
 Resources: [API reference](/docs/api/functions/sample).  

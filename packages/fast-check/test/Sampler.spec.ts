@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from '../src/fast-check.js';
 import { seed } from './seed.js';
 
@@ -60,5 +60,58 @@ describe(`Sampler (seed: ${seed})`, () => {
 
     // Assert
     expect(values).toEqual([1, 2, 0, 0]);
+  });
+
+  const requestedNumRuns = 1_000;
+  it.each([
+    {
+      behavior: 'ignore numRuns on predicate failure and exclude skipped inputs',
+      noPredicateExecution: false,
+      expectedLength: 3,
+      expectedFirstValues: [[0], [2], [3]],
+    },
+    {
+      behavior: 'honor numRuns when predicate execution is disabled',
+      noPredicateExecution: true,
+      expectedLength: requestedNumRuns,
+      expectedFirstValues: [[0], [1], [2], [3], [4]],
+    },
+  ])('should $behavior', async ({ noPredicateExecution, expectedLength, expectedFirstValues }) => {
+    const property = fc.property(fc.integer(), (value) => {
+      fc.pre(value !== 1);
+      return value !== 3;
+    });
+
+    const values = await fc.sample(property, {
+      numRuns: requestedNumRuns,
+      noPredicateExecution,
+      examples: [[0], [1], [2], [3], [4]],
+    });
+
+    expect(values).toHaveLength(expectedLength);
+    expect(values.slice(0, expectedFirstValues.length)).toEqual(expectedFirstValues);
+  });
+
+  it('should sample inputs without running the predicate when disabled', async () => {
+    const predicate = vi.fn(() => false);
+
+    const values = await fc.sample(fc.property(fc.integer(), predicate), {
+      noPredicateExecution: true,
+      numRuns: 3,
+      examples: [[1], [2], [3]],
+    });
+
+    expect(values).toEqual([[1], [2], [3]]);
+    expect(predicate).not.toHaveBeenCalled();
+  });
+
+  it('should not add a numRuns cap to shrink-path sampling', async () => {
+    const arbitrary = fc.integer({ min: 0, max: 100 });
+    const expected = Array.from(arbitrary.shrink(100, undefined), (value) => value.value);
+
+    const values = await fc.sample(arbitrary, { numRuns: 1, examples: [100], path: '0:0' });
+
+    expect(expected.length).toBeGreaterThan(1);
+    expect(values).toEqual(expected);
   });
 });
