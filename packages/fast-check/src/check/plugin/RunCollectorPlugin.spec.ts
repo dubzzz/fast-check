@@ -34,8 +34,7 @@ describe('RunCollectorPlugin', () => {
       const out = isAsync ? await finalRun(value, {}) : finalRun(value, {});
 
       // Assert
-      expect(out).toBeInstanceOf(PreconditionFailure);
-      expect(out).toMatchObject({ interruptExecution: true });
+      expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
       expect(onCollect).toHaveBeenCalledExactlyOnceWith(value);
     });
 

@@ -62,15 +62,34 @@ describe(`Sampler (seed: ${seed})`, () => {
     expect(values).toEqual([1, 2, 0, 0]);
   });
 
-  it('should sample a property until it fails, excluding skipped inputs', async () => {
+  const requestedNumRuns = 1_000;
+  it.each([
+    {
+      behavior: 'ignore numRuns on predicate failure and exclude skipped inputs',
+      noPredicateExecution: false,
+      expectedLength: 3,
+      expectedFirstValues: [[0], [2], [3]],
+    },
+    {
+      behavior: 'honor numRuns when predicate execution is disabled',
+      noPredicateExecution: true,
+      expectedLength: requestedNumRuns,
+      expectedFirstValues: [[0], [1], [2], [3], [4]],
+    },
+  ])('should $behavior', async ({ noPredicateExecution, expectedLength, expectedFirstValues }) => {
     const property = fc.property(fc.integer(), (value) => {
       fc.pre(value !== 1);
       return value !== 3;
     });
 
-    const values = await fc.sample(property, { numRuns: 4, examples: [[0], [1], [2], [3], [4]] });
+    const values = await fc.sample(property, {
+      numRuns: requestedNumRuns,
+      noPredicateExecution,
+      examples: [[0], [1], [2], [3], [4]],
+    });
 
-    expect(values).toEqual([[0], [2], [3]]);
+    expect(values).toHaveLength(expectedLength);
+    expect(values.slice(0, expectedFirstValues.length)).toEqual(expectedFirstValues);
   });
 
   it('should sample inputs without running the predicate when disabled', async () => {
