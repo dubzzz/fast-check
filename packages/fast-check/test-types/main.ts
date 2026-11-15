@@ -12,11 +12,16 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
 // statistics
+const statisticsParameters: fc.StatisticsParameters<number, 'arbitrary'> = { numRuns: 10 };
 expectTypeOf(
-  fc.statistics(fc.nat(), (value) => {
-    expectTypeOf(value).toEqualTypeOf<number>();
-    return String(value);
-  }),
+  fc.statistics(
+    fc.nat(),
+    (value) => {
+      expectTypeOf(value).toEqualTypeOf<number>();
+      return String(value);
+    },
+    statisticsParameters,
+  ),
 ).toEqualTypeOf<Promise<fc.StatisticsResult>>();
 expectTypeOf(
   fc.statistics(
@@ -31,21 +36,27 @@ const stats: fc.StatisticsResult = { counts: new Map<string, number>(), numValue
 expectTypeOf(stats.counts).toEqualTypeOf<Map<string, number>>();
 expectTypeOf(stats.numValues).toEqualTypeOf<number>();
 expectTypeOf(fc.defaultStatisticsLogger(stats)).toEqualTypeOf<void>();
-// @ts-expect-error - The logger only accepts the statistics result
-fc.defaultStatisticsLogger(stats, console.log);
+expectTypeOf(
+  fc.defaultStatisticsLogger(stats, (line) => {
+    expectTypeOf(line).toEqualTypeOf<string>();
+  }),
+).toEqualTypeOf<void>();
 // @ts-expect-error - Run counts must be passed through an options object
 fc.statistics(fc.nat(), String, 10);
 // @ts-expect-error - Logging is handled separately from collecting statistics
 fc.statistics(fc.nat(), String, { logger: console.log });
 // @ts-expect-error - Global runner parameters no longer include a logger
 fc.configureGlobal({ logger: console.log });
+const propertyStatisticsParameters: fc.StatisticsParameters<[number], 'property'> = {
+  noPredicateExecution: true,
+};
 fc.statistics(
   fc.property(fc.nat(), () => true),
   ([value]) => {
     expectTypeOf(value).toEqualTypeOf<number>();
     return String(value);
   },
-  { noPredicateExecution: true },
+  propertyStatisticsParameters,
 );
 // @ts-expect-error - Arbitraries have no predicate to disable
 fc.statistics(fc.nat(), String, { noPredicateExecution: true });

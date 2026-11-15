@@ -3,6 +3,7 @@ import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { SampleParameters } from './configuration/SampleParameters.js';
+import type { StatisticsParameters } from './configuration/StatisticsParameters.js';
 import { assert } from './assert.js';
 import { runCollector } from '../plugin/RunCollectorPlugin.js';
 import type { Plugin } from '../plugin/Plugin.js';
@@ -92,7 +93,7 @@ export interface StatisticsResult {
  *
  * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
- * @param params - {@link SampleParameters} to customize collection
+ * @param params - {@link StatisticsParameters} to customize statistics
  *
  * @remarks Since 0.0.6
  * @public
@@ -100,7 +101,7 @@ export interface StatisticsResult {
 function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: SampleParameters<Ts, 'arbitrary'>,
+  params?: StatisticsParameters<Ts, 'arbitrary'>,
 ): Promise<StatisticsResult>;
 /**
  * {@inheritDoc (statistics:1)}
@@ -109,12 +110,12 @@ function statistics<Ts>(
 function statistics<Ts>(
   generator: Property<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: SampleParameters<Ts, 'property'>,
+  params?: StatisticsParameters<Ts, 'property'>,
 ): Promise<StatisticsResult>;
 async function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params: SampleParameters<Ts, 'property'> = {},
+  params: StatisticsParameters<Ts, 'property'> = {},
 ): Promise<StatisticsResult> {
   const recorded = new Map<string, number>();
   let numValues = 0;
@@ -168,18 +169,19 @@ async function statistics<Ts>(
  * ```
  *
  * @param stats - Category counts and number of sampled values returned by {@link statistics}
+ * @param logger - Function receiving each line, `console.log` by default
  *
  * @remarks Since 5.0.0
  * @public
  */
-function defaultStatisticsLogger(stats: StatisticsResult): void {
+function defaultStatisticsLogger(stats: StatisticsResult, logger: (line: string) => void = console.log): void {
   const data = [...stats.counts]
     .sort((a, b) => b[1] - a[1])
     .map(([label, count]) => [label, `${round2((count * 100) / stats.numValues)}%`]);
   const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
-    console.log(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
+    logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
   }
 }
 

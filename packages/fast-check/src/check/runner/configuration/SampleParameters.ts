@@ -1,7 +1,7 @@
 import type { Parameters } from './Parameters.js';
 
 /**
- * Parameters for sampling and statistics
+ * Parameters for sampling
  * @remarks Since 5.0.0
  * @public
  */

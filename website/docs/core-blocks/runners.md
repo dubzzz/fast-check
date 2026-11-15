@@ -111,12 +111,12 @@ Its signature is:
 function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: SampleParameters<Ts, 'arbitrary'>,
+  params?: StatisticsParameters<Ts, 'arbitrary'>,
 ): Promise<StatisticsResult>;
 function statistics<Ts>(
   generator: Property<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: SampleParameters<Ts, 'property'>,
+  params?: StatisticsParameters<Ts, 'property'>,
 ): Promise<StatisticsResult>;
 
 interface StatisticsResult {
@@ -156,7 +156,7 @@ If the classifier throws, `statistics` reports a failed run, completes plugin cl
 
 With a shrink path, it classifies the same values as `sample`; `numRuns` does not cap shrink-path replay.
 
-To keep the previous log format, pass the result as the sole argument to `defaultStatisticsLogger(stats)`. It calculates percentages using `numValues`, sorts categories by descending percentage, rounds to two decimal places, and logs one line per category to `console.log`. For custom output, use `stats.counts` and `stats.numValues` directly.
+To keep the previous log format, pass the result to `defaultStatisticsLogger(stats)`. It calculates percentages using `numValues`, sorts categories by descending percentage, rounds to two decimal places, and logs one line per category to `console.log`. Pass a custom logging function as the second argument: `defaultStatisticsLogger(stats, logger)`. For custom formatting, use `stats.counts` and `stats.numValues` directly.
 
 When migrating, replace numeric run counts with `{ numRuns }` and remove `logger` from runner parameters and global configuration.
 

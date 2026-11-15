@@ -286,6 +286,15 @@ describe('Sampler', () => {
 
       expect(logger).toHaveBeenCalledExactlyOnceWith('all..100.00%');
     });
+    it('Should use a custom logger when provided', () => {
+      const logger = vi.fn();
+      const consoleLogger = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+      defaultStatisticsLogger({ counts: new Map([['all', 3]]), numValues: 3 }, logger);
+
+      expect(logger).toHaveBeenCalledExactlyOnceWith('all..100.00%');
+      expect(consoleLogger).not.toHaveBeenCalled();
+    });
     it.each([0, 100])('Should not log empty counts with %s sampled values', (numValues) => {
       const logger = vi.spyOn(console, 'log').mockImplementation(() => {});
 
