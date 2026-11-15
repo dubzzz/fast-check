@@ -64,9 +64,9 @@ function round2(n: number): string {
  * @public
  */
 export interface StatisticsResult {
-  /** Number of occurrences of each category, in order of first appearance. */
+  /** Number of occurrences of each category, in order of first appearance */
   counts: Map<string, number>;
-  /** Number of classified values, including values assigned to no categories. */
+  /** Number of classified values, including values assigned to no categories */
   numValues: number;
 }
 
