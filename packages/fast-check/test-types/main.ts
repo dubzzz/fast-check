@@ -22,7 +22,7 @@ expectTypeOf(
   fc.statistics(
     fc.property(fc.nat(), () => true),
     (...values) => {
-      expectTypeOf(values).toEqualTypeOf<[[number]]>();
+      expectTypeOf(values).toEqualTypeOf<[number]>();
       return [];
     },
   ),

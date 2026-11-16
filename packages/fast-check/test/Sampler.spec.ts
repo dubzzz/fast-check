@@ -122,7 +122,7 @@ describe(`Sampler (seed: ${seed})`, () => {
         return value !== 3;
       });
 
-      const stats = await fc.statistics(property, ([value]) => String(value), {
+      const stats = await fc.statistics(property, (value) => String(value), {
         numRuns: 1_000,
         examples: [[0], [1], [2], [3], [4]],
       });
@@ -141,7 +141,7 @@ describe(`Sampler (seed: ${seed})`, () => {
       const arbitrary = fc.integer();
       const predicate = vi.fn(async () => false);
 
-      const stats = await fc.statistics(fc.property(arbitrary, predicate), ([value]) => String(value), {
+      const stats = await fc.statistics(fc.property(arbitrary, predicate), (value) => String(value), {
         seed,
         noPredicateExecution: true,
       });
@@ -149,6 +149,27 @@ describe(`Sampler (seed: ${seed})`, () => {
 
       expect(stats).toEqual(expectedStats);
       expect(predicate).not.toHaveBeenCalled();
+    });
+
+    it('should pass multiple property values as separate classifier arguments', async () => {
+      const property = fc.property(fc.integer(), fc.string(), () => true);
+
+      const stats = await fc.statistics(property, (value, label) => `${value}:${label}`, {
+        numRuns: 3,
+        examples: [
+          [1, 'one'],
+          [2, 'two'],
+          [1, 'one'],
+        ],
+      });
+
+      expect(stats).toEqual({
+        counts: new Map([
+          ['1:one', 2],
+          ['2:two', 1],
+        ]),
+        numValues: 3,
+      });
     });
   });
 });

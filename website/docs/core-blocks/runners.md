@@ -110,14 +110,14 @@ Its signature is:
 ```ts
 function statistics<Ts>(
   arbitrary: Arbitrary<Ts>,
-  classify: (v: Ts) => string | string[],
-  params?: StatisticsParameters<Ts, 'arbitrary'>,
+  classify: NoInfer<(v: Ts) => string | string[]>,
+  params?: NoInfer<StatisticsParameters<[Ts], 'arbitrary'>>,
 ): Promise<StatisticsResult>;
 
-function statistics<Ts>(
+function statistics<Ts extends unknown[]>(
   property: Property<Ts>,
-  classify: (v: Ts) => string | string[],
-  params?: StatisticsParameters<Ts, 'property'>,
+  classify: NoInfer<(...values: Ts) => string | string[]>,
+  params?: NoInfer<StatisticsParameters<Ts, 'property'>>,
 ): Promise<StatisticsResult>;
 
 type StatisticsResult = {
@@ -140,6 +140,15 @@ const stats = await fc.statistics(
 //   "1 characters" -> 9410,
 //   "2 characters" -> 9560,
 //   ...
+```
+
+When given a property, `statistics` passes its generated values to the classifier as separate arguments, in the same order as the property's predicate:
+
+```js
+const stats = await fc.statistics(
+  fc.property(fc.nat(), fc.string(), () => true),
+  (count, text) => (count > text.length ? 'Count higher than length' : 'Count lower or equal to length'),
+);
 ```
 
 Resources: [API reference](/docs/api/functions/statistics).
