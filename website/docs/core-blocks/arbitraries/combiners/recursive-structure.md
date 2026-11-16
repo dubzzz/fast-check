@@ -117,29 +117,27 @@ fc.letrec((tie) => ({
 // • {"left":{__proto__:null,"left":749002681,"right":2069272340},"right":{__proto__:null,"left":16,"right":16}}
 // • …
 
-fc.logStatistics(
-  await fc.statistics(
-    fc.letrec((tie) => ({
-      node: fc.record({
-        value: fc.nat(),
-        left: fc.option(tie('node')),
-        right: fc.option(tie('node')),
-      }),
-    })).node,
-    (v) => {
-      function size(n) {
-        if (n === null) return 0;
-        else return 1 + size(n.left) + size(n.right);
-      }
-      const s = size(v);
-      let lower = 1;
-      const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-      while (next(lower) <= s) {
-        lower = next(lower);
-      }
-      return `${lower} to ${next(lower) - 1} items`;
-    },
-  ),
+fc.statistics(
+  fc.letrec((tie) => ({
+    node: fc.record({
+      value: fc.nat(),
+      left: fc.option(tie('node')),
+      right: fc.option(tie('node')),
+    }),
+  })).node,
+  (v) => {
+    function size(n) {
+      if (n === null) return 0;
+      else return 1 + size(n.left) + size(n.right);
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+    while (next(lower) <= s) {
+      lower = next(lower);
+    }
+    return `${lower} to ${next(lower) - 1} items`;
+  },
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
@@ -159,32 +157,30 @@ fc.logStatistics(
 // • 5 to 9 items.......0.14%
 // • …
 
-fc.logStatistics(
-  await fc.statistics(
-    fc.letrec((tie) => ({
-      node: fc.record({
-        value: fc.nat(),
-        children: fc.oneof(
-          { depthIdentifier: 'node' },
-          fc.constant([]),
-          fc.array(tie('node'), { depthIdentifier: 'node' }),
-        ),
-      }),
-    })).node,
-    (v) => {
-      function size(n) {
-        if (n === null) return 0;
-        else return 1 + n.children.reduce((acc, child) => acc + size(child), 0);
-      }
-      const s = size(v);
-      let lower = 1;
-      const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-      while (next(lower) <= s) {
-        lower = next(lower);
-      }
-      return `${lower} to ${next(lower) - 1} items`;
-    },
-  ),
+fc.statistics(
+  fc.letrec((tie) => ({
+    node: fc.record({
+      value: fc.nat(),
+      children: fc.oneof(
+        { depthIdentifier: 'node' },
+        fc.constant([]),
+        fc.array(tie('node'), { depthIdentifier: 'node' }),
+      ),
+    }),
+  })).node,
+  (v) => {
+    function size(n) {
+      if (n === null) return 0;
+      else return 1 + n.children.reduce((acc, child) => acc + size(child), 0);
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+    while (next(lower) <= s) {
+      lower = next(lower);
+    }
+    return `${lower} to ${next(lower) - 1} items`;
+  },
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
