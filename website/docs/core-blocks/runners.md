@@ -109,25 +109,22 @@ Its signature is:
 
 ```ts
 function statistics<Ts>(
-  generator: Property<Ts> | Arbitrary<Ts>,
+  arbitrary: Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: StatisticsParameters<Ts, 'arbitrary'>,
 ): Promise<StatisticsResult>;
+
 function statistics<Ts>(
-  generator: Property<Ts>,
+  property: Property<Ts>,
   classify: (v: Ts) => string | string[],
   params?: StatisticsParameters<Ts, 'property'>,
 ): Promise<StatisticsResult>;
 
-interface StatisticsResult {
+type StatisticsResult = {
   counts: Map<string, number>;
   numValues: number;
-}
+};
 ```
-
-:::tip
-Check [`StatisticsParameters`](/docs/api/type-aliases/StatisticsParameters) to customize collection.
-:::
 
 Example of usage:
 
