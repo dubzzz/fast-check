@@ -1,40 +1,10 @@
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
 import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
-import { readConfigureGlobal } from './configuration/GlobalParameters.js';
-import type { Parameters } from './configuration/Parameters.js';
 import type { SampleParameters } from './configuration/SampleParameters.js';
-import { read } from './configuration/QualifiedParameters.js';
-import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
-import { lazyToss, toss } from './Tosser.js';
-import { pathWalk } from './utils/PathWalker.js';
+import type { StatisticsParameters } from './configuration/StatisticsParameters.js';
 import { assert } from './assert.js';
 import { runCollector } from '../plugin/RunCollectorPlugin.js';
-
-function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>): Property<Ts> {
-  const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
-    ? new PropertyImplem(generator as Arbitrary<Ts>, () => true)
-    : (generator as Property<Ts>);
-  return prop;
-}
-
-function streamSample<Ts>(
-  generator: Property<Ts> | Arbitrary<Ts>,
-  params?: Parameters<Ts> | number,
-): IterableIterator<Ts> {
-  const extendedParams =
-    typeof params === 'number'
-      ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
-      : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
-  const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
-  const nextProperty = toProperty(generator);
-  const shrink = nextProperty.shrink.bind(nextProperty);
-  const tossedValues =
-    qParams.path.length === 0
-      ? toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
-      : pathWalk(qParams.path, lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples), shrink);
-  return tossedValues.take(qParams.numRuns).map((s) => s.value_);
-}
 
 /**
  * Generate an array containing all the values that would have been generated during {@link assert}
@@ -52,18 +22,36 @@ function streamSample<Ts>(
  * await fc.sample(fc.property(fc.nat(), predicate), {seed: 42}); // extract values that would have been produced by the property as if we were running fc.assert with seed=42
  * ```
  *
- * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
+ * @param arbitrary - {@link Arbitrary} to extract the values from
  * @param params - {@link SampleParameters} to customize sampling
  *
  * @remarks Since 0.0.6
  * @public
  */
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
+function sample<Ts>(arbitrary: Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
 /**
- * {@inheritDoc (sample:1)}
+ * Generate an array containing all the values that would have been generated during {@link assert}
+ *
+ * WARNING: Has to be awaited
+ *
+ * Passing a property runs its predicate. Skipped inputs are excluded and failures interrupt sampling without shrinking.
+ *
+ * With a shrink path, starts from the path; `numRuns` does not cap the returned values.
+ *
+ * @example
+ * ```typescript
+ * await fc.sample(fc.nat(), {numRuns: 10}); // extract 10 values from fc.nat() Arbitrary
+ * await fc.sample(fc.nat(), {seed: 42}); // extract values from fc.nat() as if we were running fc.assert with seed=42
+ * await fc.sample(fc.property(fc.nat(), predicate), {seed: 42}); // extract values that would have been produced by the property as if we were running fc.assert with seed=42
+ * ```
+ *
+ * @param property - {@link Property} to extract the values from
+ * @param params - {@link SampleParameters} to customize sampling
+ *
+ * @remarks Since 0.0.6
  * @public
  */
-function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
+function sample<Ts>(property: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
 async function sample<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   params: SampleParameters<Ts, 'property'> = {},
@@ -86,55 +74,141 @@ function round2(n: number): string {
 }
 
 /**
+ * Category counts collected by {@link statistics}.
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+export type StatisticsResult = {
+  /** Number of occurrences of each category, in order of first appearance */
+  counts: Map<string, number>;
+  /** Number of classified values, including values assigned to no categories */
+  numValues: number;
+};
+
+/**
  * Gather useful statistics concerning generated values
  *
- * Print the result in `console.log` or `params.logger` (if defined)
+ * WARNING: Has to be awaited
+ *
+ * WARNING: `classify` should never throw.
+ *
+ * Returns category counts and the total number of sampled values.
+ * Use {@link logStatistics} to print the result.
  *
  * @example
  * ```typescript
- * fc.statistics(
- *     fc.nat(999),
+ * const stats = await fc.statistics(
+ *     fc.nat({max: 999}),
  *     v => v < 100 ? 'Less than 100' : 'More or equal to 100',
- *     {numRuns: 1000, logger: console.log});
- * // Classify 1000 values generated by fc.nat(999) into two categories:
+ *     {numRuns: 1000});
+ * // Classify 1000 values generated by fc.nat({max: 999}) into two categories:
  * // - Less than 100
  * // - More or equal to 100
- * // The output will be sent line by line to the logger
+ * fc.logStatistics(stats); // print the statistics line by line
  * ```
  *
- * @param generator - {@link Property} or {@link Arbitrary} to extract the values from
+ * @param arbitrary - {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
- * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
+ * @param params - {@link StatisticsParameters} to customize statistics
  *
  * @remarks Since 0.0.6
  * @public
  */
 function statistics<Ts>(
+  arbitrary: Arbitrary<Ts>,
+  classify: (v: Ts) => string | string[],
+  params?: StatisticsParameters<Ts, 'arbitrary'>,
+): Promise<StatisticsResult>;
+/**
+ * Gather useful statistics concerning generated values
+ *
+ * WARNING: Has to be awaited
+ *
+ * WARNING: `classify` should never throw.
+ *
+ * Returns category counts and the total number of sampled values.
+ * Use {@link logStatistics} to print the result.
+ *
+ * @example
+ * ```typescript
+ * const stats = await fc.statistics(
+ *     fc.nat({max: 999}),
+ *     v => v < 100 ? 'Less than 100' : 'More or equal to 100',
+ *     {numRuns: 1000});
+ * // Classify 1000 values generated by fc.nat({max: 999}) into two categories:
+ * // - Less than 100
+ * // - More or equal to 100
+ * fc.logStatistics(stats); // print the statistics line by line
+ * ```
+ *
+ * @param property - {@link Property} to extract the values from
+ * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
+ * @param params - {@link StatisticsParameters} to customize statistics
+ *
+ * @remarks Since 0.0.6
+ * @public
+ */
+function statistics<Ts>(
+  property: Property<Ts>,
+  classify: (v: Ts) => string | string[],
+  params?: StatisticsParameters<Ts, 'property'>,
+): Promise<StatisticsResult>;
+async function statistics<Ts>(
   generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: Parameters<Ts> | number,
-): void {
-  const extendedParams =
-    typeof params === 'number'
-      ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
-      : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
-  const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
-  const recorded: { [key: string]: number } = {};
-  for (const g of streamSample(generator, params)) {
-    const out = classify(g);
-    const categories: string[] = Array.isArray(out) ? out : [out];
-    for (const c of categories) {
-      recorded[c] = (recorded[c] || 0) + 1;
+  params: StatisticsParameters<Ts, 'property'> = {},
+): Promise<StatisticsResult> {
+  const recorded = new Map<string, number>();
+  let numValues = 0;
+  const collector = runCollector<Ts>((value) => {
+    const out = classify(value);
+    const categories = Array.isArray(out) ? out : [out];
+    for (const category of categories) {
+      recorded.set(category, (recorded.get(category) ?? 0) + 1);
     }
-  }
-  const data = Object.entries(recorded)
+    ++numValues;
+  }, params.noPredicateExecution !== true);
+  const property: Property<Ts> =
+    'run' in generator && typeof generator.run === 'function'
+      ? generator
+      : new PropertyImplem(generator as Arbitrary<Ts>, () => true);
+  await assert(property, {
+    ...params,
+    plugins: [...(params.plugins ?? []), collector],
+  });
+  return { counts: recorded, numValues };
+}
+
+/**
+ * Print statistics using the default format.
+ * Percentages are calculated from category counts and the number of sampled values.
+ *
+ * @example
+ * ```typescript
+ * fc.logStatistics(
+ *   await fc.statistics(
+ *     fc.nat(),
+ *     v => v < 100 ? 'Small' : 'Large'
+ *   )
+ * );
+ * ```
+ *
+ * @param stats - Category counts and number of sampled values returned by {@link statistics}
+ * @param logger - Function receiving each line, `console.log` by default
+ *
+ * @remarks Since 5.0.0
+ * @public
+ */
+function logStatistics(stats: StatisticsResult, logger: (line: string) => void = console.log): void {
+  const data = [...stats.counts]
     .sort((a, b) => b[1] - a[1])
-    .map((i) => [i[0], `${round2((i[1] * 100.0) / qParams.numRuns)}%`]);
+    .map(([label, count]) => [label, `${round2((count * 100) / stats.numValues)}%`]);
   const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
   const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
-    qParams.logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
+    logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
   }
 }
 
-export { sample, statistics };
+export { sample, statistics, logStatistics };

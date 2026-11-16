@@ -109,20 +109,60 @@ Its signature is:
 
 ```ts
 function statistics<Ts>(
-  generator: Property<Ts> | Arbitrary<Ts>,
+  arbitrary: Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: number | Parameters<Ts>,
-): void;
+  params?: StatisticsParameters<Ts, 'arbitrary'>,
+): Promise<StatisticsResult>;
+
+function statistics<Ts>(
+  property: Property<Ts>,
+  classify: (v: Ts) => string | string[],
+  params?: StatisticsParameters<Ts, 'property'>,
+): Promise<StatisticsResult>;
+
+type StatisticsResult = {
+  counts: Map<string, number>;
+  numValues: number;
+};
 ```
 
 Example of usage:
 
 ```js
-fc.statistics(
+const stats = await fc.statistics(
   fc.string(), // source arbitrary
   (v) => `${v.length} characters`, // classifier
   { numRuns: 100_000 }, // extra parameters
 );
+// Possible output for stats.counts:
+// Map
+//   "0 characters" -> 9650,
+//   "1 characters" -> 9410,
+//   "2 characters" -> 9560,
+//   ...
+```
+
+Resources: [API reference](/docs/api/functions/statistics).
+
+Available since 0.0.6.
+
+## logStatistics
+
+Use `logStatistics` to format the result of `statistics` as percentages and log them.
+
+```ts
+function logStatistics(stats: StatisticsResult, logger?: (line: string) => void): void;
+```
+
+They can be combined as follows:
+
+```js
+const stats = await fc.statistics(
+  fc.string(), // source arbitrary
+  (v) => `${v.length} characters`, // classifier
+  { numRuns: 100_000 }, // extra parameters
+);
+fc.logStatistics(stats);
 // Possible output:
 // >  0 characters...9.65%
 // >  2 characters...9.56%
@@ -137,5 +177,8 @@ fc.statistics(
 // >  5 characters...8.68%
 ```
 
-Resources: [API reference](/docs/api/functions/statistics).  
-Available since 0.0.6.
+The logger function passed to `logStatistics` is optional. It defaults to `console.log`, which prints the formatted statistics to the console.
+
+Resources: [API reference](/docs/api/functions/logStatistics).
+
+Available since 5.0.0.

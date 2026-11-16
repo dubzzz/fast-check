@@ -114,4 +114,41 @@ describe(`Sampler (seed: ${seed})`, () => {
     expect(expected.length).toBeGreaterThan(1);
     expect(values).toEqual(expected);
   });
+
+  describe('statistics', () => {
+    it('should classify the property values collected by the runner', async () => {
+      const property = fc.property(fc.integer(), async (value) => {
+        fc.pre(value !== 1);
+        return value !== 3;
+      });
+
+      const stats = await fc.statistics(property, ([value]) => String(value), {
+        numRuns: 1_000,
+        examples: [[0], [1], [2], [3], [4]],
+      });
+
+      expect(stats).toEqual({
+        counts: new Map([
+          ['0', 1],
+          ['2', 1],
+          ['3', 1],
+        ]),
+        numValues: 3,
+      });
+    });
+
+    it('should classify the same values when given a property or its arbitrary without running the predicate', async () => {
+      const arbitrary = fc.integer();
+      const predicate = vi.fn(async () => false);
+
+      const stats = await fc.statistics(fc.property(arbitrary, predicate), ([value]) => String(value), {
+        seed,
+        noPredicateExecution: true,
+      });
+      const expectedStats = await fc.statistics(arbitrary, String, { seed });
+
+      expect(stats).toEqual(expectedStats);
+      expect(predicate).not.toHaveBeenCalled();
+    });
+  });
 });

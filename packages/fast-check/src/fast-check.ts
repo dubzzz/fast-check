@@ -5,6 +5,7 @@ export type { PropertyFailure } from './check/property/types/PropertyFailure.js'
 export type { Property } from './check/property/types/Property.js';
 export type { Parameters } from './check/runner/configuration/Parameters.js';
 export type { SampleParameters } from './check/runner/configuration/SampleParameters.js';
+export type { StatisticsParameters } from './check/runner/configuration/StatisticsParameters.js';
 export type {
   RunDetails,
   RunDetailsFailureProperty,
@@ -14,7 +15,8 @@ export type {
   RunDetailsCommon,
 } from './check/runner/reporter/RunDetails.js';
 export { assert } from './check/runner/assert.js';
-export { sample, statistics } from './check/runner/Sampler.js';
+export { sample, statistics, logStatistics } from './check/runner/Sampler.js';
+export type { StatisticsResult } from './check/runner/Sampler.js';
 
 export type { GeneratorValue } from './arbitrary/gen.js';
 export { gen } from './arbitrary/gen.js';
