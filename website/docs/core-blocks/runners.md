@@ -134,6 +134,34 @@ const stats = await fc.statistics(
   (v) => `${v.length} characters`, // classifier
   { numRuns: 100_000 }, // extra parameters
 );
+// Possible output for stats.counts:
+// Map
+//   "0 characters" -> 9650,
+//   "1 characters" -> 9410,
+//   "2 characters" -> 9560,
+//   ...
+```
+
+Resources: [API reference](/docs/api/functions/statistics).
+
+Available since 0.0.6.
+
+## logStatistics
+
+Use `logStatistics` to format the result of `statistics` as percentages and log them.
+
+```ts
+function logStatistics(stats: StatisticsResult, logger?: (line: string) => void): void;
+```
+
+They can be combined as follows:
+
+```js
+const stats = await fc.statistics(
+  fc.string(), // source arbitrary
+  (v) => `${v.length} characters`, // classifier
+  { numRuns: 100_000 }, // extra parameters
+);
 fc.logStatistics(stats);
 // Possible output:
 // >  0 characters...9.65%
@@ -149,34 +177,8 @@ fc.logStatistics(stats);
 // >  5 characters...8.68%
 ```
 
-`statistics` runs through the same runner as `sample` and `assert`, including plugins, and must be awaited. It returns `{ counts, numValues }` without logging: `counts` maps each category to its number of occurrences, and `numValues` is the number of values actually collected. Values can belong to zero or more categories, so the sum of the counts may differ from `numValues`. Repeated categories for the same value are counted each time.
+The logger function passed to `logStatistics` is optional. It defaults to `console.log`, which prints the formatted statistics to the console.
 
-When passed a property, `statistics` awaits its predicate before classifying the input. Skipped and interrupted inputs are excluded. Failing inputs are included, then collection stops without shrinking or reporting the predicate error. Pass `noPredicateExecution: true` to classify inputs without executing the property's predicate.
+Resources: [API reference](/docs/api/functions/logStatistics).
 
-:::warning
-The classifier must not throw.
-:::
-
-With a shrink path, it classifies the same values as `sample`; `numRuns` does not cap shrink-path replay.
-
-To keep the previous log format, pass the result to `logStatistics(stats)`. It calculates percentages using `numValues`, sorts categories by descending percentage, rounds to two decimal places, and logs one line per category to `console.log`.
-
-```ts
-function logStatistics(stats: StatisticsResult, logger?: (line: string) => void): void;
-```
-
-Pass a logging function to send the formatted lines elsewhere:
-
-```js
-const stats = await fc.statistics(fc.nat(), (value) => (value % 2 === 0 ? 'even' : 'odd'));
-const lines = [];
-fc.logStatistics(stats, (line) => lines.push(line));
-```
-
-For custom formatting, use `stats.counts` and `stats.numValues` directly.
-
-When migrating, replace numeric run counts with `{ numRuns }` and remove `logger` from runner parameters and global configuration.
-
-Resources: [API reference](/docs/api/functions/statistics), [result](/docs/api/interfaces/StatisticsResult), [default logger](/docs/api/functions/logStatistics).
-
-Available since 0.0.6.
+Available since 5.0.0.
