@@ -75,7 +75,6 @@ describe('Sampler', () => {
   });
   describe('statistics', () => {
     const customGen = (m = 7) => stubArb.forward().map((v) => ((v % m) + m) % m);
-    const rePercent = /(\d+\.\d+)%$/;
     it('Should always produce for non null number of runs', async () =>
       await fc.assert(
         fc.property(fc.integer(), fc.integer({ min: 1, max: MAX_NUM_RUNS }), async (seed, runs) => {
@@ -94,34 +93,40 @@ describe('Sampler', () => {
           expect(stats2).toEqual(stats1);
         }),
       ));
-    it('Should be able to handle multiple classifiers', async () =>
+    it('Should be able to handle multiple categories per value', async () =>
       await fc.assert(
         fc.property(fc.integer(), async (seed) => {
           const classify = (g: number) => (g % 2 === 0 ? [`a::${g}`, `b::${g}`, `c::${g}`] : [`a::${g}`, `b::${g}`]);
-          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
-          const extractedPercents = logs.map((l) => parseFloat(rePercent.exec(l)![1]));
-          const lowerBound = extractedPercents.reduce((p, c) => p + c - 0.01);
-          const upperBound = extractedPercents.reduce((p, c) => p + c + 0.01);
-          expect(lowerBound).toBeLessThanOrEqual(300); // we always have a and b
-          expect(upperBound).toBeGreaterThanOrEqual(200); // we can also have c
-          const associatedWithA = logs
-            .filter((l) => l.startsWith('a::'))
-            .map((l) => l.slice(1))
-            .sort();
-          const associatedWithB = logs
-            .filter((l) => l.startsWith('b::'))
-            .map((l) => l.slice(1))
-            .sort();
-          expect(associatedWithB).toEqual(associatedWithA); // same logs for a:: and b::
+          const stats = await statistics(customGen(), classify, { seed });
+          const totalCount = [...stats.counts.values()].reduce((sum, count) => sum + count, 0);
+          expect(totalCount).toBeGreaterThanOrEqual(2 * stats.numValues); // we always have a and b
+          expect(totalCount).toBeLessThanOrEqual(3 * stats.numValues); // we can also have c
+          const associatedWithA = new Map(
+            [...stats.counts]
+              .filter(([label]) => label.startsWith('a::'))
+              .map(([label, count]) => [label.slice(3), count]),
+          );
+          const associatedWithB = new Map(
+            [...stats.counts]
+              .filter(([label]) => label.startsWith('b::'))
+              .map(([label, count]) => [label.slice(3), count]),
+          );
+          const associatedWithC = new Map(
+            [...stats.counts]
+              .filter(([label]) => label.startsWith('c::'))
+              .map(([label, count]) => [label.slice(3), count]),
+          );
+          expect(associatedWithB).toEqual(associatedWithA);
+          expect(associatedWithC).toEqual(new Map([...associatedWithA].filter(([label]) => Number(label) % 2 === 0)));
         }),
       ));
-    it('Should not produce more logs than the number of classified values', async () =>
+    it('Should not produce more map entries than the number of possible categories', async () =>
       await fc.assert(
         fc.property(fc.integer(), fc.integer({ min: 1, max: 100 }), async (seed, mod) => {
           const classify = (g: number) => g.toString();
-          const logs = captureStatisticsLogs(await statistics(customGen(mod), classify, { seed }));
-          expect(logs.length).toBeGreaterThanOrEqual(1); // at least one log
-          expect(logs.length).toBeLessThanOrEqual(mod); // aggregate classified values together
+          const stats = await statistics(customGen(mod), classify, { seed });
+          expect(stats.counts.size).toBeGreaterThanOrEqual(1);
+          expect(stats.counts.size).toBeLessThanOrEqual(mod); // aggregate classified values together
         }),
       ));
     it('Should not call arbitrary more times than the number of values required', async () =>
