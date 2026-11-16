@@ -116,6 +116,40 @@ describe(`Sampler (seed: ${seed})`, () => {
   });
 
   describe('statistics', () => {
+    it('should pass multiple arbitrary values as separate classifier arguments', async () => {
+      const stats = await fc.statistics(fc.integer(), fc.string(), (value, label) => `${value}:${label}`, {
+        numRuns: 3,
+        examples: [
+          [1, 'one'],
+          [2, 'two'],
+          [1, 'one'],
+        ],
+      });
+
+      expect(stats).toEqual({
+        counts: new Map([
+          ['1:one', 2],
+          ['2:two', 1],
+        ]),
+        numValues: 3,
+      });
+    });
+
+    it('should classify the same generated values when given multiple arbitraries or a property', async () => {
+      const arbitraries = [fc.integer(), fc.string(), fc.boolean()] as const;
+      const classify = (value: number, label: string, flag: boolean) => `${value}:${label}:${flag}`;
+
+      const stats = await fc.statistics(...arbitraries, classify, { seed, numRuns: 42 });
+      const expectedStats = await fc.statistics(
+        fc.property(...arbitraries, () => true),
+        classify,
+        { seed, numRuns: 42 },
+      );
+
+      expect(stats).toEqual(expectedStats);
+      expect(stats.numValues).toBe(expectedStats.numValues);
+    });
+
     it('should classify the property values collected by the runner', async () => {
       const property = fc.property(fc.integer(), async (value) => {
         fc.pre(value !== 1);

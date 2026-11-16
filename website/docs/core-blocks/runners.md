@@ -108,10 +108,19 @@ When building a new arbitrary, knowing what would be the generated values is a t
 Its signature is:
 
 ```ts
-function statistics<Ts>(
-  arbitrary: Arbitrary<Ts>,
-  classify: NoInfer<(v: Ts) => string | string[]>,
-  params?: NoInfer<StatisticsParameters<[Ts], 'arbitrary'>>,
+function statistics<Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    classify: NoInfer<(...values: Ts) => string | string[]>,
+    params: NoInfer<StatisticsParameters<Ts, 'arbitrary'>> | undefined,
+  ]
+): Promise<StatisticsResult>;
+
+function statistics<Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    classify: NoInfer<(...values: Ts) => string | string[]>,
+  ]
 ): Promise<StatisticsResult>;
 
 function statistics<Ts extends unknown[]>(
@@ -126,13 +135,13 @@ type StatisticsResult = {
 };
 ```
 
-Example of usage:
+With one arbitrary:
 
 ```js
 const stats = await fc.statistics(
   fc.string(), // source arbitrary
   (v) => `${v.length} characters`, // classifier
-  { numRuns: 100_000 }, // extra parameters
+  { numRuns: 100_000 }, // extra parameters (optional)
 );
 // Possible output for stats.counts:
 // Map
@@ -142,12 +151,24 @@ const stats = await fc.statistics(
 //   ...
 ```
 
-When given a property, `statistics` passes its generated values to the classifier as separate arguments, in the same order as the property's predicate:
+With multiple arbitraries, the classifier receives their values as separate arguments, in order:
+
+```js
+const stats = await fc.statistics(
+  fc.nat(),
+  fc.string(),
+  (count, text) => (count > text.length ? 'Count higher than length' : 'Count lower or equal to length'),
+  { numRuns: 100_000 }, // extra parameters (optional)
+);
+```
+
+With a property, the classifier receives the generated values in predicate order:
 
 ```js
 const stats = await fc.statistics(
   fc.property(fc.nat(), fc.string(), () => true),
   (count, text) => (count > text.length ? 'Count higher than length' : 'Count lower or equal to length'),
+  { numRuns: 100_000 }, // extra parameters (optional)
 );
 ```
 
