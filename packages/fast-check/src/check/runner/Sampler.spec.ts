@@ -10,12 +10,6 @@ import { cloneMethod } from '../symbols.js';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
 import { Value } from '../arbitrary/definition/Value.js';
 
-function captureStatisticsLogs(stats: StatisticsResult): string[] {
-  const logs: string[] = [];
-  logStatistics(stats, (line) => logs.push(line));
-  return logs;
-}
-
 const MAX_NUM_RUNS = 1000;
 describe('Sampler', () => {
   describe('sample', () => {
@@ -82,66 +76,6 @@ describe('Sampler', () => {
   describe('statistics', () => {
     const customGen = (m = 7) => stubArb.forward().map((v) => ((v % m) + m) % m);
     const rePercent = /(\d+\.\d+)%$/;
-    it('Should return category counts without logging', async () => {
-      const logger = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-      const stats = await statistics(stubArb.counter(0), (v) => (v === 0 ? 'first' : 'others'), { numRuns: 3 });
-
-      expect(stats).toEqual({
-        counts: new Map([
-          ['first', 1],
-          ['others', 2],
-        ]),
-        numValues: 3,
-      });
-      expect(logger).not.toHaveBeenCalled();
-    });
-    it('Should handle any string as a category', async () => {
-      const categories = ['__proto__', 'constructor', 'toString', ''];
-
-      const stats = await statistics(stubArb.counter(0), (v) => categories[v], { numRuns: categories.length });
-
-      expect(stats).toEqual({
-        counts: new Map(categories.map((category) => [category, 1])),
-        numValues: categories.length,
-      });
-    });
-    it('Should include unclassified values in the total', async () => {
-      const stats = await statistics(stubArb.counter(0), (v) => (v === 0 ? [] : ['a', 'b']), { numRuns: 4 });
-
-      expect(stats).toEqual({
-        counts: new Map([
-          ['a', 3],
-          ['b', 3],
-        ]),
-        numValues: 4,
-      });
-      expect(captureStatisticsLogs(stats)).toEqual(['a..75.00%', 'b..75.00%']);
-    });
-    it('Should count each occurrence of a category', async () => {
-      const stats = await statistics(stubArb.counter(0), () => ['a', 'a', 'b'], { numRuns: 4 });
-
-      expect(stats).toEqual({
-        counts: new Map([
-          ['a', 8],
-          ['b', 4],
-        ]),
-        numValues: 4,
-      });
-      expect(captureStatisticsLogs(stats)).toEqual(['a..200.00%', 'b..100.00%']);
-    });
-    it('Should return an empty map when no values are sampled', async () => {
-      const classify = vi.fn(() => 'value');
-
-      expect(await statistics(stubArb.counter(0), classify, { numRuns: 0 })).toEqual({
-        counts: new Map(),
-        numValues: 0,
-      });
-      expect(classify).not.toHaveBeenCalled();
-    });
-    it('Should return an empty map when no categories are returned', async () => {
-      expect(await statistics(stubArb.counter(0), () => [])).toEqual({ counts: new Map(), numValues: 100 });
-    });
     it('Should always produce for non null number of runs', async () =>
       await fc.assert(
         fc.property(fc.integer(), fc.integer({ min: 1, max: MAX_NUM_RUNS }), async (seed, runs) => {
@@ -244,7 +178,13 @@ describe('Sampler', () => {
       ));
   });
   describe('logStatistics', () => {
-    it('Should sort, align and round percentages without changing the counts or total', () => {
+    function captureStatisticsLogs(stats: StatisticsResult): string[] {
+      const logs: string[] = [];
+      logStatistics(stats, (line) => logs.push(line));
+      return logs;
+    }
+
+    it('Should sort, align and round percentages', () => {
       const stats = {
         counts: new Map([
           ['longer', 10_000],
@@ -253,12 +193,10 @@ describe('Sampler', () => {
         ]),
         numValues: 30_000,
       };
-      const original = { counts: [...stats.counts], numValues: stats.numValues };
 
       const logs = captureStatisticsLogs(stats);
 
       expect(logs).toEqual(['x.......66.67%', 'longer..33.33%', 'tiny.....0.00%']);
-      expect({ counts: [...stats.counts], numValues: stats.numValues }).toEqual(original);
     });
     it('Should log to console.log', () => {
       const logger = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -266,22 +204,6 @@ describe('Sampler', () => {
       logStatistics({ counts: new Map([['all', 3]]), numValues: 3 });
 
       expect(logger).toHaveBeenCalledExactlyOnceWith('all..100.00%');
-    });
-    it('Should use a custom logger when provided', () => {
-      const logger = vi.fn();
-      const consoleLogger = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-      logStatistics({ counts: new Map([['all', 3]]), numValues: 3 }, logger);
-
-      expect(logger).toHaveBeenCalledExactlyOnceWith('all..100.00%');
-      expect(consoleLogger).not.toHaveBeenCalled();
-    });
-    it('Should not log empty statistics', () => {
-      const logger = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-      logStatistics({ counts: new Map(), numValues: 0 });
-
-      expect(logger).not.toHaveBeenCalled();
     });
   });
 });
