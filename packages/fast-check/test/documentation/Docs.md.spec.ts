@@ -127,8 +127,6 @@ function addJsCodeBlock(blockContent: string): string {
   return `${JsBlockStart}\n${blockContent}${JsBlockEnd}\n`;
 }
 
-// @ts-expect-error - Used by eval
-// oxlint-disable-next-line no-unused-vars
 function withPulledFirstItems(value: unknown): unknown {
   if (typeof value === 'object' && value !== null && typeof (value as Iterator<unknown>).next === 'function') {
     const iterator = value as Iterator<unknown>;
@@ -208,11 +206,15 @@ async function refreshContent(originalContent: string): Promise<{ content: strin
             .trim()
             .replace(/;$/, '')
             .replace(/;\n\/\/.*$/m, '\n//');
-          const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).then(values => values.map(v => fc.stringify(withPulledFirstItems(v))))`;
+          const buildArbitrarySnippet = `${preparationPart};${santitizeArbitraryPart}`;
           try {
-            return await eval(evalCode);
+            // oxlint-disable-next-line no-eval
+            const arbitrary = eval(buildArbitrarySnippet);
+            return fc
+              .sample(arbitrary, { numRuns, seed })
+              .then((values) => values.map((v) => fc.stringify(withPulledFirstItems(v))));
           } catch (err) {
-            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
+            throw new Error(`Failed to run code snippet:\n\n${buildArbitrarySnippet}\n\nWith error message: ${err}`, {
               cause: err,
             });
           }
@@ -262,14 +264,24 @@ async function refreshContent(originalContent: string): Promise<{ content: strin
                 : snippet;
             const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
             const evalCode = refinedSnippet;
+            const lastClosing = evalCode.lastIndexOf(');');
+            const sanitizedCode =
+              '[\n' +
+              evalCode.substring(0, lastClosing).replace('fc.statistics(', '') +
+              evalCode.substring(lastClosing + 2) +
+              '\n]';
             const originalGlobal = fc.readConfigureGlobal();
             try {
               const lines: string[] = [];
-              fc.configureGlobal({ seed, numRuns: 10000, baseSize });
-              fc.logStatistics(await eval(evalCode), (line) => lines.push(line));
+              fc.configureGlobal({ baseSize });
+              // @ts-expect-error - expected given TS cannot introspect the code passed to `eval`
+              // oxlint-disable-next-line no-eval
+              fc.logStatistics(await fc.statistics(...eval(sanitizedCode), { seed, numRuns: 10000 }), (line) =>
+                lines.push(line),
+              );
               return lines;
             } catch (err) {
-              throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
+              throw new Error(`Failed to run code snippet:\n\n${sanitizedCode}\n\nWith error message: ${err}`, {
                 cause: err,
               });
             } finally {

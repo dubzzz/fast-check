@@ -141,19 +141,19 @@ fc.statistics(
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
-// • 5 to 9 items....45.11%
-// • 10 to 49 items..37.59%
-// • 1 to 4 items....17.30%
+// • 5 to 9 items....42.99%
+// • 10 to 49 items..39.82%
+// • 1 to 4 items....17.19%
 // For size = "small":
-// • 10 to 49 items..85.90%
-// • 5 to 9 items.....5.30%
-// • 50 to 99 items...4.49%
-// • 1 to 4 items.....4.31%
+// • 10 to 49 items..85.95%
+// • 5 to 9 items.....5.35%
+// • 1 to 4 items.....4.35%
+// • 50 to 99 items...4.35%
 // For size = "medium":
-// • 100 to 499 items..83.32%
-// • 50 to 99 items.....9.94%
-// • 1 to 4 items.......3.77%
-// • 10 to 49 items.....2.80%
+// • 100 to 499 items..83.03%
+// • 50 to 99 items....10.05%
+// • 1 to 4 items.......3.78%
+// • 10 to 49 items.....2.93%
 // • 5 to 9 items.......0.14%
 // • …
 
@@ -186,15 +186,15 @@ fc.statistics(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....64.79%
-// • 5 to 9 items....22.32%
-// • 10 to 49 items..12.89%
+// • 1 to 4 items....64.22%
+// • 5 to 9 items....22.84%
+// • 10 to 49 items..12.94%
 // For size = "medium":
-// • 1 to 4 items......51.98%
-// • 50 to 99 items....24.82%
-// • 10 to 49 items....19.09%
-// • 100 to 499 items...3.97%
-// • 5 to 9 items.......0.13%
+// • 1 to 4 items......51.31%
+// • 50 to 99 items....25.22%
+// • 10 to 49 items....19.50%
+// • 100 to 499 items...3.75%
+// • 5 to 9 items.......0.21%
 // • …
 ```
 
@@ -425,11 +425,11 @@ fc.entityGraph(
 // - Each user has their own profile (strategy: 'exclusive' prevents sharing)
 // - Every profile is linked to exactly one user (maxLength: 0 for profile in initialPoolConstraints) — remove this to allow orphaned profiles
 // Examples of generated values:
-// • {"user":[{"name":"Lsoql","profile":<profile#0>},{"name":"V","profile":<profile#1>},{"name":"Yntoconstr","profile":<profile#2>},{"name":"Azgavaax","profile":<profile#3>},{"name":"Jvk","profile":<profile#4>},{"name":"Fnec","profile":<profile#5>},{"name":"Opzc","profile":<profile#6>}],"profile":[{"id":"ffffffe1-d4f6-89db-bfff-fffb00000016","pictureUrl":"http://08ki8-j.y.key//5/N/A/i//R"},{"id":"00000011-fff2-8fff-8000-001750b7e558","pictureUrl":"http://7.ezk"},{"id":"63e4ca81-000f-1000-b8c3-e9ee80f7a453","pictureUrl":"http://l.y-4zejhuon.cw"},{"id":"fffffff7-669f-1112-a2a6-4cbf81b77cd0","pictureUrl":"https://4shj.ref/C//A//u/)//F//5"},{"id":"0000001a-0fbf-348b-82b4-3b58fffffff2","pictureUrl":"http://xgu.aa/+//5/W/$////W/"},{"id":"fffffff5-fff2-8fff-8000-001b4c0a7268","pictureUrl":"https://49s.mi"},{"id":"a4c04bbe-fff1-8fff-8700-3da0a06d50f2","pictureUrl":"https://aei5rt9a3cu.ey//u/%F2%AF%90%B7/H//"}]}
-// • {"user":[{"name":"Biaglifu","profile":<profile#0>},{"name":"Ldbviaxvaky","profile":<profile#1>},{"name":"Etruct","profile":<profile#2>},{"name":"Zuwtc","profile":<profile#3>},{"name":"Ymdmfi","profile":<profile#4>},{"name":"Druemgxyh","profile":<profile#5>},{"name":"V","profile":<profile#6>},{"name":"D","profile":<profile#7>},{"name":"Wfbozyvfae","profile":<profile#8>}],"profile":[{"id":"f61717d2-1280-8172-b688-aa8d45310b25","pictureUrl":"https://qz1xx5q.za//k/;/g/P"},{"id":"b07d7887-5fd7-5b4c-9ac9-13be92f20c79","pictureUrl":"https://76cfmd9o-ay.ba46d.cd//"},{"id":"00000017-0009-1000-8000-000300000012","pictureUrl":"http://kercvlih7yz1.vx/"},{"id":"0000001e-9f2b-7ae8-9ad1-3c6400000009","pictureUrl":"http://zpw4.an/d/0//B/g/r/p/*/"},{"id":"00000008-25e4-4b4f-8a73-5c169a62d465","pictureUrl":"http://6nameb.nvt/M//"},{"id":"fffffff3-001d-1000-82a0-ea2700000013","pictureUrl":"http://4fs.lu/S"},{"id":"1a8ca8bf-e780-6471-a0f8-523aac3c868e","pictureUrl":"http://h.vo/9B:"},{"id":"00000008-5d58-4f39-8000-000effffffff","pictureUrl":"https://0calld.khtjd8twn.cla/"},{"id":"66b33c8a-001c-1000-bfff-ffeec3dcf4e3","pictureUrl":"https://s3wd.19.ky"}]}
-// • {"user":[{"name":"Kpr","profile":<profile#0>},{"name":"Yh","profile":<profile#1>},{"name":"Eortnaylp","profile":<profile#2>},{"name":"A","profile":<profile#3>},{"name":"Thypdgpjgst","profile":<profile#4>},{"name":"Eaiyre","profile":<profile#5>}],"profile":[{"id":"1f1df5af-4f97-823b-85cb-be3dffffffed","pictureUrl":"http://mvauyjp11.ag//*/9/J//w/"},{"id":"0000000a-0017-1000-97b3-eedea40117a3","pictureUrl":"https://mfj.wiw"},{"id":"00000003-fff8-8fff-8000-0016170efcc7","pictureUrl":"https://hm9pc1.jmr//*/"},{"id":"559f6db7-f23f-5db2-bfff-ffe2ffffffe8","pictureUrl":"https://aale4d86e.7.qc"},{"id":"94b18704-000a-1000-8508-81010000001c","pictureUrl":"http://k.lxtn3ystb.mq/Z/t//K/o/v/y//p"},{"id":"e1787553-001d-1000-bfff-fffcfffffff8","pictureUrl":"https://d.fa///o/l"}]}
-// • {"user":[{"name":"Wwwljikwkm","profile":<profile#0>},{"name":"Rgruovyzom","profile":<profile#1>}],"profile":[{"id":"c89c3b4a-7e10-55e2-8000-001b997fcc45","pictureUrl":"http://53.70.la//7"},{"id":"00000004-0019-1000-8000-000271fb94e6","pictureUrl":"https://5.jvw"}]}
-// • {"user":[{"name":"Ac","profile":<profile#0>}],"profile":[{"id":"21c8a9ec-fff4-8fff-bfff-fffd00000012","pictureUrl":"http://da37m0ov.na"}]}
+// • {"user":[{"name":"Ds","profile":<profile#0>}],"profile":[{"id":"00000010-8be4-3075-bfff-fffdffffffe7","pictureUrl":"http://o5.key"}]}
+// • {"user":[{"name":"B","profile":<profile#0>}],"profile":[{"id":"ffffffe4-0017-1000-9179-6dbf0000000f","pictureUrl":"https://dq.eds.apk/"}]}
+// • {"user":[{"name":"Y","profile":<profile#0>}],"profile":[{"id":"00000003-3b21-5d94-b9c8-8b720000000f","pictureUrl":"https://tmc.rpa"}]}
+// • {"user":[{"name":"D","profile":<profile#0>}],"profile":[{"id":"00000004-000b-1000-bfff-fff6fffffff7","pictureUrl":"https://66.hob"}]}
+// • {"user":[{"name":"Ac","profile":<profile#0>}],"profile":[{"id":"21c8a9ec-fff4-8fff-bfff-fffd00000012","pictureUrl":"http://di.des"}]}
 // • …
 
 fc.entityGraph(
