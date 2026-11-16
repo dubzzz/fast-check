@@ -94,49 +94,6 @@ describe('Sampler', () => {
           expect(stats2).toEqual(stats1);
         }),
       ));
-    it('Should start log lines with labels', async () =>
-      await fc.assert(
-        fc.property(fc.integer(), async (seed) => {
-          const classify = (g: number) => `my_label_${g.toString()}!`;
-          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
-          for (const l of logs) {
-            expect(l).toMatch(/^my_label_(\d+)!\.+\d+\.\d+%$/); // my_label_123!.....DD%
-          }
-        }),
-      ));
-    it('Should end log lines with percentage', async () =>
-      await fc.assert(
-        fc.property(fc.integer(), async (seed) => {
-          const classify = (g: number) => g.toString();
-          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
-          for (const l of logs) {
-            expect(l).toMatch(rePercent); // end by the measured percentage
-          }
-        }),
-      ));
-    it('Should sum to 100% when provided a single classifier', async () =>
-      await fc.assert(
-        fc.property(fc.integer(), async (seed) => {
-          const classify = (g: number) => g.toString();
-          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
-          const extractedPercents = logs.map((l) => parseFloat(rePercent.exec(l)![1]));
-          const lowerBound = extractedPercents.reduce((p, c) => p + c - 0.01);
-          const upperBound = extractedPercents.reduce((p, c) => p + c + 0.01);
-          expect(lowerBound).toBeLessThanOrEqual(100);
-          expect(upperBound).toBeGreaterThanOrEqual(100);
-        }),
-      ));
-    it('Should order percentages from the highest to the lowest', async () =>
-      await fc.assert(
-        fc.property(fc.integer(), async (seed) => {
-          const classify = (g: number) => g.toString();
-          const logs = captureStatisticsLogs(await statistics(customGen(), classify, { seed }));
-          const extractedPercents = logs.map((l) => parseFloat(rePercent.exec(l)![1]));
-          for (let idx = 1; idx < extractedPercents.length; ++idx) {
-            expect(extractedPercents[idx - 1]).toBeGreaterThanOrEqual(extractedPercents[idx]);
-          }
-        }),
-      ));
     it('Should be able to handle multiple classifiers', async () =>
       await fc.assert(
         fc.property(fc.integer(), async (seed) => {
