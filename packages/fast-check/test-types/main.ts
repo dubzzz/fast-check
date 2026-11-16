@@ -12,52 +12,28 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
 // statistics
-const statisticsParameters: fc.StatisticsParameters<number, 'arbitrary'> = { numRuns: 10 };
 expectTypeOf(
-  fc.statistics(
-    fc.nat(),
-    (value) => {
-      expectTypeOf(value).toEqualTypeOf<number>();
-      return String(value);
-    },
-    statisticsParameters,
-  ),
+  fc.statistics(fc.nat(), (...values) => {
+    expectTypeOf(values).toEqualTypeOf<[number]>();
+    return [];
+  }),
 ).toEqualTypeOf<Promise<fc.StatisticsResult>>();
 expectTypeOf(
   fc.statistics(
-    fc.property(fc.nat(), fc.string(), () => true),
-    (values) => {
-      expectTypeOf(values).toEqualTypeOf<[number, string]>();
+    fc.property(fc.nat(), () => true),
+    (...values) => {
+      expectTypeOf(values).toEqualTypeOf<[[number]]>();
       return [];
     },
   ),
 ).toEqualTypeOf<Promise<fc.StatisticsResult>>();
-const stats: fc.StatisticsResult = { counts: new Map<string, number>(), numValues: 0 };
-expectTypeOf(stats.counts).toEqualTypeOf<Map<string, number>>();
-expectTypeOf(stats.numValues).toEqualTypeOf<number>();
-expectTypeOf(fc.logStatistics(stats)).toEqualTypeOf<void>();
 expectTypeOf(
-  fc.logStatistics(stats, (line) => {
-    expectTypeOf(line).toEqualTypeOf<string>();
-  }),
-).toEqualTypeOf<void>();
-// @ts-expect-error - Run counts must be passed through an options object
-fc.statistics(fc.nat(), String, 10);
-// @ts-expect-error - Logging is handled separately from collecting statistics
-fc.statistics(fc.nat(), String, { logger: console.log });
-// @ts-expect-error - Global runner parameters no longer include a logger
-fc.configureGlobal({ logger: console.log });
-const propertyStatisticsParameters: fc.StatisticsParameters<[number], 'property'> = {
-  noPredicateExecution: true,
-};
-fc.statistics(
-  fc.property(fc.nat(), () => true),
-  ([value]) => {
-    expectTypeOf(value).toEqualTypeOf<number>();
-    return String(value);
-  },
-  propertyStatisticsParameters,
-);
+  fc.statistics(
+    fc.property(fc.nat(), () => true),
+    String,
+    { noPredicateExecution: true },
+  ),
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
 // @ts-expect-error - Arbitraries have no predicate to disable
 fc.statistics(fc.nat(), String, { noPredicateExecution: true });
 
