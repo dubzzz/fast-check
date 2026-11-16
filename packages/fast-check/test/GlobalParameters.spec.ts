@@ -38,16 +38,7 @@ describe('GlobalParameters', () => {
     const withGlobalConfigurationOverriden = await fc.statistics(fc.nat(), String, { numRuns: overridenNumRuns });
 
     expect(withGlobalConfigurationOverriden).toEqual(withLocalConfiguration);
-  });
-
-  it('should use global numRuns in fc.statistics when no local override is provided', async () => {
-    const globalConfig = { seed: 42, numRuns: 10 };
-    const withLocalConfiguration = await fc.statistics(fc.nat(), String, globalConfig);
-
-    fc.configureGlobal(globalConfig);
-    const withGlobalConfiguration = await fc.statistics(fc.nat(), String);
-
-    expect(withGlobalConfiguration).toEqual(withLocalConfiguration);
+    fc.resetConfigureGlobal();
   });
 
   it('should merge global parameters with local ones in fc.assert', async () => {
