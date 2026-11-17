@@ -20,20 +20,20 @@ export const RegexesOfInterest: {
   { regex: /🐱/, invalidInUnicodeMode: true }, // handled separately
   // @ts-expect-error Referencing non-existing group in Regex
   { regex: /\125/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches 'U'
-  { regex: new RegExp("\\x1+"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\u123+"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\x{2}"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\u{2}") }, // matches 'uu' without /u, U+0002 with /u
+  { regex: new RegExp('\\x1+'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u123+'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\x{2}'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u{2}') }, // matches 'uu' without /u, U+0002 with /u
   { regex: /\x25/ },
-  { regex: new RegExp("\\x"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\xZ"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\x1"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\x1Z"), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\x'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\xZ'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\x1'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\x1Z'), invalidInUnicodeMode: true },
   { regex: /\u0025/ },
-  { regex: new RegExp("\\u"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\uZ"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\u123"), invalidInUnicodeMode: true },
-  { regex: new RegExp("\\u123Z"), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\uZ'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u123'), invalidInUnicodeMode: true },
+  { regex: new RegExp('\\u123Z'), invalidInUnicodeMode: true },
   { regex: /\uD83D\uDC31/ },
   { regex: /\uD83D\uDC31+/ },
   { regex: /\uD83D\uDC31{2}/ },
@@ -55,8 +55,8 @@ export const RegexesOfInterest: {
   { regex: /[.*[\\\](){}?]/ },
   // @ts-expect-error Missing unicode mode on Regex
   { regex: /[\u{1f431}]/ },
-  { regex: new RegExp("[\\xZ]"), invalidInUnicodeMode: true },
-  { regex: new RegExp("[\\uZ]"), invalidInUnicodeMode: true },
+  { regex: new RegExp('[\\xZ]'), invalidInUnicodeMode: true },
+  { regex: new RegExp('[\\uZ]'), invalidInUnicodeMode: true },
   { regex: /[a-z]/ },
   { regex: /[A-Za-z0-9-]/ },
   { regex: /[A-Za-z0-9-/]/ },
@@ -144,10 +144,10 @@ export const RegexesOfInterest: {
   // NUL
   { regex: /\0/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp("\0") }, // not the same as /\0/
+  { regex: new RegExp('\0') }, // not the same as /\0/
   { regex: /[\0-\0]/ },
   // oxlint-disable-next-line no-control-regex
-  { regex: new RegExp("[\0-\0]") }, // not the same as /[\0-\0]/
+  { regex: new RegExp('[\0-\0]') }, // not the same as /[\0-\0]/
   { regex: /^\0$/ },
   { regex: /^(a)\0$/ },
 ];
