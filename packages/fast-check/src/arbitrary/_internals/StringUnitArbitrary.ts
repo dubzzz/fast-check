@@ -1,6 +1,7 @@
 import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
-import { safeNormalize, safePush } from '../../utils/globals.js';
+import { safeNormalize, safePush, safeReduce } from '../../utils/globals.js';
 import { mapToConstant } from '../mapToConstant.js';
+import { nat } from '../nat.js';
 import type { GraphemeRange } from './data/GraphemeRanges.js';
 import {
   asciiAlphabetRanges,
@@ -10,6 +11,8 @@ import {
 } from './data/GraphemeRanges.js';
 import type { GraphemeRangeEntry } from './helpers/GraphemeRangesHelpers.js';
 import { convertGraphemeRangeToMapToConstantEntry, intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers.js';
+import { indexToCodePointRangesUnmapperFor } from './mappers/IndexToCodePointRanges.js';
+import { indexToMappedConstantMapperFor } from './mappers/IndexToMappedConstant.js';
 
 /** @internal */
 type StringUnitType = 'grapheme' | 'composite' | 'binary';
@@ -57,7 +60,13 @@ function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUni
       });
     }
   }
-  const stringUnitInstance = mapToConstant(...entries);
+  const stringUnitInstance =
+    type === 'grapheme'
+      ? mapToConstant(...entries)
+      : nat({ max: safeReduce(entries, (acc, entry) => acc + entry.num, 0) - 1 }).map(
+          indexToMappedConstantMapperFor(entries),
+          indexToCodePointRangesUnmapperFor(ranges),
+        );
   registeredStringUnitInstancesMap[key] = stringUnitInstance;
   return stringUnitInstance;
 }

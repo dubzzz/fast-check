@@ -59,6 +59,7 @@ const untouchedForEach = Array.prototype.forEach;
 const untouchedIndexOf = Array.prototype.indexOf;
 const untouchedJoin = Array.prototype.join;
 const untouchedMap = Array.prototype.map;
+const untouchedReduce = Array.prototype.reduce;
 const untouchedFlat = Array.prototype.flat;
 const untouchedFilter = Array.prototype.filter;
 const untouchedPush = Array.prototype.push;
@@ -91,6 +92,13 @@ function extractJoin(instance: unknown[]) {
 function extractMap(instance: unknown[]) {
   try {
     return instance.map;
+  } catch {
+    return undefined;
+  }
+}
+function extractReduce(instance: unknown[]) {
+  try {
+    return instance.reduce;
   } catch {
     return undefined;
   }
@@ -177,6 +185,16 @@ export function safeMap<T, U>(instance: T[], fn: (value: T, index: number, array
     return instance.map(fn);
   }
   return safeApply(untouchedMap, instance, [fn]);
+}
+export function safeReduce<T, U>(
+  instance: T[],
+  fn: (accumulator: U, value: T, index: number, array: T[]) => U,
+  initialValue: U,
+): U {
+  if (extractReduce(instance) === untouchedReduce) {
+    return instance.reduce(fn, initialValue);
+  }
+  return safeApply(untouchedReduce<U>, instance, [fn, initialValue]);
 }
 export function safeFlat<T, D extends number = 1>(instance: T[], depth?: D): FlatArray<T[], D>[] {
   if (extractFlat(instance) === untouchedFlat) {
