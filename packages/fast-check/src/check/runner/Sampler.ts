@@ -131,17 +131,48 @@ async function statisticsFromProperty<Ts extends unknown[]>(
  * fc.logStatistics(stats); // print the statistics line by line
  * ```
  *
- * @param arbitrary - {@link Arbitrary} to extract the values from
- * @param classify - Classifier function that can classify the generated values in zero, one or more categories (with free labels)
- * @param params - {@link StatisticsParameters} to customize statistics
+ * @param args - One or more arbitraries, a classifier receiving their generated values in order,
+ * and {@link StatisticsParameters} to customize statistics
  *
  * @remarks Since 0.0.6
  * @public
  */
-function statistics<Ts>(
-  arbitrary: Arbitrary<Ts>,
-  classify: NoInfer<(v: Ts) => string | string[]>,
-  params?: NoInfer<StatisticsParameters<[Ts], 'arbitrary'>>,
+function statistics<Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    classify: NoInfer<(...values: Ts) => string | string[]>,
+    params: NoInfer<StatisticsParameters<Ts, 'arbitrary'>> | undefined,
+  ]
+): Promise<StatisticsResult>;
+/**
+ * Gather useful statistics concerning generated values
+ *
+ * WARNING: Has to be awaited
+ *
+ * WARNING: `classify` should never throw.
+ *
+ * Returns category counts and the total number of sampled values.
+ * Use {@link logStatistics} to print the result.
+ *
+ * @example
+ * ```typescript
+ * const stats = await fc.statistics(
+ *   fc.nat(), fc.string(),
+ *   (count, text) => count > text.length ? 'Count higher than length' : 'Count lower or equal to length'
+ * );
+ * fc.logStatistics(stats);
+ * ```
+ *
+ * @param args - One or more arbitraries followed by a classifier receiving their generated values in order
+ *
+ * @remarks Since 0.0.6
+ * @public
+ */
+function statistics<Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    classify: NoInfer<(...values: Ts) => string | string[]>,
+  ]
 ): Promise<StatisticsResult>;
 /**
  * Gather useful statistics concerning generated values
@@ -178,25 +209,23 @@ function statistics<Ts extends unknown[]>(
   classify: NoInfer<(...values: Ts) => string | string[]>,
   params?: NoInfer<StatisticsParameters<Ts, 'property'>>,
 ): Promise<StatisticsResult>;
-function statistics<T, Ts extends unknown[]>(
-  ...args:
-    | [
-        generator: Arbitrary<T>,
-        classify: (value: T) => string | string[],
-        params?: StatisticsParameters<[T], 'arbitrary'>,
-      ]
-    | [
-        generator: Property<Ts>,
-        classify: (...values: Ts) => string | string[],
-        params?: StatisticsParameters<Ts, 'property'>,
-      ]
-): Promise<StatisticsResult> {
-  if ('run' in args[0] && typeof args[0].run === 'function') {
-    return statisticsFromProperty(...(args as Extract<typeof args, { 0: Property<Ts> }>));
+function statistics<Ts extends [unknown, ...unknown[]]>(...args: unknown[]): Promise<StatisticsResult> {
+  const generator = args[0] as Arbitrary<Ts[0]> | Property<Ts>;
+  if ('run' in generator && typeof generator.run === 'function') {
+    const [property, classify, params] = args as [
+      property: Property<Ts>,
+      classify: (...values: Ts) => string | string[],
+      params?: StatisticsParameters<Ts, 'property'>,
+    ];
+    return statisticsFromProperty(property, classify, params);
   }
-  const [generator, classify, params] = args as Extract<typeof args, { 0: Arbitrary<T> }>;
+  const hasParams = typeof args[args.length - 1] !== 'function';
+  const classifyIndex = args.length - (hasParams ? 2 : 1);
+  const arbitraries = args.slice(0, classifyIndex) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
+  const classify = args[classifyIndex] as (...values: Ts) => string | string[];
+  const params = (hasParams ? args[args.length - 1] : undefined) as StatisticsParameters<Ts, 'arbitrary'> | undefined;
   return statisticsFromProperty(
-    fcProperty(generator, () => true),
+    fcProperty(...arbitraries, () => true),
     classify,
     params,
   );

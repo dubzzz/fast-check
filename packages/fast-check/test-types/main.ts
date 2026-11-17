@@ -28,6 +28,21 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<Promise<fc.StatisticsResult>>();
 expectTypeOf(
+  fc.statistics(fc.nat(), fc.string(), (...values) => {
+    expectTypeOf(values).toEqualTypeOf<[number, string]>();
+    return [];
+  }),
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
+expectTypeOf(
+  fc.statistics(
+    fc.property(fc.nat(), fc.string(), () => true),
+    (...values) => {
+      expectTypeOf(values).toEqualTypeOf<[number, string]>();
+      return [];
+    },
+  ),
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
+expectTypeOf(
   fc.statistics(
     fc.property(fc.nat(), () => true),
     String,
