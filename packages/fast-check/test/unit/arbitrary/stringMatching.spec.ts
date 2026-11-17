@@ -6,7 +6,7 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions.js';
-import { RegexesOfInterest } from './_internals/helpers/__test-helpers__/RegexesOfInterest.js';
+import { RegexesOfInterest } from '../../../src/arbitrary/_internals/helpers/__test-helpers__/RegexesOfInterest.js';
 
 describe('stringMatching (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc.oneof(hardcodedRegex(), regexBasedOnChunks());

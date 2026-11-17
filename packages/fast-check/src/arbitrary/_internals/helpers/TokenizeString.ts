@@ -65,7 +65,7 @@ export function tokenizeString(
         // Pushed to go deeper in the tree
         // If it's still acceptable in length
         if (newChunks.length < maxLength) {
-          const visitedLengths = safeMapGet(visited, index) ?? new Set<number>();
+          const visitedLengths = safeMapGet(visited, index) || new Set<number>();
           if (!safeHas(visitedLengths, newChunks.length)) {
             safeAdd(visitedLengths, newChunks.length);
             safeMapSet(visited, index, visitedLengths);

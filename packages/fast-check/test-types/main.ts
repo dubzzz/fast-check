@@ -483,21 +483,17 @@ expectTypeOf(
     { plugins: [stringArgPlugin()] },
   ),
 ).toEqualTypeOf<Promise<void>>();
-// can use a properly typed plugin on a mismatching assert having extra parameters
+// cannot use a single-argument plugin on a property with two arguments
+const twoStringsProperty = fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {});
 expectTypeOf(
   // @ts-expect-error - string,string is not string
-  fc.assert(
-    fc.asyncProperty(fc.string(), fc.string(), async (_s1, _s2) => {}),
-    { plugins: [stringArgPlugin()] },
-  ),
+  fc.assert(twoStringsProperty, { plugins: [stringArgPlugin()] }),
 ).toEqualTypeOf<Promise<void>>();
 // cannot use a wrongly typed plugin on a mismatching assert
+const numberProperty = fc.asyncProperty(fc.nat(), async (_n) => {});
 expectTypeOf(
   // @ts-expect-error - string and number are incompatible
-  fc.assert(
-    fc.asyncProperty(fc.nat(), async (_n) => {}),
-    { plugins: [stringArgPlugin()] },
-  ),
+  fc.assert(numberProperty, { plugins: [stringArgPlugin()] }),
 ).toEqualTypeOf<Promise<void>>();
 
 // entityGraph

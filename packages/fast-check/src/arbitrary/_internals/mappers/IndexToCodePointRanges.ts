@@ -1,3 +1,4 @@
+import { safeCodePointAt } from '../../../utils/globals.js';
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
 
 type CodePointRange = { from: number; first: number; last: number };
@@ -35,8 +36,8 @@ export function indexToCodePointRangesUnmapperFor(ranges: GraphemeRange[]): (val
   const codePointRanges = buildCodePointRanges(ranges);
   return function indexToCodePointRangesUnmapper(value: unknown): number {
     if (typeof value === 'string') {
-      const codePoint = value.codePointAt(0);
-      if (codePoint !== undefined && String.fromCodePoint(codePoint) === value) {
+      const codePoint = safeCodePointAt(value, 0);
+      if (codePoint !== undefined && value.length === (codePoint > 0xffff ? 2 : 1)) {
         const range = findCodePointRange(codePointRanges, codePoint);
         if (range.first <= codePoint && codePoint <= range.last) {
           return range.from + codePoint - range.first;
