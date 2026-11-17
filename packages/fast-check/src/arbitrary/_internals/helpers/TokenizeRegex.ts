@@ -135,12 +135,13 @@ export type RegexToken =
  * Create a simple char token
  */
 function simpleChar(char: string, escaped?: true): CharRegexToken {
+  const code = char.codePointAt(0);
   return {
     type: 'Char',
     kind: 'simple',
     symbol: char,
     value: char,
-    codePoint: char.codePointAt(0) ?? -1,
+    codePoint: code !== undefined ? code : -1,
     escaped,
   };
 }
@@ -200,7 +201,14 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
           const trail = Number.parseInt(block.substring(8), 16);
           const codePoint = (lead - 0xd800) * 0x400 + (trail - 0xdc00) + 0x10000;
           const symbol = String.fromCodePoint(codePoint);
-          return { type: 'Char', kind: 'unicode', symbol, value: block, codePoint, isSurrogatePair: true };
+          return {
+            type: 'Char',
+            kind: 'unicode',
+            symbol,
+            value: block,
+            codePoint,
+            isSurrogatePair: true,
+          };
         }
         const allDigits = block[2] === '{' ? block.substring(3, block.length - 1) : block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
@@ -234,7 +242,13 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
       case 'S':
       case 'b':
       case 'B': {
-        return { type: 'Char', kind: 'meta', symbol: undefined, value: block, codePoint: Number.NaN };
+        return {
+          type: 'Char',
+          kind: 'meta',
+          symbol: undefined,
+          value: block,
+          codePoint: Number.NaN,
+        };
       }
       default: {
         if (isDigit(next)) {
@@ -281,7 +295,13 @@ function pushTokens(
         break;
       }
       case '.': {
-        tokens.push({ type: 'Char', kind: 'meta', symbol: block, value: block, codePoint: Number.NaN });
+        tokens.push({
+          type: 'Char',
+          kind: 'meta',
+          symbol: block,
+          value: block,
+          codePoint: Number.NaN,
+        });
         break;
       }
       case '*':
