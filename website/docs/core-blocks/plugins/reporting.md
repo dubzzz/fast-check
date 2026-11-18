@@ -30,6 +30,19 @@ await fc.assert(
 );
 ```
 
+Pass `includeActualAndExpected: true` to also expose the original error's `actual` and `expected` properties on the reported error. This lets test runners display assertion diffs even when they only inspect the top-level error:
+
+```ts
+await fc.assert(
+  fc.property(fc.nat(), (n) => {
+    expect(n + 1).toBeGreaterThan(n);
+  }),
+  { noDefaultPlugins: true, plugins: [fc.defaultReporter({ includeActualAndExpected: true })] },
+);
+```
+
+Both properties must be present on the original error to be copied, even if their values are `undefined`. The original error and its properties are left unchanged, and it remains available as `cause` unless `includeErrorInReport: true` is also set. The `includeActualAndExpected` option defaults to `false`.
+
 :::note
 This plugin is part of fast-check's default plugins. As such, `fc.assert` and other built-in runners enable it by default.
 :::
