@@ -9,7 +9,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly biasedLengthArb: Arbitrary<number>;
   constructor(
-    readonly originalArray: T[],
+    readonly originalArray: readonly T[],
     readonly isOrdered: boolean,
     readonly minLength: number,
     readonly maxLength: number,

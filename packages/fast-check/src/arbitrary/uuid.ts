@@ -17,10 +17,10 @@ export interface UuidConstraints {
    */
   version?:
     | (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15)
-    | (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15)[];
+    | readonly (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15)[];
 }
 
-function assertValidVersions(versions: number[]) {
+function assertValidVersions(versions: readonly number[]) {
   const found: { [key: number]: true | undefined } = {};
   for (const version of versions) {
     // Check no duplicates

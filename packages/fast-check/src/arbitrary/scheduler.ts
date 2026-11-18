@@ -83,17 +83,17 @@ function schedulerFor<TMetaData = unknown>(
  * @public
  */
 function schedulerFor<TMetaData = unknown>(
-  customOrdering: number[],
+  customOrdering: readonly number[],
   constraints?: SchedulerConstraints,
 ): Scheduler<TMetaData>;
 function schedulerFor<TMetaData = unknown>(
-  customOrderingOrConstraints: number[] | SchedulerConstraints | undefined,
+  customOrderingOrConstraints: readonly number[] | SchedulerConstraints | undefined,
   constraintsOrUndefined?: SchedulerConstraints,
 ): Scheduler<TMetaData> | ((_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>) {
   // Extract passed constraints
   const { act = (f: () => Promise<void>) => f() } = Array.isArray(customOrderingOrConstraints)
     ? constraintsOrUndefined || {}
-    : customOrderingOrConstraints || {};
+    : (customOrderingOrConstraints as SchedulerConstraints | undefined) || {};
 
   if (Array.isArray(customOrderingOrConstraints)) {
     return buildSchedulerFor(act, customOrderingOrConstraints);

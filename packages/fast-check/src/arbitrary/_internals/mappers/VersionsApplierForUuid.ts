@@ -1,6 +1,6 @@
 const quickNumberToHexaString = '0123456789abcdef';
 
-export function buildVersionsAppliersForUuid(versions: number[]): {
+export function buildVersionsAppliersForUuid(versions: readonly number[]): {
   versionsApplierMapper: (value: string) => string;
   versionsApplierUnmapper: (value: unknown) => string;
 } {

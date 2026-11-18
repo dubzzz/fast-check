@@ -147,7 +147,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   }
 
   scheduleSequence(
-    sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
+    sequenceBuilders: readonly SchedulerSequenceItem<TMetaData>[],
     customAct?: SchedulerAct,
   ): {
     readonly done: boolean;
