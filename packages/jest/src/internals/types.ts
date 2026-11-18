@@ -1,9 +1,14 @@
+import type * as fc from 'fast-check';
 import type { it as itJest } from '@jest/globals';
 import type { Arbitrary, property, assert, readConfigureGlobal, interruptAfterTimeLimit } from 'fast-check';
 
+export type AsyncPropertyBuilder = typeof fc extends { asyncProperty: infer Builder } ? Builder : typeof property;
+
 export type FcExtra = {
-  asyncProperty?: typeof property;
-  property: typeof property;
+  asyncProperty?: AsyncPropertyBuilder;
+  // Worker factories are asynchronous; the two types only coincide starting with v5.
+  // oxlint-disable-next-line typescript/no-duplicate-type-constituents
+  property: typeof property | AsyncPropertyBuilder;
   assert: typeof assert;
   readConfigureGlobal: typeof readConfigureGlobal;
   interruptAfterTimeLimit: typeof interruptAfterTimeLimit;

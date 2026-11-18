@@ -1,11 +1,12 @@
 import type { TestAPI, TestFunction, TestOptions } from 'vitest';
 import type { Arbitrary, GeneratorValue, Parameters } from 'fast-check';
-import type { ExtraContext } from './types.js';
+import type { AsyncPropertyBuilder, ExtraContext } from './types.js';
 
 import { TestRunner } from 'vitest';
 import * as fc from 'fast-check';
 
-const property = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
+const property: AsyncPropertyBuilder = ((fc as { asyncProperty?: AsyncPropertyBuilder }).asyncProperty ??
+  fc.property) as AsyncPropertyBuilder;
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
@@ -32,11 +33,11 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
             let calledOnce = false;
             const config = fc.readConfigureGlobal();
             try {
-              const parameters: Parameters<unknown> = {
+              const parameters: Parameters<unknown> & { includeErrorInReport: boolean; errorWithCause: boolean } = {
                 // Remark: We should turn it back to 1 in case g never gets called by the first execution of the predicate
                 numRuns: config.numRuns ?? 1,
                 endOnFailure: config.endOnFailure ?? true,
-                // @ts-expect-error - Added for backward compatibility with fast-check@4
+                // Added for backward compatibility with fast-check@4
                 includeErrorInReport: false,
                 // Added for backward compatibility with fast-check@3
                 errorWithCause: true,
@@ -50,7 +51,7 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
                     },
                     { values: () => g.values() },
                   );
-                  return fn({ ...context, g: refinedG });
+                  return Promise.resolve(fn({ ...context, g: refinedG }));
                 }),
                 parameters,
               );

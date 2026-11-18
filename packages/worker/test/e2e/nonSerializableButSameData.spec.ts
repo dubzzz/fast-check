@@ -1,8 +1,9 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters, RunDetails } from 'fast-check';
-import { assert as assertInMainThread, stringify, defaultReporter, timeout } from 'fast-check';
+import { assert as assertInMainThread, stringify, timeout } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
+import { reportingParameters } from './__test-helpers__/ReportingParameters.js';
 
 import {
   nonSerializableButSameDataProperty,
@@ -14,9 +15,10 @@ if (isMainThread) {
   describe('@fast-check/worker', () => {
     const testTimeout = 30000;
     const assertTimeout = 5000;
+    const reportingOptions = reportingParameters();
     const defaultOptions: Parameters<unknown> = {
-      noDefaultPlugins: true,
-      plugins: [timeout(assertTimeout), defaultReporter({ includeErrorInReport: true })],
+      ...reportingOptions,
+      plugins: [timeout(assertTimeout), ...(reportingOptions.plugins ?? [])],
     };
 
     it(
@@ -67,22 +69,25 @@ if (isMainThread) {
           const path = pathRegex.exec(message)![1];
           const workerValue = workerValueRegex.exec(message)![1];
           let runDetails!: RunDetails<unknown>;
-          await assertInMainThread(nonSerializableButSameDataRawProperty, {
+          const replayOptions = {
             ...defaultOptions,
             seed: +seed,
             path,
             numRuns: 1,
             endOnFailure: true,
+            // Disable reporting with either v4's reporter or v5's plugin option.
             noDefaultPlugins: true,
+            reporter: () => void 0,
             plugins: [
               timeout(assertTimeout),
               () => ({
-                onAllRunsComplete: (out) => {
+                onAllRunsComplete: (out: RunDetails<unknown>) => {
                   runDetails = out;
                 },
               }),
             ],
-          });
+          };
+          await assertInMainThread(nonSerializableButSameDataRawProperty, replayOptions);
           const sampledValue = (runDetails.counterexample as [symbol])[0];
           const extraDetails = { seed, path };
           expect({ ...extraDetails, value: stringify(sampledValue) }).toEqual({ ...extraDetails, value: workerValue });

@@ -5,14 +5,23 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
-    ".": "./lib/main.js"
+    ".": {
+      "require": {
+        "types": "./lib/main.d.cts",
+        "default": "./lib/main.js"
+      },
+      "import": {
+        "types": "./lib/main.d.ts",
+        "default": "./lib/main.js"
+      }
+    }
   },
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "rolldown -c",
-    "build-ci": "rolldown -c",
+    "build": "rolldown -c && cp lib/main.d.ts lib/main.d.cts",
+    "build-ci": "rolldown -c && cp lib/main.d.ts lib/main.d.cts",
     "test-bundle:cjs": "node test-bundle/main.cjs",
     "test-bundle:mjs": "node test-bundle/main.mjs",
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",

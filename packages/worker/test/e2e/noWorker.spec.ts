@@ -4,6 +4,7 @@ import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
+import { asyncProperty } from '../../src/internals/AsyncProperty.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -19,7 +20,7 @@ if (isMainThread) {
       'should be able to run any basic successful $type',
       async ({ sync }) => {
         // Arrange
-        const property = sync ? fc.property(fc.nat(), () => true) : fc.property(fc.nat(), async () => true);
+        const property = sync ? fc.property(fc.nat(), () => true) : asyncProperty(fc.nat(), async () => true);
 
         // Act / Assert
         await expect(assert(property, defaultOptions)).resolves.not.toThrow();
@@ -35,7 +36,7 @@ if (isMainThread) {
       'should be able to run any basic failing $type',
       async ({ sync }) => {
         // Arrange
-        const property = sync ? fc.property(fc.nat(), () => false) : fc.property(fc.nat(), async () => false);
+        const property = sync ? fc.property(fc.nat(), () => false) : asyncProperty(fc.nat(), async () => false);
         const expectedError = /Property failed by returning false/;
 
         // Act / Assert

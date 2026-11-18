@@ -3,7 +3,7 @@ import type { MainThreadToWorkerMessage, PropertyPredicate, WorkerToMainThreadMe
 import type { ValueState } from '../ValueFromState.js';
 import { WorkerToPoolMessageStatus, type Payload } from '../worker-pool/IWorkerPool.js';
 import { PreconditionFailure } from 'fast-check';
-import type { PredicateExecutionContext } from 'fast-check';
+import type { PredicateExecutionContext } from '../SharedTypes.js';
 
 /**
  * Setup a worker listening to parentPort and able to run a single time for a given predicate

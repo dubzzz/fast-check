@@ -32,7 +32,8 @@ describe('WorkerPropertyFromWorker', () => {
     const property = new WorkerPropertyFromWorker(arbitraries, predicate);
     const value = property.generate(mrng, 0);
     property.runBeforeEach();
-    property.run(value.value_, executionContext);
+    const run: (value: [unknown], context: typeof executionContext) => unknown = property.run.bind(property);
+    run(value.value_, executionContext);
     property.runAfterEach();
 
     // Assert
@@ -114,7 +115,7 @@ class TrackedArbitrary extends fc.Arbitrary<unknown> {
   canShrinkWithoutContext(_value: unknown): _value is unknown {
     throw new Error('Method not implemented.');
   }
-  shrink(_value: unknown, _context: unknown): IteratorObject<fc.Value<unknown>> {
+  shrink(_value: unknown, _context: unknown): ReturnType<fc.Arbitrary<unknown>['shrink']> {
     throw new Error('Method not implemented.');
   }
 }

@@ -1,12 +1,18 @@
-import type { PredicateExecutionContext, Property, Random, Value } from 'fast-check';
-import type { LegacyPropertyHookFunction, LegacyPropertyWithHooks, PropertyArbitraries } from '../SharedTypes.js';
+import type { Random, Value } from 'fast-check';
+import type {
+  PredicateExecutionContext,
+  Property,
+  LegacyPropertyHookFunction,
+  LegacyPropertyWithHooks,
+  PropertyArbitraries,
+} from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
 import * as fc from 'fast-check';
 import { generateValueFromState } from '../ValueFromState.js';
 
-const property = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
+import { asyncProperty } from '../AsyncProperty.js';
 
 const WorkerPropertyFromWorkerCache = new WeakMap<object, ValueState>();
 
@@ -58,10 +64,10 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
 
   constructor(
     arbitraries: PropertyArbitraries<Ts>,
-    predicate: NoInfer<(...args: [...Ts, PredicateExecutionContext]) => Promise<boolean | void>>,
+    predicate: NoInfer<(...args: [...Ts, PredicateExecutionContext?]) => Promise<boolean | void>>,
   ) {
     this.numArbitraries = arbitraries.length;
-    this.internalProperty = property<Ts>(...arbitraries, predicate) as LegacyPropertyWithHooks<Ts>;
+    this.internalProperty = asyncProperty<Ts>(...arbitraries, predicate);
   }
 
   // Required by fast-check v4 to await predicates and their lifecycle hooks.
@@ -80,13 +86,13 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return new fc.Value(inputs, undefined);
   }
 
-  shrink(_value: Value<Ts>): IteratorObject<Value<Ts>> {
+  shrink(value: Value<Ts>): ReturnType<Property<Ts>['shrink']> {
     // No shrink on worker-based generations
-    return Iterator.from([]);
+    return fc.constant(value.value_).shrink(value.value_, value.context);
   }
 
-  run(v: Ts, executionContext: PredicateExecutionContext): ReturnType<LegacyPropertyWithHooks<Ts>['run']> {
-    return this.internalProperty.run(v, executionContext);
+  run(...args: Parameters<Property<Ts>['run']>): ReturnType<Property<Ts>['run']> {
+    return this.internalProperty.run(...args);
   }
 
   beforeEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts> {

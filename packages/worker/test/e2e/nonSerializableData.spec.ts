@@ -1,8 +1,9 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters } from 'fast-check';
-import { defaultReporter, timeout } from 'fast-check';
+import { timeout } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
+import { reportingParameters } from './__test-helpers__/ReportingParameters.js';
 
 import {
   nonSerializableDataProperty,
@@ -14,9 +15,10 @@ if (isMainThread) {
   describe('@fast-check/worker', () => {
     const testTimeout = 30000;
     const assertTimeout = 5000;
+    const reportingOptions = reportingParameters();
     const defaultOptions: Parameters<unknown> = {
-      noDefaultPlugins: true,
-      plugins: [timeout(assertTimeout), defaultReporter({ includeErrorInReport: true })],
+      ...reportingOptions,
+      plugins: [timeout(assertTimeout), ...(reportingOptions.plugins ?? [])],
     };
 
     it(

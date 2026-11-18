@@ -1,3 +1,4 @@
+import type * as fc from 'fast-check';
 import type { TestAPI } from 'vitest';
 import type {
   Arbitrary,
@@ -9,8 +10,10 @@ import type {
   afterEach,
 } from 'fast-check';
 
+export type AsyncPropertyBuilder = typeof fc extends { asyncProperty: infer Builder } ? Builder : typeof property;
+
 export type FcExtra = {
-  asyncProperty?: typeof property;
+  asyncProperty?: AsyncPropertyBuilder;
   property: typeof property;
   assert: typeof assert;
   readConfigureGlobal: typeof readConfigureGlobal;

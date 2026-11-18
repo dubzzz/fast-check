@@ -6,7 +6,7 @@ import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
 import { PreconditionFailure } from 'fast-check';
-import type { PredicateExecutionContext, UniversalPlugin } from 'fast-check';
+import type { PredicateExecutionContext, UniversalPlugin } from './SharedTypes.js';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -80,31 +80,33 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   );
   const workerPlugin: UniversalPlugin = () => {
     return {
-      decorateRun: (nestedRun) => async (value, executionContext) => {
-        try {
-          // NOTE: Being capable of enriching the context of the runner with extra pieces
-          // would make us capable of forwarding the worker variable safely to the runner
-          const acquired = await lock.acquire();
-          releaseLock = acquired.release;
-          worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
-          return await nestedRun(value, executionContext);
-        } catch (error) {
-          return { error };
-        } finally {
-          if (removeAbortListener !== undefined) {
-            removeAbortListener();
-            removeAbortListener = undefined;
+      decorateRun:
+        (nestedRun) =>
+        async (value, ...context) => {
+          try {
+            // NOTE: Being capable of enriching the context of the runner with extra pieces
+            // would make us capable of forwarding the worker variable safely to the runner
+            const acquired = await lock.acquire();
+            releaseLock = acquired.release;
+            worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
+            return await nestedRun(value, ...context);
+          } catch (error) {
+            return { error };
+          } finally {
+            if (removeAbortListener !== undefined) {
+              removeAbortListener();
+              removeAbortListener = undefined;
+            }
+            if (worker !== undefined) {
+              worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
+              worker = undefined;
+            }
+            if (releaseLock !== undefined) {
+              releaseLock();
+              releaseLock = undefined;
+            }
           }
-          if (worker !== undefined) {
-            worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
-            worker = undefined;
-          }
-          if (releaseLock !== undefined) {
-            releaseLock();
-            releaseLock = undefined;
-          }
-        }
-      },
+        },
     };
   };
   const terminateAllWorkers = () => pool.terminateAllWorkers();

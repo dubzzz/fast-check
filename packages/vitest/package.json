@@ -5,14 +5,23 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
-    ".": "./lib/vitest-fast-check.js"
+    ".": {
+      "require": {
+        "types": "./lib/vitest-fast-check.d.cts",
+        "default": "./lib/vitest-fast-check.js"
+      },
+      "import": {
+        "types": "./lib/vitest-fast-check.d.ts",
+        "default": "./lib/vitest-fast-check.js"
+      }
+    }
   },
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "rolldown -c",
-    "build-ci": "rolldown -c",
+    "build": "rolldown -c && cp lib/vitest-fast-check.d.ts lib/vitest-fast-check.d.cts",
+    "build-ci": "rolldown -c && cp lib/vitest-fast-check.d.ts lib/vitest-fast-check.d.cts",
     "test-bundle": "node test-bundle/basic.mjs && vitest --config test-bundle/vitest.config.mjs",
     "typecheck": "tsc --noEmit"
   },

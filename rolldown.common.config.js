@@ -12,7 +12,7 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
       if (typeof exportValue === 'string') {
         return exportValue;
       }
-      isDual = true;
+      isDual ||= exportValue.require.default !== exportValue.import.default;
       return exportValue.import.default;
     })
     .filter((filePath) => filePath.endsWith('.js'))
