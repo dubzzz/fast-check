@@ -14,10 +14,6 @@ It opens an editable example on StackBlitz with Vitest UI, without installing an
 
 ## Install the package
 
-For version 5, use Node.js 22.12.0 or later, or another runtime supporting ES2025. TypeScript users need TypeScript 5.8 or later. The package is ESM-only; the examples below use `import * as fc from 'fast-check'`.
-
-If you are upgrading an existing project, start with the [v4-to-v5 migration guide](/docs/migration/from-4.x-to-5.x/).
-
 fast-check can be installed into any existing project by running the following command:
 
 ```bash npm2yarn
