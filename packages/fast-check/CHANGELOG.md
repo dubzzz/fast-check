@@ -1,3 +1,22 @@
+# 4.10.3
+
+_Regex and scheduler fixes, faster strings_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.10.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.10.2...v4.10.3)]
+
+## Fixes
+
+- ([PR#7514](https://github.com/dubzzz/fast-check/pull/7514)) CI: Preserve the setup-node runtime in tests and benchmarks
+- ([PR#7431](https://github.com/dubzzz/fast-check/pull/7431)) Bug: Make clones of a scheduler run tasks in the same order
+- ([PR#7397](https://github.com/dubzzz/fast-check/pull/7397)) Bug: Preserve NUL code points in regex character ranges
+- ([PR#7399](https://github.com/dubzzz/fast-check/pull/7399)) Bug: Parse NUL escapes as characters instead of backreferences
+- ([PR#7404](https://github.com/dubzzz/fast-check/pull/7404)) Bug: Support full Unicode code-point escapes in regexes
+- ([PR#7405](https://github.com/dubzzz/fast-check/pull/7405)) Bug: Handle escaped surrogate pairs in Unicode regexes
+- ([PR#7406](https://github.com/dubzzz/fast-check/pull/7406)) Bug: Support non-Unicode x and u identity escapes
+- ([PR#7398](https://github.com/dubzzz/fast-check/pull/7398)) Bug: Shrink Unicode regex ranges using full code points
+- ([PR#7376](https://github.com/dubzzz/fast-check/pull/7376)) Bug: Better type definition on built-in plugins
+- ([PR#7400](https://github.com/dubzzz/fast-check/pull/7400)) Performance: Avoid repeated string tokenization states
+- ([PR#7566](https://github.com/dubzzz/fast-check/pull/7566)) Performance: Improve initialization/memory performance of binary string
+
 # 4.10.2
 
 _Fix interrupt plugin (throwing)_
