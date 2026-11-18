@@ -22,7 +22,7 @@ import {
  * @public
  */
 function commands<Model extends object, Real, CheckAsync extends boolean>(
-  commandArbs: Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
+  commandArbs: readonly Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
   constraints?: CommandsContraints,
 ): Arbitrary<Iterable<AsyncCommand<Model, Real, CheckAsync>>>;
 /**
@@ -38,11 +38,11 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * @public
  */
 function commands<Model extends object, Real>(
-  commandArbs: Arbitrary<Command<Model, Real>>[],
+  commandArbs: readonly Arbitrary<Command<Model, Real>>[],
   constraints?: CommandsContraints,
 ): Arbitrary<Iterable<Command<Model, Real>>>;
 function commands<Model extends object, Real, RunResult, CheckAsync extends boolean>(
-  commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
+  commandArbs: readonly Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
   constraints: CommandsContraints = {},
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
   const { size, maxCommands = MaxLengthUpperBound, disableReplayLog = false, replayPath = null } = constraints;

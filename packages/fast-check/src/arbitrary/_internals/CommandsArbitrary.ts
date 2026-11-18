@@ -22,7 +22,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
   private replayPath: boolean[];
   private replayPathPosition: number;
   constructor(
-    commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
+    commandArbs: readonly Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
     maxGeneratedCommands: number,
     maxCommands: number,
     readonly sourceReplayPath: string | null,

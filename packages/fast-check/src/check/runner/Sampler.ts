@@ -89,14 +89,14 @@ export type StatisticsResult = {
 
 async function statisticsFromProperty<Ts extends unknown[]>(
   property: Property<Ts>,
-  classify: (...values: Ts) => string | string[],
+  classify: (...values: Ts) => string | readonly string[],
   params: StatisticsParameters<Ts, 'property'> = {},
 ): Promise<StatisticsResult> {
   const recorded = new Map<string, number>();
   let numValues = 0;
   const collector = runCollector<Ts>((values) => {
     const out = classify(...values);
-    const categories = Array.isArray(out) ? out : [out];
+    const categories = typeof out === 'string' ? [out] : out;
     for (const category of categories) {
       recorded.set(category, (recorded.get(category) ?? 0) + 1);
     }
@@ -140,7 +140,7 @@ async function statisticsFromProperty<Ts extends unknown[]>(
 function statistics<Ts extends [unknown, ...unknown[]]>(
   ...args: [
     ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
-    classify: NoInfer<(...values: Ts) => string | string[]>,
+    classify: NoInfer<(...values: Ts) => string | readonly string[]>,
     params: NoInfer<StatisticsParameters<Ts, 'arbitrary'>> | undefined,
   ]
 ): Promise<StatisticsResult>;
@@ -171,7 +171,7 @@ function statistics<Ts extends [unknown, ...unknown[]]>(
 function statistics<Ts extends [unknown, ...unknown[]]>(
   ...args: [
     ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
-    classify: NoInfer<(...values: Ts) => string | string[]>,
+    classify: NoInfer<(...values: Ts) => string | readonly string[]>,
   ]
 ): Promise<StatisticsResult>;
 /**
@@ -206,7 +206,7 @@ function statistics<Ts extends [unknown, ...unknown[]]>(
  */
 function statistics<Ts extends unknown[]>(
   property: Property<Ts>,
-  classify: NoInfer<(...values: Ts) => string | string[]>,
+  classify: NoInfer<(...values: Ts) => string | readonly string[]>,
   params?: NoInfer<StatisticsParameters<Ts, 'property'>>,
 ): Promise<StatisticsResult>;
 function statistics<Ts extends [unknown, ...unknown[]]>(...args: unknown[]): Promise<StatisticsResult> {
@@ -214,7 +214,7 @@ function statistics<Ts extends [unknown, ...unknown[]]>(...args: unknown[]): Pro
   if ('run' in generator && typeof generator.run === 'function') {
     const [property, classify, params] = args as [
       property: Property<Ts>,
-      classify: (...values: Ts) => string | string[],
+      classify: (...values: Ts) => string | readonly string[],
       params?: StatisticsParameters<Ts, 'property'>,
     ];
     return statisticsFromProperty(property, classify, params);
@@ -222,7 +222,7 @@ function statistics<Ts extends [unknown, ...unknown[]]>(...args: unknown[]): Pro
   const hasParams = typeof args[args.length - 1] !== 'function';
   const classifyIndex = args.length - (hasParams ? 2 : 1);
   const arbitraries = args.slice(0, classifyIndex) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
-  const classify = args[classifyIndex] as (...values: Ts) => string | string[];
+  const classify = args[classifyIndex] as (...values: Ts) => string | readonly string[];
   const params = (hasParams ? args[args.length - 1] : undefined) as StatisticsParameters<Ts, 'arbitrary'> | undefined;
   return statisticsFromProperty(
     fcProperty(...arbitraries, () => true),

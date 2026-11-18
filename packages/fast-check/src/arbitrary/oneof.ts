@@ -38,7 +38,7 @@ export type MaybeWeightedArbitrary<T> = Arbitrary<T> | WeightedArbitrary<T>;
  * @remarks Since 2.2.0
  * @public
  */
-export type OneOfValue<Ts extends MaybeWeightedArbitrary<unknown>[]> = {
+export type OneOfValue<Ts extends readonly MaybeWeightedArbitrary<unknown>[]> = {
   [K in keyof Ts]: Ts[K] extends MaybeWeightedArbitrary<infer U> ? U : never;
 }[number];
 

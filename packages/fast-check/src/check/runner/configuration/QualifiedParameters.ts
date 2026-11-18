@@ -23,11 +23,11 @@ export class QualifiedParameters<T> {
   maxSkipsPerRun: number;
   path: string;
   verbose: VerbosityLevel;
-  examples: T[];
+  examples: readonly T[];
   endOnFailure: boolean;
   noDefaultPlugins: boolean;
   noGlobalPlugins: boolean;
-  plugins: Plugin<T>[];
+  plugins: readonly Plugin<T>[];
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
