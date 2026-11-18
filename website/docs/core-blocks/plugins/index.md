@@ -16,7 +16,7 @@ Plugins are designed to support things such as:
 
 ## Using plugins
 
-Plugins can be passed as part of the customizations accepted by the `fc.assert` runner.
+Plugins can be passed as part of the customizations accepted by `fc.assert`, `fc.sample` and `fc.statistics`.
 
 ```ts
 await fc.assert(fc.property(...arbs, predicate), {
@@ -93,9 +93,9 @@ The plugin setup above makes use of two instances of the `timeout` plugin. The f
 
 This short example clearly highlights why the declaration order of plugins is crucial. Two different orders may result in totally different expectations. Correctly ordering them will make you capable of finely configuring your flows to fit your needs.
 
-## The plugins
+## Built-in plugins and authoring
 
-We come up with a set of plugins to extend the library using built-in plugins. The following pages provide extended details and deep dive into each of them.
+The following pages describe the built-in plugins and explain how to [write your own plugin](/docs/core-blocks/plugins/writing-plugins/).
 
 ```mdx-code-block
 import DocCardList from '@theme/DocCardList';

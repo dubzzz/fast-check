@@ -160,20 +160,22 @@ fc.jsonValue({ maxDepth: 1 });
 // • true
 // • …
 
-fc.statistics(fc.jsonValue(), (v) => {
-  function size(n) {
-    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
-    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
-    return 1;
-  }
-  const s = size(v);
-  let lower = 1;
-  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-  while (next(lower) <= s) {
-    lower = next(lower);
-  }
-  return `${lower} to ${next(lower) - 1} items`;
-});
+fc.logStatistics(
+  await fc.statistics(fc.jsonValue(), (v) => {
+    function size(n) {
+      if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+    while (next(lower) <= s) {
+      lower = next(lower);
+    }
+    return `${lower} to ${next(lower) - 1} items`;
+  }),
+);
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
@@ -189,20 +191,22 @@ fc.statistics(fc.jsonValue(), (v) => {
 // • 500 to 999 items...0.12%
 // • …
 
-fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
-  function size(n) {
-    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
-    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
-    return 1;
-  }
-  const s = size(v);
-  let lower = 1;
-  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
-  while (next(lower) <= s) {
-    lower = next(lower);
-  }
-  return `${lower} to ${next(lower) - 1} items`;
-});
+fc.logStatistics(
+  await fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
+    function size(n) {
+      if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
+      if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+      return 1;
+    }
+    const s = size(v);
+    let lower = 1;
+    const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+    while (next(lower) <= s) {
+      lower = next(lower);
+    }
+    return `${lower} to ${next(lower) - 1} items`;
+  }),
+);
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items..100.00%

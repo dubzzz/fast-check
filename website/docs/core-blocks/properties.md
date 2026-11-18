@@ -61,6 +61,23 @@ await fc.assert(
 The predicate function should not change the inputs it received. If it needs to, it has to clone them before going on. Impacting the inputs might led to bad shrinking and wrong display on error.
 :::
 
+### Execution context
+
+The last argument passed to a predicate is a [`PredicateExecutionContext`](/docs/api/interfaces/PredicateExecutionContext), supplied by the runner and its plugins. It is separate from the generated inputs: do not include it in `examples` or forward it as an input to the code under test.
+
+Time-limit plugins can provide an optional `signal` to request cancellation. Pass it to APIs that accept an `AbortSignal`; see [cooperative cancellation](/docs/core-blocks/plugins/time-limits/#cooperative-cancellation).
+
+When forwarding a variable number of generated inputs, leave out the final context argument:
+
+```js
+fc.property(...arbitraries, (...args) => {
+  const inputs = args.slice(0, -1);
+  return predicateUnderTest(...inputs);
+});
+```
+
+This execution context is different from [`fc.context()`](/docs/core-blocks/arbitraries/others/#context), an arbitrary used to collect logs. Plugin authors can extend the execution context with optional fields using TypeScript module augmentation, as shown in its API reference.
+
 ### Setup and teardown
 
 Use the [life-cycle plugins](/docs/core-blocks/plugins/life-cycle/) to run setup or teardown steps around each execution of the predicate, including executions during shrinking. Pass them to `fc.assert` via the `plugins` parameter.

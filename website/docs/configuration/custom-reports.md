@@ -29,7 +29,7 @@ If you want to know more concerning how to read such reports, you may refer to t
 
 ## Verbosity
 
-The simplest and built-in way to change how to format the errors in a different way is verbosity. Verbosity can be either 0, 1 or 2 and is defaulted to 1. It can be changed at `assert`'s level, by passing the option `verbose: <your-value>` to it.
+The simplest and built-in way to change how to format the errors in a different way is verbosity. Verbosity can be either 0, 1 or 2 and defaults to 0. It can be changed at `assert`'s level, by passing the option `verbose: <your-value>` to it.
 
 You may refer to [Read Test Reports](/docs/tutorials/quick-start/read-test-reports/#how-to-increase-verbosity) for more details on it.
 
@@ -56,24 +56,6 @@ await fc.assert(
 ```
 
 The default reporter throws for any run with `failed: true` and ignores all other outcomes. Your plugin runs before it: if your plugin throws or rejects, its error takes precedence over any error subsequently thrown by the default reporter. When multiple plugins report errors, the first error wins. Returning normally from your plugin leaves the default reporting in place.
-
-:::info[Deprecated `reporter`]
-Before the introduction of plugins, custom reporting used to be achieved by passing a custom `reporter` to `assert`:
-
-```js
-await fc.assert(fc.property(...), {
-  async reporter(out) {
-    if (out.failed) {
-      throw new Error(`Property failed after ${out.numRuns} tests`, {
-        cause: out.errorInstance,
-      });
-    }
-  }
-});
-```
-
-`reporter` is now deprecated: prefer a plugin relying on the `onAllRunsComplete` hook.
-:::
 
 ### Disable the default report
 

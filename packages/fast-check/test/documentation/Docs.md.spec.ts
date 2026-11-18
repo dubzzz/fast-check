@@ -262,8 +262,13 @@ async function refreshContent(originalContent: string): Promise<{ content: strin
               lastIndexCommentForGeneratedValues !== -1
                 ? snippet.substring(lastIndexCommentForGeneratedValues)
                 : snippet;
-            const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-            const evalCode = refinedSnippet;
+            // Unwrap the public printing example before extracting the statistics arguments.
+            // Keep the seed based on the inner call so adding logStatistics does not change the samples.
+            const evalCode = refinedSnippet.replace(
+              /fc\.logStatistics\(\s*await (fc\.statistics\([\s\S]*)\),?\s*\);/,
+              '$1);',
+            );
+            const seed = evalCode.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
             const lastClosing = evalCode.lastIndexOf(');');
             const sanitizedCode =
               '[\n' +

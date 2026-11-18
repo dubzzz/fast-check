@@ -38,7 +38,7 @@ The `interruptAfterTimeLimit` plugin interrupts all runs once the requested dela
 
 The countdown starts when the runner starts executing the property.
 
-An interrupted property is not necessarily considered to be a failure. By default, it gets marked as successful as long as at least one execution succeeded before the interruption and no failure got reported. To change that default and report interrupted properties as failures, one can set `failOnInterrupt: true` on the plugin.
+An interruption is recorded separately from a property failure: `RunDetails.interrupted` can be `true` while `failed` is `false`. By default, this plugin does not report an error if at least one execution succeeded before its interruption and no failure was reported. It reports an error if it interrupted the run before any execution completed, or if `failOnInterrupt: true` is set. This reporting does not change the `failed` flag in `RunDetails`.
 
 ```ts
 {
@@ -49,6 +49,22 @@ An interrupted property is not necessarily considered to be a failure. By defaul
 ```
 
 Resources: [API reference](/docs/api/functions/interruptAfterTimeLimit).
+
+## Cooperative cancellation
+
+Both plugins pass an `AbortSignal` to the predicate through its final [execution context](/docs/core-blocks/properties/#execution-context) argument. When their timer fires, they abort that signal. APIs that accept a signal can use it to stop outstanding work:
+
+```js
+await fc.assert(
+  fc.property(fc.string(), async (query, { signal }) => {
+    // The application's search API must support AbortSignal cancellation.
+    await searchService.search(query, { signal });
+  }),
+  { plugins: [fc.timeout(1_000)] },
+);
+```
+
+The signal is optional: a property run without a plugin supplying one may receive `undefined`. When time-limit plugins are combined, their signals are combined too, so an outer cancellation can reach the inner predicate. Plugin authors must forward the execution context when wrapping a run.
 
 ## Limitations
 
@@ -62,9 +78,9 @@ Once a synchronous predicate returns, `timeout` checks its elapsed time and repo
 
 The `interruptAfterTimeLimit` plugin can only prevent new executions from starting once the limit gets reached.
 
-### Asynchronous code can't be canceled
+### Asynchronous cancellation requires cooperation
 
-Whenever the limit gets reached during an asynchronous execution, the plugins give control back to the runner without waiting for the predicate. But the underlying execution keeps running in the background and its outcome gets ignored.
+Whenever the limit gets reached during an asynchronous execution, the plugins give control back to the runner without waiting for the predicate. They request cancellation through the signal, but code that ignores it can keep running in the background and its outcome gets ignored. Aborting a signal does not guarantee that cleanup has completed before the runner continues.
 
 Plugins declared before the time-limit one may thus run while the predicate is still under way.
 
