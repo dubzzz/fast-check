@@ -20,7 +20,7 @@ export interface BigIntConstraints {
 }
 
 /** Build fully set BigIntConstraints from a partial data */
-function buildCompleteBigIntConstraints(constraints: BigIntConstraints): Required<BigIntConstraints> {
+function buildCompleteBigIntConstraints(constraints: Readonly<BigIntConstraints>): Required<BigIntConstraints> {
   const DefaultMin = -1n << 255n;
   const DefaultMax = (1n << 255n) - 1n;
 
@@ -33,7 +33,9 @@ function buildCompleteBigIntConstraints(constraints: BigIntConstraints): Require
 }
 
 /** Extract constraints from args received by bigint */
-function extractBigIntConstraints(args: [] | [bigint, bigint] | [BigIntConstraints]): BigIntConstraints {
+function extractBigIntConstraints(
+  args: [] | [bigint, bigint] | [Readonly<BigIntConstraints>],
+): Readonly<BigIntConstraints> {
   if (args[0] === undefined) {
     // bigInt()
     return {};
@@ -41,7 +43,7 @@ function extractBigIntConstraints(args: [] | [bigint, bigint] | [BigIntConstrain
 
   if (args[1] === undefined) {
     // bigInt(constraints)
-    const constraints = args[0] as BigIntConstraints;
+    const constraints = args[0] as Readonly<BigIntConstraints>;
     return constraints;
   } // args.length > 1
 
@@ -72,7 +74,7 @@ function bigInt(min: bigint, max: bigint): Arbitrary<bigint>;
  * @remarks Since 2.6.0
  * @public
  */
-function bigInt(constraints: BigIntConstraints): Arbitrary<bigint>;
+function bigInt(constraints: Readonly<BigIntConstraints>): Arbitrary<bigint>;
 /**
  * For bigint between min (included) and max (included)
  *
@@ -81,8 +83,8 @@ function bigInt(constraints: BigIntConstraints): Arbitrary<bigint>;
  * @remarks Since 4.3.0
  * @public
  */
-function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): Arbitrary<bigint>;
-function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): Arbitrary<bigint> {
+function bigInt(...args: [] | [bigint, bigint] | [Readonly<BigIntConstraints>]): Arbitrary<bigint>;
+function bigInt(...args: [] | [bigint, bigint] | [Readonly<BigIntConstraints>]): Arbitrary<bigint> {
   const constraints = buildCompleteBigIntConstraints(extractBigIntConstraints(args));
   if (constraints.min > constraints.max) {
     throw new Error('fc.bigInt expects max to be greater than or equal to min');

@@ -14,7 +14,9 @@ import { SameValueSet } from './_internals/helpers/SameValueSet.js';
 import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
-function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T, U>): CustomSetBuilder<Value<T>> {
+function buildUniqueArraySetBuilder<T, U>(
+  constraints: Readonly<UniqueArrayConstraints<T, U>>,
+): CustomSetBuilder<Value<T>> {
   // Remark: Whenever we don't pass any custom selector U=T
   // so v of type T is simply a U
   if (typeof constraints.comparator === 'function') {
@@ -178,7 +180,7 @@ export type UniqueArrayConstraints<T, U> =
  */
 export function uniqueArray<T, U>(
   arb: Arbitrary<T>,
-  constraints?: UniqueArrayConstraintsRecommended<T, U>,
+  constraints?: Readonly<UniqueArrayConstraintsRecommended<T, U>>,
 ): Arbitrary<T[]>;
 /**
  * For arrays of unique values coming from `arb`
@@ -189,7 +191,10 @@ export function uniqueArray<T, U>(
  * @remarks Since 2.23.0
  * @public
  */
-export function uniqueArray<T>(arb: Arbitrary<T>, constraints: UniqueArrayConstraintsCustomCompare<T>): Arbitrary<T[]>;
+export function uniqueArray<T>(
+  arb: Arbitrary<T>,
+  constraints: Readonly<UniqueArrayConstraintsCustomCompare<T>>,
+): Arbitrary<T[]>;
 /**
  * For arrays of unique values coming from `arb`
  *
@@ -201,7 +206,7 @@ export function uniqueArray<T>(arb: Arbitrary<T>, constraints: UniqueArrayConstr
  */
 export function uniqueArray<T, U>(
   arb: Arbitrary<T>,
-  constraints: UniqueArrayConstraintsCustomCompareSelect<T, U>,
+  constraints: Readonly<UniqueArrayConstraintsCustomCompareSelect<T, U>>,
 ): Arbitrary<T[]>;
 /**
  * For arrays of unique values coming from `arb`
@@ -212,8 +217,14 @@ export function uniqueArray<T, U>(
  * @remarks Since 2.23.0
  * @public
  */
-export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayConstraints<T, U>): Arbitrary<T[]>;
-export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayConstraints<T, U> = {}): Arbitrary<T[]> {
+export function uniqueArray<T, U>(
+  arb: Arbitrary<T>,
+  constraints: Readonly<UniqueArrayConstraints<T, U>>,
+): Arbitrary<T[]>;
+export function uniqueArray<T, U>(
+  arb: Arbitrary<T>,
+  constraints: Readonly<UniqueArrayConstraints<T, U>> = {},
+): Arbitrary<T[]> {
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
   const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(

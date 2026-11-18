@@ -76,7 +76,7 @@ export interface IteratorConstraints {
  */
 function iterator<T>(
   arb: Arbitrary<T>,
-  constraints: IteratorConstraints = {},
+  constraints: Readonly<IteratorConstraints> = {},
 ): Arbitrary<IteratorObject<T, undefined>> {
   const history = !constraints.noHistory;
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;

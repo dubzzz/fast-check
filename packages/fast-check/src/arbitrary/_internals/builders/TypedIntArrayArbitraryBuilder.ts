@@ -11,11 +11,11 @@ type TypedIntArrayBuilderConstraints<TValue> = {
 };
 
 export function typedIntArrayArbitraryArbitraryBuilder<TTypedArrayType extends Iterable<TValue>, TValue>(
-  constraints: TypedIntArrayBuilderConstraints<TValue>,
+  constraints: Readonly<TypedIntArrayBuilderConstraints<TValue>>,
   defaultMin: TValue,
   defaultMax: TValue,
   TypedArrayClass: (new () => TTypedArrayType) & { from: (data: TValue[]) => TTypedArrayType },
-  arbitraryBuilder: (constraints: { min?: TValue; max?: TValue }) => Arbitrary<TValue>,
+  arbitraryBuilder: (constraints: Readonly<{ min?: TValue; max?: TValue }>) => Arbitrary<TValue>,
 ): Arbitrary<TTypedArrayType> {
   const generatorName = TypedArrayClass.name;
   const { min = defaultMin, max = defaultMax, ...arrayConstraints } = constraints;

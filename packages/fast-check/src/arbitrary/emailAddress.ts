@@ -64,7 +64,7 @@ export interface EmailAddressConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function emailAddress(constraints: EmailAddressConstraints = {}): Arbitrary<string> {
+export function emailAddress(constraints: Readonly<EmailAddressConstraints> = {}): Arbitrary<string> {
   const atextArb = getOrCreateLowerAlphaNumericArbitrary("!#$%&'*+-/=?^_`{|}~");
   const localPartArb = adapter(
     // Maximal length for the output of dotMapper is 64,

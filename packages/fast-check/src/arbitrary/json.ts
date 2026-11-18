@@ -21,7 +21,7 @@ function jsonStringUnmapper(value: unknown): JsonValue {
  * @remarks Since 0.0.7
  * @public
  */
-export function json(constraints: JsonSharedConstraints = {}): Arbitrary<string> {
+export function json(constraints: Readonly<JsonSharedConstraints> = {}): Arbitrary<string> {
   const arb = jsonValue(constraints);
   return arb.map(JSON.stringify, jsonStringUnmapper);
 }

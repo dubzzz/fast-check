@@ -82,7 +82,7 @@ function numberIsNotInteger(value: number): boolean {
   return !Number.isInteger(value);
 }
 
-function anyFloat(constraints: Omit<FloatConstraints, 'noInteger'>): Arbitrary<number> {
+function anyFloat(constraints: Readonly<Omit<FloatConstraints, 'noInteger'>>): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
@@ -137,7 +137,7 @@ function anyFloat(constraints: Omit<FloatConstraints, 'noInteger'>): Arbitrary<n
  * @remarks Since 0.0.6
  * @public
  */
-export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
+export function float(constraints: Readonly<FloatConstraints> = {}): Arbitrary<number> {
   if (!constraints.noInteger) {
     return anyFloat(constraints);
   }

@@ -79,7 +79,7 @@ function numberIsNotInteger(value: number): boolean {
   return !Number.isInteger(value);
 }
 
-function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary<number> {
+function anyDouble(constraints: Readonly<Omit<DoubleConstraints, 'noInteger'>>): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
@@ -133,7 +133,7 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
  * @remarks Since 0.0.6
  * @public
  */
-export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
+export function double(constraints: Readonly<DoubleConstraints> = {}): Arbitrary<number> {
   if (!constraints.noInteger) {
     return anyDouble(constraints);
   }

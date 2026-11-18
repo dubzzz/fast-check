@@ -49,8 +49,8 @@ function anything(): Arbitrary<unknown>;
  * @remarks Since 0.0.7
  * @public
  */
-function anything(constraints: ObjectConstraints): Arbitrary<unknown>;
-function anything(constraints?: ObjectConstraints): Arbitrary<unknown> {
+function anything(constraints: Readonly<ObjectConstraints>): Arbitrary<unknown>;
+function anything(constraints?: Readonly<ObjectConstraints>): Arbitrary<unknown> {
   return anyArbitraryBuilder(toQualifiedObjectConstraints(constraints));
 }
 export { anything };
