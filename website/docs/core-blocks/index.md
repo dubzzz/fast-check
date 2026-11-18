@@ -10,7 +10,7 @@ Every fast-check test is built from the same four pieces:
 
 1. **Arbitraries** describe what values to generate. They pair a random generator with a shrinker so that failing inputs collapse back to readable counterexamples.
 2. **Properties** describe what must hold for those values. A property takes one or more arbitraries and a predicate. It asserts that for any input the predicate stays valid.
-3. **Runners** execute properties or collect generated values: use `assert` to test a property, `sample` to inspect values and `statistics` to measure their distribution. Plugins handle reporting and provide access to run details.
+3. **Runners** execute properties or collect generated values: use `assert` to test a property, `sample` to inspect values and `statistics` to measure their distribution.
 4. **Plugins** describe how to extend runners to make them even more tailored to your needs.
 
 The children below are the reference pages for each block: start with [Properties](/docs/core-blocks/properties/) if you have never written one, jump to [Arbitraries](/docs/core-blocks/arbitraries/) when you need the right generator and come back to [Plugins](/docs/core-blocks/plugins/) and [Runners](/docs/core-blocks/runners/) when you need to tune execution.
