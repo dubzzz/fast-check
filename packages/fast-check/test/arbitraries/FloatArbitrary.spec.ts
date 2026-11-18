@@ -6,18 +6,24 @@ describe(`FloatArbitrary (seed: ${seed})`, () => {
   describe('float', () => {
     const limitedNumRuns = 1000;
     const numRuns = 25000;
-    const sampleFloat = fc.sample(fc.float(), { seed, numRuns });
-    const sampleFloatNoBias = fc.sample(fc.noBias(fc.float()), { seed, numRuns });
+    function buildSample(arbitrary: fc.Arbitrary<number>) {
+      return fc.sample(arbitrary, { seed, numRuns });
+    }
 
     function shouldGenerate(expectedValue: number) {
-      it('Should be able to generate ' + fc.stringify(expectedValue), () => {
+      it('Should be able to generate ' + fc.stringify(expectedValue), async () => {
+        const sampleFloat = await buildSample(fc.float());
         const hasValue = sampleFloat.findIndex((v) => Object.is(v, expectedValue)) !== -1;
         expect(hasValue).toBe(true);
       });
-      it('Should not be able to generate ' + fc.stringify(expectedValue) + ' if not biased (very unlikely)', () => {
-        const hasValue = sampleFloatNoBias.findIndex((v) => Object.is(v, expectedValue)) !== -1;
-        expect(hasValue).toBe(false);
-      });
+      it(
+        'Should not be able to generate ' + fc.stringify(expectedValue) + ' if not biased (very unlikely)',
+        async () => {
+          const sampleFloatNoBias = await buildSample(fc.noBias(fc.float()));
+          const hasValue = sampleFloatNoBias.findIndex((v) => Object.is(v, expectedValue)) !== -1;
+          expect(hasValue).toBe(false);
+        },
+      );
     }
 
     const extremeValues = [
@@ -36,7 +42,8 @@ describe(`FloatArbitrary (seed: ${seed})`, () => {
       // The set of possible values for floats is of 4_278_190_083 distinct values (incl. nan, -/+inf)
       shouldGenerate(extremeValue);
     }
-    it(`Should be able to generate one of the extreme values in a limited amount of runs (${limitedNumRuns})`, () => {
+    it(`Should be able to generate one of the extreme values in a limited amount of runs (${limitedNumRuns})`, async () => {
+      const sampleFloat = await buildSample(fc.float());
       const hasValue =
         sampleFloat.slice(0, limitedNumRuns).findIndex((v) => {
           // Check if we can find one of the extreme values in our limited sample
@@ -63,12 +70,14 @@ describe(`FloatArbitrary (seed: ${seed})`, () => {
       });
     };
 
-    it('Should be able to generate intermediate values most of the time even if biased', () => {
+    it('Should be able to generate intermediate values most of the time even if biased', async () => {
+      const sampleFloat = await buildSample(fc.float());
       const countIntermediate = filterIntermediateValues(sampleFloat).length;
       expect(countIntermediate).toBeGreaterThan(0.5 * sampleFloat.length);
     });
 
-    it('Should be able to generate intermediate values most of the time if not biased', () => {
+    it('Should be able to generate intermediate values most of the time if not biased', async () => {
+      const sampleFloatNoBias = await buildSample(fc.noBias(fc.float()));
       const countIntermediate = filterIntermediateValues(sampleFloatNoBias).length;
       expect(countIntermediate).toBeGreaterThan(0.5 * sampleFloatNoBias.length);
     });

@@ -103,7 +103,7 @@ For instance, the following change moves a timeout and duplicate-value handling 
 
 When a boolean parameter was `false`, omit its plugin. If you already have a `plugins` array, add the replacements to it.
 
-For `sample` and `statistics`, plugins are not applied. To replace `unbiased: true` there, wrap the arbitrary with `fc.noBias`, for example `fc.sample(fc.noBias(arbitrary), { numRuns: 10 })`.
+While still using v4, `sample` and `statistics` do not apply plugins. To replace `unbiased: true` there, wrap the arbitrary with `fc.noBias`, for example `await fc.sample(fc.noBias(arbitrary), { numRuns: 10 })`. In v5, both runners apply plugins too, so `plugins: [fc.unbiased()]` becomes available.
 
 Plugin order matters: the first plugin wraps the ones that follow it. To preserve the previous timeout behavior and keep setup and teardown outside the timeout, place lifecycle plugins before it:
 
@@ -121,7 +121,7 @@ For shared settings, replace `fc.configureGlobal({ timeout: timeMs })` with `fc.
 
 A local plugin does not replace a globally installed one. For example, adding `fc.timeout(5000)` locally does not override a globally installed `fc.timeout(1000)`.
 
-Install global plugins once during test setup. `fc.resetConfigureGlobal()` resets parameters, but it does not uninstall plugins. In v5, `noGlobalPlugins: true` lets a particular assertion skip all globally installed plugins; register any plugins you still need locally.
+Install global plugins once during test setup. `fc.resetConfigureGlobal()` resets parameters, but it does not uninstall plugins. In v5, `noGlobalPlugins: true` lets a particular runner call skip all globally installed plugins; register any plugins you still need locally.
 
 :::
 
@@ -224,6 +224,89 @@ Awaiting the assertion is also required to wait for asynchronous reporting and c
 
 Related pull requests: [#7296](https://github.com/dubzzz/fast-check/pull/7296), [#7303](https://github.com/dubzzz/fast-check/pull/7303), [#7388](https://github.com/dubzzz/fast-check/pull/7388), [#7489](https://github.com/dubzzz/fast-check/pull/7489)
 
+### Changes on `sample`
+
+The `sample` runner now returns a promise, even when sampling an arbitrary. Await its result and replace the numeric shorthand for the number of runs with a parameters object:
+
+```diff
+-const values = fc.sample(fc.integer(), 10);
++const values = await fc.sample(fc.integer(), { numRuns: 10 });
+```
+
+Sampling now uses the same runner as `assert`. Local and globally installed plugins apply, including lifecycle hooks, time limits, and generation decorators. Review global plugins that were previously intended only for assertions; use `noGlobalPlugins: true` for a sampling call that should not run them.
+
+When passing a property, `sample` now executes its predicate, including asynchronous predicates. Inputs rejected by `fc.pre` are excluded. The first failing input is included, then sampling stops without shrinking or reporting that predicate failure as an assertion error. Consequently, the result can contain fewer than `numRuns` values. Setup errors, too many skipped runs, or errors reported by plugins can still reject the promise.
+
+If you only want to generate the property's inputs without running its predicate, pass `noPredicateExecution: true`:
+
+```diff
+-const values = fc.sample(property, { numRuns: 10 });
++const values = await fc.sample(property, { numRuns: 10, noPredicateExecution: true });
+```
+
+This option skips the predicate, but plugins still apply. The result shape is unchanged: an arbitrary yields its values directly, while a property yields tuples of its generated arguments.
+
+When replaying a shrink `path`, `numRuns` no longer limits the number of collected shrink candidates. Do not rely on it to cap the size of that result.
+
+Related pull requests: [#7580](https://github.com/dubzzz/fast-check/pull/7580), [#7588](https://github.com/dubzzz/fast-check/pull/7588)
+
+### Changes on `statistics`
+
+The `statistics` runner is also asynchronous. It returns a `StatisticsResult` instead of printing output. Await it, then use `fc.logStatistics` to keep the previous formatted output:
+
+```diff
+-fc.statistics(fc.integer(), (value) => (value < 0 ? 'negative' : 'non-negative'), {
++const stats = await fc.statistics(fc.integer(), (value) => (value < 0 ? 'negative' : 'non-negative'), {
+   numRuns: 1000,
+-  logger: myLogger,
+ });
++fc.logStatistics(stats, myLogger);
+```
+
+Without a custom logger, use `fc.logStatistics(stats)` to print to `console.log`. The `logger` runner parameter has been removed, including from `fc.configureGlobal`; pass it directly to `logStatistics` instead. The numeric shorthand for the number of runs has also been removed: replace a final `1000` argument with `{ numRuns: 1000 }`.
+
+For programmatic access, the result contains:
+
+- `counts`, a `Map<string, number>` containing category counts in order of first appearance.
+- `numValues`, the number of classified inputs, including those assigned to no categories by returning `[]`.
+
+`logStatistics` sorts categories by count and computes percentages using `numValues`, rather than the requested `numRuns`. If each input belongs to several categories, the percentages can still add up to more than 100%.
+
+The same execution changes as for `sample` apply: plugins and property predicates run, skipped inputs are excluded, and the first failing input is classified before collection stops without shrinking. Use `noPredicateExecution: true` when passing a property whose predicate should not run. The classifier must remain synchronous and should never throw.
+
+For property inputs, the classifier now receives the generated arguments separately, instead of a tuple:
+
+```diff
+ const property = fc.property(fc.integer(), fc.string(), (_count, _text) => true);
+-fc.statistics(property, ([count, text]) => (count > text.length ? 'larger' : 'smaller or equal'));
++const stats = await fc.statistics(property, (count, text) => (count > text.length ? 'larger' : 'smaller or equal'));
++fc.logStatistics(stats);
+```
+
+A single arbitrary still passes its generated value as one argument. In particular, keep destructuring the classifier argument when passing `fc.tuple(...)` directly. You can also pass several arbitraries directly to `statistics`, without wrapping them in a property:
+
+```ts
+const stats = await fc.statistics(
+  fc.integer(),
+  fc.string(),
+  (count, text) => (count > text.length ? 'larger' : 'smaller or equal'),
+  { numRuns: 1000 },
+);
+fc.logStatistics(stats);
+```
+
+Parameters for `statistics` now describe a tuple of generated arguments, even with a single arbitrary. Wrap each explicit example accordingly:
+
+```diff
+-fc.statistics(fc.integer(), String, { examples: [1, 2] });
++const stats = await fc.statistics(fc.integer(), String, { examples: [[1], [2]] });
++fc.logStatistics(stats);
+```
+
+For typed wrappers, use `SampleParameters<T, 'arbitrary'>` or `SampleParameters<Ts, 'property'>` for `sample`, and `StatisticsParameters<Ts, 'arbitrary'>` or `StatisticsParameters<Ts, 'property'>` for `statistics`. Here `Ts` is the tuple of generated arguments; for statistics on a single integer arbitrary, it is `[number]`. Only the property variants expose `noPredicateExecution`.
+
+Related pull requests: [#7587](https://github.com/dubzzz/fast-check/pull/7587), [#7588](https://github.com/dubzzz/fast-check/pull/7588), [#7592](https://github.com/dubzzz/fast-check/pull/7592), [#7594](https://github.com/dubzzz/fast-check/pull/7594)
+
 ### Replace `check` with `assert` and a plugin
 
 The `check` runner has been removed. If you only used it to detect and throw on a failure, use `await fc.assert(property, parameters)` instead.
@@ -316,7 +399,9 @@ In version 5, the `timeout` plugin also reports synchronous predicates as failed
 
 This does not make synchronous JavaScript interruptible: a timeout cannot stop a blocked event loop or an infinite loop. For asynchronous work, cancellation remains cooperative; use the execution context's `signal` with APIs that support it when you need to cancel the underlying operation.
 
-Related pull requests: [#7426](https://github.com/dubzzz/fast-check/pull/7426), [#7573](https://github.com/dubzzz/fast-check/pull/7573)
+The `interruptAfterTimeLimit` timer now starts in the plugin's `beforeAll` hook, instead of when its instance is created. Time spent in `beforeAll` hooks registered before it no longer consumes its time budget. Place the interruption plugin before setup hooks if that setup should count toward the limit.
+
+Related pull requests: [#7426](https://github.com/dubzzz/fast-check/pull/7426), [#7571](https://github.com/dubzzz/fast-check/pull/7571), [#7573](https://github.com/dubzzz/fast-check/pull/7573)
 
 ## Advanced usages
 
@@ -425,7 +510,9 @@ The `decorateGenerate` hook remains available for generation changes. Completion
 
 A property's `run` method may return a result directly or a promise, so custom runners and decorators must handle both. Decorators must preserve the contract that `run` reports failures as results rather than throwing or rejecting. If a plugin adds information to the execution context, pass a modified copy to the nested runner instead of mutating the original context.
 
-Related pull requests: [#7296](https://github.com/dubzzz/fast-check/pull/7296), [#7312](https://github.com/dubzzz/fast-check/pull/7312), [#7315](https://github.com/dubzzz/fast-check/pull/7315), [#7386](https://github.com/dubzzz/fast-check/pull/7386), [#7422](https://github.com/dubzzz/fast-check/pull/7422)
+Custom runners must also call plugin `beforeAll` hooks and await their completion before executing the property. In particular, `interruptAfterTimeLimit` now requires this initialization; invoking its decorated runner or completion hook without it reports an initialization error. The built-in `assert`, `sample`, and `statistics` runners handle this lifecycle automatically.
+
+Related pull requests: [#7296](https://github.com/dubzzz/fast-check/pull/7296), [#7312](https://github.com/dubzzz/fast-check/pull/7312), [#7315](https://github.com/dubzzz/fast-check/pull/7315), [#7386](https://github.com/dubzzz/fast-check/pull/7386), [#7422](https://github.com/dubzzz/fast-check/pull/7422), [#7571](https://github.com/dubzzz/fast-check/pull/7571)
 
 ### Changes on `scheduler`
 

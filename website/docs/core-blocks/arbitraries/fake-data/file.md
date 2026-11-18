@@ -187,6 +187,7 @@ fc.statistics(fc.jsonValue(), (v) => {
 // • 10 to 49 items....25.23%
 // • 100 to 499 items...6.73%
 // • 500 to 999 items...0.12%
+// • …
 
 fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
   function size(n) {

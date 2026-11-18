@@ -11,6 +11,59 @@ expectTypeOf(fc.assert(fc.property(fc.nat(), async () => {}))).toEqualTypeOf<Pro
 // assert is asynchronous even with a synchronous predicate
 expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<Promise<void>>();
 
+// statistics
+expectTypeOf(
+  fc.statistics(fc.nat(), (...values) => {
+    expectTypeOf(values).toEqualTypeOf<[number]>();
+    return [];
+  }),
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
+expectTypeOf(
+  fc.statistics(
+    fc.property(fc.nat(), () => true),
+    (...values) => {
+      expectTypeOf(values).toEqualTypeOf<[number]>();
+      return [];
+    },
+  ),
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
+expectTypeOf(
+  fc.statistics(fc.nat(), fc.string(), (...values) => {
+    expectTypeOf(values).toEqualTypeOf<[number, string]>();
+    return [];
+  }),
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
+expectTypeOf(
+  fc.statistics(
+    fc.property(fc.nat(), fc.string(), () => true),
+    (...values) => {
+      expectTypeOf(values).toEqualTypeOf<[number, string]>();
+      return [];
+    },
+  ),
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
+expectTypeOf(
+  fc.statistics(
+    fc.property(fc.nat(), () => true),
+    String,
+    { noPredicateExecution: true },
+  ),
+).toEqualTypeOf<Promise<fc.StatisticsResult>>();
+// @ts-expect-error - Arbitraries have no predicate to disable
+fc.statistics(fc.nat(), String, { noPredicateExecution: true });
+
+// sample
+expectTypeOf(fc.sample(fc.nat())).toEqualTypeOf<Promise<number[]>>();
+expectTypeOf(fc.sample(fc.property(fc.nat(), fc.string(), () => true))).toEqualTypeOf<Promise<[number, string][]>>();
+expectTypeOf(
+  fc.sample(
+    fc.property(fc.nat(), fc.string(), () => true),
+    { noPredicateExecution: true },
+  ),
+).toEqualTypeOf<Promise<[number, string][]>>();
+// @ts-expect-error - Only properties have a predicate to skip
+fc.sample(fc.nat(), { noPredicateExecution: true });
+
 // property
 // "property" instantiates instances compatible with Property
 expectTypeOf(fc.property(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();

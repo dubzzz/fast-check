@@ -70,8 +70,33 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: number | Parameters<Ts>): Ts[];
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
+function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
 ```
+
+Example of usage:
+
+```js
+const values = await fc.sample(fc.nat(), { numRuns: 10 });
+// equivalent to sampling a property whose predicate always succeeds:
+// >  const wrappedValues = await fc.sample(
+// >    fc.property(fc.nat(), () => true),
+// >    { numRuns: 10 }
+// >  );
+// >  const values = wrappedValues.map(([value]) => value);
+```
+
+:::warning Passing a property executes its predicate
+By default, `sample` runs the predicate attached to the property. As such inputs rejected by call to `fc.pre(...)` are excluded from the returned array.
+
+A failure of the predicate interrupts the sampling without shrinking or reporting the predicate error.
+
+This behavior can be overridden by passing the parameter `noPredicateExecution: true` to `sample`. With that flagged toggled on, sampling will run without executing the predicate and this ignore runs rejected via `fc.pre(...)` and failed ones.
+:::
+
+:::note Shrink-path replay
+When passed a `path` via its parameters, `sample` visits the shrunk values at that level starting from the path until the predicate fails or the candidates are exhausted. As with `assert`, `numRuns` does not cap shrink-path replay, whether configured locally or globally. Sampling an arbitrary or disabling the predicate visits all candidates at that level unless a plugin interrupts the run.
+:::
 
 Resources: [API reference](/docs/api/functions/sample).  
 Available since 0.0.6.
@@ -83,21 +108,91 @@ When building a new arbitrary, knowing what would be the generated values is a t
 Its signature is:
 
 ```ts
-function statistics<Ts>(
-  generator: Property<Ts> | Arbitrary<Ts>,
-  classify: (v: Ts) => string | string[],
-  params?: number | Parameters<Ts>,
-): void;
+function statistics<Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    classify: NoInfer<(...values: Ts) => string | string[]>,
+    params: NoInfer<StatisticsParameters<Ts, 'arbitrary'>> | undefined,
+  ]
+): Promise<StatisticsResult>;
+
+function statistics<Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    classify: NoInfer<(...values: Ts) => string | string[]>,
+  ]
+): Promise<StatisticsResult>;
+
+function statistics<Ts extends unknown[]>(
+  property: Property<Ts>,
+  classify: NoInfer<(...values: Ts) => string | string[]>,
+  params?: NoInfer<StatisticsParameters<Ts, 'property'>>,
+): Promise<StatisticsResult>;
+
+type StatisticsResult = {
+  counts: Map<string, number>;
+  numValues: number;
+};
 ```
 
-Example of usage:
+With one arbitrary:
 
 ```js
-fc.statistics(
+const stats = await fc.statistics(
+  fc.string(), // source arbitrary
+  (v) => `${v.length} characters`, // classifier
+  { numRuns: 100_000 }, // extra parameters (optional)
+);
+// Possible output for stats.counts:
+// Map
+//   "0 characters" -> 9650,
+//   "1 characters" -> 9410,
+//   "2 characters" -> 9560,
+//   ...
+```
+
+With multiple arbitraries, the classifier receives their values as separate arguments, in order:
+
+```js
+const stats = await fc.statistics(
+  fc.nat(),
+  fc.string(),
+  (count, text) => (count > text.length ? 'Count higher than length' : 'Count lower or equal to length'),
+  { numRuns: 100_000 }, // extra parameters (optional)
+);
+```
+
+With a property, the classifier receives the generated values in predicate order:
+
+```js
+const stats = await fc.statistics(
+  fc.property(fc.nat(), fc.string(), () => true),
+  (count, text) => (count > text.length ? 'Count higher than length' : 'Count lower or equal to length'),
+  { numRuns: 100_000 }, // extra parameters (optional)
+);
+```
+
+Resources: [API reference](/docs/api/functions/statistics).
+
+Available since 0.0.6.
+
+## logStatistics
+
+Use `logStatistics` to format the result of `statistics` as percentages and log them.
+
+```ts
+function logStatistics(stats: StatisticsResult, logger?: (line: string) => void): void;
+```
+
+They can be combined as follows:
+
+```js
+const stats = await fc.statistics(
   fc.string(), // source arbitrary
   (v) => `${v.length} characters`, // classifier
   { numRuns: 100_000 }, // extra parameters
 );
+fc.logStatistics(stats);
 // Possible output:
 // >  0 characters...9.65%
 // >  2 characters...9.56%
@@ -112,5 +207,8 @@ fc.statistics(
 // >  5 characters...8.68%
 ```
 
-Resources: [API reference](/docs/api/functions/statistics).  
-Available since 0.0.6.
+The logger function passed to `logStatistics` is optional. It defaults to `console.log`, which prints the formatted statistics to the console.
+
+Resources: [API reference](/docs/api/functions/logStatistics).
+
+Available since 5.0.0.
