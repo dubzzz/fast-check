@@ -567,6 +567,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/3463291?v=4",
       "profile": "https://github.com/zek",
       "contributions": ["code", "test"]
+    },
+    {
+      "login": "JacobLey",
+      "name": "Jacob Ley",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37151850?v=4",
+      "profile": "https://github.com/JacobLey",
+      "contributions": ["code", "test"]
     }
   ],
   "contributorsPerLine": 7
