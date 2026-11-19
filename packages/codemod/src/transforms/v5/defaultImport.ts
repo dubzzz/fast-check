@@ -8,8 +8,6 @@ export default function transform(file: FileInfo, api: { jscodeshift: JSCodeshif
 
   root.find(j.ImportDeclaration, { source: { value: 'fast-check' } }).forEach((path) => {
     const node = path.node;
-    // Example: import data from './data.json' with { type: 'json' };
-    // Recast does not yet print import attributes; leave them intact.
     if ('attributes' in node && Array.isArray(node.attributes) && node.attributes.length !== 0) {
       return;
     }
