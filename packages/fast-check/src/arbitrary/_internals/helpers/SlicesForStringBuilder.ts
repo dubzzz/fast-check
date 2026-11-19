@@ -83,7 +83,7 @@ function createSlicesForStringNoConstraints(charArbitrary: Arbitrary<string>): s
 
 export function createSlicesForString(
   charArbitrary: Arbitrary<string>,
-  constraints: StringSharedConstraints,
+  constraints: Readonly<StringSharedConstraints>,
 ): string[][] {
   let slices = slicesPerArbitrary.get(charArbitrary);
   if (slices === undefined) {

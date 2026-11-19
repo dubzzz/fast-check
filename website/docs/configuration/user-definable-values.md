@@ -40,10 +40,10 @@ await fc.assert(fc.property(fc.string(), fc.string(), fc.string(), myCheckFuncti
 If you are using `context` to log within a predicate, you will need to use the following context implementation in your examples.
 
 ```ts
-const exampleContext = () => fc.sample(fc.context(), { numRuns: 1 })[0];
+const exampleContext = async () => (await fc.sample(fc.context(), { numRuns: 1 }))[0];
 
 await fc.assert(fc.property(fc.string(), fc.string(), fc.context(), myCheckFunction), {
-  examples: [['', '', exampleContext()]],
+  examples: [['', '', await exampleContext()]],
 });
 ```
 

@@ -95,7 +95,7 @@ export interface WebAuthorityConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<string> {
+export function webAuthority(constraints?: Readonly<WebAuthorityConstraints>): Arbitrary<string> {
   const c = constraints || {};
   const size = c.size;
   const hostnameArbs = [

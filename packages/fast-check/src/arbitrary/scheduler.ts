@@ -22,7 +22,9 @@ export interface SchedulerConstraints {
  * @remarks Since 1.20.0
  * @public
  */
-export function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraints): Arbitrary<Scheduler<TMetaData>> {
+export function scheduler<TMetaData = unknown>(
+  constraints?: Readonly<SchedulerConstraints>,
+): Arbitrary<Scheduler<TMetaData>> {
   const { act = (f: () => Promise<void>) => f() } = constraints || {};
   return new SchedulerArbitrary<TMetaData>(act);
 }
@@ -64,7 +66,7 @@ export function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraint
  * @public
  */
 function schedulerFor<TMetaData = unknown>(
-  constraints?: SchedulerConstraints,
+  constraints?: Readonly<SchedulerConstraints>,
 ): (_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>;
 /**
  * For custom scheduler with predefined resolution order
@@ -83,17 +85,17 @@ function schedulerFor<TMetaData = unknown>(
  * @public
  */
 function schedulerFor<TMetaData = unknown>(
-  customOrdering: number[],
-  constraints?: SchedulerConstraints,
+  customOrdering: readonly number[],
+  constraints?: Readonly<SchedulerConstraints>,
 ): Scheduler<TMetaData>;
 function schedulerFor<TMetaData = unknown>(
-  customOrderingOrConstraints: number[] | SchedulerConstraints | undefined,
-  constraintsOrUndefined?: SchedulerConstraints,
+  customOrderingOrConstraints: readonly number[] | Readonly<SchedulerConstraints> | undefined,
+  constraintsOrUndefined?: Readonly<SchedulerConstraints>,
 ): Scheduler<TMetaData> | ((_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>) {
   // Extract passed constraints
   const { act = (f: () => Promise<void>) => f() } = Array.isArray(customOrderingOrConstraints)
     ? constraintsOrUndefined || {}
-    : customOrderingOrConstraints || {};
+    : (customOrderingOrConstraints as Readonly<SchedulerConstraints> | undefined) || {};
 
   if (Array.isArray(customOrderingOrConstraints)) {
     return buildSchedulerFor(act, customOrderingOrConstraints);

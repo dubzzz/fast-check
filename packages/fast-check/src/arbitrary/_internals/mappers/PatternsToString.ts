@@ -8,21 +8,24 @@ export function patternsToStringMapper(tab: string[]): string {
   return tab.join('');
 }
 
-function minLengthFrom(constraints: StringSharedConstraints): number {
+function minLengthFrom(constraints: Readonly<StringSharedConstraints>): number {
   return constraints.minLength !== undefined ? constraints.minLength : 0;
 }
 
-function maxLengthFrom(constraints: StringSharedConstraints): number {
+function maxLengthFrom(constraints: Readonly<StringSharedConstraints>): number {
   return constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
 }
 
-export function patternsToStringUnmapperIsValidLength(tokens: string[], constraints: StringSharedConstraints): boolean {
+export function patternsToStringUnmapperIsValidLength(
+  tokens: string[],
+  constraints: Readonly<StringSharedConstraints>,
+): boolean {
   return minLengthFrom(constraints) <= tokens.length && tokens.length <= maxLengthFrom(constraints);
 }
 
 export function patternsToStringUnmapperFor(
   patternsArb: Arbitrary<string>,
-  constraints: StringSharedConstraints,
+  constraints: Readonly<StringSharedConstraints>,
 ): (value: unknown) => string[] {
   return function patternsToStringUnmapper(value: unknown): string[] {
     if (typeof value !== 'string') {

@@ -11,7 +11,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly cumulatedWeights: number[];
   readonly totalWeight: number;
 
-  static from<T>(warbs: _WeightedArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
+  static from<T>(warbs: _WeightedArbitrary<T>[], constraints: Readonly<_Constraints>, label: string): Arbitrary<T> {
     if (warbs.length === 0) {
       throw new Error(`${label} expects at least one weighted arbitrary`);
     }
@@ -39,7 +39,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
 
   private constructor(
     readonly warbs: _WeightedArbitrary<T>[],
-    readonly constraints: _SanitizedConstraints,
+    readonly constraints: Readonly<_SanitizedConstraints>,
     readonly context: DepthContext,
   ) {
     super();

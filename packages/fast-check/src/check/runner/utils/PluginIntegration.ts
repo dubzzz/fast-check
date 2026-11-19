@@ -6,7 +6,7 @@ import type { RunDetails } from '../reporter/RunDetails.js';
 import { runAllCallbacksAndReturn } from './AllCallbacksThenReturnRunner.js';
 
 export function instantiatePlugins<Ts>(
-  localPlugins: Plugin<Ts>[],
+  localPlugins: readonly Plugin<Ts>[],
   addDefaultPlugins: boolean,
   addGlobalPlugins: boolean,
 ): PluginInstance<Ts>[] {

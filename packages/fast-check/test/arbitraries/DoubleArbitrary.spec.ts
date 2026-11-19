@@ -6,18 +6,24 @@ describe(`DoubleArbitrary (seed: ${seed})`, () => {
   describe('double', () => {
     const limitedNumRuns = 1000;
     const numRuns = 25000;
-    const sampleDouble = fc.sample(fc.double(), { seed, numRuns });
-    const sampleDoubleNoBias = fc.sample(fc.noBias(fc.double()), { seed, numRuns });
+    function buildSample(arbitrary: fc.Arbitrary<number>) {
+      return fc.sample(arbitrary, { seed, numRuns });
+    }
 
     function shouldGenerate(expectedValue: number) {
-      it('Should be able to generate ' + fc.stringify(expectedValue), () => {
+      it('Should be able to generate ' + fc.stringify(expectedValue), async () => {
+        const sampleDouble = await buildSample(fc.double());
         const hasValue = sampleDouble.findIndex((v) => Object.is(v, expectedValue)) !== -1;
         expect(hasValue).toBe(true);
       });
-      it('Should not be able to generate ' + fc.stringify(expectedValue) + ' if not biased (very unlikely)', () => {
-        const hasValue = sampleDoubleNoBias.findIndex((v) => Object.is(v, expectedValue)) !== -1;
-        expect(hasValue).toBe(false);
-      });
+      it(
+        'Should not be able to generate ' + fc.stringify(expectedValue) + ' if not biased (very unlikely)',
+        async () => {
+          const sampleDoubleNoBias = await buildSample(fc.noBias(fc.double()));
+          const hasValue = sampleDoubleNoBias.findIndex((v) => Object.is(v, expectedValue)) !== -1;
+          expect(hasValue).toBe(false);
+        },
+      );
     }
 
     const extremeValues = [
@@ -36,7 +42,8 @@ describe(`DoubleArbitrary (seed: ${seed})`, () => {
       // The set of possible values for doubles is of 18_437_736_874_454_810_627 distinct values (incl. nan, -/+inf)
       shouldGenerate(extremeValue);
     }
-    it(`Should be able to generate one of the extreme values in a limited amount of runs (${limitedNumRuns})`, () => {
+    it(`Should be able to generate one of the extreme values in a limited amount of runs (${limitedNumRuns})`, async () => {
+      const sampleDouble = await buildSample(fc.double());
       const hasValue =
         sampleDouble.slice(0, limitedNumRuns).findIndex((v) => {
           // Check if we can find one of the extreme values in our limited sample
@@ -63,12 +70,14 @@ describe(`DoubleArbitrary (seed: ${seed})`, () => {
       });
     };
 
-    it('Should be able to generate intermediate values most of the time even if biased', () => {
+    it('Should be able to generate intermediate values most of the time even if biased', async () => {
+      const sampleDouble = await buildSample(fc.double());
       const countIntermediate = filterIntermediateValues(sampleDouble).length;
       expect(countIntermediate).toBeGreaterThan(0.5 * sampleDouble.length);
     });
 
-    it('Should be able to generate intermediate values most of the time if not biased', () => {
+    it('Should be able to generate intermediate values most of the time if not biased', async () => {
+      const sampleDoubleNoBias = await buildSample(fc.noBias(fc.double()));
       const countIntermediate = filterIntermediateValues(sampleDoubleNoBias).length;
       expect(countIntermediate).toBeGreaterThan(0.5 * sampleDoubleNoBias.length);
     });

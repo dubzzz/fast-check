@@ -56,7 +56,7 @@ export interface MapConstraints {
 export function map<K, V>(
   keyArb: Arbitrary<K>,
   valueArb: Arbitrary<V>,
-  constraints: MapConstraints = {},
+  constraints: Readonly<MapConstraints> = {},
 ): Arbitrary<Map<K, V>> {
   return uniqueArray(tuple(keyArb, valueArb), {
     minLength: constraints.minKeys,

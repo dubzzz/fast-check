@@ -39,7 +39,7 @@ function nat(max: number): Arbitrary<number>;
  * @remarks Since 2.6.0
  * @public
  */
-function nat(constraints: NatConstraints): Arbitrary<number>;
+function nat(constraints: Readonly<NatConstraints>): Arbitrary<number>;
 /**
  * For positive integers between 0 (included) and max (included)
  *
@@ -48,8 +48,8 @@ function nat(constraints: NatConstraints): Arbitrary<number>;
  * @remarks Since 4.3.0
  * @public
  */
-function nat(arg?: number | NatConstraints): Arbitrary<number>;
-function nat(arg?: number | NatConstraints): Arbitrary<number> {
+function nat(arg?: number | Readonly<NatConstraints>): Arbitrary<number>;
+function nat(arg?: number | Readonly<NatConstraints>): Arbitrary<number> {
   const max = typeof arg === 'number' ? arg : arg && arg.max !== undefined ? arg.max : 0x7fffffff;
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');

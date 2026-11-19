@@ -105,7 +105,7 @@ export interface DomainConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function domain(constraints: DomainConstraints = {}): Arbitrary<string> {
+export function domain(constraints: Readonly<DomainConstraints> = {}): Arbitrary<string> {
   const resolvedSize = resolveSize(constraints.size);
   const resolvedSizeMinusOne = relativeSizeToSize('-1', resolvedSize);
   // A list of public suffixes can be found here: https://publicsuffix.org/list/public_suffix_list.dat

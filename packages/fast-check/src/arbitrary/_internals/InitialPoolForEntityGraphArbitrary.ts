@@ -9,7 +9,7 @@ type InitialPoolForEntityGraphConstraints<TEntityNames extends PropertyKey> = {
 
 function canHaveAtLeastOneItem<TEntityNames extends PropertyKey>(
   keys: TEntityNames[],
-  constraints: InitialPoolForEntityGraphConstraints<TEntityNames>,
+  constraints: Readonly<InitialPoolForEntityGraphConstraints<TEntityNames>>,
 ): boolean {
   for (const key of keys) {
     const constraintsOnKey = constraints[key] || {};
@@ -22,7 +22,7 @@ function canHaveAtLeastOneItem<TEntityNames extends PropertyKey>(
 
 export function initialPoolForEntityGraph<TEntityNames extends PropertyKey>(
   keys: TEntityNames[],
-  constraints: InitialPoolForEntityGraphConstraints<TEntityNames>,
+  constraints: Readonly<InitialPoolForEntityGraphConstraints<TEntityNames>>,
 ): Arbitrary<TEntityNames[]> {
   if (keys.length === 0) {
     return constant([]);

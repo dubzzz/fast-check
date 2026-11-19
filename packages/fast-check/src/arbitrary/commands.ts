@@ -22,8 +22,8 @@ import {
  * @public
  */
 function commands<Model extends object, Real, CheckAsync extends boolean>(
-  commandArbs: Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
-  constraints?: CommandsContraints,
+  commandArbs: readonly Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
+  constraints?: Readonly<CommandsContraints>,
 ): Arbitrary<Iterable<AsyncCommand<Model, Real, CheckAsync>>>;
 /**
  * For arrays of {@link Command} to be executed by {@link modelRun}
@@ -38,12 +38,12 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  * @public
  */
 function commands<Model extends object, Real>(
-  commandArbs: Arbitrary<Command<Model, Real>>[],
-  constraints?: CommandsContraints,
+  commandArbs: readonly Arbitrary<Command<Model, Real>>[],
+  constraints?: Readonly<CommandsContraints>,
 ): Arbitrary<Iterable<Command<Model, Real>>>;
 function commands<Model extends object, Real, RunResult, CheckAsync extends boolean>(
-  commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
-  constraints: CommandsContraints = {},
+  commandArbs: readonly Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
+  constraints: Readonly<CommandsContraints> = {},
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
   const { size, maxCommands = MaxLengthUpperBound, disableReplayLog = false, replayPath = null } = constraints;
   const specifiedMaxCommands = constraints.maxCommands !== undefined;

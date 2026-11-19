@@ -12,7 +12,7 @@ export const onlyIntegersAfterThisValue = 8388608;
  * @param constraints - Source constraints to be refined
  */
 export function refineConstraintsForFloatOnly(
-  constraints: Omit<FloatConstraints, 'noInteger'>,
+  constraints: Readonly<Omit<FloatConstraints, 'noInteger'>>,
 ): Required<Omit<FloatConstraints, 'noInteger'>> {
   return refineConstraintsForFloatingOnly(constraints, MAX_VALUE_32, maxNonIntegerValue, onlyIntegersAfterThisValue);
 }

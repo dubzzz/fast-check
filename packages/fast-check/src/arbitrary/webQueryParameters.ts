@@ -27,6 +27,6 @@ export interface WebQueryParametersConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function webQueryParameters(constraints: WebQueryParametersConstraints = {}): Arbitrary<string> {
+export function webQueryParameters(constraints: Readonly<WebQueryParametersConstraints> = {}): Arbitrary<string> {
   return buildUriQueryOrFragmentArbitrary(constraints.size);
 }

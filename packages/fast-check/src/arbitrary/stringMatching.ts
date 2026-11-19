@@ -64,7 +64,7 @@ type RegexFlags = {
  */
 function toMatchingArbitrary(
   astNode: RegexToken,
-  constraints: StringMatchingConstraints,
+  constraints: Readonly<StringMatchingConstraints>,
   flags: RegexFlags,
 ): Arbitrary<string> {
   switch (astNode.type) {
@@ -254,7 +254,10 @@ function toMatchingArbitrary(
  * @remarks Since 3.10.0
  * @public
  */
-export function stringMatching(regex: RegExp, constraints: StringMatchingConstraints = {}): Arbitrary<string> {
+export function stringMatching(
+  regex: RegExp,
+  constraints: Readonly<StringMatchingConstraints> = {},
+): Arbitrary<string> {
   for (const flag of regex.flags) {
     // Supported:
     //   d - generate indices for substring matches

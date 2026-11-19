@@ -28,7 +28,7 @@ export interface WebSegmentConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function webSegment(constraints: WebSegmentConstraints = {}): Arbitrary<string> {
+export function webSegment(constraints: Readonly<WebSegmentConstraints> = {}): Arbitrary<string> {
   // pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
   // segment       = *pchar
   return string({ unit: getOrCreateAlphaNumericPercentArbitrary("-._~!$&'()*+,;=:@"), size: constraints.size });

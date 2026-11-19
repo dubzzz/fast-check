@@ -27,7 +27,7 @@ export interface WebPathConstraints {
  * @remarks Since 3.3.0
  * @public
  */
-export function webPath(constraints?: WebPathConstraints): Arbitrary<string> {
+export function webPath(constraints?: Readonly<WebPathConstraints>): Arbitrary<string> {
   const c = constraints || {};
   const resolvedSize = resolveSize(c.size);
   return buildUriPathArbitrary(resolvedSize);

@@ -8,7 +8,9 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
  * @remarks Since 3.0.0
  * @public
  */
-export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigUint64Array<ArrayBuffer>> {
+export function bigUint64Array(
+  constraints: Readonly<BigIntArrayConstraints> = {},
+): Arbitrary<BigUint64Array<ArrayBuffer>> {
   return typedIntArrayArbitraryArbitraryBuilder<BigUint64Array<ArrayBuffer>, bigint>(
     constraints,
     0n,

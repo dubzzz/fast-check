@@ -17,10 +17,10 @@ export interface UuidConstraints {
    */
   version?:
     | (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15)
-    | (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15)[];
+    | readonly (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15)[];
 }
 
-function assertValidVersions(versions: number[]) {
+function assertValidVersions(versions: readonly number[]) {
   const found: { [key: number]: true | undefined } = {};
   for (const version of versions) {
     // Check no duplicates
@@ -44,7 +44,7 @@ function assertValidVersions(versions: number[]) {
  * @remarks Since 1.17.0
  * @public
  */
-export function uuid(constraints: UuidConstraints = {}): Arbitrary<string> {
+export function uuid(constraints: Readonly<UuidConstraints> = {}): Arbitrary<string> {
   // According to RFC 4122: Set the two most significant bits (bits 6 and 7) of the clock_seq_hi_and_reserved to zero and one, respectively
   // ie.: ????????-????-X???-Y???-????????????
   //      with X in 1, 2, 3, 4, 5

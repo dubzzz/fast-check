@@ -12,52 +12,32 @@ describe('GlobalParameters', () => {
     fc.resetConfigureGlobal();
   });
 
-  it('should merge global parameters with local ones in fc.sample', () => {
+  it('should merge global parameters with local ones in fc.sample', async () => {
     const globalConfig = { seed: 42, numRuns: 10 };
     const overridenNumRuns = 100;
 
-    const withLocalConfiguration = fc.sample(fc.nat(), { ...globalConfig, numRuns: overridenNumRuns });
+    const withLocalConfiguration = await fc.sample(fc.nat(), { ...globalConfig, numRuns: overridenNumRuns });
 
     fc.configureGlobal(globalConfig);
-    const withGlobalConfiguratioOverriden = fc.sample(fc.nat(), { numRuns: overridenNumRuns });
+    const withGlobalConfiguratioOverriden = await fc.sample(fc.nat(), { numRuns: overridenNumRuns });
 
     expect(withGlobalConfiguratioOverriden).toEqual(withLocalConfiguration);
     fc.resetConfigureGlobal();
   });
 
-  it('should merge global parameters with local numRuns in fc.sample', () => {
+  it('should merge global parameters with local ones in fc.statistics', async () => {
     const globalConfig = { seed: 42, numRuns: 10 };
     const overridenNumRuns = 100;
 
-    const withLocalConfiguration = fc.sample(fc.nat(), { ...globalConfig, numRuns: overridenNumRuns });
-
-    fc.configureGlobal(globalConfig);
-    const withGlobalConfiguratioOverriden = fc.sample(fc.nat(), overridenNumRuns);
-
-    expect(withGlobalConfiguratioOverriden).toEqual(withLocalConfiguration);
-    fc.resetConfigureGlobal();
-  });
-
-  it('should merge global parameters with local ones in fc.statistics', () => {
-    const globalConfig = { seed: 42, numRuns: 10 };
-
-    const withLocalConfiguration: string[] = [];
-    fc.statistics(fc.nat(), (v) => String(v), {
+    const withLocalConfiguration = await fc.statistics(fc.nat(), String, {
       ...globalConfig,
-      logger: (v: string) => {
-        withLocalConfiguration.push(v);
-      },
+      numRuns: overridenNumRuns,
     });
 
     fc.configureGlobal(globalConfig);
-    const withGlobalConfiguratioOverriden: string[] = [];
-    fc.statistics(fc.nat(), (v) => String(v), {
-      logger: (v: string) => {
-        withGlobalConfiguratioOverriden.push(v);
-      },
-    });
+    const withGlobalConfigurationOverriden = await fc.statistics(fc.nat(), String, { numRuns: overridenNumRuns });
 
-    expect(withGlobalConfiguratioOverriden).toEqual(withLocalConfiguration);
+    expect(withGlobalConfigurationOverriden).toEqual(withLocalConfiguration);
     fc.resetConfigureGlobal();
   });
 

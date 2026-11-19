@@ -20,7 +20,7 @@ export type RecordConstraints<T = unknown> = {
    * @defaultValue Array containing all keys of recordModel
    * @remarks Since 2.11.0
    */
-  requiredKeys?: T[];
+  requiredKeys?: readonly T[];
   /**
    * Do not generate records with null prototype
    * @defaultValue false
@@ -55,12 +55,12 @@ export type RecordValue<T, K> = Prettify<Partial<T> & Pick<T, K & keyof T>>;
  */
 function record<T, K extends keyof T = keyof T>(
   model: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints?: RecordConstraints<K>,
+  constraints?: Readonly<RecordConstraints<K>>,
 ): Arbitrary<RecordValue<T, K>>;
 
 function record<T>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints?: RecordConstraints<keyof T>,
+  constraints?: Readonly<RecordConstraints<keyof T>>,
 ): unknown {
   const noNullPrototype = constraints !== undefined && !!constraints.noNullPrototype;
   const requiredKeys = constraints !== undefined ? constraints.requiredKeys : undefined;
@@ -78,7 +78,7 @@ function record<T>(
     }
   }
 
-  return buildPartialRecordArbitrary(recordModel, requiredKeys as EnumerableKeyOf<T>[], noNullPrototype);
+  return buildPartialRecordArbitrary(recordModel, requiredKeys as readonly EnumerableKeyOf<T>[], noNullPrototype);
 }
 
 export { record };

@@ -75,7 +75,7 @@ export interface ArrayConstraintsInternal<T> extends ArrayConstraints {
  * @remarks Since 0.0.1
  * @public
  */
-function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitrary<T[]> {
+function array<T>(arb: Arbitrary<T>, constraints: Readonly<ArrayConstraints> = {}): Arbitrary<T[]> {
   const size = constraints.size;
   const minLength = constraints.minLength || 0;
   const maxLengthOrUnset = constraints.maxLength;
@@ -84,7 +84,7 @@ function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitr
   const specifiedMaxLength = maxLengthOrUnset !== undefined;
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
   const depthBias = depthBiasFromSizeForArbitrary(size, specifiedMaxLength);
-  const customSlices = (constraints as ArrayConstraintsInternal<T>).experimentalCustomSlices || [];
+  const customSlices = (constraints as Readonly<ArrayConstraintsInternal<T>>).experimentalCustomSlices || [];
   return new ArrayArbitrary<T>(
     arb,
     minLength,
