@@ -21,7 +21,7 @@ if (transform === '--help' || transform === '-h') {
     [
       fileURLToPath(import.meta.resolve('jscodeshift/bin/jscodeshift.js')),
       '--transform',
-      fileURLToPath(import.meta.resolve(`./transforms/v5/asyncProperty${extension}`)),
+      fileURLToPath(import.meta.resolve(`./transforms/${transform}.js`)),
       '--no-babel',
       '--extensions=js,jsx,ts,tsx,mjs,cjs,mts,cts',
       '--ignore-pattern=**/node_modules/**',
