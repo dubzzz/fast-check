@@ -41,7 +41,7 @@ function base64() {
  * @remarks Since 0.0.1
  * @public
  */
-function base64String(constraints: StringSharedConstraints = {}): Arbitrary<string> {
+function base64String(constraints: Readonly<StringSharedConstraints> = {}): Arbitrary<string> {
   const { minLength: unscaledMinLength = 0, maxLength: unscaledMaxLength = MaxLengthUpperBound, size } = constraints;
 
   const minLength = unscaledMinLength + 3 - ((unscaledMinLength + 3) % 4);

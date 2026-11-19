@@ -19,7 +19,7 @@ export type { JsonSharedConstraints, JsonValue };
  * @remarks Since 2.20.0
  * @public
  */
-export function jsonValue(constraints: JsonSharedConstraints = {}): Arbitrary<JsonValue> {
+export function jsonValue(constraints: Readonly<JsonSharedConstraints> = {}): Arbitrary<JsonValue> {
   const stringArbitrary = string({ unit: constraints.stringUnit });
   return anything(jsonConstraintsBuilder(stringArbitrary, constraints)) as Arbitrary<JsonValue>;
 }

@@ -44,7 +44,7 @@ function assertValidVersions(versions: readonly number[]) {
  * @remarks Since 1.17.0
  * @public
  */
-export function uuid(constraints: UuidConstraints = {}): Arbitrary<string> {
+export function uuid(constraints: Readonly<UuidConstraints> = {}): Arbitrary<string> {
   // According to RFC 4122: Set the two most significant bits (bits 6 and 7) of the clock_seq_hi_and_reserved to zero and one, respectively
   // ie.: ????????-????-X???-Y???-????????????
   //      with X in 1, 2, 3, 4, 5

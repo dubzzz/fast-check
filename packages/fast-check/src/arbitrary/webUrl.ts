@@ -60,7 +60,7 @@ export interface WebUrlConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
+export function webUrl(constraints?: Readonly<WebUrlConstraints>): Arbitrary<string> {
   const c = constraints || {};
   const resolvedSize = resolveSize(c.size);
   const resolvedAuthoritySettingsSize =

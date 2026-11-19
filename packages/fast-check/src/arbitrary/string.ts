@@ -37,7 +37,7 @@ export type StringConstraints = StringSharedConstraints & {
   unit?: 'grapheme' | 'grapheme-composite' | 'grapheme-ascii' | 'binary' | 'binary-ascii' | Arbitrary<string>;
 };
 
-function extractUnitArbitrary(constraints: Pick<StringConstraints, 'unit'>): Arbitrary<string> {
+function extractUnitArbitrary(constraints: Readonly<Pick<StringConstraints, 'unit'>>): Arbitrary<string> {
   if (typeof constraints.unit === 'object') {
     return constraints.unit;
   }
@@ -64,7 +64,7 @@ function extractUnitArbitrary(constraints: Pick<StringConstraints, 'unit'>): Arb
  * @remarks Since 0.0.1
  * @public
  */
-export function string(constraints: StringConstraints = {}): Arbitrary<string> {
+export function string(constraints: Readonly<StringConstraints> = {}): Arbitrary<string> {
   const charArbitrary = extractUnitArbitrary(constraints);
   const unmapper = patternsToStringUnmapperFor(charArbitrary, constraints);
   const experimentalCustomSlices = createSlicesForString(charArbitrary, constraints);

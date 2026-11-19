@@ -87,8 +87,8 @@ export type OneOfConstraints = {
 };
 
 function isOneOfContraints(
-  param: OneOfConstraints | MaybeWeightedArbitrary<unknown> | undefined,
-): param is OneOfConstraints {
+  param: Readonly<OneOfConstraints> | MaybeWeightedArbitrary<unknown> | undefined,
+): param is Readonly<OneOfConstraints> {
   return (
     param !== undefined &&
     typeof param === 'object' &&
@@ -130,11 +130,11 @@ function oneof<Ts extends MaybeWeightedArbitrary<unknown>[]>(...arbs: Ts): Arbit
  * @public
  */
 function oneof<Ts extends MaybeWeightedArbitrary<unknown>[]>(
-  constraints: OneOfConstraints,
+  constraints: Readonly<OneOfConstraints>,
   ...arbs: Ts
 ): Arbitrary<OneOfValue<Ts>>;
 function oneof<Ts extends MaybeWeightedArbitrary<unknown>[]>(
-  ...args: [...Ts] | [OneOfConstraints, ...Ts]
+  ...args: [...Ts] | [Readonly<OneOfConstraints>, ...Ts]
 ): Arbitrary<OneOfValue<Ts>> {
   // TODO With TypeScript 4.0 it will be possible to properly define typings for `oneof(...arbs, constraints)`
   const constraints = args[0];

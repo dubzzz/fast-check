@@ -232,7 +232,7 @@ function loremWord() {
  * @remarks Since 0.0.1
  * @public
  */
-export function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
+export function lorem(constraints: Readonly<LoremConstraints> = {}): Arbitrary<string> {
   const { maxCount, mode = 'words', size } = constraints;
   if (maxCount !== undefined && maxCount < 1) {
     throw new Error(`lorem has to produce at least one word/sentence`);

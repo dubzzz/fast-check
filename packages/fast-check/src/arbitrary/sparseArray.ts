@@ -84,7 +84,7 @@ function arrayFromItems<T>(length: number, indexesAndValues: [number, T][]) {
  * @remarks Since 2.13.0
  * @public
  */
-export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstraints = {}): Arbitrary<T[]> {
+export function sparseArray<T>(arb: Arbitrary<T>, constraints: Readonly<SparseArrayConstraints> = {}): Arbitrary<T[]> {
   const {
     size,
     minNumElements = 0,

@@ -125,8 +125,8 @@ export type QualifiedObjectConstraints = Required<
 type DefaultValuesConstraints = { size: SizeForArbitrary };
 
 function defaultValues(
-  constraints: DefaultValuesConstraints,
-  stringArbitrary: (constraints: DefaultValuesConstraints) => Arbitrary<string>,
+  constraints: Readonly<DefaultValuesConstraints>,
+  stringArbitrary: (constraints: Readonly<DefaultValuesConstraints>) => Arbitrary<string>,
 ): Arbitrary<unknown>[] {
   return [
     boolean(),
@@ -151,7 +151,7 @@ function boxArbitrariesIfNeeded(
 /**
  * Convert constraints of type ObjectConstraints into fully qualified constraints
  */
-export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): QualifiedObjectConstraints {
+export function toQualifiedObjectConstraints(settings: Readonly<ObjectConstraints> = {}): QualifiedObjectConstraints {
   const valueConstraints = {
     size: settings.size,
     unit: settings.stringUnit,
