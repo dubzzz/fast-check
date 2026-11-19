@@ -20,7 +20,7 @@ Add `--dry --print` to preview changes without writing files. Commit your work b
 
 #### `v5/defaultImport`
 
-**Compatible with fast-check ≥1.0.0.**
+**Requirements:** fast-check ≥1.0.0.
 
 Replaces default imports with namespace imports. Also handles `import type` and defaults combined with named imports.
 
