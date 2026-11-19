@@ -29,10 +29,6 @@ describe.each(codemods)('Codemod $version/$codemod', ({ version, codemod, cases 
 
     // Run the codemod
     await runCodemod(version, codemod, once);
-
-    // Run the codemod a second time
-    await cp(once, twice, { recursive: true });
-    await runCodemod(version, codemod, twice);
   }, 120_000);
 
   afterAll(async () => {
@@ -44,12 +40,20 @@ describe.each(codemods)('Codemod $version/$codemod', ({ version, codemod, cases 
     await expect(migrated).toMatchFileSnapshot(join(fixtures, version, codemod, name, 'expected.ts'));
   });
 
-  it.each(cases)('should leave %s unchanged on a second run', async (name) => {
-    const [migrated, actualAfterSecondRun] = await Promise.all([
-      readFile(join(once, `${name}.ts`), 'utf8'),
-      readFile(join(twice, `${name}.ts`), 'utf8'),
-    ]);
-    expect(actualAfterSecondRun).toBe(migrated);
+  describe('on second run', () => {
+    beforeAll(async () => {
+      // Run the codemod a second time
+      await cp(once, twice, { recursive: true });
+      await runCodemod(version, codemod, twice);
+    }, 120_000);
+
+    it.each(cases)('should leave %s unchanged', async (name) => {
+      const [migrated, actualAfterSecondRun] = await Promise.all([
+        readFile(join(once, `${name}.ts`), 'utf8'),
+        readFile(join(twice, `${name}.ts`), 'utf8'),
+      ]);
+      expect(actualAfterSecondRun).toBe(migrated);
+    });
   });
 });
 
