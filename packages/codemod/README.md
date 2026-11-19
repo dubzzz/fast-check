@@ -9,7 +9,7 @@ Codemods to help upgrade projects using `fast-check`.
 Requires Node.js 20.19.0 or later. Run a transform on a file or directory:
 
 ```sh
-npx @fast-check/codemod@latest v5/defaultImport <path>
+npx @fast-check/codemod@latest <transform> <path>
 ```
 
 Add `--dry --print` to preview changes without writing files. Commit your work before running a codemod, then review the diff.
