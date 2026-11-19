@@ -4,8 +4,6 @@ import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-const extension = extname(fileURLToPath(import.meta.url));
-
 const [transform, ...args] = process.argv.slice(2);
 const usage = 'Usage: fast-check-codemod v5/asyncProperty <path> [jscodeshift options]';
 
