@@ -21,7 +21,6 @@ Replace default imports from `fast-check` with namespace imports for v5, keeping
 ```diff
 -import fc from 'fast-check';
 +import * as fc from 'fast-check';
- fc.sample(fc.integer());
 ```
 
 Type-only default imports remain type-only:
@@ -29,20 +28,15 @@ Type-only default imports remain type-only:
 ```diff
 -import type fc from 'fast-check';
 +import type * as fc from 'fast-check';
- type Arbitrary = fc.Arbitrary<number>;
 ```
 
 Mixed imports are split into separate declarations, preserving named imports and their aliases:
 
 ```diff
--import fc, { integer as int, type Arbitrary } from 'fast-check';
+-import fc, { integer } from 'fast-check';
 +import * as fc from 'fast-check';
-+import { integer as int, type Arbitrary } from 'fast-check';
++import { integer } from 'fast-check';
 ```
-
-The transform also handles named default imports (`import { default as fc }`), including type-only forms (`import type { default as fc }` and `import { type default as fc }`). Existing namespace imports, named imports other than `default`, imports from other modules, comments, and strings are preserved. Running the codemod again leaves the result unchanged.
-
-This transform handles ES import declarations. CommonJS `require`, dynamic imports, and re-exports are not migrated. Imports with attributes (`with { ... }`) are left unchanged because the printer does not yet support them.
 
 ## Development
 
@@ -55,6 +49,8 @@ node packages/codemod/src/cli.ts v5/defaultImport <path> --dry --print
 ```
 
 The E2E cases live in `test/fixture/<version>/<codemod>/<name>/{actual,expected}.ts`, starting with `v5/defaultImport`. The shared `test/fixtures.spec.ts` discovers the directories and uses one `describe.each` named `Codemod <version>/<codemod>`, with an `it.each` for cases.
+
+Keep each fixture focused on one migration pattern. Use the `advanced-` prefix for the few cases combining patterns, aliases, or comments.
 
 Each codemod suite has its own `beforeAll`, which copies inputs into `.test-artifacts/<version>/<codemod>/once/<name>.ts` and runs the codemod on that directory. It then copies the migrated files into the adjacent `twice/` directory and runs the codemod there again. Each test uses `toMatchFileSnapshot` to compare the first migration with its `expected.ts` and compares both migrated files directly to verify `migrate(actual) = migrate(migrate(actual))`, even when updating snapshots. Setup and teardown only clean that suite's `.test-artifacts/<version>/<codemod>/` directory, preserving other versions and codemods. Each suite uses `afterAll` so cleanup also runs if setup fails before it could return a teardown function.
 

@@ -1,4 +1,4 @@
-import type { FileInfo, Identifier, ImportDeclaration, JSCodeshift, StringLiteral } from 'jscodeshift';
+import type { FileInfo, JSCodeshift } from 'jscodeshift';
 
 export default function transform(file: FileInfo, api: { jscodeshift: JSCodeshift }): string {
   const parser = /\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx';
@@ -12,39 +12,20 @@ export default function transform(file: FileInfo, api: { jscodeshift: JSCodeshif
     if ('attributes' in node && Array.isArray(node.attributes) && node.attributes.length !== 0) {
       return;
     }
-    const imports: ImportDeclaration[] = [];
-    const remainingSpecifiers = [];
-    for (const specifier of node.specifiers ?? []) {
-      // ast-types does not yet include string literals in its import name type.
-      const imported =
-        specifier.type === 'ImportSpecifier' ? (specifier.imported as Identifier | StringLiteral) : undefined;
-      const isDefault =
-        specifier.type === 'ImportDefaultSpecifier' ||
-        (imported?.type === 'StringLiteral' ? imported.value === 'default' : imported?.name === 'default');
-      if (!isDefault) {
-        remainingSpecifiers.push(specifier);
-        continue;
-      }
-      const namespace = j.importNamespaceSpecifier(specifier.local);
-      namespace.comments = specifier.comments;
-      imports.push({
-        ...node,
-        specifiers: [namespace],
-        importKind: 'importKind' in specifier && specifier.importKind === 'type' ? 'type' : node.importKind,
-        comments: null,
-      });
-    }
-    if (imports.length === 0) {
+    const specifiers = node.specifiers ?? [];
+    const defaultSpecifier = specifiers.find((specifier) => specifier.type === 'ImportDefaultSpecifier');
+    if (defaultSpecifier === undefined) {
       return;
     }
+
+    const namespace = j.importNamespaceSpecifier(defaultSpecifier.local);
+    namespace.comments = defaultSpecifier.comments;
+    const remainingSpecifiers = specifiers.filter((specifier) => specifier !== defaultSpecifier);
     if (remainingSpecifiers.length !== 0) {
       // Namespace and named imports cannot share a declaration.
-      imports.push({ ...node, specifiers: remainingSpecifiers, comments: null });
+      path.insertAfter({ ...node, specifiers: remainingSpecifiers, comments: null });
     }
-    // Keep the original declaration for its comments and formatting.
-    node.specifiers = imports[0].specifiers;
-    node.importKind = imports[0].importKind;
-    path.replace(node, ...imports.slice(1));
+    node.specifiers = [namespace];
     changed = true;
   });
 
