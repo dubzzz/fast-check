@@ -6,13 +6,17 @@
   "bin": {
     "fast-check-codemod": "./lib/cli.js"
   },
+  "exports": {
+    "./package.json": "./package.json",
+    "./cli": "./lib/cli.js",
+    "./transforms/v5/asyncProperty": "./lib/transforms/v5/asyncProperty.js"
+  },
   "files": [
     "lib"
   ],
   "scripts": {
     "build": "rolldown -c",
     "build-ci": "rolldown -c",
-    "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -45,5 +49,15 @@
     "codemod",
     "fast-check",
     "migration"
+  ],
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
   ]
 }

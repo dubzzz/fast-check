@@ -1,21 +1,4 @@
-import { defineConfig } from 'rolldown';
-import { readdirSync } from 'node:fs';
+import buildConfigFor from '../../rolldown.common.config.js';
+import pkg from './package.json' with { type: 'json' };
 
-const transforms = readdirSync('src/transforms', { recursive: true })
-  .filter((file) => file.endsWith('.ts'))
-  .map((file) => file.replaceAll('\\', '/'))
-  .sort();
-
-export default defineConfig({
-  input: {
-    cli: 'src/cli.ts',
-    ...Object.fromEntries(transforms.map((file) => [`transforms/${file.slice(0, -3)}`, `src/transforms/${file}`])),
-  },
-  output: {
-    dir: 'lib',
-    format: 'esm',
-    entryFileNames: '[name].js',
-    cleanDir: true,
-  },
-  external: /^[^./]/,
-});
+export default buildConfigFor(pkg, import.meta.dirname);
