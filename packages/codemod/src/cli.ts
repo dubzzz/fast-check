@@ -4,12 +4,13 @@ import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
+const allTransforms = ['v5/asyncProperty'];
 const [transform, ...args] = process.argv.slice(2);
-const usage = 'Usage: fast-check-codemod v5/asyncProperty <path> [jscodeshift options]';
+const usage = 'Usage: fast-check-codemod <transform> <path> [jscodeshift options]\nwith transform being one of: ' + allTransforms.join(', ');
 
 if (transform === '--help' || transform === '-h') {
   console.log(usage);
-} else if (transform !== 'v5/asyncProperty' || args.length === 0 || args[0].startsWith('-')) {
+} else if (allTransforms.includes(transform) || args.length === 0 || args[0].startsWith('-')) {
   console.error(usage);
   process.exitCode = 1;
 } else if (!existsSync(args[0])) {
