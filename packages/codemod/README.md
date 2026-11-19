@@ -22,7 +22,7 @@ Add `--dry --print` to preview changes without writing files. Commit your work b
 
 **Requirements:** fast-check ≥1.0.0.
 
-Replaces default imports with namespace imports. Also handles `import type` and defaults combined with named imports.
+Replaces default imports with namespace imports. Also handles `import type`.
 
 <details>
 <summary>Migration example</summary>
