@@ -18,8 +18,6 @@ Add `--dry --print` to preview changes without writing files. Commit your work b
 
 ### v5
 
-These transforms help prepare your code for fast-check v5. Each lists the earliest fast-check version it can be used with, so you can apply it before upgrading when possible.
-
 #### `v5/defaultImport`
 
 **Can be used with fast-check 1.0.0 and later**, including any 1.x, 2.x, 3.x or 4.x release.
