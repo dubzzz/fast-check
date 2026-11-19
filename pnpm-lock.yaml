@@ -303,16 +303,10 @@ importers:
 
   packages/codemod:
     dependencies:
-      '@babel/traverse':
-        specifier: ^7.29.13
-        version: 7.29.13(supports-color@8.1.1)
       jscodeshift:
         specifier: ^17.4.0
         version: 17.4.0(@babel/preset-env@7.29.7(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
     devDependencies:
-      '@types/babel__traverse':
-        specifier: ^7.28.0
-        version: 7.28.0
       '@types/jscodeshift':
         specifier: ^17.3.0
         version: 17.3.0
