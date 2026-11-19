@@ -26,7 +26,12 @@ These transforms help prepare your code for fast-check v5. Each lists the earlie
 
 Replaces default imports with namespace imports. Also handles `import type` and defaults combined with named imports.
 
+<details>
+<summary>Migration example</summary>
+
 ```diff
 -import fc from 'fast-check';
 +import * as fc from 'fast-check';
 ```
+
+</details>
