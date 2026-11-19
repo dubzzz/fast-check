@@ -70,7 +70,7 @@ export interface Parameters<T = void> {
    *
    * @remarks Since 1.4.0
    */
-  examples?: T[];
+  examples?: readonly T[];
   /**
    * Stop run on failure
    *
@@ -116,5 +116,5 @@ export interface Parameters<T = void> {
    *
    * @remarks Since 4.10.0
    */
-  plugins?: Plugin<T>[];
+  plugins?: readonly Plugin<T>[];
 }

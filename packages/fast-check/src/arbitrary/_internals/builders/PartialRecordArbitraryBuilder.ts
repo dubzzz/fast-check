@@ -15,7 +15,7 @@ type NoKeyType = typeof noKeyValue;
 
 export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  requiredKeys: TKeys[] | undefined,
+  requiredKeys: readonly TKeys[] | undefined,
   noNullPrototype: boolean,
 ): Arbitrary<Partial<T> & Pick<T, TKeys>> {
   const keys = extractEnumerableKeys(recordModel);

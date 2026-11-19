@@ -1,4 +1,4 @@
-export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
+export function isSubarrayOf(source: readonly unknown[], small: unknown[]): boolean {
   const countMap = new Map<unknown, number>();
   let countMinusZero = 0;
   for (const sourceEntry of source) {

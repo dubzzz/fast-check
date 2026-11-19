@@ -51,7 +51,7 @@ export interface Scheduler<TMetaData = unknown> {
    * @remarks Since 1.20.0
    */
   scheduleSequence(
-    sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
+    sequenceBuilders: readonly SchedulerSequenceItem<TMetaData>[],
     customAct?: SchedulerAct,
   ): {
     readonly done: boolean;

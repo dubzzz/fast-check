@@ -20,7 +20,7 @@ export type RecordConstraints<T = unknown> = {
    * @defaultValue Array containing all keys of recordModel
    * @remarks Since 2.11.0
    */
-  requiredKeys?: T[];
+  requiredKeys?: readonly T[];
   /**
    * Do not generate records with null prototype
    * @defaultValue false
@@ -78,7 +78,7 @@ function record<T>(
     }
   }
 
-  return buildPartialRecordArbitrary(recordModel, requiredKeys as EnumerableKeyOf<T>[], noNullPrototype);
+  return buildPartialRecordArbitrary(recordModel, requiredKeys as readonly EnumerableKeyOf<T>[], noNullPrototype);
 }
 
 export { record };
