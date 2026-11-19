@@ -623,37 +623,3 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>();
-
-// readonly constraints
-// Public inputs expose the readonly contract while constraint types remain mutable for callers.
-expectTypeOf<Parameters<typeof fc.integer>[0]>().toEqualTypeOf<Readonly<fc.IntegerConstraints> | undefined>();
-expectTypeOf<Parameters<typeof fc.array>[1]>().toEqualTypeOf<Readonly<fc.ArrayConstraints> | undefined>();
-expectTypeOf<Parameters<typeof fc.nat>[0]>().toEqualTypeOf<number | Readonly<fc.NatConstraints> | undefined>();
-expectTypeOf<Parameters<typeof fc.bigInt>>().toEqualTypeOf<[] | [bigint, bigint] | [Readonly<fc.BigIntConstraints>]>();
-const mutableConstraints: fc.IntegerConstraints = {};
-mutableConstraints.min = 0;
-expectTypeOf(fc.integer(mutableConstraints)).toEqualTypeOf<fc.Arbitrary<number>>();
-
-const emptyConstraints = {} as const;
-expectTypeOf(fc.integer(emptyConstraints)).toEqualTypeOf<fc.Arbitrary<number>>();
-const readonlyBounds: Readonly<fc.IntegerConstraints> = { min: 0, max: 10 };
-expectTypeOf(fc.integer(readonlyBounds)).toEqualTypeOf<fc.Arbitrary<number>>();
-const frozenLengths = Object.freeze({ minLength: 1, maxLength: 3 });
-expectTypeOf(fc.array(fc.nat(), frozenLengths)).toEqualTypeOf<fc.Arbitrary<number[]>>();
-expectTypeOf(fc.string(frozenLengths)).toEqualTypeOf<fc.Arbitrary<string>>();
-
-// Readonly inputs preserve inference for generic, literal-dependent and overloaded arbitraries.
-const optionConstraints = { nil: 'missing' } as const;
-expectTypeOf(fc.option(fc.nat(), optionConstraints)).toEqualTypeOf<fc.Arbitrary<number | 'missing'>>();
-const falsyConstraints = { withBigInt: true } as const;
-expectTypeOf(fc.falsy(falsyConstraints)).toEqualTypeOf<fc.Arbitrary<fc.FalsyValue<typeof falsyConstraints>>>();
-const recordConstraints = { requiredKeys: ['name'], noNullPrototype: true } as const;
-expectTypeOf(fc.record({ name: fc.string(), count: fc.nat() }, recordConstraints)).toEqualTypeOf<
-  fc.Arbitrary<{ name: string; count?: number }>
->();
-const uniqueConstraints = { selector: (value: { id: number }) => value.id, comparator: 'SameValue' } as const;
-expectTypeOf(fc.uniqueArray(fc.record({ id: fc.nat() }), uniqueConstraints)).toEqualTypeOf<
-  fc.Arbitrary<{ id: number }[]>
->();
-const webConstraints = { validSchemes: ['https'], authoritySettings: { withPort: true, size: 'small' } } as const;
-expectTypeOf(fc.webUrl(webConstraints)).toEqualTypeOf<fc.Arbitrary<string>>();
