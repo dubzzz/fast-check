@@ -10,7 +10,7 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
     return undefined;
   }
   if (options.has('markInterruptAsFailure') && !options.has('interruptAfterTimeLimit')) {
-    report('Pair markInterruptAsFailure with its interruptAfterTimeLimit before migrating.');
+    report('Review markInterruptAsFailure together with the interruption policy and any consumers of v4 RunDetails.');
     return undefined;
   }
   if (!remove.length) {
@@ -58,7 +58,16 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
       });
     }
   }
-  if (options.has('markInterruptAsFailure')) remove.push('markInterruptAsFailure');
+  const markFailure = options.get('markInterruptAsFailure');
+  // The v4 plugin alone can throw before check returns its RunDetails or a custom reporter receives them.
+  // The legacy flag makes v4 classify the run as failed before the plugin's completion hook.
+  if (
+    markFailure &&
+    ((j.BooleanLiteral.check(markFailure) && !markFailure.value) ||
+      (runner === 'assert' && !options.has('reporter') && !options.has('asyncReporter')))
+  ) {
+    remove.push('markInterruptAsFailure');
+  }
   return { remove, plugins, conflicts: remove.includes('interruptAfterTimeLimit') ? ['markInterruptAsFailure'] : [] };
 }
 
