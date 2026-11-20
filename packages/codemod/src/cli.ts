@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-const allTransforms = ['v5/defaultImport'];
+const allTransforms = ['v5/defaultImport', 'v5/runnerPlugins'];
 const [transform, ...args] = process.argv.slice(2);
 const usage =
   'Usage: fast-check-codemod <transform> <path> [jscodeshift options]\nwith transform being one of: ' +
