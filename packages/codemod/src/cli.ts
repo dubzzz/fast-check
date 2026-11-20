@@ -3,13 +3,16 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import pkg from '../package.json' with { type: 'json' };
 
-const allTransforms = ['v5/defaultImport', 'v5/runnerPlugins'];
+const transformPrefix = './transforms/';
+const allTransforms = Object.keys(pkg.exports)
+  .filter((entry) => entry.startsWith(transformPrefix))
+  .map((entry) => entry.slice(transformPrefix.length));
 const [transform, ...args] = process.argv.slice(2);
 const usage =
   'Usage: fast-check-codemod <transform> <path> [jscodeshift options]\nwith transform being one of: ' +
-  allTransforms.join(', ') +
-  '\nv5/runnerPlugins <path> --reporters-only migrates reporting for fast-check ≥5.0.0';
+  allTransforms.join(', ');
 
 if (transform === '--help' || transform === '-h') {
   console.log(usage);
@@ -32,7 +35,7 @@ if (transform === '--help' || transform === '-h') {
       '--ignore-pattern=**/node_modules/**',
       '--ignore-pattern=**/.git/**',
       '--fail-on-error',
-      ...args.map((arg) => (arg === '--reporters-only' ? '--reporters-only=true' : arg)),
+      ...args,
     ],
     { stdio: 'inherit' },
   );

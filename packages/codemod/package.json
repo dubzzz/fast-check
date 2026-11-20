@@ -6,6 +6,7 @@
   "exports": {
     "./package.json": "./package.json",
     "./cli": "./lib/cli.js",
+    "./transforms/v5/reporterPlugins": "./lib/transforms/v5/reporterPlugins.js",
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
     "./transforms/v5/runnerPlugins": "./lib/transforms/v5/runnerPlugins.js"
   },

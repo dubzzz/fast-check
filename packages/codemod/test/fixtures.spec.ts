@@ -80,19 +80,12 @@ async function discoverCodemodFixtures(): Promise<{ version: string; codemod: st
   return Promise.all(
     codemods.map(async ({ version, codemod }) => {
       const cases = await listSubdirectoryNames(join(fixtures, version, codemod));
+      cases.sort((a, b) => Number(a.startsWith('advanced-')) - Number(b.startsWith('advanced-')));
       return { version, codemod, cases };
     }),
   );
 }
 
 async function runCodemod(version: string, codemod: string, target: string): Promise<void> {
-  // Fixture directories may add CLI flags after the transform name.
-  const [transform, ...flags] = codemod.split('--');
-  await execFile(process.execPath, [
-    cli,
-    `${version}/${transform}`,
-    target,
-    '--cpus=1',
-    ...flags.map((flag) => '--' + flag),
-  ]);
+  await execFile(process.execPath, [cli, `${version}/${codemod}`, target, '--cpus=1']);
 }

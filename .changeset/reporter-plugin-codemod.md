@@ -2,4 +2,4 @@
 '@fast-check/codemod': patch
 ---
 
-Add an opt-in v5 reporter migration to `v5/runnerPlugins`.
+Add `v5/reporterPlugins` to migrate reporter options to fast-check v5 plugins.
