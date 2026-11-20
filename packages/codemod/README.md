@@ -40,6 +40,17 @@ Example:
 
 </details>
 
+<details><summary><code>v5/stringUnit</code> (≥3.23.0) — Migrates Unicode flags on object and JSON arbitraries</summary>
+
+```diff
+-fc.object({ withUnicodeString: true });
++fc.object({ stringUnit: 'binary' });
+```
+
+Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`. When the options already include `stringUnit`, the transform drops the redundant literal flag. On 3.23.0, switching to the binary unit preserves the Unicode character range but can change which string a seed generates.
+
+</details>
+
 <details><summary><code>v5/runnerPlugins</code> (≥4.10.0) — Moves runner options into plugins</summary>
 
 ```diff
