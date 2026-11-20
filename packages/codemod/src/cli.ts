@@ -3,8 +3,12 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import pkg from '../package.json' with { type: 'json' };
 
-const allTransforms = ['v5/defaultImport', 'v5/runnerPlugins', 'v5/lifecyclePlugins'];
+const transformPrefix = './transforms/';
+const allTransforms = Object.keys(pkg.exports)
+  .filter((entry) => entry.startsWith(transformPrefix))
+  .map((entry) => entry.slice(transformPrefix.length));
 const [transform, ...args] = process.argv.slice(2);
 const usage =
   'Usage: fast-check-codemod <transform> <path> [jscodeshift options]\nwith transform being one of: ' +

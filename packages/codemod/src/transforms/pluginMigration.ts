@@ -16,6 +16,7 @@ type Runner = 'assert' | 'check' | 'configureGlobal';
 
 export interface PluginEdit {
   remove: string[];
+  shareLocalOptions?: boolean;
   plugins: { value: Expression; when?: Expression }[];
   conflicts?: string[];
   parameters?: Record<string, Expression>;
@@ -35,7 +36,7 @@ export interface PluginCall {
   report: (message: string) => void;
 }
 
-export function declarationOf(path: CallPath, name: string): ASTPath | undefined {
+export function declarationOf(path: ASTPath, name: string): ASTPath | undefined {
   const bindings = path.scope.lookup(name)?.getBindings()[name];
   return bindings?.length === 1 ? bindings[0].parent : undefined;
 }
@@ -128,8 +129,12 @@ function isSimple(j: JSCodeshift, value: Expression): boolean {
   );
 }
 
-// Inlining a single-use options constant is safe when its values cannot change between declaration and use.
-function constantOptions(j: JSCodeshift, path: CallPath, name: string): ASTPath<ObjectExpression> | undefined {
+// Only rewrite literal constants whose complete set of uses is known.
+function constantOptions(
+  j: JSCodeshift,
+  path: CallPath,
+  name: string,
+): { object: ASTPath<ObjectExpression>; sharedUses?: CallExpression[] } | undefined {
   const declaration = declarationOf(path, name);
   if (
     !declaration ||
@@ -137,8 +142,7 @@ function constantOptions(j: JSCodeshift, path: CallPath, name: string): ASTPath<
     declaration.parent.node.kind !== 'const' ||
     declaration.parent.node.declarations.length !== 1 ||
     declaration.parent.node.comments?.length ||
-    !['Program', 'BlockStatement'].includes(declaration.parent.parent.node.type) ||
-    j(declaration.scope.path).find(j.Identifier, { name }).size() !== 2
+    !['Program', 'BlockStatement'].includes(declaration.parent.parent.node.type)
   )
     return undefined;
   const init = declaration.node.init;
@@ -149,7 +153,29 @@ function constantOptions(j: JSCodeshift, path: CallPath, name: string): ASTPath<
     )
   )
     return undefined;
-  return declaration.get('init');
+  const object = declaration.get('init');
+  const binding = declaration.node.id;
+  const references = j(declaration.scope.path)
+    .find(j.Identifier, { name })
+    .paths()
+    .filter((ref) => ref.node !== binding);
+  if (references.length === 1) return { object };
+  if (declaration.node.id.type !== 'Identifier' || declaration.node.id.typeAnnotation) return undefined;
+  const sharedUses: CallExpression[] = [];
+  for (const ref of references) {
+    const use = ref.parent;
+    if (
+      !j.CallExpression.check(use.node) ||
+      use.node.arguments.length !== 2 ||
+      use.node.arguments[1] !== ref.node ||
+      declarationOf(ref, name)?.node !== declaration.node
+    )
+      return undefined;
+    const runner = importedName(use, use.node);
+    if (runner !== 'assert' && runner !== 'check') return undefined;
+    sharedUses.push(use.node);
+  }
+  return { object, sharedUses };
 }
 
 export function migratePluginCalls(
@@ -177,8 +203,9 @@ export function migratePluginCalls(
     if (args.length < 1 || args.length > index + 1) continue;
     const argument = args[index];
     const constant = j.Identifier.check(argument) ? constantOptions(j, path, argument.name) : undefined;
-    const object = constant?.node ?? argument ?? j.objectExpression([]);
+    const object = constant?.object.node ?? argument ?? j.objectExpression([]);
     if (!j.ObjectExpression.check(object)) continue;
+    if (constant?.sharedUses && constant.sharedUses[0] !== path.node) continue;
     const first = object.properties[0];
     const keepsGlobal =
       runner === 'configureGlobal' &&
@@ -190,6 +217,16 @@ export function migratePluginCalls(
     if (!options) continue;
     const callee = path.node.callee;
     const receiver = j.MemberExpression.check(callee) ? callee.object : undefined;
+    if (constant?.sharedUses && receiver) {
+      if (!j.Identifier.check(receiver)) continue;
+      // A shared initializer can be outside the caller's scope or before a CommonJS require.
+      const binding = declarationOf(path, receiver.name);
+      if (
+        binding?.parent.node.type !== 'ImportDeclaration' ||
+        declarationOf(constant.object, receiver.name)?.node !== binding.node
+      )
+        continue;
+    }
     const member = (name: string) => j.memberExpression(receiver ?? j.identifier(namespace), j.identifier(name));
     const report = (message: string) => api.report('line ' + (path.node.loc?.start.line ?? '?') + ': ' + message);
     const edit = migrate({
@@ -205,7 +242,7 @@ export function migratePluginCalls(
     const keys = runner === 'configureGlobal' ? globalKeys : localKeys;
     for (const key of options.keys()) keys.add(key);
     for (const key of edit?.conflicts ?? []) keys.add(key);
-    if (edit)
+    if (edit && (!constant?.sharedUses || edit.shareLocalOptions))
       sites.push({ path, runner, index, object, options, receiver, member, edit, report, keepsGlobal, constant });
   }
 
@@ -263,9 +300,9 @@ export function migratePluginCalls(
       for (const [key, value] of Object.entries(edit.parameters))
         retained.push(j.objectProperty(j.identifier(key), value));
     }
-    if (constant) {
+    if (constant && !constant.sharedUses) {
       path.node.arguments[index] = object;
-      constant.parent.parent.prune();
+      constant.object.parent.parent.prune();
     }
     edit.apply?.();
     object.properties = retained;
@@ -274,11 +311,13 @@ export function migratePluginCalls(
         const install = j.expressionStatement(j.callExpression(member('installGlobalPlugin'), [value]));
         return when ? j.ifStatement(when, j.blockStatement([install])) : install;
       });
-      if (retained.length) statements.unshift(statement.node);
-      if (statement.node.comments?.length && statements.length && !retained.length)
+      const keepSettings = retained.length > (keepsGlobal ? 1 : 0);
+      if (keepSettings) statements.unshift(statement.node);
+      if (statement.node.comments?.length && statements.length && !keepSettings)
         statements[0].comments = statement.node.comments;
       // configureGlobal({}) also clears previous parameters. Keep it if there is nothing to install.
       if (statements.length) statement.replace(...statements);
+      else if (keepsGlobal && !statement.node.comments?.length) statement.prune();
     } else {
       if (edit.property) path.node.arguments[0] = edit.property;
       if (edit.plugins.length) {
@@ -292,7 +331,12 @@ export function migratePluginCalls(
         array.elements.splice(before === -1 ? array.elements.length : before, 0, ...elements);
         if (!existing) object.properties.push(j.objectProperty(j.identifier('plugins'), array));
       }
-      if (object.properties.length) path.node.arguments[index] = object;
+      if (constant?.sharedUses) {
+        if (object.properties.length === 0) {
+          for (const use of constant.sharedUses) use.arguments.splice(index, 1);
+          constant.object.parent.parent.prune();
+        }
+      } else if (object.properties.length) path.node.arguments[index] = object;
       else path.node.arguments.splice(index, 1);
     }
     needsNamespace ||= !receiver && edit.plugins.length > 0;

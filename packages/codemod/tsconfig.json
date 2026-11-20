@@ -3,6 +3,7 @@
   "compilerOptions": {
     "types": ["node"],
     "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
     "outDir": "lib/"
   },
   "include": ["src/", "test/"],

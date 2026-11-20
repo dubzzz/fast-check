@@ -20,7 +20,7 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
       options.size === 0 &&
       !call.arguments[1].comments?.length
     )
-      return { remove, plugins: [] };
+      return { remove, plugins: [], shareLocalOptions: true };
     return undefined;
   }
 
@@ -68,7 +68,12 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
   ) {
     remove.push('markInterruptAsFailure');
   }
-  return { remove, plugins, conflicts: remove.includes('interruptAfterTimeLimit') ? ['markInterruptAsFailure'] : [] };
+  return {
+    remove,
+    plugins,
+    shareLocalOptions: !markFailure,
+    conflicts: remove.includes('interruptAfterTimeLimit') ? ['markInterruptAsFailure'] : [],
+  };
 }
 
 export default function transform(file: FileInfo, api: API): string {

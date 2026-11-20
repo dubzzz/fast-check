@@ -32,8 +32,8 @@ Example:
 <details><summary><code>v5/runnerPlugins</code> (≥4.10.0) — Moves runner options into plugins</summary>
 
 ```diff
--fc.assert(property, { timeout: 500, skipEqualValues: true });
-+fc.assert(property, { plugins: [fc.skipEqualValues(), fc.timeout(500)] });
+-fc.assert(property, { timeout: 500 });
++fc.assert(property, { plugins: [fc.timeout(500)] });
 -fc.check(property, { unbiased: false });
 +fc.check(property);
 -fc.configureGlobal({ numRuns: 20, ignoreEqualValues: true });
@@ -43,7 +43,7 @@ Example:
 
 Also handles `interruptAfterTimeLimit` and its `markInterruptAsFailure` flag. Use ≥4.10.2 for the interrupt plugin's timer fix.
 For v4 `check`, global setup and assertions with a custom reporter, the transform also keeps an enabled `markInterruptAsFailure` so callers still receive failed run details on interruption. Revisit that flag with the v5 reporting migration.
-The transform handles inline option objects, single-use constants with literal values, and one-time top-level global setup. Review shared or spread options manually.
+Literal options shared only by local `assert` and `check` calls can be migrated once at their declaration. Options that escape to other consumers need manual review. In one-time global setup, a call that only re-applies `readConfigureGlobal()` drops out after its options move to plugins.
 Global plugin installs accumulate across calls and survive `resetConfigureGlobal()`; check for overrides in other files.
 On v4, global plugins apply to `assert` and `check`; migrate any `unbiased` dependency in `sample` or `statistics` separately.
 `skipAllAfterTimeLimit` has no equivalent plugin.
