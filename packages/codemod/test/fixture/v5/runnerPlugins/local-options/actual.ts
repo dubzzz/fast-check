@@ -7,3 +7,5 @@ fc.assert(prop, {});
 fc.check(prop, { seed: 42, unbiased: false });
 fc.assert(prop, { timeout: limit });
 fc.assert(prop, { timeout: 4000000000 });
+fc.assert(prop, { interruptAfterTimeLimit: 30, markInterruptAsFailure: true });
+fc.assert(prop, { interruptAfterTimeLimit: 30, markInterruptAsFailure: true, reporter: custom });
