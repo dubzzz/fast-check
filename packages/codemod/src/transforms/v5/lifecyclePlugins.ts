@@ -12,7 +12,7 @@ import {
   type Expression,
   type PluginCall,
   type PluginEdit,
-} from '../pluginMigration.ts';
+} from '../pluginMigration.js';
 
 type Callback = ArrowFunctionExpression | FunctionExpression | FunctionDeclaration;
 const hookNames = ['beforeEach', 'afterEach', 'asyncBeforeEach', 'asyncAfterEach'];

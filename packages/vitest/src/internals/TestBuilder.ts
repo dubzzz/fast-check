@@ -91,10 +91,8 @@ function adaptPluginForRecord<Ts>(plugin: Plugin<Ts>, originalParamaters: FcPara
         instance.decorateRun !== undefined
           ? (nestedRun) => {
               // oxlint-disable-next-line typescript/no-non-null-assertion
-              const decorated = instance.decorateRun!((value, executionContext) =>
-                nestedRun([value], executionContext),
-              );
-              return (value, executionContext) => decorated(value[0], executionContext);
+              const decorated = instance.decorateRun!((value, ...context) => nestedRun([value], ...context));
+              return (value, ...context) => decorated(value[0], ...context);
             }
           : undefined,
       onAllRunsComplete:

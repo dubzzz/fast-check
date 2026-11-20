@@ -6,6 +6,7 @@
   "exports": {
     "./package.json": "./package.json",
     "./cli": "./lib/cli.js",
+    "./transforms/v5/randomMethods": "./lib/transforms/v5/randomMethods.js",
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
     "./transforms/v5/runnerPlugins": "./lib/transforms/v5/runnerPlugins.js",
     "./transforms/v5/lifecyclePlugins": "./lib/transforms/v5/lifecyclePlugins.js"
@@ -40,7 +41,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
-    "rolldown": "^1.3.2",
+    "rolldown": "^1.3.3",
     "typescript": "~7.0.2",
     "vitest": "^5.1.1"
   },

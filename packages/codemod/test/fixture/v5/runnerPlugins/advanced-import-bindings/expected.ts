@@ -7,5 +7,6 @@ const prop = property(integer(), Number.isInteger);
 verify(prop, { plugins: [fc2.unbiased()] });
 assert(fc);
 function shadow(verify: (value: unknown, options: unknown) => void) {
+  // This parameter shadows the fast-check import and may call a different runner.
   verify(prop, { unbiased: true });
 }
