@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.common.json",
   "compilerOptions": {
     "types": ["node"],
+    "resolveJsonModule": true,
     "outDir": "lib/"
   },
   "include": ["src/", "test/"],
