@@ -15,6 +15,7 @@
   "scripts": {
     "build": "rolldown -c",
     "build-ci": "rolldown -c",
+    "test-bundle": "node ./lib/cli.js -h",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
