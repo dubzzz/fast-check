@@ -34,16 +34,11 @@ export default function transform(file: FileInfo, api: API): string {
     const isJson = name === 'json' || name === 'jsonValue';
     if (!isJson && name !== 'object' && name !== 'anything') return;
     const flag = isJson ? 'noUnicodeString' : 'withUnicodeString';
-    // A spread, computed key or existing stringUnit could take precedence over the flag.
     let property;
+    let hasStringUnit = false;
     for (const entry of args[0].properties) {
-      if (
-        !j.ObjectProperty.check(entry) ||
-        entry.computed ||
-        !j.Identifier.check(entry.key) ||
-        entry.key.name === 'stringUnit'
-      )
-        return;
+      if (!j.ObjectProperty.check(entry) || entry.computed || !j.Identifier.check(entry.key)) return;
+      if (entry.key.name === 'stringUnit') hasStringUnit = true;
       if (entry.key.name === flag) {
         if (property) return;
         property = entry;
@@ -51,11 +46,15 @@ export default function transform(file: FileInfo, api: API): string {
     }
     if (!property || !j.BooleanLiteral.check(property.value)) return;
 
-    const unicode = isJson ? !property.value.value : property.value.value;
-    const value = j.stringLiteral(unicode ? 'binary' : 'grapheme-ascii');
-    property.key = Object.assign(j.identifier('stringUnit'), { comments: property.key.comments });
-    value.comments = property.value.comments;
-    property.value = value;
+    if (hasStringUnit) {
+      args[0].properties = args[0].properties.filter((entry) => entry !== property);
+    } else {
+      const unicode = isJson ? !property.value.value : property.value.value;
+      const value = j.stringLiteral(unicode ? 'binary' : 'grapheme-ascii');
+      property.key = Object.assign(j.identifier('stringUnit'), { comments: property.key.comments });
+      value.comments = property.value.comments;
+      property.value = value;
+    }
     changed = true;
   });
 
