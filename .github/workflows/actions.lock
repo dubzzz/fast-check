@@ -22,7 +22,7 @@ workflows:
         - 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9'
         - 'codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5'
         - 'pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115'
-        - 'softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b'
+        - 'softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3'
     '.github/workflows/clean-caches.yml': []
     '.github/workflows/codeql-analysis.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -30,7 +30,7 @@ workflows:
     '.github/workflows/create-release.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3'
-        - 'softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b'
+        - 'softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3'
     '.github/workflows/generate-changelog.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3'
@@ -129,9 +129,9 @@ dependencies:
         commit: 'sha1-73e46992e05b19abd31f2f3c20e0e7370d762115'
         owner_id: 21320719
         repo_id: 262289747
-    'softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b':
-        ref: 'v3.0.1'
-        commit: 'sha1-718ea10b132b3b2eba29c1007bb80653f286566b'
+    'softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3':
+        ref: 'v3.0.4'
+        commit: 'sha1-8a0cd651e5b2365bd640854a3fa5dfc70e4875f3'
         owner_id: 2242
         repo_id: 204253808
     'zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd':
