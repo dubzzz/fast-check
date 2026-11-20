@@ -15,7 +15,7 @@
   "scripts": {
     "build": "rolldown -c",
     "build-ci": "rolldown -c",
-    "test-bundle": "node -e \"const { bin } = require('./package.json'); require('node:child_process').execFileSync(process.execPath, [bin, '-h'], { stdio: 'inherit' })\"",
+    "test-bundle": "node -e \"const { bin } = require('./package.json'); const { execFileSync } = require('node:child_process'); execFileSync(process.execPath, [bin, '-h'], { stdio: 'inherit' }); execFileSync(process.execPath, [bin,  'v5/defaultImport', './test-bundle'], { stdio: 'inherit' });\"",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
