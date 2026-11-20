@@ -40,21 +40,14 @@ Example:
 
 </details>
 
-<details><summary><code>v5/reporterPlugins</code> (≥5.0.0) — Migrates error reporting</summary>
+<details><summary><code>v5/stringUnit</code> (≥3.23.0) — Migrates Unicode flags on object and JSON arbitraries</summary>
 
 ```diff
--fc.assert(property, { reporter: (details) => collect(details) });
-+fc.assert(property, {
-+  noDefaultPlugins: true,
-+  plugins: [() => ({ onAllRunsComplete: (details) => collect(details) })],
-+});
+-fc.object({ withUnicodeString: true });
++fc.object({ stringUnit: 'binary' });
 ```
 
-Handles `reporter`, `asyncReporter` and `includeErrorInReport` on `assert` and one-time `configureGlobal` setup.
-A custom reporter can accept a failing property. The transform disables default reporting so that decision takes effect.
-For `includeErrorInReport`, it installs a configured `defaultReporter`. Global reporters use the `post` position.
-Review mutable, optional or imported reporter references, mixed reporting policies, and global overrides in other files. Reporters that call removed v4 formatting helpers also need manual migration.
-Use `v5/runnerPlugins` for execution options. The transform removes inline reporter callbacks from `check`, which never called them in v4.
+Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`. When the options already include `stringUnit`, the transform drops the redundant literal flag. On 3.23.0, switching to the binary unit preserves the Unicode character range but can change which string a seed generates.
 
 </details>
 
@@ -76,6 +69,24 @@ Literal options shared only by local `assert` and `check` calls can be migrated 
 Global plugin installs accumulate across calls and survive `resetConfigureGlobal()`; check for overrides in other files.
 On v4, global plugins apply to `assert` and `check`; migrate any `unbiased` dependency in `sample` or `statistics` separately.
 `skipAllAfterTimeLimit` has no equivalent plugin.
+
+</details>
+
+<details><summary><code>v5/reporterPlugins</code> (≥5.0.0) — Migrates error reporting</summary>
+
+```diff
+-fc.assert(property, { reporter: (details) => collect(details) });
++fc.assert(property, {
++  noDefaultPlugins: true,
++  plugins: [() => ({ onAllRunsComplete: (details) => collect(details) })],
++});
+```
+
+Handles `reporter`, `asyncReporter` and `includeErrorInReport` on `assert` and one-time `configureGlobal` setup.
+A custom reporter can accept a failing property. The transform disables default reporting so that decision takes effect.
+For `includeErrorInReport`, it installs a configured `defaultReporter`. Global reporters use the `post` position.
+Review mutable, optional or imported reporter references, mixed reporting policies, and global overrides in other files. Reporters that call removed v4 formatting helpers also need manual migration.
+Use `v5/runnerPlugins` for execution options. The transform removes inline reporter callbacks from `check`, which never called them in v4.
 
 </details>
 

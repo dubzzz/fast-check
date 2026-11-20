@@ -9,6 +9,7 @@
     "./transforms/v5/reporterPlugins": "./lib/transforms/v5/reporterPlugins.js",
     "./transforms/v5/randomMethods": "./lib/transforms/v5/randomMethods.js",
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
+    "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js",
     "./transforms/v5/runnerPlugins": "./lib/transforms/v5/runnerPlugins.js"
   },
   "bin": "./lib/cli.js",
