@@ -6,7 +6,8 @@
   "exports": {
     "./package.json": "./package.json",
     "./cli": "./lib/cli.js",
-    "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js"
+    "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
+    "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js"
   },
   "bin": "./lib/cli.js",
   "files": [

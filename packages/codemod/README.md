@@ -29,6 +29,17 @@ Example:
 
 </details>
 
+<details><summary><code>v5/stringUnit</code> (≥3.23.0) — Migrates Unicode flags on object and JSON arbitraries</summary>
+
+```diff
+-fc.object({ withUnicodeString: true });
++fc.object({ stringUnit: 'binary' });
+```
+
+Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`. On 3.23.0, switching to the binary unit preserves the Unicode character range but can change which string a seed generates.
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.

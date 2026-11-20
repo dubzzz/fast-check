@@ -80,6 +80,7 @@ async function discoverCodemodFixtures(): Promise<{ version: string; codemod: st
   return Promise.all(
     codemods.map(async ({ version, codemod }) => {
       const cases = await listSubdirectoryNames(join(fixtures, version, codemod));
+      cases.sort((a, b) => Number(a.startsWith('advanced-')) - Number(b.startsWith('advanced-')));
       return { version, codemod, cases };
     }),
   );
