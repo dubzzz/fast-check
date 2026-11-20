@@ -3,14 +3,12 @@
   "description": "Codemods to help migrate fast-check projects",
   "version": "0.0.0",
   "type": "module",
-  "bin": {
-    "fast-check-codemod": "./lib/cli.js"
-  },
   "exports": {
     "./package.json": "./package.json",
     "./cli": "./lib/cli.js",
     "./transforms/v5/asyncProperty": "./lib/transforms/v5/asyncProperty.js"
   },
+  "bin": "./lib/cli.js",
   "files": [
     "lib"
   ],
