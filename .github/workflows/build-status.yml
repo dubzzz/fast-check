@@ -774,6 +774,78 @@ jobs:
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+  check_publish_codemod:
+    name: Check publish @fast-check/codemod
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: echo "tag=$(git tag --points-at HEAD | grep '^codemod/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
+  publish_package_codemod:
+    name: Publish @fast-check/codemod
+    needs: check_publish_codemod
+    if: needs.check_publish_codemod.outputs.tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Using Node v26.x
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0 # zizmor: ignore[cache-poisoning]
+        with:
+          node-version: '26.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Install pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: latest
+      - name: Download production packages
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Set package filename
+        run: echo "TGZ_NAME=codemod-$(tar -xzOf packages/codemod/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+      - name: Rename package for publication
+        run: mv packages/codemod/package.tgz "packages/codemod/$TGZ_NAME"
+      - name: Publish @fast-check/codemod
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
+        run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/codemod/$TGZ_NAME"
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        id: attest
+        with:
+          subject-path: packages/codemod/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "$BUNDLE_PATH" "packages/codemod/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
+        with:
+          tag_name: ${{needs.check_publish_codemod.outputs.tag}}
+          draft: false
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/codemod/${{env.TGZ_NAME}}
+            packages/codemod/${{env.TGZ_NAME}}.sigstore.json
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package

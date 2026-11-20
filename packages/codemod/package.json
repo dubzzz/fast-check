@@ -1,0 +1,60 @@
+{
+  "name": "@fast-check/codemod",
+  "description": "Codemods to help migrate fast-check projects",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./cli": "./lib/cli.js",
+    "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js"
+  },
+  "bin": "./lib/cli.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
+    "test-bundle": "node -e \"const { bin } = require('./package.json'); const { execFileSync } = require('node:child_process'); console.log('>> print help...'); execFileSync(process.execPath, [bin, '-h'], { stdio: 'inherit' }); console.log('>> launch one transform...'); execFileSync(process.execPath, [bin,  'v5/defaultImport', './test-bundle'], { stdio: 'inherit' });\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/codemod"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/codemod#readme",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "@types/jscodeshift": "^17.3.0",
+    "jscodeshift": "^17.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "rolldown": "^1.3.2",
+    "typescript": "~7.0.2",
+    "vitest": "^5.1.1"
+  },
+  "keywords": [
+    "codemod",
+    "fast-check",
+    "migration"
+  ],
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ]
+}

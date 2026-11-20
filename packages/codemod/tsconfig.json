@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.common.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "outDir": "lib/"
+  },
+  "include": ["src/", "test/"],
+  "exclude": ["test/fixture/"]
+}
