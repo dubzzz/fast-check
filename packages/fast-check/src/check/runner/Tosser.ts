@@ -22,7 +22,7 @@ export function* toss<Ts>(
   generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
   random: (seed: number) => QualifiedRandomGenerator,
-  examples: Ts[],
+  examples: readonly Ts[],
 ): IteratorObject<Value<Ts>> {
   for (let idx = 0; idx !== examples.length; ++idx) {
     yield new Value(examples[idx], undefined);
@@ -44,7 +44,7 @@ export function* lazyToss<Ts>(
   generator: Pick<Property<Ts>, 'generate'>,
   seed: number,
   random: (seed: number) => RandomGenerator,
-  examples: Ts[],
+  examples: readonly Ts[],
 ): IteratorObject<() => Value<Ts>> {
   yield* examples.map((e) => () => new Value(e, undefined));
   let idx = 0;

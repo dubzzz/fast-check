@@ -48,7 +48,7 @@ export interface ObjectConstraints {
    * @defaultValue {@link boolean}, {@link integer}, {@link double}, {@link string}, null, undefined, Number.NaN, +0, -0, Number.EPSILON, Number.MIN_VALUE, Number.MAX_VALUE, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY
    * @remarks Since 0.0.7
    */
-  values?: Arbitrary<unknown>[];
+  values?: readonly Arbitrary<unknown>[];
   /**
    * Also generate boxed versions of values
    * @defaultValue false
@@ -125,8 +125,8 @@ export type QualifiedObjectConstraints = Required<
 type DefaultValuesConstraints = { size: SizeForArbitrary };
 
 function defaultValues(
-  constraints: DefaultValuesConstraints,
-  stringArbitrary: (constraints: DefaultValuesConstraints) => Arbitrary<string>,
+  constraints: Readonly<DefaultValuesConstraints>,
+  stringArbitrary: (constraints: Readonly<DefaultValuesConstraints>) => Arbitrary<string>,
 ): Arbitrary<unknown>[] {
   return [
     boolean(),
@@ -137,18 +137,21 @@ function defaultValues(
   ];
 }
 
-function boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
+function boxArbitraries(arbs: readonly Arbitrary<unknown>[]): Arbitrary<unknown>[] {
   return arbs.map((arb) => boxedArbitraryBuilder(arb));
 }
 
-function boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
+function boxArbitrariesIfNeeded(
+  arbs: readonly Arbitrary<unknown>[],
+  boxEnabled: boolean,
+): readonly Arbitrary<unknown>[] {
   return boxEnabled ? boxArbitraries(arbs).concat(arbs) : arbs;
 }
 
 /**
  * Convert constraints of type ObjectConstraints into fully qualified constraints
  */
-export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): QualifiedObjectConstraints {
+export function toQualifiedObjectConstraints(settings: Readonly<ObjectConstraints> = {}): QualifiedObjectConstraints {
   const valueConstraints = {
     size: settings.size,
     unit: settings.stringUnit,

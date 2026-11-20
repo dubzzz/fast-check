@@ -6,7 +6,7 @@ import { toQualifiedObjectConstraints } from './_internals/helpers/QualifiedObje
 
 export type { ObjectConstraints };
 
-function objectInternal(constraints: QualifiedObjectConstraints): Arbitrary<Record<string, unknown>> {
+function objectInternal(constraints: Readonly<QualifiedObjectConstraints>): Arbitrary<Record<string, unknown>> {
   return dictionary(constraints.key, anyArbitraryBuilder(constraints), {
     maxKeys: constraints.maxKeys,
     noNullPrototype: !constraints.withNullPrototype,
@@ -43,8 +43,8 @@ function object(): Arbitrary<Record<string, unknown>>;
  * @remarks Since 0.0.7
  * @public
  */
-function object(constraints: ObjectConstraints): Arbitrary<Record<string, unknown>>;
-function object(constraints?: ObjectConstraints): Arbitrary<Record<string, unknown>> {
+function object(constraints: Readonly<ObjectConstraints>): Arbitrary<Record<string, unknown>>;
+function object(constraints?: Readonly<ObjectConstraints>): Arbitrary<Record<string, unknown>> {
   return objectInternal(toQualifiedObjectConstraints(constraints));
 }
 export { object };

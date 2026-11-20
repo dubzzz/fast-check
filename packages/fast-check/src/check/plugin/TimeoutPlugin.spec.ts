@@ -115,6 +115,68 @@ describe('TimeoutPlugin', () => {
     expect(clearTimeout).toBeCalledTimes(1);
   });
 
+  describe.each([
+    { context: 'without an original signal', executionContext: {} },
+    { context: 'with an original signal', executionContext: { signal: new AbortController().signal } },
+  ])('when a synchronous step exceeds the timeout $context', ({ executionContext }) => {
+    const synchronousBlocking = 10_000; // 10s
+    const testTimeout = 1_000; // 1s
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+      return () => {
+        vi.useRealTimers();
+      };
+    });
+
+    it('should timeout a synchronous run', async () => {
+      // Arrange
+      const nestedRun = () => {
+        vi.advanceTimersByTime(synchronousBlocking);
+        return null;
+      };
+
+      // Act
+      const finalRun = await timeoutPluginRun(testTimeout, nestedRun);
+      const out = finalRun({}, executionContext);
+
+      // Assert
+      expect(out).toEqual({ error: new Error(`Property timeout: exceeded limit of ${testTimeout} milliseconds`) });
+    });
+
+    it('should timeout an asynchronous run starting with a long synchronous step', async () => {
+      // Arrange
+      const nestedRun = async () => {
+        vi.advanceTimersByTime(synchronousBlocking);
+        await Promise.resolve();
+        return null;
+      };
+
+      // Act
+      const finalRun = await timeoutPluginRun(testTimeout, nestedRun);
+      const out = await finalRun({}, executionContext);
+
+      // Assert
+      expect(out).toEqual({ error: new Error(`Property timeout: exceeded limit of ${testTimeout} milliseconds`) });
+    });
+
+    it('should timeout an asynchronous run ending with a long synchronous step', async () => {
+      // Arrange
+      const nestedRun = async () => {
+        await Promise.resolve();
+        vi.advanceTimersByTime(synchronousBlocking);
+        return null;
+      };
+
+      // Act
+      const finalRun = await timeoutPluginRun(testTimeout, nestedRun);
+      const out = await finalRun({}, executionContext);
+
+      // Assert
+      expect(out).toEqual({ error: new Error(`Property timeout: exceeded limit of ${testTimeout} milliseconds`) });
+    });
+  });
+
   it('should abort the signal as soon as we reach the timeout and consider the run as failed even if it ended at the same time', async () => {
     // Arrange
     const timeoutError = new Error(`Property timeout: exceeded limit of 10 milliseconds`);

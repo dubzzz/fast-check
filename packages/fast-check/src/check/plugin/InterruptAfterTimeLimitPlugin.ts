@@ -79,6 +79,8 @@ function timeLimitRunner(
   return raced;
 }
 
+const uninitializedPluginErrorMessage = '`interruptAfterTimeLimit` has not been properly initialized, run aborted';
+
 /**
  * Options for {@link interruptAfterTimeLimit}
  * @remarks Since 4.10.0
@@ -124,11 +126,21 @@ export function interruptAfterTimeLimit(
 ): UniversalPlugin {
   return <Ts>(): PluginInstance<Ts> => {
     const probe: Probe = { interruptedWhileRunning: false, running: false };
-    const interrupt = interruptAfterDelay(timeLimitMs, probe);
+    let interrupt: Interrupt | undefined;
     return {
-      decorateRun: (nestedRun) => (value, executionContext) =>
-        timeLimitRunner(interrupt, nestedRun, value, executionContext, probe),
+      beforeAll: () => {
+        interrupt = interruptAfterDelay(timeLimitMs, probe);
+      },
+      decorateRun: (nestedRun) => (value, executionContext) => {
+        if (interrupt === undefined) {
+          return { error: new Error(uninitializedPluginErrorMessage) };
+        }
+        return timeLimitRunner(interrupt, nestedRun, value, executionContext, probe);
+      },
       onAllRunsComplete: (runDetails) => {
+        if (interrupt === undefined) {
+          throw new Error(uninitializedPluginErrorMessage);
+        }
         interrupt.clear();
         if (
           // run got interrupted without being marked as failed (aka successful run)

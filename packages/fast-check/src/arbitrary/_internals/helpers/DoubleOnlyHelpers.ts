@@ -11,7 +11,7 @@ export const onlyIntegersAfterThisValue = 4503599627370496;
  * @param constraints - Source constraints to be refined
  */
 export function refineConstraintsForDoubleOnly(
-  constraints: Omit<DoubleConstraints, 'noInteger'>,
+  constraints: Readonly<Omit<DoubleConstraints, 'noInteger'>>,
 ): Required<Omit<DoubleConstraints, 'noInteger'>> {
   return refineConstraintsForFloatingOnly(
     constraints,

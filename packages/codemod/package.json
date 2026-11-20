@@ -6,7 +6,7 @@
   "exports": {
     "./package.json": "./package.json",
     "./cli": "./lib/cli.js",
-    "./transforms/v5/asyncProperty": "./lib/transforms/v5/asyncProperty.js"
+    "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js"
   },
   "bin": "./lib/cli.js",
   "files": [
@@ -33,16 +33,14 @@
     "node": ">=22.12.0"
   },
   "dependencies": {
-    "@babel/traverse": "^7.29.13",
     "jscodeshift": "^17.4.0"
   },
   "devDependencies": {
-    "@types/babel__traverse": "^7.28.0",
     "@types/jscodeshift": "^17.3.0",
     "@types/node": "^26.6.6",
-    "rolldown": "^1.3.0",
+    "rolldown": "^1.3.2",
     "typescript": "~7.0.2",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.1"
   },
   "keywords": [
     "codemod",

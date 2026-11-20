@@ -23,7 +23,7 @@ export interface WebUrlConstraints {
    * @defaultValue ['http', 'https']
    * @remarks Since 1.14.0
    */
-  validSchemes?: string[];
+  validSchemes?: readonly string[];
   /**
    * Settings for {@link webAuthority}
    * @defaultValue &#123;&#125;
@@ -60,7 +60,7 @@ export interface WebUrlConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
+export function webUrl(constraints?: Readonly<WebUrlConstraints>): Arbitrary<string> {
   const c = constraints || {};
   const resolvedSize = resolveSize(c.size);
   const resolvedAuthoritySettingsSize =

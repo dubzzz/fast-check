@@ -66,7 +66,7 @@ export interface DictionaryConstraints {
 export function dictionary<T>(
   keyArb: Arbitrary<string>,
   valueArb: Arbitrary<T>,
-  constraints?: DictionaryConstraints,
+  constraints?: Readonly<DictionaryConstraints>,
 ): Arbitrary<Record<string, T>>;
 /**
  * For dictionaries with keys produced by `keyArb` and values from `valueArb`
@@ -80,12 +80,12 @@ export function dictionary<T>(
 export function dictionary<K extends PropertyKey, V>(
   keyArb: Arbitrary<K>,
   valueArb: Arbitrary<V>,
-  constraints?: DictionaryConstraints,
+  constraints?: Readonly<DictionaryConstraints>,
 ): Arbitrary<Record<K, V>>;
 export function dictionary<K extends PropertyKey, V>(
   keyArb: Arbitrary<K>,
   valueArb: Arbitrary<V>,
-  constraints: DictionaryConstraints = {},
+  constraints: Readonly<DictionaryConstraints> = {},
 ): Arbitrary<Record<K, V>> {
   const noNullPrototype = !!constraints.noNullPrototype;
   return tuple(

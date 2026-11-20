@@ -12,7 +12,7 @@ export function unlinkedEntitiesForEntityGraph<TEntityFields>(
   unicityConstraintsFor: <TEntityName extends keyof TEntityFields>(
     entityName: TEntityName,
   ) => UniqueArrayConstraintsRecommended<TEntityFields[TEntityName], unknown>['selector'],
-  constraints: Omit<RecordConstraints, 'requiredKeys'>,
+  constraints: Readonly<Omit<RecordConstraints, 'requiredKeys'>>,
 ): Arbitrary<UnlinkedEntities<TEntityFields>> {
   const recordModel: { [K in keyof TEntityFields]: Arbitrary<TEntityFields[K][]> } = Object.create(null);
   for (const name in arbitraries) {

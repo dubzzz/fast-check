@@ -40,7 +40,7 @@ function dictOf<U>(
   });
 }
 
-function typedArray(constraints: { maxLength: number | undefined; size: SizeForArbitrary }) {
+function typedArray(constraints: Readonly<{ maxLength: number | undefined; size: SizeForArbitrary }>) {
   return oneof(
     int8Array(constraints),
     uint8Array(constraints),
@@ -54,7 +54,7 @@ function typedArray(constraints: { maxLength: number | undefined; size: SizeForA
   );
 }
 
-export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Arbitrary<unknown> {
+export function anyArbitraryBuilder(constraints: Readonly<QualifiedObjectConstraints>): Arbitrary<unknown> {
   const arbitrariesForBase = constraints.values;
   const depthSize = constraints.depthSize;
   const depthIdentifier = createDepthIdentifier();

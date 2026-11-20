@@ -58,7 +58,7 @@ export interface OptionConstraints<TNil = null> {
  */
 export function option<T, TNil = null>(
   arb: Arbitrary<T>,
-  constraints: OptionConstraints<TNil> = {},
+  constraints: Readonly<OptionConstraints<TNil>> = {},
 ): Arbitrary<T | TNil> {
   const freq = constraints.freq === undefined ? 6 : constraints.freq;
   const nilValue = Object.prototype.hasOwnProperty.call(constraints, 'nil') ? constraints.nil : (null as any);

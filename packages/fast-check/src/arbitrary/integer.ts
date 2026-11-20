@@ -24,7 +24,7 @@ export interface IntegerConstraints {
 /**
  * Build fully set IntegerConstraints from a partial data
  */
-function buildCompleteIntegerConstraints(constraints: IntegerConstraints): Required<IntegerConstraints> {
+function buildCompleteIntegerConstraints(constraints: Readonly<IntegerConstraints>): Required<IntegerConstraints> {
   const min = constraints.min !== undefined ? constraints.min : -0x80000000;
   const max = constraints.max !== undefined ? constraints.max : 0x7fffffff;
   return { min, max };
@@ -38,7 +38,7 @@ function buildCompleteIntegerConstraints(constraints: IntegerConstraints): Requi
  * @remarks Since 0.0.1
  * @public
  */
-export function integer(constraints: IntegerConstraints = {}): Arbitrary<number> {
+export function integer(constraints: Readonly<IntegerConstraints> = {}): Arbitrary<number> {
   const fullConstraints = buildCompleteIntegerConstraints(constraints);
   if (fullConstraints.min > fullConstraints.max) {
     throw new Error('fc.integer maximum value should be equal or greater than the minimum one');

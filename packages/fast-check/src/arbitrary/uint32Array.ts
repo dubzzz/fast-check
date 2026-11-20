@@ -8,7 +8,7 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
  * @remarks Since 2.9.0
  * @public
  */
-export function uint32Array(constraints: IntArrayConstraints = {}): Arbitrary<Uint32Array<ArrayBuffer>> {
+export function uint32Array(constraints: Readonly<IntArrayConstraints> = {}): Arbitrary<Uint32Array<ArrayBuffer>> {
   return typedIntArrayArbitraryArbitraryBuilder<Uint32Array<ArrayBuffer>, number>(
     constraints,
     0,

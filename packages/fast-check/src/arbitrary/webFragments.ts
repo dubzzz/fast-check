@@ -27,6 +27,6 @@ export interface WebFragmentsConstraints {
  * @remarks Since 1.14.0
  * @public
  */
-export function webFragments(constraints: WebFragmentsConstraints = {}): Arbitrary<string> {
+export function webFragments(constraints: Readonly<WebFragmentsConstraints> = {}): Arbitrary<string> {
   return buildUriQueryOrFragmentArbitrary(constraints.size);
 }

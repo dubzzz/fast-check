@@ -41,7 +41,7 @@ export interface DateConstraints {
  * @remarks Since 1.17.0
  * @public
  */
-export function date(constraints: DateConstraints = {}): Arbitrary<Date> {
+export function date(constraints: Readonly<DateConstraints> = {}): Arbitrary<Date> {
   // Date min and max in ECMAScript specification : https://stackoverflow.com/a/11526569/3707828
   const intMin = constraints.min !== undefined ? constraints.min.getTime() : -8640000000000000;
   const intMax = constraints.max !== undefined ? constraints.max.getTime() : 8640000000000000;

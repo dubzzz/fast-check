@@ -34,9 +34,9 @@ describe('Docs.md', () => {
   }
   it.each(allPathsFromWebsite)(
     'should check code snippets validity and fix generated values on $shortName',
-    ({ filePath }) => {
+    async ({ filePath }) => {
       const originalFileContent = fs.readFileSync(filePath).toString();
-      const { content: fileContent } = refreshContent(originalFileContent);
+      const { content: fileContent } = await refreshContent(originalFileContent);
 
       if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
         console.warn(`Updating code snippets defined in the documentation...`);
@@ -127,8 +127,6 @@ function addJsCodeBlock(blockContent: string): string {
   return `${JsBlockStart}\n${blockContent}${JsBlockEnd}\n`;
 }
 
-// @ts-expect-error - Used by eval
-// oxlint-disable-next-line no-unused-vars
 function withPulledFirstItems(value: unknown): unknown {
   if (typeof value === 'object' && value !== null && typeof (value as Iterator<unknown>).next === 'function') {
     const iterator = value as Iterator<unknown>;
@@ -157,7 +155,7 @@ function sanitizeNonCharacters(str: string): string {
   return result;
 }
 
-function refreshContent(originalContent: string): { content: string; numExecutedSnippets: number } {
+async function refreshContent(originalContent: string): Promise<{ content: string; numExecutedSnippets: number }> {
   // Re-run all the code (supported) snippets
   // Re-generate all the examples
 
@@ -167,111 +165,145 @@ function refreshContent(originalContent: string): { content: string; numExecuted
   const extractedBlocks = extractJsCodeBlocks(originalContent);
 
   // Execute code blocks
-  const refinedBlocks = extractedBlocks.map((block) => {
-    if (!isJsCodeBlock(block)) return block;
+  const refinedBlocks = await Promise.all(
+    extractedBlocks.map(async (block) => {
+      if (!isJsCodeBlock(block)) return block;
 
-    // Remove list of examples and statistics
-    const cleanedBlock = trimJsCodeBlock(block)
-      .replace(new RegExp(`${CommentForGeneratedValues}[^\n]*(\n//.*)*`, 'mg'), CommentForGeneratedValues)
-      .replace(new RegExp(`${CommentForStatistics}[^\n]*(\n//.*)*`, 'mg'), CommentForStatistics);
+      // Remove list of examples and statistics
+      const cleanedBlock = trimJsCodeBlock(block)
+        .replace(new RegExp(`${CommentForGeneratedValues}[^\n]*(\n//.*)*`, 'mg'), CommentForGeneratedValues)
+        .replace(new RegExp(`${CommentForStatistics}[^\n]*(\n//.*)*`, 'mg'), CommentForStatistics);
 
-    // Extract code snippets
-    const snippets = cleanedBlock
-      .split(`\n${CommentForGeneratedValues}`)
-      .map((snippet, index, all) => (index !== all.length - 1 ? `${snippet}\n${CommentForGeneratedValues}` : snippet));
+      // Extract code snippets
+      const snippets = cleanedBlock
+        .split(`\n${CommentForGeneratedValues}`)
+        .map((snippet, index, all) =>
+          index !== all.length - 1 ? `${snippet}\n${CommentForGeneratedValues}` : snippet,
+        );
 
-    // Execute blocks and set examples
-    const updatedSnippets = snippets.map((snippet) => {
-      if (!snippet.endsWith(CommentForGeneratedValues)) return snippet;
-
-      ++numExecutedSnippets;
-
-      // oxlint-disable-next-line no-unused-vars
-      const generatedValues = (function (fc): string[] {
-        const numRuns = 5 * TargetNumExamples;
-        const lastIndexCommentForStatistics = snippet.lastIndexOf(CommentForStatistics);
-        const refinedSnippet =
-          lastIndexCommentForStatistics !== -1 ? snippet.substring(lastIndexCommentForStatistics) : snippet;
-        const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-        const indexArbitraryPart = refinedSnippet.indexOf(CommentForArbitraryIndicator);
-        const preparationPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(0, indexArbitraryPart) : '';
-        const arbitraryPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(indexArbitraryPart) : refinedSnippet;
-        const santitizeArbitraryPart = arbitraryPart
-          .trim()
-          .replace(/;$/, '')
-          .replace(/;\n\/\/.*$/m, '\n//');
-        const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(withPulledFirstItems(v)))`;
-        try {
-          return eval(evalCode);
-        } catch (err) {
-          throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
-            cause: err,
-          });
+      // Execute blocks and set examples
+      const updatedSnippets: string[] = [];
+      for (const snippet of snippets) {
+        if (!snippet.endsWith(CommentForGeneratedValues)) {
+          updatedSnippets.push(snippet);
+          break;
         }
-      })(fc);
 
-      const uniqueGeneratedValues = Array.from(new Set(generatedValues.map(sanitizeNonCharacters))).slice(
-        0,
-        TargetNumExamples,
-      );
-      // If the display for generated values is too long, we split it into a list of items
-      if (
-        uniqueGeneratedValues.some((value) => value.includes('\n')) ||
-        uniqueGeneratedValues.reduce((totalLength, value) => totalLength + value.length, 0) > 120
-      ) {
-        return `${snippet}${[...uniqueGeneratedValues, '…']
-          .map((v) => `\n// • ${v.replace(/\n/gm, '\n//   ')}`)
-          .join('')}`;
-      } else {
-        return `${snippet} ${uniqueGeneratedValues.join(', ')}…`;
-      }
-    });
+        ++numExecutedSnippets;
 
-    // Extract statistics snippets
-    const statisticsSnippets = updatedSnippets
-      .join('')
-      .split(`\n${CommentForStatistics}`)
-      .map((snippet, index, all) => (index !== all.length - 1 ? `${snippet}\n${CommentForStatistics}` : snippet));
-
-    // Execute statistics
-    const updatedStatisticsSnippets = statisticsSnippets.map((snippet) => {
-      if (!snippet.endsWith(CommentForStatistics)) return snippet;
-
-      ++numExecutedSnippets;
-
-      const computedStatitics = (baseSize: fc.Size) =>
-        (function (fc): string[] {
-          const lastIndexCommentForGeneratedValues = snippet.lastIndexOf(CommentForGeneratedValues);
+        // oxlint-disable-next-line no-unused-vars
+        const generatedValues = await (async function (fc): Promise<string[]> {
+          const numRuns = 5 * TargetNumExamples;
+          const lastIndexCommentForStatistics = snippet.lastIndexOf(CommentForStatistics);
           const refinedSnippet =
-            lastIndexCommentForGeneratedValues !== -1 ? snippet.substring(lastIndexCommentForGeneratedValues) : snippet;
+            lastIndexCommentForStatistics !== -1 ? snippet.substring(lastIndexCommentForStatistics) : snippet;
           const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
-          const evalCode = refinedSnippet;
-          const originalConsoleLog = console.log;
-          const originalGlobal = fc.readConfigureGlobal();
+          const indexArbitraryPart = refinedSnippet.indexOf(CommentForArbitraryIndicator);
+          const preparationPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(0, indexArbitraryPart) : '';
+          const arbitraryPart =
+            indexArbitraryPart !== -1 ? refinedSnippet.substring(indexArbitraryPart) : refinedSnippet;
+          const santitizeArbitraryPart = arbitraryPart
+            .trim()
+            .replace(/;$/, '')
+            .replace(/;\n\/\/.*$/m, '\n//');
+          const buildArbitrarySnippet = `${preparationPart};${santitizeArbitraryPart}`;
           try {
-            const lines: string[] = [];
-            console.log = (line) => lines.push(line);
-            fc.configureGlobal({ seed, numRuns: 10000, baseSize });
-            eval(evalCode);
-            return lines;
+            // oxlint-disable-next-line no-eval
+            const arbitrary = eval(buildArbitrarySnippet);
+            return fc
+              .sample(arbitrary, { numRuns, seed })
+              .then((values) => values.map((v) => fc.stringify(withPulledFirstItems(v))));
           } catch (err) {
-            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, { cause: err });
-          } finally {
-            console.log = originalConsoleLog;
-            fc.configureGlobal(originalGlobal);
+            throw new Error(`Failed to run code snippet:\n\n${buildArbitrarySnippet}\n\nWith error message: ${err}`, {
+              cause: err,
+            });
           }
         })(fc);
-      const formatForSize = (size: fc.Size) =>
-        `// For size = "${size}":\n${computedStatitics(size)
-          .slice(0, TargetNumExamples)
-          .map((line) => `// • ${line}`)
-          .join('\n')}${computedStatitics.length > TargetNumExamples ? '\n// • …' : ''}`;
-      const sizes = ['xsmall', 'small', 'medium'] as const;
-      return `${snippet}\n${sizes.map((size) => formatForSize(size)).join('\n')}`;
-    });
 
-    return addJsCodeBlock(updatedStatisticsSnippets.join(''));
-  });
+        const uniqueGeneratedValues = Array.from(new Set(generatedValues.map(sanitizeNonCharacters))).slice(
+          0,
+          TargetNumExamples,
+        );
+        // If the display for generated values is too long, we split it into a list of items
+        if (
+          uniqueGeneratedValues.some((value) => value.includes('\n')) ||
+          uniqueGeneratedValues.reduce((totalLength, value) => totalLength + value.length, 0) > 120
+        ) {
+          const out = `${snippet}${[...uniqueGeneratedValues, '…']
+            .map((v) => `\n// • ${v.replace(/\n/gm, '\n//   ')}`)
+            .join('')}`;
+          updatedSnippets.push(out);
+        } else {
+          const out = `${snippet} ${uniqueGeneratedValues.join(', ')}…`;
+          updatedSnippets.push(out);
+        }
+      }
+
+      // Extract statistics snippets
+      const statisticsSnippets = updatedSnippets
+        .join('')
+        .split(`\n${CommentForStatistics}`)
+        .map((snippet, index, all) => (index !== all.length - 1 ? `${snippet}\n${CommentForStatistics}` : snippet));
+
+      // Execute statistics
+      const updatedStatisticsSnippets: string[] = [];
+      for (const snippet of statisticsSnippets) {
+        if (!snippet.endsWith(CommentForStatistics)) {
+          updatedStatisticsSnippets.push(snippet);
+          continue;
+        }
+
+        ++numExecutedSnippets;
+
+        const computedStatitics = (baseSize: fc.Size) =>
+          (async function (fc): Promise<string[]> {
+            const lastIndexCommentForGeneratedValues = snippet.lastIndexOf(CommentForGeneratedValues);
+            const refinedSnippet =
+              lastIndexCommentForGeneratedValues !== -1
+                ? snippet.substring(lastIndexCommentForGeneratedValues)
+                : snippet;
+            const seed = refinedSnippet.replace(/\s*\/\/.*/g, '').replace(/\s+/gm, ' ').length;
+            const evalCode = refinedSnippet;
+            const lastClosing = evalCode.lastIndexOf(');');
+            const sanitizedCode =
+              '[\n' +
+              evalCode.substring(0, lastClosing).replace('fc.statistics(', '') +
+              evalCode.substring(lastClosing + 2) +
+              '\n]';
+            const originalGlobal = fc.readConfigureGlobal();
+            try {
+              const lines: string[] = [];
+              fc.configureGlobal({ baseSize });
+              // @ts-expect-error - expected given TS cannot introspect the code passed to `eval`
+              // oxlint-disable-next-line no-eval
+              fc.logStatistics(await fc.statistics(...eval(sanitizedCode), { seed, numRuns: 10000 }), (line) =>
+                lines.push(line),
+              );
+              return lines;
+            } catch (err) {
+              throw new Error(`Failed to run code snippet:\n\n${sanitizedCode}\n\nWith error message: ${err}`, {
+                cause: err,
+              });
+            } finally {
+              fc.configureGlobal(originalGlobal);
+            }
+          })(fc);
+
+        const sizes = ['xsmall', 'small', 'medium'] as const;
+        let formatted = snippet;
+        for (const size of sizes) {
+          const lines = await computedStatitics(size);
+          formatted += `\n// For size = "${size}":\n${lines
+            .slice(0, TargetNumExamples)
+            .map((line) => `// • ${line}`)
+            .join('\n')}${lines.length > TargetNumExamples ? '\n// • …' : ''}`;
+        }
+        updatedStatisticsSnippets.push(formatted);
+      }
+
+      return addJsCodeBlock(updatedStatisticsSnippets.join(''));
+    }),
+  );
 
   return { content: refinedBlocks.join(''), numExecutedSnippets };
 }

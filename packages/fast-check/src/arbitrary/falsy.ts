@@ -44,7 +44,7 @@ export type FalsyValue<TConstraints extends FalsyContraints = object> =
  * @public
  */
 export function falsy<TConstraints extends FalsyContraints>(
-  constraints?: TConstraints,
+  constraints?: Readonly<TConstraints>,
 ): Arbitrary<FalsyValue<TConstraints>> {
   if (!constraints || !constraints.withBigInt) {
     return constantFrom<FalsyValue[]>(false, null, undefined, 0, '', NaN);
