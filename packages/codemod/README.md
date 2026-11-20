@@ -49,6 +49,20 @@ On v4, global plugins apply to `assert` and `check`; migrate any `unbiased` depe
 
 </details>
 
+<details><summary><code>v5/lifecyclePlugins</code> (≥4.10.0) — Moves property hooks into runner plugins</summary>
+
+```diff
+-fc.assert(fc.property(arb, predicate).beforeEach(() => { reset(); }));
++fc.assert(fc.property(arb, predicate), { plugins: [fc.beforeEach(() => { reset(); })] });
+-fc.configureGlobal({ asyncAfterEach: async () => { await cleanUp(); } });
++fc.installGlobalPlugin(fc.afterEach(async () => { await cleanUp(); }));
+```
+
+Handles local `beforeEach` and `afterEach` on inline property builders or a single-use property declared immediately before its runner.
+It also handles one-time global hook setup. Hooks stay outside migrated runner timeouts. Review repeated hooks, callbacks that call a previous hook, and opaque local callbacks manually. Check across files for local hooks that used to override global hooks.
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
