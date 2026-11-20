@@ -56,33 +56,20 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 ```diff
 -fc.assert(property, { timeout: 500 });
 +fc.assert(property, { plugins: [fc.timeout(500)] });
--fc.check(property, { unbiased: false });
-+fc.check(property);
--fc.configureGlobal({ numRuns: 20, ignoreEqualValues: true });
-+fc.configureGlobal({ numRuns: 20 });
-+fc.installGlobalPlugin(fc.ignoreEqualValues());
 ```
 
-Also handles `interruptAfterTimeLimit` and its `markInterruptAsFailure` flag. Use ≥4.10.2 for the interrupt plugin's timer fix.
-A local assertion with default reporting moves `markInterruptAsFailure: true` into the plugin as `failOnInterrupt: true`. For v4 `check`, custom reporters and global setup, an enabled flag needs manual migration because the plugin can throw before callers receive failed run details.
-Literal options shared only by local `assert` and `check` calls can be migrated once at their declaration. Options that escape to other consumers need manual review. In one-time global setup, a call that only re-applies `readConfigureGlobal()` drops out after its options move to plugins.
-Global plugin installs accumulate across calls and survive `resetConfigureGlobal()`; check for overrides in other files.
-On v4, global plugins apply to `assert` and `check`; migrate any `unbiased` dependency in `sample` or `statistics` separately.
-`skipAllAfterTimeLimit` has no equivalent plugin.
+Also migrates one-time global settings and drops empty options.
 
 </details>
 
 <details><summary><code>v5/lifecyclePlugins</code> (≥4.10.0) — Moves property hooks into runner plugins</summary>
 
 ```diff
--fc.assert(fc.property(arb, predicate).beforeEach(() => { reset(); }));
-+fc.assert(fc.property(arb, predicate), { plugins: [fc.beforeEach(() => { reset(); })] });
--fc.configureGlobal({ asyncAfterEach: async () => { await cleanUp(); } });
-+fc.installGlobalPlugin(fc.afterEach(async () => { await cleanUp(); }));
+-fc.assert(fc.property(arb, predicate).beforeEach(setup));
++fc.assert(fc.property(arb, predicate), { plugins: [fc.beforeEach(setup)] });
 ```
 
-Handles local `beforeEach` and `afterEach` on inline property builders or a single-use property declared immediately before its runner.
-It also handles one-time global hook setup. Hooks stay outside migrated runner timeouts. Review repeated hooks, callbacks that call a previous hook, and opaque local callbacks manually. A same-named local hook in the file leaves the global setup for review. Check across files for local overrides as well.
+Also handles one-time global hooks.
 
 </details>
 
