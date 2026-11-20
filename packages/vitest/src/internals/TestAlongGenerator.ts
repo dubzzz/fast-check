@@ -5,7 +5,8 @@ import type { AsyncPropertyBuilder, ExtraContext } from './types.js';
 import { TestRunner } from 'vitest';
 import * as fc from 'fast-check';
 
-const property = ((fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property) as AsyncPropertyBuilder;
+const property = ((fc as { asyncProperty?: AsyncPropertyBuilder }).asyncProperty ??
+  fc.property) as AsyncPropertyBuilder;
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
