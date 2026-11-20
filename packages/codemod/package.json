@@ -9,7 +9,8 @@
     "./transforms/v5/randomMethods": "./lib/transforms/v5/randomMethods.js",
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
     "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js",
-    "./transforms/v5/asyncAssertions": "./lib/transforms/v5/asyncAssertions.js"
+    "./transforms/v5/asyncAssertions": "./lib/transforms/v5/asyncAssertions.js",
+    "./transforms/v5/infiniteStream": "./lib/transforms/v5/infiniteStream.js"
   },
   "bin": "./lib/cli.js",
   "files": [
