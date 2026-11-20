@@ -1,5 +1,5 @@
 import type { API, FileInfo } from 'jscodeshift';
-import { migratePluginCalls, type Expression, type PluginCall, type PluginEdit } from '../pluginMigration.ts';
+import { migratePluginCalls, type Expression, type PluginCall, type PluginEdit } from '../pluginMigration.js';
 
 function runnerPlugins({ j, member, options, report, runner, call }: PluginCall): PluginEdit | undefined {
   // v4 wraps the property in this order, regardless of the order of keys in Parameters.

@@ -1,6 +1,6 @@
 import { xorshift128plusFromState } from 'pure-rand/generator/xorshift128plus';
 import { Random } from 'fast-check';
-import type { Property } from 'fast-check';
+import type { Property } from './SharedTypes.js';
 
 /**
  * Definition of the Value

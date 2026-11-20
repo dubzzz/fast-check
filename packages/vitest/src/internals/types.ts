@@ -8,9 +8,12 @@ import type {
   beforeEach,
   afterEach,
 } from 'fast-check';
+import type * as fc from 'fast-check';
+
+export type AsyncPropertyBuilder = typeof fc extends { asyncProperty: infer Builder } ? Builder : typeof property;
 
 export type FcExtra = {
-  asyncProperty?: typeof property;
+  asyncProperty?: AsyncPropertyBuilder;
   property: typeof property;
   assert: typeof assert;
   readConfigureGlobal: typeof readConfigureGlobal;

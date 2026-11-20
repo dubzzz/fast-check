@@ -1,15 +1,20 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import * as fc from 'fast-check';
-import type { Property, Parameters, UniversalPlugin } from 'fast-check';
+import type { Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProperty.js';
-import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
+import type {
+  Property,
+  PropertyArbitraries,
+  PropertyPredicate,
+  UniversalPlugin,
+  WorkerProperty,
+} from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 import { generateValueFromState } from './internals/ValueFromState.js';
-
-const fcProperty = (fc as { asyncProperty?: typeof fc.property }).asyncProperty ?? fc.property;
+import { asyncPropertyV4V5 } from './internals/AsyncPropertyV4V5.js';
 
 let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<Property<unknown>, () => Promise<void>>();
@@ -119,7 +124,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     // Worker code
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
-    const property: Property<Ts> = fcProperty(...arbitraries, () => true);
+    const property: Property<Ts> = asyncPropertyV4V5(...arbitraries, () => Promise.resolve(true));
     runWorker(parentPort, currentPredicateId, predicate, (state) => generateValueFromState(property, state));
     registeredPredicates.add(currentPredicateId);
   }

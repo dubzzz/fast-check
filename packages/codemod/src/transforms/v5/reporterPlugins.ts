@@ -5,13 +5,20 @@ import {
   type Expression,
   type PluginCall,
   type PluginEdit,
-} from '../pluginMigration.ts';
+} from '../pluginMigration.js';
 
 function reporterPlugins(site: PluginCall): PluginEdit | undefined {
   const { j, options, runner, report } = site;
   const custom = ['reporter', 'asyncReporter'].filter((key) => options.has(key));
   const format = options.get('includeErrorInReport');
-  if (runner === 'check' || (!custom.length && !format)) return undefined;
+  if (runner === 'check') {
+    const remove = custom.filter((name) => {
+      const callback = options.get(name);
+      return j.ArrowFunctionExpression.check(callback) || j.FunctionExpression.check(callback);
+    });
+    return remove.length ? { remove, plugins: [] } : undefined;
+  }
+  if (!custom.length && !format) return undefined;
   const remove = format ? [...custom, 'includeErrorInReport'] : custom;
   if (custom.length > 1 || (custom.length && format) || options.has('noDefaultPlugins')) {
     report('Review the combination of reporting policies before migrating.');
