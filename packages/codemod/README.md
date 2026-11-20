@@ -60,7 +60,7 @@ Use `v5/runnerPlugins` for execution options. The legacy `check` runner never ca
 ```
 
 Also handles `interruptAfterTimeLimit` and its `markInterruptAsFailure` flag. Use ≥4.10.2 for the interrupt plugin's timer fix.
-For v4 `check`, global setup and assertions with a custom reporter, the transform also keeps an enabled `markInterruptAsFailure` so callers still receive failed run details on interruption. Revisit that flag with the v5 reporting migration.
+A local assertion with default reporting moves `markInterruptAsFailure: true` into the plugin as `failOnInterrupt: true`. For v4 `check`, custom reporters and global setup, an enabled flag needs manual migration because the plugin can throw before callers receive failed run details.
 Literal options shared only by local `assert` and `check` calls can be migrated once at their declaration. Options that escape to other consumers need manual review. In one-time global setup, a call that only re-applies `readConfigureGlobal()` drops out after its options move to plugins.
 Global plugin installs accumulate across calls and survive `resetConfigureGlobal()`; check for overrides in other files.
 On v4, global plugins apply to `assert` and `check`; migrate any `unbiased` dependency in `sample` or `statistics` separately.
