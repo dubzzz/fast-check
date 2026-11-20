@@ -62,6 +62,17 @@ Adding an await is compatible with v4. Renaming the property factory and migrati
 
 </details>
 
+<details><summary><code>v5/nativeShrinkIterators</code> (≥5.0.0) — Use native iterators in custom shrinkers</summary>
+
+```diff
+-return fc.Stream.of(candidate);
++return Iterator.from([candidate]);
+```
+
+Handles shrink methods on direct `fc.Arbitrary` subclasses. The target runtime needs native iterator helpers or a compatible polyfill. Stream-specific methods are reported for manual migration.
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
