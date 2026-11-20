@@ -93,20 +93,11 @@ function globalHooks(site: PluginCall): PluginEdit | undefined {
       if (!site.j.MemberExpression.check(member) || member.computed || !site.j.Identifier.check(member.property))
         return false;
       const hook = member.property.name;
-      if (
-        !['beforeEach', 'afterEach'].includes(hook) ||
-        !remove.some((name) => name.toLowerCase().endsWith(hook.toLowerCase()))
-      )
-        return false;
-      let base = member.object;
-      while (
-        site.j.CallExpression.check(base) &&
-        site.j.MemberExpression.check(base.callee) &&
-        site.j.Identifier.check(base.callee.property) &&
-        ['beforeEach', 'afterEach'].includes(base.callee.property.name)
-      )
-        base = base.callee.object;
-      return site.j.CallExpression.check(base) && ['property', 'asyncProperty'].includes(site.importedName(base) ?? '');
+      // A matching local hook may override the global one, even on a separately declared property.
+      return (
+        ['beforeEach', 'afterEach'].includes(hook) &&
+        remove.some((name) => name.toLowerCase().endsWith(hook.toLowerCase()))
+      );
     });
   if (localOverride) {
     site.report('Review the global hook together with the local hook that overrides it.');

@@ -60,7 +60,7 @@ On v4, global plugins apply to `assert` and `check`; migrate any `unbiased` depe
 ```
 
 Handles local `beforeEach` and `afterEach` on inline property builders or a single-use property declared immediately before its runner.
-It also handles one-time global hook setup. Hooks stay outside migrated runner timeouts. Review repeated hooks, callbacks that call a previous hook, and opaque local callbacks manually. Check across files for local hooks that used to override global hooks.
+It also handles one-time global hook setup. Hooks stay outside migrated runner timeouts. Review repeated hooks, callbacks that call a previous hook, and opaque local callbacks manually. A same-named local hook in the file leaves the global setup for review. Check across files for local overrides as well.
 
 </details>
 

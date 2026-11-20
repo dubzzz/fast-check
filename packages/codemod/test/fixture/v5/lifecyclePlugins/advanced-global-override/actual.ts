@@ -6,10 +6,7 @@ fc.configureGlobal({
     count = 1;
   },
 });
-fc.assert(
-  fc
-    .property(fc.nat(), (n) => n + count >= 0)
-    .beforeEach(() => {
-      count = 2;
-    }),
-);
+const property = fc.property(fc.nat(), (n) => n + count >= 0);
+fc.assert(property.beforeEach(() => {
+  count = 2;
+}));
