@@ -51,6 +51,17 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
+<details><summary><code>v5/asyncAssertions</code> (≥5.0.0) — Await assertions and migrate asynchronous properties</summary>
+
+```diff
+-fc.assert(fc.asyncProperty(arb, predicate));
++await fc.assert(fc.property(arb, predicate));
+```
+
+Adding an await is compatible with v4. Renaming the property factory and migrating throw expectations target v5. Plain synchronous helpers and indirect matcher chains need manual review.
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.

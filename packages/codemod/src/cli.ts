@@ -23,13 +23,12 @@ if (transform === '--help' || transform === '-h') {
   console.error(`Path does not exist: ${args[0]}`);
   process.exitCode = 1;
 } else {
-  const extension = import.meta.url.endsWith('.ts') ? 'ts' : 'js';
   const result = spawnSync(
     process.execPath,
     [
       fileURLToPath(import.meta.resolve('jscodeshift/bin/jscodeshift.js')),
       '--transform',
-      fileURLToPath(import.meta.resolve(`./transforms/${transform}.${extension}`)),
+      fileURLToPath(import.meta.resolve(`${pkg.name}/transforms/${transform}`)),
       '--no-babel',
       '--extensions=js,jsx,ts,tsx,mjs,cjs,mts,cts',
       '--ignore-pattern=**/node_modules/**',
