@@ -9,9 +9,15 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
     report('skipAllAfterTimeLimit has no equivalent skipping plugin.');
     return undefined;
   }
-  if (options.has('markInterruptAsFailure') && !options.has('interruptAfterTimeLimit')) {
-    report('Review markInterruptAsFailure together with the interruption policy and any consumers of v4 RunDetails.');
-    return undefined;
+  const markFailure = options.get('markInterruptAsFailure');
+  if (markFailure) {
+    const disabled = j.BooleanLiteral.check(markFailure) && !markFailure.value;
+    const usesRunDetails = runner !== 'assert' || options.has('reporter') || options.has('asyncReporter');
+    if (!options.has('interruptAfterTimeLimit') || (!disabled && usesRunDetails)) {
+      // In v4 the plugin can throw before check returns or a custom reporter receives the failed RunDetails.
+      report('Review the interruption policy together with its v4 RunDetails consumers.');
+      return undefined;
+    }
   }
   if (!remove.length) {
     if (
@@ -45,10 +51,12 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
         return undefined;
       }
       const args = [delay];
-      if (name === 'interruptAfterTimeLimit' && options.has('markInterruptAsFailure')) {
-        const fail = options.get('markInterruptAsFailure') as Expression;
-        if (!(j.BooleanLiteral.check(fail) && !fail.value))
-          args.push(j.objectExpression([j.objectProperty(j.identifier('failOnInterrupt'), fail)]));
+      if (
+        name === 'interruptAfterTimeLimit' &&
+        markFailure &&
+        !(j.BooleanLiteral.check(markFailure) && !markFailure.value)
+      ) {
+        args.push(j.objectExpression([j.objectProperty(j.identifier('failOnInterrupt'), markFailure)]));
       }
       plugins.push({ value: j.callExpression(member(name), args), when });
     } else if (!j.BooleanLiteral.check(value) || value.value) {
@@ -58,16 +66,7 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
       });
     }
   }
-  const markFailure = options.get('markInterruptAsFailure');
-  // The v4 plugin alone can throw before check returns its RunDetails or a custom reporter receives them.
-  // The legacy flag makes v4 classify the run as failed before the plugin's completion hook.
-  if (
-    markFailure &&
-    ((j.BooleanLiteral.check(markFailure) && !markFailure.value) ||
-      (runner === 'assert' && !options.has('reporter') && !options.has('asyncReporter')))
-  ) {
-    remove.push('markInterruptAsFailure');
-  }
+  if (markFailure) remove.push('markInterruptAsFailure');
   return {
     remove,
     plugins,
