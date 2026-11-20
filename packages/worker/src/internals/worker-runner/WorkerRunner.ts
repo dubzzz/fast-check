@@ -1,5 +1,10 @@
 import type { MessagePort } from 'node:worker_threads';
-import type { MainThreadToWorkerMessage, PredicateExecutionContext, PropertyPredicate, WorkerToMainThreadMessage } from '../SharedTypes.js';
+import type {
+  MainThreadToWorkerMessage,
+  PredicateExecutionContext,
+  PropertyPredicate,
+  WorkerToMainThreadMessage,
+} from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import { WorkerToPoolMessageStatus, type Payload } from '../worker-pool/IWorkerPool.js';
 import { PreconditionFailure } from 'fast-check';

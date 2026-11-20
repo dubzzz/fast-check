@@ -1,11 +1,17 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import * as fc from 'fast-check';
-import type { Parameters, UniversalPlugin } from 'fast-check';
+import type { Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProperty.js';
-import type { Property, PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
+import type {
+  Property,
+  PropertyArbitraries,
+  PropertyPredicate,
+  UniversalPlugin,
+  WorkerProperty,
+} from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 import { generateValueFromState } from './internals/ValueFromState.js';
 import { asyncPropertyV4V5 } from './internals/AsyncPropertyV4V5.js';

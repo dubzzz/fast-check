@@ -85,13 +85,13 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return new fc.Value(inputs, undefined);
   }
 
-  shrink(_value: Value<Ts>): IteratorObject<Value<Ts>> {
+  shrink(value: Value<Ts>): ReturnType<LegacyPropertyWithHooks<Ts>['shrink']> {
     // No shrink on worker-based generations
-    return Iterator.from([]);
+    return fc.constant(value.value_).shrink(value.value_, undefined);
   }
 
-  run(v: Ts, executionContext: PredicateExecutionContext): ReturnType<LegacyPropertyWithHooks<Ts>['run']> {
-    return this.internalProperty.run(v, executionContext);
+  run(...args: Parameters<LegacyPropertyWithHooks<Ts>['run']>): ReturnType<LegacyPropertyWithHooks<Ts>['run']> {
+    return this.internalProperty.run(...args);
   }
 
   beforeEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts> {

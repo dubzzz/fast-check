@@ -79,31 +79,33 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   );
   const workerPlugin: UniversalPlugin = () => {
     return {
-      decorateRun: (nestedRun) => async (value, executionContext) => {
-        try {
-          // NOTE: Being capable of enriching the context of the runner with extra pieces
-          // would make us capable of forwarding the worker variable safely to the runner
-          const acquired = await lock.acquire();
-          releaseLock = acquired.release;
-          worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
-          return await nestedRun(value, executionContext);
-        } catch (error) {
-          return { error };
-        } finally {
-          if (removeAbortListener !== undefined) {
-            removeAbortListener();
-            removeAbortListener = undefined;
+      decorateRun:
+        (nestedRun) =>
+        async (...args) => {
+          try {
+            // NOTE: Being capable of enriching the context of the runner with extra pieces
+            // would make us capable of forwarding the worker variable safely to the runner
+            const acquired = await lock.acquire();
+            releaseLock = acquired.release;
+            worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
+            return await nestedRun(...args);
+          } catch (error) {
+            return { error };
+          } finally {
+            if (removeAbortListener !== undefined) {
+              removeAbortListener();
+              removeAbortListener = undefined;
+            }
+            if (worker !== undefined) {
+              worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
+              worker = undefined;
+            }
+            if (releaseLock !== undefined) {
+              releaseLock();
+              releaseLock = undefined;
+            }
           }
-          if (worker !== undefined) {
-            worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
-            worker = undefined;
-          }
-          if (releaseLock !== undefined) {
-            releaseLock();
-            releaseLock = undefined;
-          }
-        }
-      },
+        },
     };
   };
   const terminateAllWorkers = () => pool.terminateAllWorkers();
