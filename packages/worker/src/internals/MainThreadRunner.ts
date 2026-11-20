@@ -1,4 +1,4 @@
-import type { PropertyArbitraries, WorkerProperty } from './SharedTypes.js';
+import type { PredicateExecutionContext, PropertyArbitraries, UniversalPlugin, WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
 import { Lock } from './lock/Lock.js';
 import type { IWorkerPool, Payload, PooledWorker } from './worker-pool/IWorkerPool.js';
@@ -6,7 +6,6 @@ import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
 import { PreconditionFailure } from 'fast-check';
-import type { PredicateExecutionContext, UniversalPlugin } from 'fast-check';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
