@@ -42,7 +42,7 @@ Example:
 Handles `reporter`, `asyncReporter` and `includeErrorInReport` on `assert` and one-time `configureGlobal` setup.
 A custom reporter can accept a failing property. The transform disables default reporting so that decision takes effect.
 For `includeErrorInReport`, it installs a configured `defaultReporter`. Global reporters use the `post` position.
-Review mixed reporting policies, global overrides in other files, and reporters that consume removed v4 formatting helpers.
+Review mutable, optional or imported reporter references, mixed reporting policies, and global overrides in other files. Reporters that call removed v4 formatting helpers also need manual migration.
 Use `v5/runnerPlugins` for execution options. The legacy `check` runner never called reporters.
 
 </details>

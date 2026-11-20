@@ -38,9 +38,14 @@ function reporterPlugins(site: PluginCall): PluginEdit | undefined {
     const init = j.VariableDeclarator.check(declaration?.node) ? declaration.node.init : undefined;
     const known = j.FunctionDeclaration.check(declaration?.node)
       ? declaration.node
-      : j.FunctionExpression.check(init) || j.ArrowFunctionExpression.check(init)
+      : declaration?.parent.node.kind === 'const' &&
+          (j.FunctionExpression.check(init) || j.ArrowFunctionExpression.check(init))
         ? init
         : callback;
+    if (j.Identifier.check(known)) {
+      report('Review the reporter reference: it may change or resolve to undefined.');
+      return undefined;
+    }
     if (
       j(known).find(j.ThisExpression).size() ||
       j(known).find(j.Super).size() ||
@@ -58,31 +63,6 @@ function reporterPlugins(site: PluginCall): PluginEdit | undefined {
       [],
       j.objectExpression([j.objectProperty(j.identifier('onAllRunsComplete'), callback)]),
     );
-    if (j.Identifier.check(callback)) {
-      const definite =
-        declaration?.node.type === 'FunctionDeclaration' ||
-        (declaration?.parent.node.kind === 'const' &&
-          (j.FunctionExpression.check(init) || j.ArrowFunctionExpression.check(init)));
-      if (!definite) {
-        // Capture the handler now: a mutable reference could change before the assessment completes.
-        // Passing undefined selected the default reporter in v4.
-        const capturedName = callback.name === 'reporterCallback' ? 'capturedReporter' : 'reporterCallback';
-        const body = j.blockStatement([
-          j.variableDeclaration('const', [j.variableDeclarator(j.identifier(capturedName), callback)]),
-          j.returnStatement(
-            j.conditionalExpression(
-              j.binaryExpression('===', j.identifier(capturedName), j.unaryExpression('void', j.numericLiteral(0))),
-              j.callExpression(site.member('defaultReporter'), []),
-              j.arrowFunctionExpression(
-                [],
-                j.objectExpression([j.objectProperty(j.identifier('onAllRunsComplete'), j.identifier(capturedName))]),
-              ),
-            ),
-          ),
-        ]);
-        plugin = j.callExpression(j.arrowFunctionExpression([], body), []);
-      }
-    }
   }
   return {
     remove,
