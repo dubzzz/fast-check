@@ -8,13 +8,9 @@ import { promisify } from 'node:util';
 const execFile = promisify(_execFile);
 const fixtures = join(import.meta.dirname, 'fixture');
 const artifacts = fileURLToPath(new URL('../.test-artifacts/', import.meta.url));
-const cli = fileURLToPath(new URL('../lib/cli.js', import.meta.url));
+const cli = fileURLToPath(new URL('../src/cli.ts', import.meta.url));
 
 const codemods = await discoverCodemodFixtures();
-
-beforeAll(async () => {
-  await execFile(process.execPath, ['--run', 'build'], { cwd: new URL('../', import.meta.url) });
-}, 120_000);
 
 describe.each(codemods)('Codemod $version/$codemod', ({ version, codemod, cases }) => {
   const artifactsDirectory = join(artifacts, version, codemod);

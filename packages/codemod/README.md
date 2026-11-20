@@ -51,25 +51,25 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
-<details><summary><code>v5/asyncAssertions</code> (≥5.0.0) — Await assertions and migrate asynchronous properties</summary>
+<details><summary><code>v5/asyncAssertions</code> (≥5.0.0) — Awaits assertions and migrates asynchronous properties</summary>
 
 ```diff
 -fc.assert(fc.asyncProperty(arb, predicate));
 +await fc.assert(fc.property(arb, predicate));
 ```
 
-Adding an await is compatible with v4. Renaming the property factory and migrating throw expectations target v5. Plain synchronous helpers and indirect matcher chains need manual review.
+Also migrates direct throw expectations to promise rejections.
 
 </details>
 
-<details><summary><code>v5/nativeShrinkIterators</code> (≥5.0.0) — Use native iterators in custom shrinkers</summary>
+<details><summary><code>v5/nativeShrinkIterators</code> (≥5.0.0) — Uses native iterators in custom shrinkers</summary>
 
 ```diff
 -return fc.Stream.of(candidate);
 +return Iterator.from([candidate]);
 ```
 
-Handles shrink methods on direct `fc.Arbitrary` subclasses. The target runtime needs native iterator helpers or a compatible polyfill. Stream-specific methods are reported for manual migration.
+Requires a runtime with iterator helpers.
 
 </details>
 
