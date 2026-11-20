@@ -312,13 +312,13 @@ importers:
 
   packages/codemod:
     dependencies:
+      '@types/jscodeshift':
+        specifier: ^17.3.0
+        version: 17.3.0
       jscodeshift:
         specifier: ^17.4.0
         version: 17.4.0(@babel/preset-env@7.29.7(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
     devDependencies:
-      '@types/jscodeshift':
-        specifier: ^17.3.0
-        version: 17.3.0
       '@types/node':
         specifier: ^26.6.6
         version: 26.6.6
