@@ -7,6 +7,9 @@ import type { WorkerProperty, LegacyPropertyWithHooks } from '../SharedTypes.js'
  * In such case, the assert runner whould never call anything from it.
  */
 export class NoopWorkerProperty<Ts> implements WorkerProperty<Ts> {
+  isAsync(): true {
+    return true;
+  }
   beforeEach(): LegacyPropertyWithHooks<Ts> {
     throw new Error('Method not implemented.');
   }
@@ -16,7 +19,7 @@ export class NoopWorkerProperty<Ts> implements WorkerProperty<Ts> {
   generate(): Value<Ts> {
     throw new Error('Method not implemented.');
   }
-  shrink(): IteratorObject<Value<Ts>> {
+  shrink(): ReturnType<WorkerProperty<Ts>['shrink']> {
     throw new Error('Method not implemented.');
   }
   run(): Promise<PreconditionFailure | PropertyFailure | null> {
