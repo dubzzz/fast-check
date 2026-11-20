@@ -18,16 +18,21 @@ export interface PluginCall {
   j: JSCodeshift;
   runner: Runner;
   call: CallExpression;
+  path: CallPath;
   options: ReadonlyMap<string, Expression>;
   member: (name: string) => Expression;
   importedName: (call: CallExpression) => string | undefined;
   report: (message: string) => void;
 }
 
-function importedBinding(path: CallPath, name: string): string | undefined {
+export function declarationOf(path: CallPath, name: string): ASTPath | undefined {
   const bindings = path.scope.lookup(name)?.getBindings()[name];
-  if (bindings?.length !== 1) return undefined;
-  const declaration = bindings[0].parent;
+  return bindings?.length === 1 ? bindings[0].parent : undefined;
+}
+
+function importedBinding(path: CallPath, name: string): string | undefined {
+  const declaration = declarationOf(path, name);
+  if (!declaration) return undefined;
   const specifier = declaration.node;
   if (specifier.type === 'VariableDeclarator') {
     const init = specifier.init;
@@ -39,6 +44,7 @@ function importedBinding(path: CallPath, name: string): string | undefined {
       init.callee.name === 'require' &&
       !declaration.scope.lookup('require') &&
       init.arguments.length === 1 &&
+      'value' in init.arguments[0] &&
       init.arguments[0].value === 'fast-check'
     )
       return '*';
@@ -49,11 +55,13 @@ function importedBinding(path: CallPath, name: string): string | undefined {
     source.type !== 'ImportDeclaration' ||
     source.source.value !== 'fast-check' ||
     source.importKind === 'type' ||
-    specifier.importKind === 'type'
+    ('importKind' in specifier && specifier.importKind === 'type')
   )
     return undefined;
   if (specifier.type === 'ImportDefaultSpecifier' || specifier.type === 'ImportNamespaceSpecifier') return '*';
-  return specifier.type === 'ImportSpecifier' ? specifier.imported.name : undefined;
+  return specifier.type === 'ImportSpecifier' && typeof specifier.imported.name === 'string'
+    ? specifier.imported.name
+    : undefined;
 }
 
 function importedName(path: CallPath, call: CallExpression): string | undefined {
@@ -78,16 +86,24 @@ function isExpression(j: JSCodeshift, node: unknown): node is Expression {
 function readOptions(j: JSCodeshift, properties: ObjectExpression['properties']): Map<string, Expression> | undefined {
   const options = new Map<string, Expression>();
   for (const prop of properties) {
-    if (
-      (prop.type !== 'ObjectProperty' && prop.type !== 'Property') ||
-      prop.computed ||
-      ('kind' in prop && prop.kind !== 'init') ||
-      !isExpression(j, prop.value)
-    )
-      return undefined;
+    let value: Expression;
+    if (prop.type === 'ObjectMethod' && prop.kind === 'method' && !prop.computed) {
+      const fn = j.functionExpression(null, prop.params, prop.body, prop.generator);
+      fn.async = prop.async;
+      fn.returnType = prop.returnType;
+      fn.typeParameters = prop.typeParameters;
+      value = fn;
+    } else if (
+      (prop.type === 'ObjectProperty' || prop.type === 'Property') &&
+      !prop.computed &&
+      (!('kind' in prop) || prop.kind === 'init') &&
+      isExpression(j, prop.value)
+    ) {
+      value = prop.value;
+    } else return undefined;
     const key = prop.key.type === 'Identifier' ? prop.key.name : 'value' in prop.key ? prop.key.value : undefined;
     if (typeof key !== 'string' || options.has(key)) return undefined;
-    options.set(key, prop.value);
+    options.set(key, value);
   }
   return options;
 }
@@ -100,6 +116,30 @@ function isSimple(j: JSCodeshift, value: Expression): boolean {
     j.ArrowFunctionExpression.check(value) ||
     (j.ArrayExpression.check(value) && value.elements.every((item) => isExpression(j, item) && isSimple(j, item)))
   );
+}
+
+// Inlining a single-use options constant is safe when its values cannot change between declaration and use.
+function constantOptions(j: JSCodeshift, path: CallPath, name: string): ASTPath<ObjectExpression> | undefined {
+  const declaration = declarationOf(path, name);
+  if (
+    !declaration ||
+    !j.VariableDeclarator.check(declaration.node) ||
+    declaration.parent.node.kind !== 'const' ||
+    declaration.parent.node.declarations.length !== 1 ||
+    declaration.parent.node.comments?.length ||
+    !['Program', 'BlockStatement'].includes(declaration.parent.parent.node.type) ||
+    j(declaration.scope.path).find(j.Identifier, { name }).size() !== 2
+  )
+    return undefined;
+  const init = declaration.node.init;
+  if (
+    !j.ObjectExpression.check(init) ||
+    !init.properties.every(
+      (p) => (p.type === 'ObjectProperty' || p.type === 'Property') && !p.computed && j.Literal.check(p.value),
+    )
+  )
+    return undefined;
+  return declaration.get('init');
 }
 
 export function migratePluginCalls(
@@ -125,7 +165,9 @@ export function migratePluginCalls(
     const index = runner === 'configureGlobal' ? 0 : 1;
     const args = path.node.arguments;
     if (args.length < 1 || args.length > index + 1) continue;
-    const object = args[index] ?? j.objectExpression([]);
+    const argument = args[index];
+    const constant = j.Identifier.check(argument) ? constantOptions(j, path, argument.name) : undefined;
+    const object = constant?.node ?? argument ?? j.objectExpression([]);
     if (!j.ObjectExpression.check(object)) continue;
     const first = object.properties[0];
     const keepsGlobal =
@@ -144,6 +186,7 @@ export function migratePluginCalls(
       j,
       runner,
       call: path.node,
+      path,
       options,
       member,
       importedName: (call) => importedName(path, call),
@@ -152,11 +195,12 @@ export function migratePluginCalls(
     const keys = runner === 'configureGlobal' ? globalKeys : localKeys;
     for (const key of options.keys()) keys.add(key);
     for (const key of edit?.conflicts ?? []) keys.add(key);
-    if (edit) sites.push({ path, runner, index, object, options, receiver, member, edit, report, keepsGlobal });
+    if (edit)
+      sites.push({ path, runner, index, object, options, receiver, member, edit, report, keepsGlobal, constant });
   }
 
   let changed = false;
-  for (const { path, runner, index, object, options, receiver, member, edit, report, keepsGlobal } of sites) {
+  for (const { path, runner, index, object, options, receiver, member, edit, report, keepsGlobal, constant } of sites) {
     const global = runner === 'configureGlobal';
     const otherKeys = global ? localKeys : globalKeys;
     const otherSetup = [...edit.remove, ...(edit.conflicts ?? [])].some((key) => otherKeys.has(key));
@@ -209,6 +253,10 @@ export function migratePluginCalls(
       for (const [key, value] of Object.entries(edit.parameters))
         retained.push(j.objectProperty(j.identifier(key), value));
     }
+    if (constant) {
+      path.node.arguments[index] = object;
+      constant.parent.parent.prune();
+    }
     object.properties = retained;
     if (global) {
       const statements = edit.plugins.map(({ value, when }) => {
@@ -240,7 +288,7 @@ export function migratePluginCalls(
     changed = true;
   }
 
-  if (needsNamespace) {
+  if (needsNamespace && root.find(j.Identifier, { name: namespace }).size()) {
     const first = root.find(j.ImportDeclaration, { source: { value: 'fast-check' } }).paths()[0];
     first.insertAfter(
       j.importDeclaration([j.importNamespaceSpecifier(j.identifier(namespace))], j.stringLiteral('fast-check')),

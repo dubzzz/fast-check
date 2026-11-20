@@ -59,7 +59,7 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
     }
   }
   if (options.has('markInterruptAsFailure')) remove.push('markInterruptAsFailure');
-  return { remove, plugins };
+  return { remove, plugins, conflicts: remove.includes('interruptAfterTimeLimit') ? ['markInterruptAsFailure'] : [] };
 }
 
 export default function transform(file: FileInfo, api: API): string {
