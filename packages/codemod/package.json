@@ -15,7 +15,7 @@
   "scripts": {
     "build": "rolldown -c",
     "build-ci": "rolldown -c",
-    "test-bundle": "node ./lib/cli.js -h",
+    "test-bundle": "node -e \"const { bin } = require('./package.json'); require('node:child_process').execFileSync(process.execPath, [bin, '-h'], { stdio: 'inherit' })\"",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
