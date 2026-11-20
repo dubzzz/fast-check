@@ -16,16 +16,11 @@ Add `--dry --print` to preview changes without writing files. Commit your work b
 
 ## Transforms
 
-### v5
+### Migrate to v5
 
-#### `v5/defaultImport`
+<details><summary><code>v5/defaultImport</code> (≥1.0.0)<sup><a href="#minimum-fast-check-version">(1)</a></sup> — Replaces default imports with namespace imports. Also handles `import type`</summary>
 
-**Requirements:** fast-check ≥1.0.0.
-
-Replaces default imports with namespace imports. Also handles `import type`.
-
-<details>
-<summary>Migration example</summary>
+Example:
 
 ```diff
 -import fc from 'fast-check';
@@ -33,3 +28,9 @@ Replaces default imports with namespace imports. Also handles `import type`.
 ```
 
 </details>
+
+<p id="minimum-fast-check-version">
+
+**(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
+
+</p>
