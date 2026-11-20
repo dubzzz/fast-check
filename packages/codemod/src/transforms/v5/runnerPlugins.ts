@@ -1,6 +1,8 @@
 import type { API, FileInfo } from 'jscodeshift';
 import { migratePluginCalls, type Expression, type PluginCall, type PluginEdit } from '../pluginMigration.ts';
 
+import { runnerReporters } from './runnerReporters.ts';
+
 function runnerPlugins({ j, member, options, report, runner, call }: PluginCall): PluginEdit | undefined {
   // v4 wraps the property in this order, regardless of the order of keys in Parameters.
   const names = ['ignoreEqualValues', 'skipEqualValues', 'interruptAfterTimeLimit', 'unbiased', 'timeout'];
@@ -62,6 +64,6 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
   return { remove, plugins, conflicts: remove.includes('interruptAfterTimeLimit') ? ['markInterruptAsFailure'] : [] };
 }
 
-export default function transform(file: FileInfo, api: API): string {
-  return migratePluginCalls(file, api, runnerPlugins);
+export default function transform(file: FileInfo, api: API, options: { 'reporters-only'?: boolean } = {}): string {
+  return migratePluginCalls(file, api, options['reporters-only'] === true ? runnerReporters : runnerPlugins);
 }

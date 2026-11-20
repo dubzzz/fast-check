@@ -8,7 +8,8 @@ const allTransforms = ['v5/defaultImport', 'v5/runnerPlugins'];
 const [transform, ...args] = process.argv.slice(2);
 const usage =
   'Usage: fast-check-codemod <transform> <path> [jscodeshift options]\nwith transform being one of: ' +
-  allTransforms.join(', ');
+  allTransforms.join(', ') +
+  '\nv5/runnerPlugins <path> --reporters-only migrates reporting for fast-check ≥5.0.0';
 
 if (transform === '--help' || transform === '-h') {
   console.log(usage);
@@ -31,7 +32,7 @@ if (transform === '--help' || transform === '-h') {
       '--ignore-pattern=**/node_modules/**',
       '--ignore-pattern=**/.git/**',
       '--fail-on-error',
-      ...args,
+      ...args.map((arg) => (arg === '--reporters-only' ? '--reporters-only=true' : arg)),
     ],
     { stdio: 'inherit' },
   );

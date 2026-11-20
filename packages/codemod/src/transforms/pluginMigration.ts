@@ -9,6 +9,7 @@ export interface PluginEdit {
   remove: string[];
   plugins: { value: Expression; when?: Expression }[];
   conflicts?: string[];
+  globalPosition?: 'post';
   parameters?: Record<string, Expression>;
   property?: Expression;
   insertBefore?: (plugin: Expression) => boolean;
@@ -260,7 +261,8 @@ export function migratePluginCalls(
     object.properties = retained;
     if (global) {
       const statements = edit.plugins.map(({ value, when }) => {
-        const install = j.expressionStatement(j.callExpression(member('installGlobalPlugin'), [value]));
+        const args = edit.globalPosition ? [value, j.stringLiteral(edit.globalPosition)] : [value];
+        const install = j.expressionStatement(j.callExpression(member('installGlobalPlugin'), args));
         return when ? j.ifStatement(when, j.blockStatement([install])) : install;
       });
       if (retained.length) statements.unshift(statement.node);

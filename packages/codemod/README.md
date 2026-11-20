@@ -29,6 +29,24 @@ Example:
 
 </details>
 
+<details><summary><code>v5/runnerPlugins &lt;path&gt; --reporters-only</code> (≥5.0.0) — Migrates error reporting</summary>
+
+```diff
+-fc.assert(property, { reporter: (details) => collect(details) });
++fc.assert(property, {
++  noDefaultPlugins: true,
++  plugins: [() => ({ onAllRunsComplete: (details) => collect(details) })],
++});
+```
+
+Handles `reporter`, `asyncReporter` and `includeErrorInReport` on `assert` and one-time `configureGlobal` setup.
+A custom reporter can accept a failing property. The transform disables default reporting so that decision takes effect.
+For `includeErrorInReport`, it installs a configured `defaultReporter`. Global reporters use the `post` position.
+Review mixed reporting policies, global overrides in other files, and reporters that consume removed v4 formatting helpers.
+This pass targets v5 and leaves execution options for the default v4 pass. The legacy `check` runner never called reporters.
+
+</details>
+
 <details><summary><code>v5/runnerPlugins</code> (≥4.10.0) — Moves runner options into plugins</summary>
 
 ```diff

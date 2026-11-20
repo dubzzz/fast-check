@@ -86,5 +86,13 @@ async function discoverCodemodFixtures(): Promise<{ version: string; codemod: st
 }
 
 async function runCodemod(version: string, codemod: string, target: string): Promise<void> {
-  await execFile(process.execPath, [cli, `${version}/${codemod}`, target, '--cpus=1']);
+  // Fixture directories may add CLI flags after the transform name.
+  const [transform, ...flags] = codemod.split('--');
+  await execFile(process.execPath, [
+    cli,
+    `${version}/${transform}`,
+    target,
+    '--cpus=1',
+    ...flags.map((flag) => '--' + flag),
+  ]);
 }
