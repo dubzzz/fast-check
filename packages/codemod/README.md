@@ -73,6 +73,15 @@ Requires a runtime with iterator helpers.
 
 </details>
 
+<details><summary><code>v5/infiniteStream</code> (≥5.0.0) — Keeps generated iterators infinite</summary>
+
+```diff
+-fc.infiniteStream(arb);
++fc.iterator(arb, { minLength: Infinity });
+```
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
