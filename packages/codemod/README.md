@@ -71,14 +71,12 @@ Requires a direct dependency on `pure-rand` v8.
 
 </details>
 
-<details><summary><code>v5/sampleAndStatistics</code> (≥5.0.0) — Awaits sampling and preserves statistics logging</summary>
+<details><summary><code>v5/sample</code> (≥5.0.0) — Awaits samples and keeps property generation predicate-free</summary>
 
 ```diff
--fc.statistics(fc.integer(), String);
-+fc.logStatistics(await fc.statistics(fc.integer(), String));
+-fc.sample(fc.integer());
++await fc.sample(fc.integer());
 ```
-
-Property inputs retain generation-only behavior.
 
 </details>
 
