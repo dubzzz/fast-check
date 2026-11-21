@@ -71,6 +71,18 @@ Requires a direct dependency on `pure-rand` v8.
 
 </details>
 
+<details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Preserves RunDetails when migrating check to assert</summary>
+
+```diff
+-const details = fc.check(property);
++const details = await assertAndGetRunDetails(property);
+ if (details.failed) console.log(details.counterexample);
+```
+
+Both synchronous and awaited checks use the generated helper. It captures `RunDetails` with `onAllRunsComplete` and sets `noDefaultPlugins: true` so a failing run still returns its details.
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
