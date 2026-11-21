@@ -9,6 +9,7 @@
     "./transforms/v5/randomMethods": "./lib/transforms/v5/randomMethods.js",
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
     "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js",
+    "./transforms/v5/asyncProperty": "./lib/transforms/v5/asyncProperty.js",
     "./transforms/v5/sampleAndStatistics": "./lib/transforms/v5/sampleAndStatistics.js"
   },
   "bin": "./lib/cli.js",
