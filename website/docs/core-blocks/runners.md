@@ -70,7 +70,7 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
+function sample<Ts>(generator: Arbitrary<Ts>, params?: SampleParameters<Ts, 'arbitrary'>): Promise<Ts[]>;
 function sample<Ts>(generator: Property<Ts>, params?: SampleParameters<Ts, 'property'>): Promise<Ts[]>;
 ```
 
@@ -171,6 +171,12 @@ const stats = await fc.statistics(
   { numRuns: 100_000 }, // extra parameters (optional)
 );
 ```
+
+Like `sample`, `statistics` executes and awaits a property's predicate by default. Skipped and interrupted inputs are excluded. A failing input is classified and then stops collection, without shrinking or reporting the predicate error. Pass `noPredicateExecution: true` to inspect the generated inputs without executing the predicate. The [shrink-path replay rules](#sample) also apply.
+
+The classifier must not throw. It can return an empty array to assign no category, or multiple labels to assign several. `numValues` counts all classified inputs, including those assigned no category; `counts` records the occurrences of each label. As a result, category percentages need not add up to 100%.
+
+Both `sample` and `statistics` use the same global, local and default plugins as `assert`. Plugins can still report errors even though the collectors do not report predicate failures. See [plugin ordering and isolation](/docs/core-blocks/plugins/#installing-plugins-globally).
 
 Resources: [API reference](/docs/api/functions/statistics).
 
