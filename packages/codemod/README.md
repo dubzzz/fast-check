@@ -51,6 +51,15 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
+<details><summary><code>v5/asyncProperty</code> (≥5.0.0) — Renames asyncProperty to property</summary>
+
+```diff
+-fc.assert(fc.asyncProperty(arb, predicate));
++fc.assert(fc.property(arb, predicate));
+```
+
+</details>
+
 <details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Replaces check with an awaited assertion</summary>
 
 ```diff
