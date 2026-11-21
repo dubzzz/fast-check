@@ -16,7 +16,10 @@ describe('propertyRunner', () => {
       yield* expectedValues;
     }
     const handleResult = vi.fn();
-    const iterator = Object.assign(generator(), { handleResult });
+    const iterator = Object.assign(generator(), {
+      handleResult,
+      getCurrentPath: () => `${handleResult.mock.calls.length}`,
+    });
     const run = vi.fn(() => runOutput);
 
     // Act
@@ -26,7 +29,7 @@ describe('propertyRunner', () => {
     expect(out).toBe(undefined);
     expect(out).not.toBeInstanceOf(Promise);
     expect(run).toHaveBeenCalledTimes(expectedValues.length);
-    expect(run.mock.calls).toEqual(expectedValues.map((v) => [v, {}]));
+    expect(run.mock.calls).toEqual(expectedValues.map((v, index) => [v, { path: `${index}` }]));
     expect(handleResult).toHaveBeenCalledTimes(expectedValues.length);
   });
 
@@ -43,7 +46,10 @@ describe('propertyRunner', () => {
         yield* expectedValues;
       }
       const handleResult = vi.fn();
-      const iterator = Object.assign(generator(), { handleResult });
+      const iterator = Object.assign(generator(), {
+        handleResult,
+        getCurrentPath: () => `${handleResult.mock.calls.length}`,
+      });
       const run = vi.fn(async () => runOutput);
 
       // Act
@@ -56,7 +62,7 @@ describe('propertyRunner', () => {
       expect(handleResult).not.toHaveBeenCalledTimes(expectedValues.length);
       await out;
       expect(run).toHaveBeenCalledTimes(expectedValues.length);
-      expect(run.mock.calls).toEqual(expectedValues.map((v) => [v, {}]));
+      expect(run.mock.calls).toEqual(expectedValues.map((v, index) => [v, { path: `${index}` }]));
       expect(handleResult).toHaveBeenCalledTimes(expectedValues.length);
     },
   );
@@ -68,7 +74,7 @@ describe('propertyRunner', () => {
         function* generator() {
           yield* syncFlags;
         }
-        const iterator = Object.assign(generator(), { handleResult: vi.fn() });
+        const iterator = Object.assign(generator(), { handleResult: vi.fn(), getCurrentPath: () => '0' });
         const contexts = new Set<PredicateExecutionContext>();
         const run = (isSync: boolean, executionContext: PredicateExecutionContext) => {
           contexts.add(executionContext);
@@ -103,7 +109,10 @@ describe('propertyRunner', () => {
             yield* Array(runValues.length).fill(1);
           }
           const handleResult = vi.fn();
-          const iterator = Object.assign(generator(), { handleResult });
+          const iterator = Object.assign(generator(), {
+            handleResult,
+            getCurrentPath: () => `${handleResult.mock.calls.length}`,
+          });
           let runIndex = 0;
           let lastRun: { count: number; sync: boolean } | undefined = undefined;
           let wellSpaced = true;

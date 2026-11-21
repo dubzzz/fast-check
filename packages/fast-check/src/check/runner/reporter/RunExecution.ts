@@ -9,6 +9,7 @@ import type {
 } from './RunDetails.js';
 import type { QualifiedParameters } from '../configuration/QualifiedParameters.js';
 import type { PropertyFailure } from '../../property/types/PropertyFailure.js';
+import { mergePaths } from '../utils/PathMerger.js';
 
 /**
  * Report the status of a run
@@ -102,14 +103,6 @@ export class RunExecution<Ts> {
     return failures;
   }
 
-  private static mergePaths(offsetPath: string, path: string): string {
-    if (offsetPath.length === 0) return path;
-    const offsetItems = offsetPath.split(':');
-    const remainingItems = path.split(':');
-    const middle = +offsetItems[offsetItems.length - 1] + +remainingItems[0];
-    return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
-  }
-
   toRunDetails(seed: number, basePath: string, qParams: QualifiedParameters<Ts>): RunDetails<Ts> {
     if (!this.isSuccess()) {
       // encountered a property failure
@@ -129,7 +122,7 @@ export class RunExecution<Ts> {
         counterexample: this.value!,
         // See isSuccess: true <=> this.pathToFailure === undefined
         // oxlint-disable-next-line typescript/no-non-null-assertion
-        counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
+        counterexamplePath: mergePaths(basePath, this.pathToFailure!),
         // Rq: Same as this.value
         // =>  this.failure !== undefined
         // oxlint-disable-next-line typescript/no-non-null-assertion

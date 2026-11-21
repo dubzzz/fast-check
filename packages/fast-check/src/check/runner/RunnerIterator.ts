@@ -3,6 +3,7 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import { RunExecution } from './reporter/RunExecution.js';
+import { mergePaths } from './utils/PathMerger.js';
 
 /**
  * Responsible for the iteration logic
@@ -23,6 +24,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     verbose: VerbosityLevel,
     readonly maxSkips: number,
     readonly maxInitialIterations: number,
+    readonly basePath: string,
   ) {
     this.runExecution = new RunExecution<Ts>(verbose, maxSkips);
     this.currentIdx = -1;
@@ -45,6 +47,11 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     this.currentValue = nextValue.value;
     ++this.currentIdx;
     return { done: false, value: nextValue.value.value_ };
+  }
+  getCurrentPath(): string {
+    const pathToFailure = this.runExecution.pathToFailure;
+    const relativePath = pathToFailure === undefined ? `${this.currentIdx}` : `${pathToFailure}:${this.currentIdx}`;
+    return mergePaths(this.basePath, relativePath);
   }
   handleResult(result: PreconditionFailure | PropertyFailure | null): void {
     // WARNING: This function has to be called after a call to next
