@@ -51,6 +51,17 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
+<details><summary><code>v5/randomTypeFactory</code> (≥4.6.0) — Imports pure-rand v8 generator factories</summary>
+
+```diff
+-fc.configureGlobal({ randomType: 'congruential' });
++fc.configureGlobal({ randomType: congruential32 });
+```
+
+Requires a direct dependency on `pure-rand` v8.
+
+</details>
+
 <details><summary><code>v5/lifecyclePlugins</code> (≥4.10.0) — Moves property hooks into runner plugins</summary>
 
 ```diff
