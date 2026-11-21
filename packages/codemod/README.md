@@ -62,7 +62,7 @@ Also handles one-time global hooks.
 
 </details>
 
-<details><summary><code>v5/runnerPlugins</code> (≥4.10.0) — Moves runner options into plugins</summary>
+<details><summary><code>v5/runnerPlugins</code> (≥4.11.0) — Moves runner options and custom reporters into plugins</summary>
 
 ```diff
 -fc.assert(property, { timeout: 500 });
