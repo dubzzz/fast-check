@@ -410,7 +410,7 @@ importers:
     dependencies:
       '@npmcli/arborist':
         specifier: ^10.0.0
-        version: 10.0.4(supports-color@8.1.1)
+        version: 10.0.5(supports-color@8.1.1)
       npm-packlist:
         specifier: ^10.0.0 || ^11.0.0
         version: 11.3.1
@@ -2686,8 +2686,8 @@ packages:
     resolution: {integrity: sha512-EkzGmEsgbQ1rqWkRJe2P0oQHx/ylZozDUNPMXCklLuSFL3GY+QyEfBUjhjCsgGXzh4OGpnHvkboSQgczjP/jJg==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
-  '@npmcli/arborist@10.0.4':
-    resolution: {integrity: sha512-QMVxWzrv+XmBjjBGIqEQTQ1uKzfAA7YTT0Q7AaJ5MvmlsfWLffV5mt9pZGUAugHg4q/lIMHzkhFgWMgqFo87kA==}
+  '@npmcli/arborist@10.0.5':
+    resolution: {integrity: sha512-igPGIIQHSg/+iDD5D3zDWpaw47M3XGjAPnn/7S2QKjF4BIrnFuX3g9ahG6mz78oDEgtil6pI5jNMlDUS5AfR+g==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     hasBin: true
 
@@ -14206,7 +14206,7 @@ snapshots:
       - kerberos
       - supports-color
 
-  '@npmcli/arborist@10.0.4(supports-color@8.1.1)':
+  '@npmcli/arborist@10.0.5(supports-color@8.1.1)':
     dependencies:
       '@gar/promise-retry': 1.0.3
       '@isaacs/string-locale-compare': 1.1.0
