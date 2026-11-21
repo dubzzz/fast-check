@@ -324,6 +324,7 @@ export function migratePluginCalls(
       if (statements.length) statement.replace(...statements);
       else if (keepsGlobal && !statement.node.comments?.length) statement.prune();
     } else {
+      let localOptions: Expression = object;
       if (edit.property) path.node.arguments[0] = edit.property;
       if (edit.plugins.length) {
         const array = j.ArrayExpression.check(existing) ? existing : j.arrayExpression([]);
@@ -335,13 +336,22 @@ export function migratePluginCalls(
         const before = array.elements.findIndex((item) => item !== null && edit.insertBefore?.(item));
         array.elements.splice(before === -1 ? array.elements.length : before, 0, ...elements);
         if (!existing) object.properties.push(j.objectProperty(j.identifier('plugins'), array));
+        if (!existing && edit.parameters?.noDefaultPlugins && object.properties.length === 2 && !constant?.sharedUses) {
+          // Recast inserts a blank line before a multiline property unless the object supplies its layout.
+          const template = j.template.statement`const options = {
+  noDefaultPlugins: ${edit.parameters.noDefaultPlugins},
+  plugins: ${array},
+};`;
+          localOptions = j(template).find(j.ObjectExpression).nodes()[0];
+          localOptions.comments = object.comments;
+        }
       }
       if (constant?.sharedUses) {
         if (object.properties.length === 0) {
           for (const use of constant.sharedUses) use.arguments.splice(index, 1);
           constant.object.parent.parent.prune();
         }
-      } else if (object.properties.length) path.node.arguments[index] = object;
+      } else if (object.properties.length) path.node.arguments[index] = localOptions;
       else path.node.arguments.splice(index, 1);
     }
     needsNamespace ||= !receiver && edit.plugins.length > 0;

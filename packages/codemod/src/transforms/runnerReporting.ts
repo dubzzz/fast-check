@@ -3,25 +3,18 @@ import { declarationOf, type Expression, type PluginCall, type PluginEdit } from
 export function reporting(site: PluginCall): PluginEdit | undefined {
   const { j, options, runner, report } = site;
   const custom = ['reporter', 'asyncReporter'].filter((key) => options.has(key));
+  if (!custom.length) return { remove: [], plugins: [] };
   const format = options.get('includeErrorInReport');
+  // v4 bypasses the default reporter, but still evaluates the option expression.
+  const remove = format && j.BooleanLiteral.check(format) ? [...custom, 'includeErrorInReport'] : custom;
   if (runner === 'check') {
     if (custom.length > 1) return undefined;
     const callback = options.get(custom[0]);
     if (custom.length && !j.ArrowFunctionExpression.check(callback) && !j.FunctionExpression.check(callback))
       return undefined;
-    return { remove: [...custom, ...(format ? ['includeErrorInReport'] : [])], plugins: [] };
+    return { remove, plugins: [] };
   }
-  if (!custom.length) {
-    if (j.BooleanLiteral.check(format) && !format.value) return { remove: ['includeErrorInReport'], plugins: [] };
-    // v4 handles includeErrorInReport itself. Its configurable defaultReporter factory is a v5 API.
-    return { remove: [], plugins: [] };
-  }
-  if (
-    custom.length > 1 ||
-    format ||
-    options.has('noDefaultPlugins') ||
-    (runner === 'configureGlobal' && site.hasCheck)
-  ) {
+  if (custom.length > 1 || options.has('noDefaultPlugins') || (runner === 'configureGlobal' && site.hasCheck)) {
     report('Review the reporting policy and its consumers before installing a completion hook.');
     return undefined;
   }
@@ -101,8 +94,8 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
     );
   }
   return {
-    remove: custom,
-    conflicts: ['reporter', 'asyncReporter', 'includeErrorInReport', 'markInterruptAsFailure'],
+    remove,
+    conflicts: ['reporter', 'asyncReporter', 'markInterruptAsFailure'],
     plugins: [{ value: factory }],
     parameters: { noDefaultPlugins: j.booleanLiteral(true) },
   };
