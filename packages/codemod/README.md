@@ -73,6 +73,15 @@ Also migrates one-time global settings and drops empty options.
 
 </details>
 
+<details><summary><code>v5/asyncProperty</code> (≥5.0.0) — Renames asyncProperty to property</summary>
+
+```diff
+-fc.assert(fc.asyncProperty(arb, predicate));
++fc.assert(fc.property(arb, predicate));
+```
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
