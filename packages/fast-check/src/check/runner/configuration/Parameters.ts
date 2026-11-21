@@ -90,7 +90,7 @@ export interface Parameters<T = void> {
    * {@link installGlobalPlugin} are still executed and may throw, unless
    * globally installed plugins are disabled with `noGlobalPlugins`.
    *
-   * @remarks Since 5.0.0
+   * @remarks Since 4.11.0
    */
   noDefaultPlugins?: boolean;
   /**
@@ -100,7 +100,7 @@ export interface Parameters<T = void> {
    * at either the `'pre'` or `'post'` position are not instantiated for this run. Plugins passed through `plugins` and
    * default plugins are unaffected. Use `noDefaultPlugins` to disable defaults.
    *
-   * @remarks Since 5.0.0
+   * @remarks Since 4.11.0
    */
   noGlobalPlugins?: boolean;
   /**
