@@ -71,6 +71,15 @@ Requires a direct dependency on `pure-rand` v8.
 
 </details>
 
+<details><summary><code>v5/defaultReportMessage</code> (≥5.0.0) — Reads the failure message from the default reporter</summary>
+
+```diff
+-const message = fc.defaultReportMessage(details);
++const message = await readDefaultReportMessage(details);
+```
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
