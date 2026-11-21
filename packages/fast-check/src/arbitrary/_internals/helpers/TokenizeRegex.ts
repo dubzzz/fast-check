@@ -159,14 +159,11 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
 function toSingleToken(tokens: RegexToken[], allowEmpty?: false): RegexToken;
 function toSingleToken(tokens: RegexToken[], allowEmpty: true): RegexToken | undefined;
 function toSingleToken(tokens: RegexToken[], allowEmpty?: boolean): RegexToken | undefined {
-  if (tokens.length > 1) {
+  if (tokens.length > 1 || (!allowEmpty && tokens.length === 0)) {
     return {
       type: 'Alternative',
       expressions: tokens,
     };
-  }
-  if (!allowEmpty && tokens.length === 0) {
-    throw new Error(`Unsupported no token`);
   }
   return tokens[0];
 }
