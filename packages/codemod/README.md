@@ -62,6 +62,15 @@ Also migrates direct throw expectations to promise rejections.
 
 </details>
 
+<details><summary><code>v5/asyncProperty</code> (≥5.0.0) — Renames asyncProperty to property</summary>
+
+```diff
+-fc.assert(fc.asyncProperty(arb, predicate));
++fc.assert(fc.property(arb, predicate));
+```
+
+</details>
+
 <details><summary><code>v5/infiniteStream</code> (≥5.0.0) — Keeps generated iterators infinite</summary>
 
 ```diff
