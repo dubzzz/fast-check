@@ -1,5 +1,60 @@
-import type { API, FileInfo } from 'jscodeshift';
+import type { API, ASTPath, FileInfo, JSCodeshift } from 'jscodeshift';
 import { allowAwait, isTestApi, memberName } from '../fastCheck.js';
+
+// Follow one local binding, in the scope where its initializer was written.
+function definition(j: JSCodeshift, path: ASTPath): ASTPath {
+  if (!j.Identifier.check(path.node)) return path;
+  const bindings = path.scope.lookup(path.node.name)?.getBindings()[path.node.name];
+  if (bindings?.length !== 1) return path;
+  const binding = bindings[0];
+  const decl = binding.parent;
+  if (j.FunctionDeclaration.check(decl.node) && decl.node.id === binding.node) return decl;
+  if (j.VariableDeclarator.check(decl.node) && decl.node.id === binding.node && decl.parent.node.kind === 'const')
+    return decl.get('init');
+  return path;
+}
+
+function isBooleanTest(j: JSCodeshift, path: ASTPath, node: unknown): boolean {
+  return (
+    j.MemberExpression.check(node) &&
+    !node.computed &&
+    j.Identifier.check(node.object) &&
+    node.object.name === 'Number' &&
+    !path.scope.lookup('Number') &&
+    j.Identifier.check(node.property) &&
+    ['isInteger', 'isFinite', 'isNaN', 'isSafeInteger'].includes(node.property.name)
+  );
+}
+
+function isSyncProperty(j: JSCodeshift, argument: ASTPath): boolean {
+  const property = definition(j, argument);
+  const call = property.node;
+  if (!j.CallExpression.check(call) || memberName(j, property, call.callee) !== 'property' || call.arguments.length < 2)
+    return false;
+  const predicate = definition(j, property.get('arguments', call.arguments.length - 1));
+  const fn = predicate.node;
+  if (!j.Function.check(fn)) return isBooleanTest(j, predicate, fn);
+  if (fn.async || fn.generator) return false;
+  if (j.TSTypeAnnotation.check(fn.returnType))
+    return (
+      j.TSBooleanKeyword.check(fn.returnType.typeAnnotation) || j.TSVoidKeyword.check(fn.returnType.typeAnnotation)
+    );
+
+  let result: unknown = fn.body;
+  if (j.BlockStatement.check(result)) {
+    if (!j(result).find(j.ReturnStatement).size()) return true;
+    const last = result.body.at(-1);
+    if (!j.ReturnStatement.check(last)) return false;
+    if (!last.argument) return true;
+    result = last.argument;
+  }
+  return (
+    j.BooleanLiteral.check(result) ||
+    j.BinaryExpression.check(result) ||
+    j.UnaryExpression.check(result) ||
+    (j.CallExpression.check(result) && isBooleanTest(j, predicate, result.callee))
+  );
+}
 
 export default function transform(file: FileInfo, api: API): string {
   const j = api.jscodeshift.withParser(/\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx');
@@ -8,11 +63,7 @@ export default function transform(file: FileInfo, api: API): string {
 
   root.find(j.CallExpression).forEach((path) => {
     const { callee } = path.node;
-    if (memberName(j, path, callee) === 'asyncProperty' && j.MemberExpression.check(callee)) {
-      callee.property = j.identifier('property');
-      changed = true;
-    }
-    if (memberName(j, path, callee) !== 'assert') return;
+    if (memberName(j, path, callee) !== 'assert' || !isSyncProperty(j, path.get('arguments', 0))) return;
     if (j.ExpressionStatement.check(path.parent.node)) {
       if (allowAwait(j, path, file.path)) {
         path.replace(j.awaitExpression(path.node));

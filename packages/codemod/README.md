@@ -51,11 +51,11 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
-<details><summary><code>v5/asyncAssertions</code> (≥5.0.0) — Awaits assertions and migrates asynchronous properties</summary>
+<details><summary><code>v5/asyncAssertions</code> (≥5.0.0) — Awaits assertions on synchronous properties</summary>
 
 ```diff
--fc.assert(fc.asyncProperty(arb, predicate));
-+await fc.assert(fc.property(arb, predicate));
+-fc.assert(fc.property(arb, n => n >= 0));
++await fc.assert(fc.property(arb, n => n >= 0));
 ```
 
 Also migrates direct throw expectations to promise rejections.
