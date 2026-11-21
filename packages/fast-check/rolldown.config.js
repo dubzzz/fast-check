@@ -18,8 +18,16 @@ function getCommitHash() {
   return out.toString().split('\n')[0];
 }
 
-export default buildConfigFor(pkg, import.meta.dirname, (isESM) => ({
+const configs = buildConfigFor(pkg, import.meta.dirname, (isESM) => ({
   'process.env.__PACKAGE_TYPE__': isESM ? JSON.stringify('module') : JSON.stringify('commonjs'),
   'process.env.__PACKAGE_VERSION__': JSON.stringify(pkg.version),
   'process.env.__COMMIT_HASH__': JSON.stringify(getCommitHash()),
+}));
+
+export default configs.map((config) => ({
+  ...config,
+  transform: {
+    // Syntax lowering does not polyfill the ES2025 iterator APIs used at runtime.
+    target: ['es2025', 'node22.12.0'],
+  },
 }));

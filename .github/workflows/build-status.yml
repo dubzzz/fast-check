@@ -432,6 +432,8 @@ jobs:
         run: node --run unpack
       - name: Check API surface (missing exports, inconsistent visibility, etc.)
         run: pnpm --filter fast-check run api-extractor # WARNING! Must run before packaged
+      - name: Check isolated consumers (TypeScript 5.8 and latest)
+        run: pnpm --filter fast-check run test-consumer-types
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
       - name: Wait for fixtures to be prepared
