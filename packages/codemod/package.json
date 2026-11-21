@@ -10,7 +10,8 @@
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
     "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js",
     "./transforms/v5/asyncProperty": "./lib/transforms/v5/asyncProperty.js",
-    "./transforms/v5/randomTypeFactory": "./lib/transforms/v5/randomTypeFactory.js"
+    "./transforms/v5/randomTypeFactory": "./lib/transforms/v5/randomTypeFactory.js",
+    "./transforms/v5/defaultReporter": "./lib/transforms/v5/defaultReporter.js"
   },
   "bin": "./lib/cli.js",
   "files": [

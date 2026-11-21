@@ -71,6 +71,15 @@ Requires a direct dependency on `pure-rand` v8.
 
 </details>
 
+<details><summary><code>v5/defaultReporter</code> (≥5.0.0) — Migrates the default assertion error format</summary>
+
+```diff
+-fc.assert(prop, { includeErrorInReport: true });
++fc.assert(prop, { noDefaultPlugins: true, plugins: [fc.defaultReporter({ includeErrorInReport: true })] });
+```
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
