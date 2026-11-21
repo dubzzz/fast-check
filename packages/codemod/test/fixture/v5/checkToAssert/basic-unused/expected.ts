@@ -1,3 +1,5 @@
 import * as fc from 'fast-check';
 
-await fc.assert(fc.property(fc.nat(), Number.isInteger));
+await fc.assert(fc.property(fc.nat(), () => false), {
+  noDefaultPlugins: true
+});

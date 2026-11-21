@@ -75,7 +75,7 @@ Requires a direct dependency on `pure-rand` v8.
 
 ```diff
 -fc.check(property);
-+await fc.assert(property);
++await fc.assert(property, { noDefaultPlugins: true });
 ```
 
 Inspected results are captured with `onAllRunsComplete`.

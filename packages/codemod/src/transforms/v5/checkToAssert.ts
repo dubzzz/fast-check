@@ -49,9 +49,15 @@ export default function transform(file: FileInfo, api: API): string {
           return;
       }
     }
+    const [property, params] = path.node.arguments;
+    if (!j.Expression.check(property) || path.node.arguments.length > 2 || j.SpreadElement.check(params)) return;
     if (!discarded && namespace && namespace !== callee.object.name) return;
     if (!awaited && !allowAwait(j, path, file.path)) return;
     if (discarded) {
+      const disableDefaults = j.objectProperty(j.identifier('noDefaultPlugins'), j.booleanLiteral(true));
+      // Put the override last, including when the supplied options come from another scope.
+      const options = j.objectExpression(params ? [j.spreadElement(params), disableDefaults] : [disableDefaults]);
+      path.node.arguments = [property, options];
       callee.property = j.identifier('assert');
     } else {
       namespace = callee.object.name;
