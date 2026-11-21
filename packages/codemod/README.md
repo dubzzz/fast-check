@@ -51,6 +51,17 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
+<details><summary><code>v5/lifecyclePlugins</code> (≥4.10.0) — Moves property hooks into runner plugins</summary>
+
+```diff
+-fc.assert(fc.property(arb, predicate).beforeEach(setup));
++fc.assert(fc.property(arb, predicate), { plugins: [fc.beforeEach(setup)] });
+```
+
+Also handles one-time global hooks.
+
+</details>
+
 <details><summary><code>v5/runnerPlugins</code> (≥4.11.0) — Moves runner options and custom reporters into plugins</summary>
 
 ```diff
