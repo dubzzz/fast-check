@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 slug: /migration-guide/from-3.x-to-4.x/
 ---
 
