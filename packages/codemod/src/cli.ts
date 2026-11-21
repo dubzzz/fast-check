@@ -27,6 +27,7 @@ if (transform === '--help' || transform === '-h') {
   const result = spawnSync(
     process.execPath,
     [
+      ...(extension === 'ts' ? ['--import', import.meta.resolve('tsx')] : []),
       fileURLToPath(import.meta.resolve('jscodeshift/bin/jscodeshift.js')),
       '--transform',
       fileURLToPath(import.meta.resolve(`./transforms/${transform}.${extension}`)),

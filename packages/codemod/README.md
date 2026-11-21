@@ -51,6 +51,17 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
+<details><summary><code>v5/randomTypeFactory</code> (≥4.6.0) — Imports pure-rand v8 generator factories</summary>
+
+```diff
+-fc.configureGlobal({ randomType: 'congruential' });
++fc.configureGlobal({ randomType: congruential32 });
+```
+
+Requires a direct dependency on `pure-rand` v8.
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
