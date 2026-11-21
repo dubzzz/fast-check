@@ -47,13 +47,13 @@ describe('onTheFlyLinksForEntityGraph (integration)', () => {
       { size: '-1' },
     );
   const extraParameters: fc.Arbitrary<Extra> = fc.record({
-    configurations: fc.record(
-      Object.fromEntries(
-        allKinds.map((kind) =>
-          kind === 'kind-e' ? [kind, fc.constant({})] : [kind, extraParametersOneEntityRelations(kind)],
-        ),
-      ),
-    ),
+    configurations: fc.record({
+      'kind-a': extraParametersOneEntityRelations('kind-a'),
+      'kind-b': extraParametersOneEntityRelations('kind-b'),
+      'kind-c': extraParametersOneEntityRelations('kind-c'),
+      'kind-d': extraParametersOneEntityRelations('kind-d'),
+      'kind-e': fc.constant({}),
+    }),
     defaultEntities: fc.array(fc.constantFrom(...allKinds)),
   });
 
