@@ -18,6 +18,8 @@ export interface PluginEdit {
 export interface PluginCall {
   j: JSCodeshift;
   runner: Runner;
+  hasCheck: boolean;
+  typescript: boolean;
   call: CallExpression;
   path: CallPath;
   options: ReadonlyMap<string, Expression>;
@@ -177,6 +179,7 @@ export function migratePluginCalls(
   const root = j(file.source);
   const calls = root.find(j.CallExpression).paths();
   const globalCalls = calls.filter((path) => importedName(path, path.node) === 'configureGlobal');
+  const hasCheck = calls.some((path) => importedName(path, path.node) === 'check');
   const hasReset = calls.some((path) => importedName(path, path.node) === 'resetConfigureGlobal');
   const sites = [];
   const globalKeys = new Set<string>();
@@ -223,6 +226,8 @@ export function migratePluginCalls(
       j,
       runner,
       call: path.node,
+      hasCheck,
+      typescript: /\.[cm]?tsx?$/.test(file.path),
       path,
       options,
       member,

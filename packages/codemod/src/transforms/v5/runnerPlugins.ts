@@ -1,7 +1,12 @@
 import type { API, FileInfo } from 'jscodeshift';
 import { migratePluginCalls, type Expression, type PluginCall, type PluginEdit } from '../pluginMigration.js';
 
-function runnerPlugins({ j, member, options, report, runner, call }: PluginCall): PluginEdit | undefined {
+import { reporting } from '../runnerReporting.js';
+
+function runnerPlugins(site: PluginCall): PluginEdit | undefined {
+  const { j, member, options, report, runner, call } = site;
+  const reportingEdit = reporting(site);
+  if (!reportingEdit) return undefined;
   // v4 wraps the property in this order, regardless of the order of keys in Parameters.
   const names = ['ignoreEqualValues', 'skipEqualValues', 'interruptAfterTimeLimit', 'unbiased', 'timeout'];
   const remove = names.filter((name) => options.has(name));
@@ -10,25 +15,17 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
     return undefined;
   }
   const markFailure = options.get('markInterruptAsFailure');
-  if (markFailure) {
-    const disabled = j.BooleanLiteral.check(markFailure) && !markFailure.value;
-    const usesRunDetails = runner !== 'assert' || options.has('reporter') || options.has('asyncReporter');
-    if (!options.has('interruptAfterTimeLimit') || (!disabled && usesRunDetails)) {
-      // In v4 the plugin can throw before check returns or a custom reporter receives the failed RunDetails.
-      report('Review the interruption policy together with its v4 RunDetails consumers.');
-      return undefined;
-    }
-  }
-  if (!remove.length) {
-    if (
-      runner !== 'configureGlobal' &&
-      call.arguments.length === 2 &&
-      options.size === 0 &&
-      !call.arguments[1].comments?.length
-    )
-      return { remove, plugins: [], shareLocalOptions: true };
+  const customReporter = options.has('reporter') || options.has('asyncReporter');
+  if (markFailure && !options.has('interruptAfterTimeLimit')) {
+    report('Review the interruption policy without an explicit time limit.');
     return undefined;
   }
+  const emptyLocalOptions =
+    runner !== 'configureGlobal' &&
+    call.arguments.length === 2 &&
+    options.size === 0 &&
+    !call.arguments[1].comments?.length;
+  if (!remove.length && !reportingEdit.remove.length && !emptyLocalOptions) return undefined;
 
   const plugins: PluginEdit['plugins'] = [];
   for (const name of remove) {
@@ -53,6 +50,8 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
       const args = [delay];
       if (
         name === 'interruptAfterTimeLimit' &&
+        runner === 'assert' &&
+        !customReporter &&
         markFailure &&
         !(j.BooleanLiteral.check(markFailure) && !markFailure.value)
       ) {
@@ -66,12 +65,26 @@ function runnerPlugins({ j, member, options, report, runner, call }: PluginCall)
       });
     }
   }
-  if (markFailure) remove.push('markInterruptAsFailure');
+  // When callers read check's result, v4 must mark the interruption without throwing from a hook.
+  const result = j.AwaitExpression.check(site.path.parent.node) ? site.path.parent : site.path;
+  const ignoresCheckResult = runner === 'check' && j.ExpressionStatement.check(result.parent.node);
+  if (
+    markFailure &&
+    (runner === 'assert' ||
+      ignoresCheckResult ||
+      (runner === 'configureGlobal' && customReporter) ||
+      (j.BooleanLiteral.check(markFailure) && !markFailure.value))
+  )
+    remove.push('markInterruptAsFailure');
   return {
-    remove,
-    plugins,
-    shareLocalOptions: !markFailure,
-    conflicts: remove.includes('interruptAfterTimeLimit') ? ['markInterruptAsFailure'] : [],
+    remove: [...remove, ...reportingEdit.remove],
+    plugins: [...plugins, ...reportingEdit.plugins],
+    parameters: reportingEdit.parameters,
+    shareLocalOptions: !markFailure && !reportingEdit.remove.length,
+    conflicts: [
+      ...(reportingEdit.conflicts ?? []),
+      ...(remove.includes('interruptAfterTimeLimit') ? ['markInterruptAsFailure'] : []),
+    ],
   };
 }
 
