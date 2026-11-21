@@ -10,7 +10,9 @@
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
     "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js",
     "./transforms/v5/asyncProperty": "./lib/transforms/v5/asyncProperty.js",
-    "./transforms/v5/randomTypeFactory": "./lib/transforms/v5/randomTypeFactory.js"
+    "./transforms/v5/randomTypeFactory": "./lib/transforms/v5/randomTypeFactory.js",
+    "./transforms/v5/awaitAssert": "./lib/transforms/v5/awaitAssert.js",
+    "./transforms/v5/awaitAssertWithAsyncProperty": "./lib/transforms/v5/awaitAssertWithAsyncProperty.js"
   },
   "bin": "./lib/cli.js",
   "files": [

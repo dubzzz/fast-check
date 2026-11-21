@@ -18,7 +18,16 @@ Add `--dry --print` to preview changes without writing files. Commit your work b
 
 ### Migrate to v5
 
-<details><summary><code>v5/defaultImport</code> (≥1.0.0)<sup><a href="#minimum-fast-check-version">(1)</a></sup> — Replaces default imports with namespace imports. Also handles `import type`</summary>
+<details><summary><code>v5/awaitAssert</code> (≥1.0.0)<sup><a href="#minimum-fast-check-version">(1)</a></sup> — Awaits fast-check assertions</summary>
+
+```diff
+-fc.assert(prop);
++await fc.assert(prop);
+```
+
+</details>
+
+<details><summary><code>v5/defaultImport</code> (≥1.0.0) — Replaces default imports with namespace imports. Also handles `import type`</summary>
 
 Example:
 
@@ -59,6 +68,15 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 ```
 
 Requires a direct dependency on `pure-rand` v8.
+
+</details>
+
+<details><summary><code>v5/awaitAssertWithAsyncProperty</code> (≥4.11.0 and <5.0.0) — Awaits assertions with inline async properties</summary>
+
+```diff
+-fc.assert(fc.property(arb, predicate));
++await fc.assert(fc.asyncProperty(arb, predicate));
+```
 
 </details>
 
