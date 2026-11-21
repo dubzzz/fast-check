@@ -71,6 +71,15 @@ Requires a direct dependency on `pure-rand` v8.
 
 </details>
 
+<details><summary><code>v5/statistics</code> (≥5.0.0) — Awaits statistics and logs the result</summary>
+
+```diff
+-fc.statistics(fc.integer(), String);
++fc.logStatistics(await fc.statistics(fc.integer(), String));
+```
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
