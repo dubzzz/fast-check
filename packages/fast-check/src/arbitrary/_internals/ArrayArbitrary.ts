@@ -10,7 +10,7 @@ import { getDepthContextFor } from './helpers/DepthContext.js';
 import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator.js';
 import { joinAll, nil } from '../../utils/iterator.js';
 
-type ArrayArbitraryContext = {
+export type ArrayArbitraryContext = {
   shrunkOnce: boolean;
   lengthContext: unknown;
   itemsContexts: unknown[];
