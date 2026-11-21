@@ -51,6 +51,17 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
+<details><summary><code>v5/runnerPlugins</code> (≥4.11.0) — Moves runner options and custom reporters into plugins</summary>
+
+```diff
+-fc.assert(property, { timeout: 500 });
++fc.assert(property, { plugins: [fc.timeout(500)] });
+```
+
+Also migrates one-time global settings and drops empty options.
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
