@@ -51,6 +51,17 @@ Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`.
 
 </details>
 
+<details><summary><code>v5/sampleAndStatistics</code> (≥5.0.0) — Awaits sampling and preserves statistics logging</summary>
+
+```diff
+-fc.statistics(fc.integer(), String);
++fc.logStatistics(await fc.statistics(fc.integer(), String));
+```
+
+Property inputs retain generation-only behavior.
+
+</details>
+
 <p id="minimum-fast-check-version">
 
 **(1)** Versions shown as `≥x.y.z` indicate the minimum `fast-check` version required to apply the transform. For example, `≥1.0.0` requires `fast-check` 1.0.0 or later.
