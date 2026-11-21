@@ -18,17 +18,6 @@ Add `--dry --print` to preview changes without writing files. Commit your work b
 
 ### Migrate to v5
 
-<details><summary><code>v5/randomMethods</code> (≥1.0.0) — Migrates removed Random methods to bounded nextInt calls</summary>
-
-```diff
--rng.nextBoolean();
-+rng.nextInt(0, 1) === 1;
-```
-
-Applies to direct calls on a variable or parameter annotated as fast-check’s `Random`. Handles `next(bits)`, `nextInt()`, `nextBoolean()` and `nextDouble()`. The double uses the same two draws in the same order.
-
-</details>
-
 <details><summary><code>v5/defaultImport</code> (≥1.0.0)<sup><a href="#minimum-fast-check-version">(1)</a></sup> — Replaces default imports with namespace imports. Also handles `import type`</summary>
 
 Example:
@@ -37,6 +26,17 @@ Example:
 -import fc from 'fast-check';
 +import * as fc from 'fast-check';
 ```
+
+</details>
+
+<details><summary><code>v5/randomMethods</code> (≥1.0.0) — Migrates removed Random methods to bounded nextInt calls</summary>
+
+```diff
+-rng.nextBoolean();
++rng.nextInt(0, 1) === 1;
+```
+
+Applies to direct calls on a variable or parameter annotated as fast-check’s `Random`. Handles `next(bits)`, `nextInt()`, `nextBoolean()` and `nextDouble()`. The double uses the same two draws in the same order.
 
 </details>
 
@@ -62,6 +62,15 @@ Also migrates direct throw expectations to promise rejections.
 
 </details>
 
+<details><summary><code>v5/infiniteStream</code> (≥5.0.0) — Keeps generated iterators infinite</summary>
+
+```diff
+-fc.infiniteStream(arb);
++fc.iterator(arb, { minLength: Infinity });
+```
+
+</details>
+
 <details><summary><code>v5/nativeShrinkIterators</code> (≥5.0.0) — Uses native iterators in custom shrinkers</summary>
 
 ```diff
@@ -70,15 +79,6 @@ Also migrates direct throw expectations to promise rejections.
 ```
 
 Requires a runtime with iterator helpers.
-
-</details>
-
-<details><summary><code>v5/infiniteStream</code> (≥5.0.0) — Keeps generated iterators infinite</summary>
-
-```diff
--fc.infiniteStream(arb);
-+fc.iterator(arb, { minLength: Infinity });
-```
 
 </details>
 
