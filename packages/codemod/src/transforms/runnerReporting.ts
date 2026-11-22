@@ -39,16 +39,8 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
     report('Review the reporter reference: it may change or resolve to undefined.');
     return undefined;
   }
-  if (
-    j(known).find(j.ThisExpression).size() ||
-    j(known).find(j.Super).size() ||
-    j(known)
-      .find(j.CallExpression)
-      .some((path) =>
-        ['defaultReportMessage', 'asyncDefaultReportMessage'].includes(site.importedName(path.node) ?? ''),
-      )
-  ) {
-    report('Review the custom reporter: v5 changes its receiver and removes the default message formatters.');
+  if (j(known).find(j.ThisExpression).size() || j(known).find(j.Super).size()) {
+    report('Review the custom reporter: v5 changes its receiver.');
     return undefined;
   }
 
