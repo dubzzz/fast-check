@@ -1,4 +1,5 @@
 import type { API, ASTPath, FileInfo, JSCodeshift } from 'jscodeshift';
+import { reportUnsupported } from '../reportUnsupported.js';
 import { allowAwait, isTestApi, memberName } from '../fastCheck.js';
 
 // Follow one local binding, in the scope where its initializer was written.
@@ -63,12 +64,26 @@ export default function transform(file: FileInfo, api: API): string {
 
   root.find(j.CallExpression).forEach((path) => {
     const { callee } = path.node;
-    if (memberName(j, path, callee) !== 'assert' || !isSyncProperty(j, path.get('arguments', 0))) return;
+    if (memberName(j, path, callee) !== 'assert') return;
+    const argument = path.get('arguments', 0);
+    if (!isSyncProperty(j, argument)) {
+      const property = definition(j, argument);
+      if (j.CallExpression.check(property.node) && memberName(j, property, property.node.callee) === 'property') {
+        const predicate = definition(j, property.get('arguments', property.node.arguments.length - 1));
+        if (j.Identifier.check(predicate.node))
+          reportUnsupported(
+            api,
+            predicate.node,
+            'Check whether this predicate is synchronous before awaiting assert().',
+          );
+      }
+      return;
+    }
     if (j.ExpressionStatement.check(path.parent.node)) {
       if (allowAwait(j, path, file.path)) {
         path.replace(j.awaitExpression(path.node));
         changed = true;
-      }
+      } else reportUnsupported(api, path.node, 'Cannot await assert() inside this synchronous function.');
       return;
     }
     // expect(() => fc.assert(property)).toThrow(error)

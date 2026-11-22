@@ -1,4 +1,5 @@
 import type { API, FileInfo } from 'jscodeshift';
+import { reportUnsupported } from '../reportUnsupported.js';
 import { isFastCheckNamespace, memberName } from '../fastCheck.js';
 
 const streamOnly = ['getNthOrLast', 'has', 'join', 'dropWhile', 'takeWhile'];
@@ -21,13 +22,7 @@ export default function transform(file: FileInfo, api: API): string {
       .nodes()
       .find((m) => !m.computed && j.Identifier.check(m.property) && streamOnly.includes(m.property.name));
     if (unsupported && j.Identifier.check(unsupported.property)) {
-      api.report(
-        'Review shrink at line ' +
-          method.node.loc?.start.line +
-          ': ' +
-          unsupported.property.name +
-          ' has no direct iterator equivalent.',
-      );
+      reportUnsupported(api, unsupported, `${unsupported.property.name} has no direct iterator equivalent.`);
       return;
     }
     if (method.scope.lookup('Iterator') || method.scope.lookupType('IteratorObject')) return;

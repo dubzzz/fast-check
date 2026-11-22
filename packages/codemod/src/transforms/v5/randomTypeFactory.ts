@@ -1,5 +1,6 @@
 import type { API, FileInfo } from 'jscodeshift';
 import { memberName } from '../fastCheck.js';
+import { reportUnsupported } from '../reportUnsupported.js';
 
 const optionsIndex = new Map([
   ['configureGlobal', 0],
@@ -32,12 +33,39 @@ export default function transform(file: FileInfo, api: API): string {
         !j.ObjectProperty.check(prop) ||
         prop.computed ||
         !j.Identifier.check(prop.key) ||
-        prop.key.name !== 'randomType' ||
-        !j.StringLiteral.check(prop.value)
+        prop.key.name !== 'randomType'
       )
         continue;
+      if (!j.StringLiteral.check(prop.value)) {
+        // Factory functions and imports produced by this transform need no migration.
+        if (j.FunctionExpression.check(prop.value) || j.ArrowFunctionExpression.check(prop.value)) continue;
+        if (j.Identifier.check(prop.value)) {
+          const binding = path.scope.lookup(prop.value.name)?.getBindings()[prop.value.name]?.[0];
+          const specifier = binding?.parent.node;
+          const declaration = binding?.parent.parent.node;
+          if (
+            j.ImportSpecifier.check(specifier) &&
+            j.Identifier.check(specifier.imported) &&
+            j.ImportDeclaration.check(declaration) &&
+            declaration.importKind !== 'type' &&
+            (!('importKind' in specifier) || specifier.importKind !== 'type') &&
+            factories.includes(specifier.imported.name) &&
+            declaration.source.value === 'pure-rand/generator/' + specifier.imported.name
+          )
+            continue;
+        }
+        reportUnsupported(api, prop, 'Cannot migrate dynamic randomType; ensure its value is a generator factory.');
+        continue;
+      }
       const factory = prop.value.value === 'congruential' ? 'congruential32' : prop.value.value;
-      if (!factories.includes(factory)) continue;
+      if (!factories.includes(factory)) {
+        reportUnsupported(
+          api,
+          prop,
+          `Cannot migrate unknown randomType '${prop.value.value}'; choose a generator factory manually.`,
+        );
+        continue;
+      }
       const source = 'pure-rand/generator/' + factory;
       const existing = imports
         .nodes()
