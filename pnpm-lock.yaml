@@ -183,8 +183,8 @@ importers:
   .:
     devDependencies:
       '@atproto/api':
-        specifier: ^0.32.3
-        version: 0.32.3
+        specifier: ^0.32.5
+        version: 0.32.5
       '@changesets/cli':
         specifier: ^3.0.3
         version: 3.0.3
@@ -707,12 +707,12 @@ packages:
     peerDependencies:
       ajv: '>=8'
 
-  '@atproto/api@0.32.3':
-    resolution: {integrity: sha512-clz0+boVDAMueAFY0pyJSg2TejhytB8Vem66gB9ZmdQiS8Wq8uZwqmA8CgtN0xhCAoo4T0QUmCiRmZCrGo02ew==}
+  '@atproto/api@0.32.5':
+    resolution: {integrity: sha512-XEiuq2sM6NZgWKP6Yt0/Ch4xXlG2HaW+Eo+yf2VUrVQMSxnGWJcTT3OnG0Yy08yL6/OU+69a/0xb1oQsluxIQQ==}
     engines: {node: '>=22'}
 
-  '@atproto/common-web@0.5.18':
-    resolution: {integrity: sha512-6y4eeKr0dBvMgKzQRpndvBnbHYXPkyiPOxI77ssXu/gOrLv3a66L3cD0uIndJTveBIedcMLHZj7UZ6DJ78F30Q==}
+  '@atproto/common-web@0.5.19':
+    resolution: {integrity: sha512-m1pu10fXCRnhqG0E7P5QT6IYkKNJ5K6oH6pjZC/iLhLR1z/nbE6UwIN5qDa24HOJTHMN/JjEbEbppVO3wK56hw==}
     engines: {node: '>=22'}
 
   '@atproto/lex-data@0.1.11':
@@ -723,16 +723,16 @@ packages:
     resolution: {integrity: sha512-U2AAUDhMyti0CC5FOil/XvYdNfF2decPn/L/K2ezfC3fM/rWsXMR11cpV04eM1efwzcQM7ZG/E5SxZO7wVLAQA==}
     engines: {node: '>=22'}
 
-  '@atproto/lexicon@0.7.20':
-    resolution: {integrity: sha512-fAjapNfEztvYDUzDb8IAAbSSBSX4mlGgoWXS+U6DW/ILtyPVm8UomyLWqiY5DTWAKYA1NvDXv4wKhh3mzii/qw==}
+  '@atproto/lexicon@0.7.21':
+    resolution: {integrity: sha512-nAQf9YsuevZ48OuBUF2VdadzCkYMWIvg6NRcVlKWAnbA4dibsEZrq1/k8ZfMypoxMeTt+keGJQqZBX2FTNhO1A==}
     engines: {node: '>=22'}
 
-  '@atproto/syntax@0.7.8':
-    resolution: {integrity: sha512-ss/UFa0UAekTs/22YDP6oz+99QvlQ+pHEye53LzNCIg9dShp8EfTPj5IJJijR/UyjqHAJdAFuQWSbrcCbq+mwg==}
+  '@atproto/syntax@0.7.9':
+    resolution: {integrity: sha512-jC4JsFc2MdDS69+AuLdJo2dyI1K4UJiCn5ys77Ml8jxG6YdvcIO86jJW4gmNNALP9+VROBGE5MtbyJlUNm/LHQ==}
     engines: {node: '>=22'}
 
-  '@atproto/xrpc@0.8.19':
-    resolution: {integrity: sha512-84f0+wbjf1KRJZ28Fft78nwDqX+jd/xm81A+2hURXKwDyvEnlfa+zmFLhOEdoLNMQWtsanOlGJXTCO6aXzl6Gw==}
+  '@atproto/xrpc@0.8.20':
+    resolution: {integrity: sha512-F3YE7g/poyZ4Q3i9zkx4EXiMzyZU2+x21//UIiDTFnfMbVyFkRbJOQvqWvSBbYWZTmlvwWZNmXmuK4kI9x8RnQ==}
     engines: {node: '>=22'}
 
   '@babel/code-frame@7.29.7':
@@ -10917,22 +10917,22 @@ snapshots:
       jsonpointer: 5.0.1
       leven: 3.1.0
 
-  '@atproto/api@0.32.3':
+  '@atproto/api@0.32.5':
     dependencies:
-      '@atproto/common-web': 0.5.18
-      '@atproto/lexicon': 0.7.20
-      '@atproto/syntax': 0.7.8
-      '@atproto/xrpc': 0.8.19
+      '@atproto/common-web': 0.5.19
+      '@atproto/lexicon': 0.7.21
+      '@atproto/syntax': 0.7.9
+      '@atproto/xrpc': 0.8.20
       await-lock: 3.0.0
       multiformats: 13.4.2
       tlds: 1.261.0
       zod: 3.25.76
 
-  '@atproto/common-web@0.5.18':
+  '@atproto/common-web@0.5.19':
     dependencies:
       '@atproto/lex-data': 0.1.11
       '@atproto/lex-json': 0.1.10
-      '@atproto/syntax': 0.7.8
+      '@atproto/syntax': 0.7.9
       zod: 3.25.76
 
   '@atproto/lex-data@0.1.11':
@@ -10946,21 +10946,21 @@ snapshots:
       '@atproto/lex-data': 0.1.11
       tslib: 2.9.1
 
-  '@atproto/lexicon@0.7.20':
+  '@atproto/lexicon@0.7.21':
     dependencies:
-      '@atproto/common-web': 0.5.18
-      '@atproto/syntax': 0.7.8
+      '@atproto/common-web': 0.5.19
+      '@atproto/syntax': 0.7.9
       multiformats: 13.4.2
       zod: 3.25.76
 
-  '@atproto/syntax@0.7.8':
+  '@atproto/syntax@0.7.9':
     dependencies:
       iso-datestring-validator: 2.2.2
       tslib: 2.9.1
 
-  '@atproto/xrpc@0.8.19':
+  '@atproto/xrpc@0.8.20':
     dependencies:
-      '@atproto/lexicon': 0.7.20
+      '@atproto/lexicon': 0.7.21
       zod: 3.25.76
 
   '@babel/code-frame@7.29.7':
