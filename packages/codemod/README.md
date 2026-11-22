@@ -82,6 +82,18 @@ Also migrates direct throw expectations to promise rejections.
 
 </details>
 
+<details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Preserves RunDetails when migrating check to assert</summary>
+
+```diff
+-const details = fc.check(property);
++const details = await assertAndGetRunDetails(property);
+ if (details.failed) console.log(details.counterexample);
+```
+
+Both synchronous and awaited checks use the generated helper. It captures `RunDetails` with `onAllRunsComplete` and sets `noDefaultPlugins: true` so a failing run still returns its details.
+
+</details>
+
 <details><summary><code>v5/infiniteStream</code> (≥5.0.0) — Keeps generated iterators infinite</summary>
 
 ```diff
