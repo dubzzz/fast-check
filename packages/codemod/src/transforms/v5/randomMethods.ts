@@ -1,4 +1,5 @@
 import type { API, ASTPath, CallExpression, FileInfo } from 'jscodeshift';
+import { reportUnsupported } from '../reportUnsupported.js';
 
 export default function transform(file: FileInfo, api: API): string {
   const j = api.jscodeshift.withParser(/\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx');
@@ -30,31 +31,38 @@ export default function transform(file: FileInfo, api: API): string {
   const calls = root.find(j.CallExpression).paths().reverse();
   calls.forEach((path) => {
     const { callee, arguments: args } = path.node;
-    if (
-      path.node.type !== 'CallExpression' ||
-      callee.type !== 'MemberExpression' ||
-      callee.computed ||
-      !j.Identifier.check(callee.property)
-    )
-      return;
+    if (!j.MemberExpression.check(callee) || callee.computed || !j.Identifier.check(callee.property)) return;
     const rng = callee.object;
     if (!j.Identifier.check(rng) || !isFastCheckRandom(path, rng.name)) return;
 
-    switch (callee.property.name) {
+    const method = callee.property.name;
+    if (!['nextBoolean', 'nextInt', 'next', 'nextDouble'].includes(method)) return;
+    // Bounded nextInt calls remain supported, including optional calls.
+    if (method === 'nextInt' && args.length === 2 && args.every((arg) => j.Expression.check(arg))) return;
+    if (path.node.type !== 'CallExpression' || callee.type !== 'MemberExpression') {
+      reportUnsupported(
+        api,
+        path.node,
+        `Cannot migrate optional Random.${method}() calls; preserve short-circuiting manually.`,
+      );
+      return;
+    }
+    if (method === 'next' ? args.length !== 1 || !j.Expression.check(args[0]) : args.length !== 0) {
+      reportUnsupported(api, path.node, `Cannot migrate Random.${method}() with these arguments.`);
+      return;
+    }
+
+    switch (method) {
       case 'nextBoolean':
-        if (args.length !== 0) return;
         path.replace(expression`${rng}.nextInt(0, 1) === 1`);
         break;
       case 'nextInt':
-        if (args.length !== 0) return;
         path.replace(expression`${rng}.nextInt(-2147483648, 2147483647)`);
         break;
       case 'next':
-        if (args.length !== 1 || !j.Expression.check(args[0])) return;
         path.replace(expression`${rng}.nextInt(0, (1 << ${args[0]}) - 1)`);
         break;
       case 'nextDouble':
-        if (args.length !== 0) return;
         // Draw the high 26 bits first and the low 27 bits second, just like Random.nextDouble.
         path.replace(expression`(${rng}.nextInt(0, 2 ** 26 - 1) * 2 ** 27 + ${rng}.nextInt(0, 2 ** 27 - 1)) / 2 ** 53`);
         break;
