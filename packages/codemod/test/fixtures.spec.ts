@@ -3,7 +3,7 @@ import { execFile as _execFile } from 'node:child_process';
 import { copyFile, cp, mkdir, readdir, readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promisify } from 'node:util';
+import { promisify, stripVTControlCharacters } from 'node:util';
 
 const execFile = promisify(_execFile);
 const fixtures = join(import.meta.dirname, 'fixture');
@@ -18,6 +18,7 @@ describe.each(codemods)('Codemod $version/$codemod', ({ version, codemod, cases 
 
   const once = join(artifactsDirectory, 'once');
   const twice = join(artifactsDirectory, 'twice');
+  let output: string;
 
   beforeAll(async () => {
     // Prepare a clean working directory with all test snippets for the codemod there
@@ -28,7 +29,7 @@ describe.each(codemods)('Codemod $version/$codemod', ({ version, codemod, cases 
     );
 
     // Run the codemod
-    await runCodemod(version, codemod, once);
+    output = await runCodemod(version, codemod, once);
   }, 120_000);
 
   afterAll(async () => {
@@ -38,6 +39,16 @@ describe.each(codemods)('Codemod $version/$codemod', ({ version, codemod, cases 
   it.each(cases)('should migrate %s', async (name) => {
     const migrated = await readFile(join(once, `${name}.ts`), 'utf8');
     await expect(migrated).toMatchFileSnapshot(join(fixtures, version, codemod, name, 'expected.ts'));
+  });
+
+  it.each(cases)('should report unsupported patterns in %s', (name) => {
+    const reports = output.split('\n').filter((line) => line.startsWith(` REP ${join(once, `${name}.ts`)} `));
+    if (name.startsWith('unsupported-')) {
+      expect(reports.length).toBeGreaterThan(0);
+      for (const report of reports) expect(report).toMatch(/warning \(\d+:\d+\): \S/);
+    } else {
+      expect(reports).toEqual([]);
+    }
   });
 
   describe('on second run', () => {
@@ -86,6 +97,7 @@ async function discoverCodemodFixtures(): Promise<{ version: string; codemod: st
   );
 }
 
-async function runCodemod(version: string, codemod: string, target: string): Promise<void> {
-  await execFile(process.execPath, [cli, `${version}/${codemod}`, target, '--cpus=1']);
+async function runCodemod(version: string, codemod: string, target: string): Promise<string> {
+  const { stdout } = await execFile(process.execPath, [cli, `${version}/${codemod}`, target, '--cpus=1']);
+  return stripVTControlCharacters(stdout);
 }
