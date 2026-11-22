@@ -6,6 +6,18 @@
   "main": "lib/fast-check.js",
   "exports": {
     "./package.json": "./package.json",
+    "./next": {
+      "require": {
+        "types@<5.7": "./lib/cjs/types57/fast-check-next.d.ts",
+        "types": "./lib/cjs/fast-check-next.d.ts",
+        "default": "./lib/cjs/fast-check-next.js"
+      },
+      "import": {
+        "types@<5.7": "./lib/types57/fast-check-next.d.ts",
+        "types": "./lib/fast-check-next.d.ts",
+        "default": "./lib/fast-check-next.js"
+      }
+    },
     ".": {
       "require": {
         "types@<5.7": "./lib/cjs/types57/fast-check.d.ts",
@@ -23,8 +35,16 @@
   "types": "lib/fast-check.d.ts",
   "typesVersions": {
     "<5.7": {
+      "next": [
+        "lib/types57/fast-check-next.d.ts"
+      ],
       "lib/fast-check.d.ts": [
         "lib/types57/fast-check.d.ts"
+      ]
+    },
+    "*": {
+      "next": [
+        "lib/fast-check-next.d.ts"
       ]
     }
   },

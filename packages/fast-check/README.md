@@ -72,6 +72,14 @@ Integration with other test frameworks: [ava](https://github.com/dubzzz/fast-che
 
 More examples: [simple examples](https://github.com/dubzzz/fast-check/tree/main/examples), [fuzzing](https://github.com/dubzzz/fuzz-rest-api) and [against various algorithms](https://github.com/dubzzz/fast-check-examples).
 
+The `fast-check/next` entry point re-exports the named exports of `fast-check`, with `property` as an alias for `asyncProperty`. It accepts both synchronous and asynchronous predicates; `assert` and `check` return promises for these properties:
+
+```js
+import * as fc from 'fast-check/next';
+
+await fc.assert(fc.property(fc.string(), async (text) => text.includes(text)));
+```
+
 Useful documentations:
 
 - [🏁 Introduction to Property Based & Hands On](https://fast-check.dev/docs/tutorials/quick-start/)

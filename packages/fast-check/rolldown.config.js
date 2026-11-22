@@ -22,4 +22,8 @@ export default buildConfigFor(pkg, import.meta.dirname, (isESM) => ({
   'process.env.__PACKAGE_TYPE__': isESM ? JSON.stringify('module') : JSON.stringify('commonjs'),
   'process.env.__PACKAGE_VERSION__': JSON.stringify(pkg.version),
   'process.env.__COMMIT_HASH__': JSON.stringify(getCommitHash()),
+})).map((config) => ({
+  ...config,
+  // Keep the next entry point as a re-export of the main bundle, including its types.
+  external: [config.external, './fast-check.js'],
 }));
