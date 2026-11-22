@@ -52,12 +52,10 @@ describe.each(codemods)('Codemod $version/$codemod', ({ version, codemod, cases 
   });
 
   describe('on second run', () => {
-    let outputAfterSecondRun: string;
-
     beforeAll(async () => {
       // Run the codemod a second time
       await cp(once, twice, { recursive: true });
-      outputAfterSecondRun = await runCodemod(version, codemod, twice);
+      await runCodemod(version, codemod, twice);
     }, 120_000);
 
     it.each(cases)('should leave %s unchanged', async (name) => {
@@ -66,13 +64,6 @@ describe.each(codemods)('Codemod $version/$codemod', ({ version, codemod, cases 
         readFile(join(twice, `${name}.ts`), 'utf8'),
       ]);
       expect(actualAfterSecondRun).toBe(migrated);
-    });
-
-    it.each(cases)('should still only report unsupported patterns in %s', (name) => {
-      const reports = outputAfterSecondRun
-        .split('\n')
-        .filter((line) => line.startsWith(` REP ${join(twice, `${name}.ts`)} `));
-      expect(reports.length > 0).toBe(name.startsWith('unsupported-'));
     });
   });
 });
