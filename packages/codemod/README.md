@@ -14,6 +14,8 @@ npx @fast-check/codemod@latest <transform> <path>
 
 Add `--dry --print` to preview changes without writing files. Commit your work before running a codemod, then review the diff.
 
+Patterns that require manual migration are left unchanged and reported with their file, line, column and an explanation. These warnings do not fail the codemod.
+
 ## Transforms
 
 ### Migrate to v5
