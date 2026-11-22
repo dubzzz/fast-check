@@ -1,6 +1,7 @@
 import type { API, FileInfo } from 'jscodeshift';
 import { allowAwait } from '../allowAwait.js';
 import { memberName } from '../fastCheck.js';
+import { reportUnsupported } from '../reportUnsupported.js';
 
 export default function transform(file: FileInfo, api: API): string {
   const typed = /\.[cm]?tsx?$/.test(file.path);
@@ -22,7 +23,10 @@ export default function transform(file: FileInfo, api: API): string {
     const value = awaited ? path.parent : path;
     const parent = value.parent.node;
     const discarded = j.ExpressionStatement.check(parent);
-    if (!discarded && (!j.VariableDeclarator.check(parent) || parent.init !== value.node)) return;
+    if (!discarded && (!j.VariableDeclarator.check(parent) || parent.init !== value.node)) {
+      reportUnsupported(api, path.node, 'Cannot migrate check() in this expression; migrate its caller manually.');
+      return;
+    }
     // Preserve a promise that may be passed around or chained before it settles.
     if (!awaited && j.VariableDeclarator.check(parent) && j.Identifier.check(parent.id)) {
       const input = path.node.arguments[0];
@@ -45,14 +49,25 @@ export default function transform(file: FileInfo, api: API): string {
                   ['failed', 'counterexample', 'numRuns', 'interrupted', 'seed'].includes(ref.parent.node.property.name)
                 ),
             )
-        )
+        ) {
+          reportUnsupported(api, path.node, 'Cannot migrate check() while its promise is passed around or chained.');
           return;
+        }
       }
     }
     const [property, params] = path.node.arguments;
-    if (!j.Expression.check(property) || path.node.arguments.length > 2 || j.SpreadElement.check(params)) return;
-    if (!discarded && namespace && namespace !== callee.object.name) return;
-    if (!awaited && !allowAwait(j, path, file.path)) return;
+    if (!j.Expression.check(property) || path.node.arguments.length > 2 || j.SpreadElement.check(params)) {
+      reportUnsupported(api, path.node, 'Cannot migrate check() with these arguments; migrate the call manually.');
+      return;
+    }
+    if (!discarded && namespace && namespace !== callee.object.name) {
+      reportUnsupported(api, path.node, 'Cannot migrate check() using multiple fast-check namespaces in one file.');
+      return;
+    }
+    if (!awaited && !allowAwait(j, path, file.path)) {
+      reportUnsupported(api, path.node, 'Cannot add await to check() in this context; migrate its caller manually.');
+      return;
+    }
     if (discarded) {
       const disableDefaults = j.objectProperty(j.identifier('noDefaultPlugins'), j.booleanLiteral(true));
       // Put the override last, including when the supplied options come from another scope.

@@ -8,6 +8,7 @@ import type {
   JSCodeshift,
   ObjectExpression,
 } from 'jscodeshift';
+import { reportUnsupported } from './reportUnsupported.js';
 
 export type Expression = Exclude<CallExpression['arguments'][number], SpreadElement>;
 
@@ -231,7 +232,7 @@ export function migratePluginCalls(
         continue;
     }
     const member = (name: string) => j.memberExpression(receiver ?? j.identifier(namespace), j.identifier(name));
-    const report = (message: string) => api.report('line ' + (path.node.loc?.start.line ?? '?') + ': ' + message);
+    const report = (message: string) => reportUnsupported(api, path.node, message);
     const edit = migrate({
       j,
       runner,
