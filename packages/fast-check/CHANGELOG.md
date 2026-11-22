@@ -1,3 +1,17 @@
+# 4.11.0
+
+_Plugin controls and flexible `asyncProperty` to ease v5 migration_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.10.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.10.3...v4.11.0)]
+
+## Features
+
+- ([PR#7523](https://github.com/dubzzz/fast-check/pull/7523)) Add `noDefaultPlugins` to `assert`
+- ([PR#7533](https://github.com/dubzzz/fast-check/pull/7533)) Add `noGlobalPlugins` to opt out of globally installed plugins
+- ([PR#7538](https://github.com/dubzzz/fast-check/pull/7538)) Support post installation of global plugins
+- ([PR#7288](https://github.com/dubzzz/fast-check/pull/7288)) Allow sync predicate on `asyncProperty`
+
+---
+
 # 4.10.3
 
 _Regex and scheduler fixes, faster strings_
