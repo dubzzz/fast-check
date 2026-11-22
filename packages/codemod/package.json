@@ -11,6 +11,7 @@
     "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js",
     "./transforms/v5/asyncProperty": "./lib/transforms/v5/asyncProperty.js",
     "./transforms/v5/randomTypeFactory": "./lib/transforms/v5/randomTypeFactory.js",
+    "./transforms/v5/checkToAssert": "./lib/transforms/v5/checkToAssert.js",
     "./transforms/v5/defaultReportMessage": "./lib/transforms/v5/defaultReportMessage.js"
   },
   "bin": "./lib/cli.js",
