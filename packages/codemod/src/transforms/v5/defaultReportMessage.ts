@@ -1,4 +1,5 @@
 import type { API, ASTPath, FileInfo, JSCodeshift } from 'jscodeshift';
+import { reportUnsupported } from '../reportUnsupported.js';
 import { memberName } from '../fastCheck.js';
 
 // Recognize the completion hook emitted by runnerPlugins, whose promise fast-check awaits.
@@ -71,7 +72,8 @@ export default function transform(file: FileInfo, api: API): string {
     const name = memberName(j, path, callee);
     if (name !== 'defaultReportMessage' && name !== 'asyncDefaultReportMessage') return;
     const needsAwait = name === 'defaultReportMessage' && !j.AwaitExpression.check(path.parent.node);
-    if (needsAwait && !allowAwait(j, path, file.path)) return;
+    if (needsAwait && !allowAwait(j, path, file.path))
+      return reportUnsupported(api, path.node, 'Cannot await the reporter inside this synchronous function.');
     namespace ??= callee.object.name;
     path.node.callee = j.identifier(helper);
     if (needsAwait) path.replace(j.awaitExpression(path.node));

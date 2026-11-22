@@ -1,4 +1,5 @@
 import type { API, ASTPath, CallExpression, FileInfo } from 'jscodeshift';
+import { reportUnsupported } from '../reportUnsupported.js';
 
 export default function transform(file: FileInfo, api: API): string {
   const j = api.jscodeshift.withParser(/\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx');
@@ -36,15 +37,34 @@ export default function transform(file: FileInfo, api: API): string {
     const flag = isJson ? 'noUnicodeString' : 'withUnicodeString';
     let property;
     let hasStringUnit = false;
+    let hasUnsupportedProperty = false;
     for (const entry of args[0].properties) {
-      if (!j.ObjectProperty.check(entry) || entry.computed || !j.Identifier.check(entry.key)) return;
+      if (!j.ObjectProperty.check(entry) || entry.computed || !j.Identifier.check(entry.key)) {
+        hasUnsupportedProperty = true;
+        continue;
+      }
       if (entry.key.name === 'stringUnit') hasStringUnit = true;
       if (entry.key.name === flag) {
-        if (property) return;
+        if (property) {
+          reportUnsupported(api, entry, `Cannot migrate duplicate ${flag} flags; resolve the options manually.`);
+          return;
+        }
         property = entry;
       }
     }
-    if (!property || !j.BooleanLiteral.check(property.value)) return;
+    if (!property) return;
+    if (hasUnsupportedProperty) {
+      reportUnsupported(
+        api,
+        property,
+        `Cannot migrate ${flag} in an options object containing spreads or unsupported property keys.`,
+      );
+      return;
+    }
+    if (!j.BooleanLiteral.check(property.value)) {
+      reportUnsupported(api, property, `Cannot migrate non-literal ${flag}; replace it with stringUnit manually.`);
+      return;
+    }
 
     if (hasStringUnit) {
       args[0].properties = args[0].properties.filter((entry) => entry !== property);
