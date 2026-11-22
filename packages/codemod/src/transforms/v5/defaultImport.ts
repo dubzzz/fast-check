@@ -1,6 +1,7 @@
-import type { FileInfo, JSCodeshift } from 'jscodeshift';
+import type { API, FileInfo } from 'jscodeshift';
+import { reportUnsupported } from '../reportUnsupported.js';
 
-export default function transform(file: FileInfo, api: { jscodeshift: JSCodeshift }): string {
+export default function transform(file: FileInfo, api: API): string {
   const parser = /\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx';
   const j = api.jscodeshift.withParser(parser);
   const root = j(file.source);
@@ -8,12 +9,13 @@ export default function transform(file: FileInfo, api: { jscodeshift: JSCodeshif
 
   root.find(j.ImportDeclaration, { source: { value: 'fast-check' } }).forEach((path) => {
     const node = path.node;
-    if ('attributes' in node && Array.isArray(node.attributes) && node.attributes.length !== 0) {
-      return;
-    }
     const specifiers = node.specifiers ?? [];
     const defaultSpecifier = specifiers.find((specifier) => specifier.type === 'ImportDefaultSpecifier');
     if (defaultSpecifier === undefined) {
+      return;
+    }
+    if ('attributes' in node && Array.isArray(node.attributes) && node.attributes.length !== 0) {
+      reportUnsupported(api, node, 'Cannot migrate a fast-check default import with attributes; migrate it manually.');
       return;
     }
 
