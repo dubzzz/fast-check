@@ -1,4 +1,5 @@
 import type { API, FileInfo } from 'jscodeshift';
+import { reportUnsupported } from '../reportUnsupported.js';
 import { allowAwait } from '../allowAwait.js';
 import { memberName } from '../fastCheck.js';
 import { samplingInput, samplingOptions } from '../sampling.js';
@@ -15,7 +16,11 @@ export default function transform(file: FileInfo, api: API): string {
     const source = samplingInput(j, path);
     const params = args[2];
     const options = samplingOptions(j, params);
-    if (!source || !options) continue;
+    if (!source) {
+      reportUnsupported(api, path.node, 'Check whether the statistics input is a property or an arbitrary.');
+      continue;
+    }
+    if (!options) continue;
     const { input, factory, property } = source;
     const { opts, keys } = options;
     const logger = opts.properties[keys.indexOf('logger')];
