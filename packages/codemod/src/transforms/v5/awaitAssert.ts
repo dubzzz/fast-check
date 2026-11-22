@@ -1,4 +1,5 @@
 import type { API, ASTPath, FileInfo, JSCodeshift } from 'jscodeshift';
+import { reportUnsupported } from '../reportUnsupported.js';
 import { memberName } from '../fastCheck.js';
 
 function namedImport(j: JSCodeshift, path: ASTPath, node: unknown, modules: string[]): string | undefined {
@@ -98,15 +99,18 @@ export function awaitAssertions(file: FileInfo, api: API, useAsyncProperty: bool
     const end = endOfPromiseChain(j, path);
     const awaited = j.AwaitExpression.check(end.parent.node);
     if (useAsyncProperty) {
-      if (!j.CallExpression.check(property) || !j.MemberExpression.check(property.callee)) return;
+      if (!j.CallExpression.check(property) || !j.MemberExpression.check(property.callee))
+        return reportUnsupported(api, path.node, 'Cannot determine whether the asserted property is asynchronous.');
       const name = memberName(j, path, property.callee);
       if (name !== 'property' && name !== 'asyncProperty') return;
-      if (!awaited && !allowAwait(j, path, file.path)) return;
+      if (!awaited && !allowAwait(j, path, file.path))
+        return reportUnsupported(api, path.node, 'Cannot await assert() in this synchronous context.');
       if (name === 'property' && j.Identifier.check(property.callee.property)) {
         property.callee.property.name = 'asyncProperty';
         changed = true;
       }
-    } else if (!awaited && !allowAwait(j, path, file.path)) return;
+    } else if (!awaited && !allowAwait(j, path, file.path))
+      return reportUnsupported(api, path.node, 'Cannot await assert() in this synchronous context.');
     if (!awaited && j.CallExpression.check(end.node)) {
       end.replace(j.awaitExpression(end.node));
       changed = true;
