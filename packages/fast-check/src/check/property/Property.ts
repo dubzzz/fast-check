@@ -28,4 +28,21 @@ function property<Ts extends [unknown, ...unknown[]]>(
   return new PropertyImplem(tuple<Ts>(...mappedArbs), (t, executionContext) => p(...t, executionContext));
 }
 
-export { property };
+/**
+ * Instantiate a new {@link fast-check#Property} with a synchronous or asynchronous predicate
+ *
+ * The predicate receives the generated values in order, followed by a {@link PredicateExecutionContext}.
+ *
+ * @param predicate - Assess the success of the property. Would be considered falsy if it throws or if its output evaluates to false
+ * @remarks Since 0.0.7
+ * @deprecated Legacy name for {@link property}, starting at 5.0.0 what used to be called `asyncProperty` has replaced `property`
+ * @public
+ */
+const asyncProperty: <Ts extends [unknown, ...unknown[]]>(
+  ...args: [
+    ...arbitraries: { [K in keyof Ts]: Arbitrary<Ts[K]> },
+    predicate: NoInfer<(...args: [...Ts, PredicateExecutionContext]) => Promise<boolean | void> | boolean | void>,
+  ]
+) => Property<Ts> = property;
+
+export { property, asyncProperty };
