@@ -84,13 +84,17 @@ This codemod updates how you customize the random generator used by fast-check, 
 
 <details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Preserves RunDetails when migrating check to assert</summary>
 
+**What is doing this codemod?**
+
+This codemod replaces `check` calls with `assert` calls using `noDefaultPlugins: true`. It preserves access to `RunDetails` by adding a helper that captures them through a plugin’s `onAllRunsComplete` hook.
+
+**Example of code change:**
+
 ```diff
 -const details = fc.check(property);
 +const details = await assertAndGetRunDetails(property);
  if (details.failed) console.log(details.counterexample);
 ```
-
-Both synchronous and awaited checks use the generated helper. It captures `RunDetails` with `onAllRunsComplete` and sets `noDefaultPlugins: true` so a failing run still returns its details.
 
 </details>
 
