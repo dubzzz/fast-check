@@ -66,7 +66,7 @@ const config: Config = {
         'You’re reading the preview documentation for fast-check 5.x.<br />' +
         '<span title="Installing fast-check from npm without a version installs the stable release.">ⓘ</span> ' +
         '<a href="https://v4.fast-check.dev/">Read the documentation for the stable 4.x release.</a>',
-      isCloseable: false,
+      isCloseable: true,
     },
     // Replace with your project's social card
     image: 'img/social.png',
