@@ -82,6 +82,28 @@ This codemod updates how you customize the random generator used by fast-check, 
 
 </details>
 
+<details><summary><code>v5/propertyToAsyncProperty</code> (≥4.11.0) — Renames property to asyncProperty</summary>
+
+**What is doing this codemod?**
+
+This codemod is changing all references to `property` into references to `asyncProperty`. While doing that it converts any synchrounous assertion linked to `property` into an asynchrounous one.
+
+**When to use it?**
+
+The best moment to use it is right before moving to `^5.0.0`. We recommend running it while still in `4.x` from `4.11.0` or later.
+
+**Example of code change:**
+
+```diff
+-test('my property', () => {
+-  fc.assert(fc.property(arb, predicate));
++test('my property', async () => {
++  await fc.assert(fc.asyncProperty(arb, predicate));
+  });
+```
+
+</details>
+
 <details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Preserves RunDetails when migrating check to assert</summary>
 
 **What is doing this codemod?**

@@ -10,6 +10,7 @@
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
     "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js",
     "./transforms/v5/randomTypeFactory": "./lib/transforms/v5/randomTypeFactory.js",
+    "./transforms/v5/propertyToAsyncProperty": "./lib/transforms/v5/propertyToAsyncProperty.js",
     "./transforms/v5/checkToAssert": "./lib/transforms/v5/checkToAssert.js",
     "./transforms/v6/asyncPropertyToProperty": "./lib/transforms/v6/asyncPropertyToProperty.js"
   },
