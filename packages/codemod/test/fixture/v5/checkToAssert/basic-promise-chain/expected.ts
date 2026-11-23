@@ -1,7 +1,11 @@
 import * as fc from 'fast-check';
 
-const details = await assertAndGetRunDetails(fc.property(fc.nat(), () => false));
-console.log(details.failed);
+const property = fc.asyncProperty(fc.nat(), async () => true);
+// The caller chains this promise; eagerly awaiting it would change the type of pending.
+const pending = assertAndGetRunDetails(property);
+pending.then(console.log);
+
+assertAndGetRunDetails(property).then(console.log);
 async function assertAndGetRunDetails<Ts>(property: fc.Property<Ts>, params?: fc.Parameters<Ts>) {
   let details!: fc.RunDetails<Ts>;
   await fc.assert(property, {

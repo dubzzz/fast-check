@@ -106,10 +106,12 @@ This codemod is changing all references to `property` into references to `asyncP
 
 This codemod replaces `check` calls with `assert` calls using `noDefaultPlugins: true`. It preserves access to `RunDetails` by adding a helper that captures them through a plugin’s `onAllRunsComplete` hook.
 
+Assumes fast-check v5 after `v5/propertyToAsyncProperty`, where `check` always returns a promise. Synchronous or uncertain usages are left unchanged with a warning.
+
 **Example of code change:**
 
 ```diff
--const details = fc.check(property);
+-const details = await fc.check(property);
 +const details = await assertAndGetRunDetails(property);
  if (details.failed) console.log(details.counterexample);
 ```
