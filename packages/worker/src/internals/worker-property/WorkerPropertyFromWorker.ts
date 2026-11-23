@@ -95,11 +95,13 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
   }
 
   beforeEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts> {
-    return this.internalProperty.beforeEach(hookFunction);
+    // oxlint-disable-next-line typescript/no-non-null-assertion
+    return this.internalProperty.beforeEach!(hookFunction);
   }
 
   afterEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts> {
-    return this.internalProperty.afterEach(hookFunction);
+    // oxlint-disable-next-line typescript/no-non-null-assertion
+    return this.internalProperty.afterEach!(hookFunction);
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await

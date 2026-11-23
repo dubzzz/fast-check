@@ -1,7 +1,21 @@
-import type { API, FileInfo } from 'jscodeshift';
-import { allowAwait } from '../allowAwait.js';
-import { memberName } from '../fastCheck.js';
+import type { API, ASTPath, FileInfo, JSCodeshift } from 'jscodeshift';
+import { findBinding, isReference, memberName } from '../fastCheck.js';
 import { reportUnsupported } from '../reportUnsupported.js';
+
+function isPromiseConsumer(j: JSCodeshift, path: ASTPath): boolean {
+  const parent = path.parent.node;
+  if (j.AwaitExpression.check(parent)) return true;
+  const call = path.parent.parent.node;
+  return (
+    j.MemberExpression.check(parent) &&
+    parent.object === path.node &&
+    !parent.computed &&
+    j.Identifier.check(parent.property) &&
+    ['then', 'catch', 'finally'].includes(parent.property.name) &&
+    j.CallExpression.check(call) &&
+    call.callee === parent
+  );
+}
 
 export default function transform(file: FileInfo, api: API): string {
   const typed = /\.[cm]?tsx?$/.test(file.path);
@@ -11,6 +25,28 @@ export default function transform(file: FileInfo, api: API): string {
   while (root.find(j.Identifier, { name: helper }).size()) helper += 'ForCheck';
   let namespace: string | undefined;
 
+  function isPromiseBinding(path: ASTPath): boolean {
+    const declarator = path.parent.node;
+    const declaration = path.parent.parent;
+    if (
+      !j.VariableDeclarator.check(declarator) ||
+      declarator.init !== path.node ||
+      !j.Identifier.check(declarator.id) ||
+      !j.VariableDeclaration.check(declaration.node) ||
+      declaration.node.kind !== 'const' ||
+      j.ExportNamedDeclaration.check(declaration.parent.node)
+    )
+      return false;
+    const binding = declarator.id;
+    const uses = root
+      .find(j.Identifier, { name: binding.name })
+      .filter(
+        (ref) => ref.node !== binding && isReference(j, ref) && findBinding(j, ref, binding.name)?.node === binding,
+      )
+      .paths();
+    return uses.length > 0 && uses.every((ref) => isPromiseConsumer(j, ref));
+  }
+
   root.find(j.CallExpression).forEach((path) => {
     const { callee } = path.node;
     if (
@@ -19,42 +55,15 @@ export default function transform(file: FileInfo, api: API): string {
       !j.Identifier.check(callee.object)
     )
       return;
-    const awaited = j.AwaitExpression.check(path.parent.node);
-    const value = awaited ? path.parent : path;
-    const parent = value.parent.node;
-    const discarded = j.ExpressionStatement.check(parent);
-    if (!discarded && (!j.VariableDeclarator.check(parent) || parent.init !== value.node)) {
-      reportUnsupported(api, path.node, 'Cannot migrate check() in this expression; migrate its caller manually.');
+    if (!isPromiseConsumer(j, path) && !isPromiseBinding(path)) {
+      reportUnsupported(
+        api,
+        path.node,
+        'Cannot determine that check() is consumed as a promise; synchronous or uncertain usages require manual migration.',
+      );
       return;
     }
-    // Preserve a promise that may be passed around or chained before it settles.
-    if (!awaited && j.VariableDeclarator.check(parent) && j.Identifier.check(parent.id)) {
-      const input = path.node.arguments[0];
-      const syncProperty = j.CallExpression.check(input) && memberName(j, path, input.callee) === 'property';
-      if (!syncProperty) {
-        const name = parent.id.name;
-        const binding = path.scope.lookup(name);
-        if (
-          !binding ||
-          j(binding.path)
-            .find(j.Identifier, { name })
-            .some(
-              (ref) =>
-                ref.node !== parent.id &&
-                ref.scope.lookup(name) === binding &&
-                !(
-                  j.MemberExpression.check(ref.parent.node) &&
-                  ref.parent.node.object === ref.node &&
-                  j.Identifier.check(ref.parent.node.property) &&
-                  ['failed', 'counterexample', 'numRuns', 'interrupted', 'seed'].includes(ref.parent.node.property.name)
-                ),
-            )
-        ) {
-          reportUnsupported(api, path.node, 'Cannot migrate check() while its promise is passed around or chained.');
-          return;
-        }
-      }
-    }
+    const discarded = j.AwaitExpression.check(path.parent.node) && j.ExpressionStatement.check(path.parent.parent.node);
     const [property, params] = path.node.arguments;
     if (!j.Expression.check(property) || path.node.arguments.length > 2 || j.SpreadElement.check(params)) {
       reportUnsupported(api, path.node, 'Cannot migrate check() with these arguments; migrate the call manually.');
@@ -62,10 +71,6 @@ export default function transform(file: FileInfo, api: API): string {
     }
     if (!discarded && namespace && namespace !== callee.object.name) {
       reportUnsupported(api, path.node, 'Cannot migrate check() using multiple fast-check namespaces in one file.');
-      return;
-    }
-    if (!awaited && !allowAwait(j, path, file.path)) {
-      reportUnsupported(api, path.node, 'Cannot add await to check() in this context; migrate its caller manually.');
       return;
     }
     if (discarded) {
@@ -78,7 +83,6 @@ export default function transform(file: FileInfo, api: API): string {
       namespace = callee.object.name;
       path.node.callee = j.identifier(helper);
     }
-    if (!awaited) path.replace(j.awaitExpression(path.node));
   });
 
   if (namespace) {

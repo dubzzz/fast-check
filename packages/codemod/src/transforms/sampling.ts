@@ -1,5 +1,5 @@
 import type { ASTPath, CallExpression, JSCodeshift, ObjectExpression } from 'jscodeshift';
-import { memberName } from './fastCheck.js';
+import { findBinding, importedName } from './fastCheck.js';
 
 const arbitraries = [
   'integer',
@@ -15,14 +15,11 @@ const arbitraries = [
   'oneof',
 ];
 
-export function samplingInput(
-  j: JSCodeshift,
-  path: ASTPath<CallExpression>,
-): { input: CallExpression; factory: string | undefined; property: boolean } | undefined {
+export function isPropertyInput(j: JSCodeshift, path: ASTPath<CallExpression>): boolean | undefined {
   let input = path.node.arguments[0];
   let inputScope = path;
   if (j.Identifier.check(input)) {
-    const binding = path.scope.lookup(input.name)?.getBindings()[input.name]?.[0]?.parent;
+    const binding = findBinding(j, path, input.name)?.parent;
     if (
       !j.VariableDeclarator.check(binding?.node) ||
       binding.parent.node.kind !== 'const' ||
@@ -33,10 +30,10 @@ export function samplingInput(
     inputScope = binding;
   }
   if (!j.CallExpression.check(input)) return;
-  const factory = memberName(j, inputScope, input.callee);
+  const factory = importedName(j, inputScope, input.callee);
   const property = factory === 'property' || factory === 'asyncProperty';
   if (!property && !arbitraries.includes(factory ?? '')) return;
-  return { input, factory, property };
+  return property;
 }
 
 export function samplingOptions(
