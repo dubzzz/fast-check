@@ -120,7 +120,7 @@ Assumes fast-check v5 after `v5/propertyToAsyncProperty`, where `check` always r
 
 ### Migrate to v6
 
-Version 6 is still not planned, that said some deprecation notice have already been put in place and some codemod can help you to apply patches to clean them.
+Version 6 is not yet planned, but some APIs have already been deprecated. Following codemods help you update your code to use their replacements.
 
 <details><summary><code>v6/asyncPropertyToProperty</code> (≥5.0.0) — Renames asyncProperty to property</summary>
 
