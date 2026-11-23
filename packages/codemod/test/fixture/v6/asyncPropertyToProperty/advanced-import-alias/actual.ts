@@ -1,3 +1,3 @@
-import { asyncProperty as build, integer } from 'fast-check';
+import { assert, asyncProperty as build, integer } from 'fast-check';
 
-build(integer(), async () => true);
+await assert(build(integer(), async () => true));
