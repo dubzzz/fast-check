@@ -608,7 +608,6 @@ jobs:
           https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=$DRAFT_BUILD_VALUE
   check_any_package:
     name: 'Check publish any package'
-    # Publishing still requires successful macOS and Windows tests
     needs:
       - all_checks_passed
       - test_macos
