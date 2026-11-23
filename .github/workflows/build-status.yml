@@ -159,7 +159,7 @@ jobs:
         shard-id: ['1', '2']
         shard-count: ['2']
     env: &test_env
-      ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
+      ENABLE_COVERAGE: ${{ matrix.os == 'ubuntu-latest' && matrix.node-version == '26.x' }}
       SKIP_DOCUMENTATION: ${{ matrix.node-version != '26.x' || matrix.os == 'windows-latest' }}
     steps: &test_steps
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -252,10 +252,7 @@ jobs:
     steps: *test_steps
   publish_test_coverage:
     name: 'Publish test coverage'
-    needs:
-      - test
-      - test_macos
-      - test_windows
+    needs: test
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -558,7 +555,7 @@ jobs:
               await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body });
             }
 
-  # Job to confirm every required job passed
+  # Job to confirm every required job passed, macOS and Windows are advisory
   all_checks_passed:
     name: 'All checks passed'
     if: always()
@@ -567,8 +564,6 @@ jobs:
       - documentation
       - sanity_checks
       - test
-      - test_macos
-      - test_windows
       - test_bundle
       - test_types
     runs-on: ubuntu-latest
@@ -613,7 +608,11 @@ jobs:
           https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=$DRAFT_BUILD_VALUE
   check_any_package:
     name: 'Check publish any package'
-    needs: all_checks_passed
+    # Publishing still requires successful macOS and Windows tests
+    needs:
+      - all_checks_passed
+      - test_macos
+      - test_windows
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
