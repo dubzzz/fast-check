@@ -100,9 +100,15 @@ Version 6 is still not planned, that said some deprecation notice have already b
 
 <details><summary><code>v6/asyncPropertyToProperty</code> (≥5.0.0) — Renames asyncProperty to property</summary>
 
+**What is doing this codemod?**
+
+This codemod replaces references to the deprecated `asyncProperty` with `property`. Since v5, `property` supports both synchronous and asynchronous predicates and `asyncProperty` is simply an alias for it.
+
+**Example of code change:**
+
 ```diff
--fc.assert(fc.asyncProperty(arb, predicate));
-+fc.assert(fc.property(arb, predicate));
+-await fc.assert(fc.asyncProperty(arb, predicate));
++await fc.assert(fc.property(arb, predicate));
 ```
 
 </details>
