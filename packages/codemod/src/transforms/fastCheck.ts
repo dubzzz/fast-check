@@ -1,4 +1,4 @@
-import type { ASTPath, JSCodeshift } from 'jscodeshift';
+import type { ASTPath, Identifier, JSCodeshift } from 'jscodeshift';
 
 // ast-types groups block and loop declarations into the surrounding function or program.
 function bindingRegion(j: JSCodeshift, binding: ASTPath, scope: ASTPath): ASTPath {
@@ -16,25 +16,36 @@ function bindingRegion(j: JSCodeshift, binding: ASTPath, scope: ASTPath): ASTPat
   return scope;
 }
 
-export function isFastCheckNamespace(j: JSCodeshift, path: ASTPath, node: unknown): boolean {
-  if (!j.Identifier.check(node)) return false;
+export function findBinding(j: JSCodeshift, path: ASTPath, name: string): ASTPath<Identifier> | undefined {
   const enclosing = new Set<ASTPath>();
   for (let p = path; p; p = p.parentPath) enclosing.add(p);
-  for (let scope = path.scope.lookup(node.name); scope; scope = scope.parent?.lookup(node.name)) {
-    const bindings: ASTPath[] = scope.getBindings()[node.name];
-    const visible = bindings.filter((binding) => enclosing.has(bindingRegion(j, binding, scope.path)));
-    if (!visible.length) continue;
-    if (visible.length !== 1) return false;
-    const specifier = visible[0].parent;
-    const declaration = specifier.parent.node;
-    return (
-      (j.ImportNamespaceSpecifier.check(specifier.node) || j.ImportDefaultSpecifier.check(specifier.node)) &&
-      j.ImportDeclaration.check(declaration) &&
-      declaration.source.value === 'fast-check' &&
-      declaration.importKind !== 'type'
-    );
+  for (let scope = path.scope.lookup(name); scope; scope = scope.parent?.lookup(name)) {
+    const bindings: ASTPath<Identifier>[] = scope.getBindings()[name];
+    const regions = new Map<ASTPath, ASTPath<Identifier>[]>();
+    for (const binding of bindings) {
+      const region = bindingRegion(j, binding, scope.path);
+      const group = regions.get(region) ?? [];
+      group.push(binding);
+      regions.set(region, group);
+    }
+    // Inner lexical declarations shadow outer ones even when ast-types groups them into one scope.
+    for (const region of enclosing) {
+      const visible = regions.get(region);
+      if (visible) return visible.length === 1 ? visible[0] : undefined;
+    }
   }
-  return false;
+}
+
+export function isFastCheckNamespace(j: JSCodeshift, path: ASTPath, node: unknown): boolean {
+  if (!j.Identifier.check(node)) return false;
+  const specifier = findBinding(j, path, node.name)?.parent;
+  const declaration = specifier?.parent.node;
+  return (
+    (j.ImportNamespaceSpecifier.check(specifier?.node) || j.ImportDefaultSpecifier.check(specifier?.node)) &&
+    j.ImportDeclaration.check(declaration) &&
+    declaration.source.value === 'fast-check' &&
+    declaration.importKind !== 'type'
+  );
 }
 
 export function memberName(j: JSCodeshift, path: ASTPath, member: unknown): string | undefined {
@@ -45,4 +56,19 @@ export function memberName(j: JSCodeshift, path: ASTPath, member: unknown): stri
     isFastCheckNamespace(j, path, member.object)
   )
     return member.property.name;
+}
+
+export function importedName(j: JSCodeshift, path: ASTPath, node: unknown): string | undefined {
+  if (!j.Identifier.check(node)) return memberName(j, path, node);
+  const specifier = findBinding(j, path, node.name)?.parent;
+  const declaration = specifier?.parent.node;
+  if (
+    j.ImportSpecifier.check(specifier?.node) &&
+    j.Identifier.check(specifier.node.imported) &&
+    specifier.node.importKind !== 'type' &&
+    j.ImportDeclaration.check(declaration) &&
+    declaration.source.value === 'fast-check' &&
+    declaration.importKind !== 'type'
+  )
+    return specifier.node.imported.name;
 }
