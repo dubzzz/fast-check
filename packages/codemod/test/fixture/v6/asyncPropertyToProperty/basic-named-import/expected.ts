@@ -1,3 +1,6 @@
-import { assert, property as asyncProperty, integer } from 'fast-check';
+import { assert, property, integer } from 'fast-check';
 
-await assert(asyncProperty(integer(), async () => true));
+await assert(property(integer(), async () => true));
+
+export const builders = { asyncProperty: property };
+export { property as asyncProperty };
