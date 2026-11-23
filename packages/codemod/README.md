@@ -64,7 +64,7 @@ Requires a direct dependency on `pure-rand` v8.
 
 </details>
 
-<details><summary><code>v5/propertyToAsyncProperty</code> (≥4.11.0) — Prepares synchronous properties for v5 by making assertions asynchronous</summary>
+<details><summary><code>v5/propertyToAsyncProperty</code> (≥4.11.0) — Renames property to asyncProperty</summary>
 
 **What is doing this codemod?**
 
