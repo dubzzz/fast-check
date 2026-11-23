@@ -104,7 +104,7 @@ This codemod is changing all references to `property` into references to `asyncP
 
 **What is doing this codemod?**
 
-Moves local runner options and custom reporters into plugins. For a one-time global setup, it installs the corresponding plugins globally.
+This codemod moves local runner options and custom reporters into plugins. For a one-time global setup, it installs the corresponding plugins globally.
 
 **Example of code change:**
 
