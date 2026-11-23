@@ -1,5 +1,25 @@
 import type { ASTPath, Identifier, JSCodeshift } from 'jscodeshift';
 
+// Ignore syntactic names such as obj.property and the key in { property: value }.
+export function isReference(j: JSCodeshift, path: ASTPath<Identifier>): boolean {
+  const parent = path.parent.node;
+  if (
+    j.ImportSpecifier.check(parent) ||
+    j.ImportNamespaceSpecifier.check(parent) ||
+    j.ImportDefaultSpecifier.check(parent)
+  )
+    return false;
+  if (j.ExportSpecifier.check(parent) && path.name === 'exported') return false;
+  if (j.MemberExpression.check(parent) && path.name === 'property' && !parent.computed) return false;
+  if (
+    (j.Property.check(parent) || j.ObjectProperty.check(parent) || j.ObjectMethod.check(parent)) &&
+    path.name === 'key' &&
+    !parent.computed
+  )
+    return false;
+  return true;
+}
+
 // ast-types groups block and loop declarations into the surrounding function or program.
 function bindingRegion(j: JSCodeshift, binding: ASTPath, scope: ASTPath): ASTPath {
   for (let p = binding.parent; p && p !== scope; p = p.parent) {
