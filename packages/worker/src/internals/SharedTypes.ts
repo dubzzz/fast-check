@@ -16,11 +16,11 @@ export type LegacyPropertyHookFunction =
 
 export interface LegacyPropertyWithHooks<Ts> extends Property<Ts> {
   // On Property in v4.x
-  runBeforeEach: () => Promise<void> | void;
-  runAfterEach: () => Promise<void> | void;
+  runBeforeEach?: () => Promise<void> | void;
+  runAfterEach?: () => Promise<void> | void;
   // On PropertyWithHooks in v4.x
-  beforeEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts>;
-  afterEach(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts>;
+  beforeEach?(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts>;
+  afterEach?(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts>;
 }
 
 export type PropertyArbitraries<Ts extends unknown[]> = {
