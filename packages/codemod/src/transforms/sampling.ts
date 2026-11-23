@@ -1,39 +1,20 @@
 import type { ASTPath, CallExpression, JSCodeshift, ObjectExpression } from 'jscodeshift';
 import { findBinding, importedName } from './fastCheck.js';
 
-const arbitraries = [
-  'integer',
-  'nat',
-  'string',
-  'boolean',
-  'double',
-  'constant',
-  'constantFrom',
-  'tuple',
-  'array',
-  'record',
-  'oneof',
-];
-
 export function isPropertyInput(j: JSCodeshift, path: ASTPath<CallExpression>): boolean | undefined {
-  let input = path.node.arguments[0];
-  let inputScope = path;
-  if (j.Identifier.check(input)) {
-    const binding = findBinding(j, path, input.name)?.parent;
-    if (
-      !j.VariableDeclarator.check(binding?.node) ||
-      binding.parent.node.kind !== 'const' ||
-      !j.CallExpression.check(binding.node.init)
-    )
-      return;
-    input = binding.node.init;
-    inputScope = binding;
+  const input = path.get('arguments', 0);
+  let definition = input;
+  if (j.Identifier.check(input.node)) {
+    const binding = findBinding(j, input, input.node.name)?.parent;
+    if (j.VariableDeclarator.check(binding?.node) && binding.parent.node.kind === 'const')
+      definition = binding.get('init');
   }
-  if (!j.CallExpression.check(input)) return;
-  const factory = importedName(j, inputScope, input.callee);
-  const property = factory === 'property' || factory === 'asyncProperty';
-  if (!property && !arbitraries.includes(factory ?? '')) return;
-  return property;
+  if (j.CallExpression.check(definition.node)) {
+    const factory = importedName(j, definition, definition.node.callee);
+    if (factory !== undefined) return factory === 'property' || factory === 'asyncProperty';
+  }
+  if (j.Identifier.check(input.node) && /^arb|arb$/i.test(input.node.name) && !/prop/i.test(input.node.name))
+    return false;
 }
 
 export function samplingOptions(

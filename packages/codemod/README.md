@@ -122,7 +122,7 @@ Assumes fast-check v5 after `v5/propertyToAsyncProperty`, where `check` always r
 
 **What is doing this codemod?**
 
-This codemod awaits sampling and sets `noPredicateExecution: true` for property inputs so sampling still generates values without running the predicate.
+This codemod awaits sampling and sets `noPredicateExecution: true` for property inputs so sampling still generates values without running the predicate. When the input is unclear, it still adds `await` and reports the call for review.
 
 **Example of code change:**
 

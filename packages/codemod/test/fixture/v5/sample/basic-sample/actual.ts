@@ -1,3 +1,3 @@
 import * as fc from 'fast-check';
 
-const values = fc.sample(fc.integer());
+const values = fc.sample(fc.uuid());
