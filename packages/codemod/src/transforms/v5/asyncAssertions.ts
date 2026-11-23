@@ -1,6 +1,7 @@
 import type { API, ASTPath, FileInfo, JSCodeshift } from 'jscodeshift';
 import { reportUnsupported } from '../reportUnsupported.js';
-import { allowAwait, isTestApi, memberName } from '../fastCheck.js';
+import { allowAwait, isTestApi } from '../allowAwait.js';
+import { memberName } from '../fastCheck.js';
 
 // Follow one local binding, in the scope where its initializer was written.
 function definition(j: JSCodeshift, path: ASTPath): ASTPath {
