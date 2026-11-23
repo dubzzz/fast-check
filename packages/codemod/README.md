@@ -20,9 +20,13 @@ Patterns that require manual migration are left unchanged and reported with thei
 
 ### Migrate to v5
 
-<details><summary><code>v5/defaultImport</code> (≥1.0.0)<sup><a href="#minimum-fast-check-version">(1)</a></sup> — Replaces default imports with namespace imports. Also handles `import type`</summary>
+<details><summary><code>v5/defaultImport</code> (≥1.0.0)<sup><a href="#minimum-fast-check-version">(1)</a></sup> — Replaces default imports with namespace imports</summary>
 
-Example:
+**What is doing this codemod?**
+
+This codemod replaces default imports from `fast-check` with namespace imports. It also handles `import type` and preserves any named imports in a separate declaration.
+
+**Example of code change:**
 
 ```diff
 -import fc from 'fast-check';
@@ -33,34 +37,48 @@ Example:
 
 <details><summary><code>v5/randomMethods</code> (≥1.0.0) — Migrates removed Random methods to bounded nextInt calls</summary>
 
+**What is doing this codemod?**
+
+This codemod replaces calls to `next(bits)`, `nextInt()`, `nextBoolean()` and `nextDouble()` with expressions using bounded `nextInt` calls. These methods have been dropped in `5.x`.
+
+**Example of code change:**
+
 ```diff
 -rng.nextBoolean();
 +rng.nextInt(0, 1) === 1;
 ```
 
-Applies to direct calls on a variable or parameter annotated as fast-check’s `Random`. Handles `next(bits)`, `nextInt()`, `nextBoolean()` and `nextDouble()`. The double uses the same two draws in the same order.
-
 </details>
 
 <details><summary><code>v5/stringUnit</code> (≥3.23.0) — Migrates Unicode flags on object and JSON arbitraries</summary>
+
+**What is doing this codemod?**
+
+This codemod replaces inline boolean `withUnicodeString` and `noUnicodeString` flags on `object`, `anything`, `json` and `jsonValue` with the corresponding `stringUnit` option. When the options already include `stringUnit`, it drops the redundant literal flag.
+
+**Example of code change:**
 
 ```diff
 -fc.object({ withUnicodeString: true });
 +fc.object({ stringUnit: 'binary' });
 ```
 
-Applies to inline boolean flags on `object`, `anything`, `json` and `jsonValue`. When the options already include `stringUnit`, the transform drops the redundant literal flag. On 3.23.0, switching to the binary unit preserves the Unicode character range but can change which string a seed generates.
-
 </details>
 
 <details><summary><code>v5/randomTypeFactory</code> (≥4.6.0) — Imports pure-rand v8 generator factories</summary>
 
+**What is doing this codemod?**
+
+This codemod updates how you customize the random generator used by fast-check, either for an individual call or through global configuration. It replaces predefined string names passed as `randomType` with their corresponding generator factories imported from `pure-rand` v8.
+
+**Example of code change:**
+
 ```diff
++import { congruential32 } from 'pure-rand/generator/congruential32';
+
 -fc.configureGlobal({ randomType: 'congruential' });
 +fc.configureGlobal({ randomType: congruential32 });
 ```
-
-Requires a direct dependency on `pure-rand` v8.
 
 </details>
 
