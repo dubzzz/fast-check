@@ -88,10 +88,6 @@ This codemod updates how you customize the random generator used by fast-check, 
 
 This codemod is changing all references to `property` into references to `asyncProperty`. While doing that it converts any synchrounous assertion linked to `property` into an asynchrounous one.
 
-**When to use it?**
-
-The best moment to use it is right before moving to `^5.0.0`. We recommend running it while still in `4.x` from `4.11.0` or later.
-
 **Example of code change:**
 
 ```diff
