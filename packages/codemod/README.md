@@ -64,15 +64,6 @@ Requires a direct dependency on `pure-rand` v8.
 
 </details>
 
-<details><summary><code>v5/asyncProperty</code> (≥5.0.0) — Renames asyncProperty to property</summary>
-
-```diff
--fc.assert(fc.asyncProperty(arb, predicate));
-+fc.assert(fc.property(arb, predicate));
-```
-
-</details>
-
 <details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Preserves RunDetails when migrating check to assert</summary>
 
 ```diff
@@ -82,6 +73,19 @@ Requires a direct dependency on `pure-rand` v8.
 ```
 
 Both synchronous and awaited checks use the generated helper. It captures `RunDetails` with `onAllRunsComplete` and sets `noDefaultPlugins: true` so a failing run still returns its details.
+
+</details>
+
+### Migrate to v6
+
+Version 6 is still not planned, that said some deprecation notice have already been put in place and some codemod can help you to apply patches to clean them.
+
+<details><summary><code>v6/asyncPropertyToProperty</code> (≥5.0.0) — Renames asyncProperty to property</summary>
+
+```diff
+-fc.assert(fc.asyncProperty(arb, predicate));
++fc.assert(fc.property(arb, predicate));
+```
 
 </details>
 
