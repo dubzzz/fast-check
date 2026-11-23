@@ -1,6 +1,5 @@
 import type { API, FileInfo } from 'jscodeshift';
 import { migratePluginCalls, type Expression, type PluginCall, type PluginEdit } from '../pluginMigration.js';
-
 import { reporting } from '../runnerReporting.js';
 
 function runnerPlugins(site: PluginCall): PluginEdit | undefined {

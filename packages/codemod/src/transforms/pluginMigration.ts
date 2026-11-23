@@ -8,6 +8,7 @@ import type {
   JSCodeshift,
   ObjectExpression,
 } from 'jscodeshift';
+import { findBinding, importedName as fastCheckName, isReference } from './fastCheck.js';
 import { reportUnsupported } from './reportUnsupported.js';
 
 export type Expression = Exclude<CallExpression['arguments'][number], SpreadElement>;
@@ -39,58 +40,36 @@ export interface PluginCall {
   report: (message: string) => void;
 }
 
-export function declarationOf(path: ASTPath, name: string): ASTPath | undefined {
-  const bindings = path.scope.lookup(name)?.getBindings()[name];
-  return bindings?.length === 1 ? bindings[0].parent : undefined;
-}
-
-function importedBinding(path: CallPath, name: string): string | undefined {
-  const declaration = declarationOf(path, name);
-  if (!declaration) return undefined;
-  const specifier = declaration.node;
-  if (specifier.type === 'VariableDeclarator') {
-    const init = specifier.init;
-    if (
-      specifier.id.type === 'Identifier' &&
-      declaration.parent.node.kind === 'const' &&
-      init?.type === 'CallExpression' &&
-      init.callee.type === 'Identifier' &&
-      init.callee.name === 'require' &&
-      !declaration.scope.lookup('require') &&
-      init.arguments.length === 1 &&
-      'value' in init.arguments[0] &&
-      init.arguments[0].value === 'fast-check'
-    )
-      return '*';
-    return undefined;
-  }
-  const source = declaration.parent.node;
+function runnerName(j: JSCodeshift, path: CallPath, call: CallExpression): string | undefined {
+  const name = fastCheckName(j, path, call.callee);
+  if (name) return name;
+  // Also recognize const fc = require('fast-check').
+  const member = call.callee;
   if (
-    source.type !== 'ImportDeclaration' ||
-    source.source.value !== 'fast-check' ||
-    source.importKind === 'type' ||
-    ('importKind' in specifier && specifier.importKind === 'type')
+    !j.MemberExpression.check(member) ||
+    member.computed ||
+    !j.Identifier.check(member.property) ||
+    !j.Identifier.check(member.object)
   )
-    return undefined;
-  if (specifier.type === 'ImportDefaultSpecifier' || specifier.type === 'ImportNamespaceSpecifier') return '*';
-  return specifier.type === 'ImportSpecifier' && typeof specifier.imported.name === 'string'
-    ? specifier.imported.name
-    : undefined;
-}
-
-function importedName(path: CallPath, call: CallExpression): string | undefined {
-  const callee = call.callee;
-  if (callee.type === 'Identifier') return importedBinding(path, callee.name);
+    return;
+  const declaration = findBinding(j, path, member.object.name)?.parent;
   if (
-    callee.type === 'MemberExpression' &&
-    !callee.computed &&
-    callee.property.type === 'Identifier' &&
-    callee.object.type === 'Identifier' &&
-    importedBinding(path, callee.object.name) === '*'
-  ) {
-    return callee.property.name;
-  }
-  return undefined;
+    !j.VariableDeclarator.check(declaration?.node) ||
+    declaration.parent.node.kind !== 'const' ||
+    !j.Identifier.check(declaration.node.id)
+  )
+    return;
+  const init = declaration.node.init;
+  if (
+    j.CallExpression.check(init) &&
+    j.Identifier.check(init.callee) &&
+    init.callee.name === 'require' &&
+    !declaration.scope.lookup('require') &&
+    init.arguments.length === 1 &&
+    j.StringLiteral.check(init.arguments[0]) &&
+    init.arguments[0].value === 'fast-check'
+  )
+    return member.property.name;
 }
 
 function isExpression(j: JSCodeshift, node: unknown): node is Expression {
@@ -138,7 +117,7 @@ function constantOptions(
   path: CallPath,
   name: string,
 ): { object: ASTPath<ObjectExpression>; sharedUses?: CallExpression[] } | undefined {
-  const declaration = declarationOf(path, name);
+  const declaration = findBinding(j, path, name)?.parent;
   if (
     !declaration ||
     !j.VariableDeclarator.check(declaration.node) ||
@@ -161,7 +140,7 @@ function constantOptions(
   const references = j(declaration.scope.path)
     .find(j.Identifier, { name })
     .paths()
-    .filter((ref) => ref.node !== binding);
+    .filter((ref) => ref.node !== binding && isReference(j, ref) && findBinding(j, ref, name)?.node === binding);
   if (references.length === 1) return { object };
   if (declaration.node.id.type !== 'Identifier' || declaration.node.id.typeAnnotation) return undefined;
   const sharedUses: CallExpression[] = [];
@@ -171,10 +150,10 @@ function constantOptions(
       !j.CallExpression.check(use.node) ||
       use.node.arguments.length !== 2 ||
       use.node.arguments[1] !== ref.node ||
-      declarationOf(ref, name)?.node !== declaration.node
+      findBinding(j, ref, name)?.parent?.node !== declaration.node
     )
       return undefined;
-    const runner = importedName(use, use.node);
+    const runner = runnerName(j, use, use.node);
     if (runner !== 'assert' && runner !== 'check') return undefined;
     sharedUses.push(use.node);
   }
@@ -189,9 +168,9 @@ export function migratePluginCalls(
   const j = api.jscodeshift.withParser(/\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx');
   const root = j(file.source);
   const calls = root.find(j.CallExpression).paths();
-  const globalCalls = calls.filter((path) => importedName(path, path.node) === 'configureGlobal');
-  const hasCheck = calls.some((path) => importedName(path, path.node) === 'check');
-  const hasReset = calls.some((path) => importedName(path, path.node) === 'resetConfigureGlobal');
+  const globalCalls = calls.filter((path) => runnerName(j, path, path.node) === 'configureGlobal');
+  const hasCheck = calls.some((path) => runnerName(j, path, path.node) === 'check');
+  const hasReset = calls.some((path) => runnerName(j, path, path.node) === 'resetConfigureGlobal');
   const sites = [];
   const globalKeys = new Set<string>();
   const localKeys = new Set<string>();
@@ -200,7 +179,7 @@ export function migratePluginCalls(
   for (let suffix = 2; root.find(j.Identifier, { name: namespace }).size() !== 0; ++suffix) namespace = 'fc' + suffix;
 
   for (const path of calls) {
-    const runner = importedName(path, path.node);
+    const runner = runnerName(j, path, path.node);
     if (runner !== 'configureGlobal' && runner !== 'check' && runner !== 'assert') continue;
     const index = runner === 'configureGlobal' ? 0 : 1;
     const args = path.node.arguments;
@@ -216,7 +195,7 @@ export function migratePluginCalls(
       first?.type === 'SpreadElement' &&
       first.argument.type === 'CallExpression' &&
       first.argument.arguments.length === 0 &&
-      importedName(path, first.argument) === 'readConfigureGlobal';
+      runnerName(j, path, first.argument) === 'readConfigureGlobal';
     const options = readOptions(j, keepsGlobal ? object.properties.slice(1) : object.properties);
     if (!options) continue;
     const callee = path.node.callee;
@@ -224,10 +203,10 @@ export function migratePluginCalls(
     if (constant?.sharedUses && receiver) {
       if (!j.Identifier.check(receiver)) continue;
       // A shared initializer can be outside the caller's scope or before a CommonJS require.
-      const binding = declarationOf(path, receiver.name);
+      const binding = findBinding(j, path, receiver.name)?.parent;
       if (
         binding?.parent.node.type !== 'ImportDeclaration' ||
-        declarationOf(constant.object, receiver.name)?.node !== binding.node
+        findBinding(j, constant.object, receiver.name)?.parent?.node !== binding.node
       )
         continue;
     }
@@ -242,7 +221,7 @@ export function migratePluginCalls(
       path,
       options,
       member,
-      importedName: (call) => importedName(path, call),
+      importedName: (call) => runnerName(j, path, call),
       report,
     });
     const keys = runner === 'configureGlobal' ? globalKeys : localKeys;

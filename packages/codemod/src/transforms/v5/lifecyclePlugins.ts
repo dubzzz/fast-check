@@ -6,13 +6,8 @@ import type {
   FunctionDeclaration,
   FunctionExpression,
 } from 'jscodeshift';
-import {
-  declarationOf,
-  migratePluginCalls,
-  type Expression,
-  type PluginCall,
-  type PluginEdit,
-} from '../pluginMigration.js';
+import { findBinding, isReference } from '../fastCheck.js';
+import { migratePluginCalls, type Expression, type PluginCall, type PluginEdit } from '../pluginMigration.js';
 
 type Callback = ArrowFunctionExpression | FunctionExpression | FunctionDeclaration;
 const hookNames = ['beforeEach', 'afterEach', 'asyncBeforeEach', 'asyncAfterEach'];
@@ -21,7 +16,7 @@ function callbackFor(site: PluginCall, expr: Expression): Callback | undefined {
   const { j } = site;
   if (j.ArrowFunctionExpression.check(expr) || j.FunctionExpression.check(expr)) return expr;
   if (!j.Identifier.check(expr)) return undefined;
-  const declaration = declarationOf(site.path, expr.name);
+  const declaration = findBinding(j, site.path, expr.name)?.parent;
   if (j.FunctionDeclaration.check(declaration?.node)) return declaration.node;
   if (j.VariableDeclarator.check(declaration?.node) && declaration.parent.node.kind === 'const') {
     const init = declaration.node.init;
@@ -118,7 +113,7 @@ function localHooks(site: PluginCall): PluginEdit | undefined {
   let property = argument;
   let declarator: ASTPath | undefined;
   if (j.Identifier.check(argument)) {
-    const declaration = declarationOf(site.path, argument.name);
+    const declaration = findBinding(j, site.path, argument.name)?.parent;
     // Moving the hooks is safe for a single-use const in the same scope, with no intervening statements.
     if (
       !declaration ||
@@ -137,7 +132,15 @@ function localHooks(site: PluginCall): PluginEdit | undefined {
           .find(j.CallExpression)
           .some((p) => p.node === call)) ||
       declaration.scope !== site.path.scope ||
-      j(declaration.scope.path).find(j.Identifier, { name: argument.name }).size() !== 2
+      j(declaration.scope.path)
+        .find(j.Identifier, { name: argument.name })
+        .some(
+          (ref) =>
+            ref.node !== argument &&
+            ref.node !== declaration.node.id &&
+            isReference(j, ref) &&
+            findBinding(j, ref, ref.node.name)?.parent?.node === declaration.node,
+        )
     )
       return undefined;
     declarator = declaration;

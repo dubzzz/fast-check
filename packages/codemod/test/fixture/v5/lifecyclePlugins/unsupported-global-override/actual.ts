@@ -9,6 +9,8 @@ fc.configureGlobal({
 });
 const property = fc.property(fc.nat(), (n) => n + count >= 0);
 // In v4 this property hook replaces the global hook.
-fc.assert(property.beforeEach(() => {
-  count = 2;
-}));
+fc.assert(
+  property.beforeEach(() => {
+    count = 2;
+  }),
+);

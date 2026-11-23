@@ -1,4 +1,5 @@
-import { declarationOf, type Expression, type PluginCall, type PluginEdit } from './pluginMigration.js';
+import { findBinding } from './fastCheck.js';
+import type { Expression, PluginCall, PluginEdit } from './pluginMigration.js';
 
 export function reporting(site: PluginCall): PluginEdit | undefined {
   const { j, options, runner, report } = site;
@@ -27,7 +28,7 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
     report('Review the expression that supplies the custom reporter.');
     return undefined;
   }
-  const declaration = j.Identifier.check(callback) ? declarationOf(site.path, callback.name) : undefined;
+  const declaration = j.Identifier.check(callback) ? findBinding(j, site.path, callback.name)?.parent : undefined;
   const init = j.VariableDeclarator.check(declaration?.node) ? declaration.node.init : undefined;
   const known = j.FunctionDeclaration.check(declaration?.node)
     ? declaration.node

@@ -1,27 +1,7 @@
-import type { API, ASTPath, CallExpression, FileInfo, Identifier, ImportSpecifier, JSCodeshift } from 'jscodeshift';
+import type { API, ASTPath, CallExpression, FileInfo, Identifier, ImportSpecifier } from 'jscodeshift';
 import { awaitContext } from '../allowAwait.js';
-import { findBinding, importedName, memberName } from '../fastCheck.js';
+import { findBinding, importedName, isReference, memberName } from '../fastCheck.js';
 import { reportUnsupported } from '../reportUnsupported.js';
-
-// Ignore syntactic names such as obj.property and the key in { property: value }.
-function isReference(j: JSCodeshift, path: ASTPath<Identifier>): boolean {
-  const parent = path.parent.node;
-  if (
-    j.ImportSpecifier.check(parent) ||
-    j.ImportNamespaceSpecifier.check(parent) ||
-    j.ImportDefaultSpecifier.check(parent)
-  )
-    return false;
-  if (j.ExportSpecifier.check(parent) && path.name === 'exported') return false;
-  if (j.MemberExpression.check(parent) && path.name === 'property' && !parent.computed) return false;
-  if (
-    (j.Property.check(parent) || j.ObjectProperty.check(parent) || j.ObjectMethod.check(parent)) &&
-    path.name === 'key' &&
-    !parent.computed
-  )
-    return false;
-  return true;
-}
 
 export default function transform(file: FileInfo, api: API): string {
   const j = api.jscodeshift.withParser(/\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx');
