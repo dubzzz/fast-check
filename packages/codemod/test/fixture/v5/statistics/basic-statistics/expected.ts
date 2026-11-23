@@ -1,3 +1,3 @@
 import * as fc from 'fast-check';
 
-fc.logStatistics(await fc.statistics(fc.nat(), String));
+fc.logStatistics(await fc.statistics(fc.uuid(), String));

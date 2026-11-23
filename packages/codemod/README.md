@@ -122,7 +122,7 @@ Assumes fast-check v5 after `v5/propertyToAsyncProperty`, where `check` always r
 
 **What is doing this codemod?**
 
-This codemod awaits statistics and logs the result using the original logger when supplied. For property inputs it skips predicate execution and adapts the classifier to receive separate arguments.
+This codemod awaits statistics and logs the result using the original logger when supplied. For property inputs it skips predicate execution and adapts the classifier to receive separate arguments. When the input is unclear, it still awaits and logs the result, preserves the classifier, and reports the call for review.
 
 **Example of code change:**
 
