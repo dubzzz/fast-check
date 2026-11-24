@@ -79,6 +79,19 @@ export function isConstDeclarator(j: JSCodeshift, path: ASTPath | undefined): pa
   );
 }
 
+export function findSingleConstBinding(j: JSCodeshift, path: ASTPath, name: string): ASTPath<Identifier> | undefined {
+  const binding = findBinding(j, path, name);
+  const declarator = binding?.parent;
+  if (
+    binding &&
+    isConstDeclarator(j, declarator) &&
+    declarator.node.id === binding.node &&
+    declarator.parent.node.declarations.length === 1
+  ) {
+    return binding;
+  }
+}
+
 export function localConstBinding(j: JSCodeshift, initializer: ASTPath): ASTPath<Identifier> | undefined {
   const declaration = initializer.parent;
   if (

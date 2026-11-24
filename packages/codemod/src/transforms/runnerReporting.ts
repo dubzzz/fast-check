@@ -1,5 +1,5 @@
 import { isFunctionExpression } from './ast.js';
-import { findBinding, isConstDeclarator } from './bindings.js';
+import { callbackStatements, resolveCallback, usesReceiver } from './callbacks.js';
 import type { Expression, PluginCall, PluginEdit } from './pluginMigration.js';
 
 export function reporting(site: PluginCall): PluginEdit | undefined {
@@ -30,18 +30,12 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
     report('Review the expression that supplies the custom reporter.');
     return undefined;
   }
-  const declaration = j.Identifier.check(callback) ? findBinding(j, site.path, callback.name)?.parent : undefined;
-  const init = isConstDeclarator(j, declaration) ? declaration.node.init : undefined;
-  const known = j.FunctionDeclaration.check(declaration?.node)
-    ? declaration.node
-    : isFunctionExpression(j, init)
-      ? init
-      : callback;
-  if (j.Identifier.check(known)) {
+  const known = resolveCallback(j, site.path, callback);
+  if (!known) {
     report('Review the reporter reference: it may change or resolve to undefined.');
     return undefined;
   }
-  if (j(known).find(j.ThisExpression).size() || j(known).find(j.Super).size()) {
+  if (usesReceiver(j, known)) {
     report('Review the custom reporter: v5 changes its receiver.');
     return undefined;
   }
@@ -60,7 +54,7 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
     }
     const id = j.identifier(details.name);
     const field = (name: string) => j.memberExpression(id, j.identifier(name));
-    const body = j.BlockStatement.check(callback.body) ? callback.body.body : [j.returnStatement(callback.body)];
+    const body = callbackStatements(j, callback.body);
     const asFailure = j.objectExpression([
       j.spreadElement(id),
       j.objectProperty(j.identifier('failed'), j.booleanLiteral(true)),

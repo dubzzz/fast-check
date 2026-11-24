@@ -1,11 +1,36 @@
-import type { API, ASTPath, CallExpression, SpreadElement, FileInfo, JSCodeshift, ObjectExpression } from 'jscodeshift';
+import type {
+  API,
+  ASTPath,
+  ArrayExpression,
+  CallExpression,
+  SpreadElement,
+  FileInfo,
+  JSCodeshift,
+  ObjectExpression,
+} from 'jscodeshift';
 import { isFunctionExpression, isNamedMember } from './ast.js';
-import { findBinding, freshName, identifierNames, isConstDeclarator, referencesOf } from './bindings.js';
+import {
+  findBinding,
+  findSingleConstBinding,
+  freshName,
+  identifierNames,
+  isConstDeclarator,
+  referencesOf,
+} from './bindings.js';
 import { importedName as fastCheckName, isFastCheckNamespace } from './fastCheck.js';
 import { setOptionsArgument } from './options.js';
 import { parseFile } from './transformFile.js';
 
 export type Expression = Exclude<CallExpression['arguments'][number], SpreadElement>;
+
+// v4 applies these runner wrappers in order, around the property's own lifecycle hooks.
+export const runnerPluginNames: readonly string[] = [
+  'ignoreEqualValues',
+  'skipEqualValues',
+  'interruptAfterTimeLimit',
+  'unbiased',
+  'timeout',
+];
 
 type CallPath = ASTPath<CallExpression>;
 type Runner = 'assert' | 'check' | 'configureGlobal';
@@ -17,7 +42,8 @@ export interface PluginEdit {
   conflicts?: string[];
   parameters?: Record<string, Expression>;
   property?: Expression;
-  insertBefore?: (plugin: Expression) => boolean;
+  apply?: () => void;
+  insertBefore?: readonly string[];
 }
 
 export interface PluginCall {
@@ -59,6 +85,19 @@ function runnerName(j: JSCodeshift, path: CallPath, call: CallExpression): strin
     init.arguments[0].value === 'fast-check'
   ) {
     return member.property.name;
+  }
+}
+
+function pluginName(j: JSCodeshift, path: CallPath, element: ArrayExpression['elements'][number]): string | undefined {
+  // Conditional plugins are emitted as a spread of a conditional array.
+  const plugin =
+    j.SpreadElement.check(element) &&
+    j.ConditionalExpression.check(element.argument) &&
+    j.ArrayExpression.check(element.argument.consequent)
+      ? element.argument.consequent.elements[0]
+      : element;
+  if (j.CallExpression.check(plugin)) {
+    return runnerName(j, path, plugin);
   }
 }
 
@@ -110,11 +149,12 @@ function constantOptions(
   path: CallPath,
   name: string,
 ): { object: ASTPath<ObjectExpression>; sharedUses?: CallExpression[] } | undefined {
-  const declaration = findBinding(j, path, name)?.parent;
+  const binding = findSingleConstBinding(j, path, name);
+  if (!binding) {
+    return undefined;
+  }
+  const declaration = binding.parent;
   if (
-    !isConstDeclarator(j, declaration) ||
-    !j.Identifier.check(declaration.node.id) ||
-    declaration.parent.node.declarations.length !== 1 ||
     declaration.parent.node.comments?.length ||
     !['Program', 'BlockStatement'].includes(declaration.parent.parent.node.type)
   ) {
@@ -130,11 +170,11 @@ function constantOptions(
     return undefined;
   }
   const object = declaration.get('init');
-  const references = referencesOf(j, declaration.get('id'));
+  const references = referencesOf(j, binding);
   if (references.length === 1) {
     return { object };
   }
-  if (declaration.node.id.typeAnnotation) {
+  if (binding.node.typeAnnotation) {
     return undefined;
   }
   const sharedUses: CallExpression[] = [];
@@ -298,6 +338,7 @@ export function migratePluginCalls(
       path.node.arguments[index] = object;
       constant.object.parent.parent.prune();
     }
+    edit.apply?.();
     object.properties = retained;
     if (global) {
       const statements = edit.plugins.map(({ value, when }) => {
@@ -329,7 +370,7 @@ export function migratePluginCalls(
             ? j.spreadElement(j.conditionalExpression(when, j.arrayExpression([value]), j.arrayExpression([])))
             : value,
         );
-        const before = array.elements.findIndex((item) => isExpression(j, item) && edit.insertBefore?.(item));
+        const before = array.elements.findIndex((item) => edit.insertBefore?.includes(pluginName(j, path, item) ?? ''));
         array.elements.splice(before === -1 ? array.elements.length : before, 0, ...elements);
         if (!existing) {
           object.properties.push(j.objectProperty(j.identifier('plugins'), array));

@@ -1,6 +1,6 @@
 import jscodeshift from 'jscodeshift';
 import { describe, expect, it } from 'vitest';
-import { referencesOf } from './bindings.js';
+import { findSingleConstBinding, referencesOf } from './bindings.js';
 
 const j = jscodeshift.withParser('ts');
 
@@ -22,6 +22,22 @@ describe('referencesOf', () => {
       ['ObjectProperty', 'value'],
       ['ExportSpecifier', 'local'],
       ['CallExpression', 0],
+    ]);
+  });
+});
+
+describe('findSingleConstBinding', () => {
+  it('should accept only a directly bound name in a single const declarator', () => {
+    const root = j(`const single = 1; const first = 1, second = 2;
+      const { item } = obj; let mutable = 1; use(single, first, second, item, mutable);`);
+    const call = root.find(j.CallExpression).paths()[0];
+    const names = ['single', 'first', 'second', 'item', 'mutable'];
+    expect(names.map((name) => findSingleConstBinding(j, call, name)?.node.name)).toEqual([
+      'single',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
     ]);
   });
 });

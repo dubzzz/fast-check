@@ -82,6 +82,23 @@ This codemod updates how you customize the random generator used by fast-check, 
 
 </details>
 
+<details><summary><code>v5/lifecyclePlugins</code> (≥4.10.0) — Moves property hooks into runner plugins</summary>
+
+**What is doing this codemod?**
+
+This codemod moves local before and after hooks into runner plugins. It also migrates one-time global hook configuration.
+
+**Warning:** If another file installs a global before hook, review local hooks that call `previous()` last or omit it. A global before plugin runs first. A global after plugin runs last, so review local after hooks that call `previous()` first or omit it.
+
+**Example of code change:**
+
+```diff
+-fc.assert(fc.property(arb, predicate).beforeEach(setup));
++fc.assert(fc.property(arb, predicate), { plugins: [fc.beforeEach(setup)] });
+```
+
+</details>
+
 <details><summary><code>v5/propertyToAsyncProperty</code> (≥4.11.0) — Renames property to asyncProperty</summary>
 
 **What is doing this codemod?**
