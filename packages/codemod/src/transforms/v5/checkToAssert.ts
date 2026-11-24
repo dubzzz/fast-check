@@ -22,23 +22,23 @@ export default function transform(file: FileInfo, api: API): string {
   const helper = freshName(identifierNames(j, root), 'assertAndGetRunDetails', 'ForCheck');
   let namespace: string | undefined;
 
-  function isPromiseBinding(path: ASTPath): boolean {
+  function hasPromiseConsumer(path: ASTPath): boolean {
+    if (isPromiseConsumer(j, path)) return true;
     const binding = localConstBinding(j, path);
-    if (!binding) return false;
-    const uses = referencesOf(j, binding);
-    return uses.length > 0 && uses.every((ref) => isPromiseConsumer(j, ref));
+    if (binding) {
+      const uses = referencesOf(j, binding);
+      if (uses.length > 0 && uses.every((ref) => isPromiseConsumer(j, ref))) return true;
+    }
+    report(
+      path.node,
+      'Cannot determine that check() is consumed as a promise; synchronous or uncertain usages require manual migration.',
+    );
+    return false;
   }
 
   root.find(j.CallExpression).forEach((path) => {
     const { callee } = path.node;
-    if (!isFastCheckMember(j, path, callee, 'check')) return;
-    if (!isPromiseConsumer(j, path) && !isPromiseBinding(path)) {
-      report(
-        path.node,
-        'Cannot determine that check() is consumed as a promise; synchronous or uncertain usages require manual migration.',
-      );
-      return;
-    }
+    if (!isFastCheckMember(j, path, callee, 'check') || !hasPromiseConsumer(path)) return;
     const discarded = isResultDiscarded(j, path);
     const [property, params] = path.node.arguments;
     if (!j.Expression.check(property) || path.node.arguments.length > 2 || j.SpreadElement.check(params)) {

@@ -1,7 +1,7 @@
 import type { API, FileInfo } from 'jscodeshift';
 import { callsInsideOut } from '../ast.js';
 import { importedName } from '../fastCheck.js';
-import { applySamplingOptions, awaitSamplingCall, isPropertyInput, samplingOptions } from '../sampling.js';
+import { applySamplingOptions, prepareSamplingCall, samplingOptions } from '../sampling.js';
 import { parseFile } from '../transformFile.js';
 
 export default function transform(file: FileInfo, api: API): string {
@@ -10,16 +10,12 @@ export default function transform(file: FileInfo, api: API): string {
     const call = path.node;
     const { callee, arguments: args } = call;
     if (importedName(j, path, callee) !== 'sample') continue;
-    const result = awaitSamplingCall(j, path, file.path, 'sample', report);
-    if (!result) continue;
-    const property = isPropertyInput(j, path);
-    const params = args[1];
-    if (property === undefined) {
-      report(path.node, 'If the sample input is a property, set noPredicateExecution to true.');
-    }
+    const sampling = prepareSamplingCall(j, path, file.path, 'sample', report);
+    if (!sampling) continue;
+    const { result, property } = sampling;
     if (result !== path.parent.node) path.replace(result);
     if (args.length > 2) continue;
-    const options = samplingOptions(j, params);
+    const options = samplingOptions(j, args[1]);
     if (options && !options.logger) applySamplingOptions(j, call, 1, options.object, property);
   }
   return print();

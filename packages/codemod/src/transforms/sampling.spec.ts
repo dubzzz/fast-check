@@ -1,6 +1,6 @@
 import jscodeshift from 'jscodeshift';
-import { describe, expect, it } from 'vitest';
-import { applySamplingOptions, isPropertyInput, samplingOptions } from './sampling.js';
+import { describe, expect, it, vi } from 'vitest';
+import { applySamplingOptions, prepareSamplingCall, samplingOptions } from './sampling.js';
 
 const j = jscodeshift.withParser('ts');
 
@@ -32,7 +32,7 @@ describe('sampling options', () => {
   });
 });
 
-describe('isPropertyInput', () => {
+describe('prepareSamplingCall', () => {
   it('follows constant factory aliases and leaves a mutable or shadowed input uncertain', () => {
     const root = j(`import { property as make, integer } from 'fast-check';
       const p = make(); let mutable = make();
@@ -40,6 +40,34 @@ describe('isPropertyInput', () => {
       { const p = unknown(); run(p); }
       run(p);`);
     const calls = root.find(j.CallExpression, { callee: { name: 'run' } }).paths();
-    expect(calls.map((path) => isPropertyInput(j, path))).toEqual([true, false, undefined, undefined, true]);
+    const report = vi.fn();
+    const samples = calls.map((path) => prepareSamplingCall(j, path, 'test.ts', 'sample', report));
+    expect(samples.map((sample) => sample!.property)).toEqual([true, false, undefined, undefined, true]);
+    const message = 'If the sample input is a property, set noPredicateExecution to true.';
+    expect(report.mock.calls).toEqual([
+      [calls[2].node, message],
+      [calls[3].node, message],
+    ]);
+  });
+
+  it('gives classifier guidance for an unknown statistics input', () => {
+    const path = j('statistics(input, classify)').find(j.CallExpression).paths()[0];
+    const report = vi.fn();
+    const sampling = prepareSamplingCall(j, path, 'test.ts', 'statistics', report);
+    expect(sampling?.result.argument).toBe(path.node);
+    expect(sampling?.property).toBeUndefined();
+    expect(report.mock.calls).toEqual([
+      [
+        path.node,
+        'If the input is a property, set noPredicateExecution to true and adapt the classifier to receive separate arguments.',
+      ],
+    ]);
+  });
+
+  it('reports only the await failure when the enclosing context is synchronous', () => {
+    const path = j('function f() { sample(unknown); }').find(j.CallExpression).paths()[0];
+    const report = vi.fn();
+    expect(prepareSamplingCall(j, path, 'test.ts', 'sample', report)).toBeUndefined();
+    expect(report.mock.calls).toEqual([[path.node, 'Cannot await sample() in this synchronous context.']]);
   });
 });

@@ -30,11 +30,14 @@ export default function transform(file: FileInfo, api: API): string {
       return () => {
         // The sample and statistics codemods handle their own awaits. An awaited assertion is already covered.
       };
-    const awaitCall = planAwait(j, path, file.path);
-    if (!awaitCall) {
-      report(call, `Cannot make ${name}() asynchronous in this context; migrate its caller manually.`);
-      return undefined;
-    }
+    const awaitCall = planAwait(
+      j,
+      path,
+      file.path,
+      report,
+      `Cannot make ${name}() asynchronous in this context; migrate its caller manually.`,
+    );
+    if (!awaitCall) return undefined;
     const parent = path.parent.node;
     if (
       (j.ReturnStatement.check(parent) && parent.argument === call) ||

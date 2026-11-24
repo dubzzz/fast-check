@@ -1,6 +1,7 @@
 import type { ASTPath, AwaitExpression, CallExpression, JSCodeshift } from 'jscodeshift';
 import { isFunctionExpression, isNamedMember } from './ast.js';
 import { resolveImport } from './imports.js';
+import type { Report } from './transformFile.js';
 
 function isTestApi(j: JSCodeshift, path: ASTPath, node: unknown, names: string[]): boolean {
   if (!j.Identifier.check(node)) return false;
@@ -34,6 +35,8 @@ export function planAwait(
   j: JSCodeshift,
   path: ASTPath<CallExpression>,
   filename: string,
+  report: Report,
+  unsupportedMessage: string,
 ): (() => AwaitExpression) | undefined {
   const call = path.node;
   const awaited = () => j.awaitExpression(call);
@@ -42,7 +45,7 @@ export function planAwait(
   for (let parent = path.parent; parent; child = parent, parent = parent.parent) {
     const node = parent.node;
     if (j.Function.check(node)) {
-      if (child.node !== node.body) return undefined;
+      if (child.node !== node.body) break;
       if (node.async) return awaited;
       const test = parent.parent.node;
       const callee = j.CallExpression.check(test) ? testCallee(j, parent, test.callee) : undefined;
@@ -55,13 +58,14 @@ export function planAwait(
         !j.CallExpression.check(test) ||
         test.arguments[1] !== node
       )
-        return undefined;
+        break;
       return () => {
         node.async = true;
         return awaited();
       };
     }
-    if (j.ClassBody.check(node) || j.TSModuleBlock.check(node)) return undefined;
-    if (j.Program.check(node)) return /\.c[jt]s$/i.test(filename) ? undefined : awaited;
+    if (j.ClassBody.check(node) || j.TSModuleBlock.check(node)) break;
+    if (j.Program.check(node) && !/\.c[jt]s$/i.test(filename)) return awaited;
   }
+  report(call, unsupportedMessage);
 }

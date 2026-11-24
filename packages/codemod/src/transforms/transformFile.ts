@@ -1,10 +1,12 @@
 import type { API, Collection, FileInfo, JSCodeshift, Node } from 'jscodeshift';
 
+export type Report = (node: Node, message: string) => void;
+
 interface TransformFile {
   j: JSCodeshift;
   root: Collection;
   typescript: boolean;
-  report: (node: Node, message: string) => void;
+  report: Report;
   print: (changed?: boolean) => string;
 }
 

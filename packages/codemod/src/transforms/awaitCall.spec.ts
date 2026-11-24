@@ -1,5 +1,5 @@
 import jscodeshift from 'jscodeshift';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { planAwait } from './awaitCall.js';
 
 const j = jscodeshift.withParser('ts');
@@ -9,7 +9,8 @@ describe('planAwait', () => {
     const source = "import { test as spec } from 'vitest'; spec.each(cases)('name', (n) => run(n));";
     const root = j(source);
     const call = root.find(j.CallExpression, { callee: { name: 'run' } }).paths()[0];
-    const apply = planAwait(j, call, 'test.ts');
+    const report = vi.fn();
+    const apply = planAwait(j, call, 'test.ts', report, 'Cannot await run().');
 
     const callback = root.find(j.ArrowFunctionExpression).nodes()[0];
     expect(callback.async).toBe(false);
@@ -18,6 +19,7 @@ describe('planAwait', () => {
     expect(callback.async).toBe(true);
     expect(awaited.type).toBe('AwaitExpression');
     expect(awaited.argument).toBe(call.node);
+    expect(report).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -33,6 +35,10 @@ describe('planAwait', () => {
     const call = j(source)
       .find(j.CallExpression, { callee: { name: 'run' } })
       .paths()[0];
-    expect(planAwait(j, call, filename) !== undefined).toBe(allowed);
+    const report = vi.fn();
+    const message = 'Cannot await run().';
+    expect(planAwait(j, call, filename, report, message) !== undefined).toBe(allowed);
+    if (allowed) expect(report).not.toHaveBeenCalled();
+    else expect(report.mock.calls).toEqual([[call.node, message]]);
   });
 });

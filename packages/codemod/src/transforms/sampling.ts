@@ -3,33 +3,39 @@ import type {
   AwaitExpression,
   CallExpression,
   JSCodeshift,
-  Node,
   ObjectExpression,
   ObjectProperty,
 } from 'jscodeshift';
 import { planAwait } from './awaitCall.js';
 import { inputFactoryName, isPropertyFactory } from './fastCheck.js';
 import { inspectOptions, setOptionsArgument } from './options.js';
+import type { Report } from './transformFile.js';
 
-export function isPropertyInput(j: JSCodeshift, path: ASTPath<CallExpression>): boolean | undefined {
-  const input = path.get('arguments', 0);
-  const factory = inputFactoryName(j, input, 'const');
-  if (factory !== undefined) return isPropertyFactory(factory);
-  if (j.Identifier.check(input.node) && /^arb|arb$/i.test(input.node.name) && !/prop/i.test(input.node.name))
-    return false;
-}
-
-export function awaitSamplingCall(
+export function prepareSamplingCall(
   j: JSCodeshift,
   path: ASTPath<CallExpression>,
   filename: string,
-  method: string,
-  report: (node: Node, message: string) => void,
-): AwaitExpression | undefined {
-  if (j.AwaitExpression.check(path.parent.node)) return path.parent.node;
-  const awaitCall = planAwait(j, path, filename);
-  if (awaitCall) return awaitCall();
-  report(path.node, `Cannot await ${method}() in this synchronous context.`);
+  method: 'sample' | 'statistics',
+  report: Report,
+): { result: AwaitExpression; property: boolean | undefined } | undefined {
+  const result = j.AwaitExpression.check(path.parent.node)
+    ? path.parent.node
+    : planAwait(j, path, filename, report, `Cannot await ${method}() in this synchronous context.`)?.();
+  if (!result) return;
+
+  const input = path.get('arguments', 0);
+  const factory = inputFactoryName(j, input, 'const');
+  if (factory !== undefined) return { result, property: isPropertyFactory(factory) };
+  if (j.Identifier.check(input.node) && /^arb|arb$/i.test(input.node.name) && !/prop/i.test(input.node.name))
+    return { result, property: false };
+
+  report(
+    path.node,
+    method === 'sample'
+      ? 'If the sample input is a property, set noPredicateExecution to true.'
+      : 'If the input is a property, set noPredicateExecution to true and adapt the classifier to receive separate arguments.',
+  );
+  return { result, property: undefined };
 }
 
 export function samplingOptions(
