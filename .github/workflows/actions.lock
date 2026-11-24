@@ -60,7 +60,7 @@ workflows:
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
     '.github/workflows/zizmor.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
-        - 'zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd'
+        - 'zizmorcore/zizmor-action@1b4550e929643b8b26a62303c6bd64814271a4f1'
 dependencies:
     'actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6':
         ref: 'v4.2.2'
@@ -114,11 +114,6 @@ dependencies:
         commit: 'sha1-33d7b85da1a04171e211befe2c739303b9a4c066'
         owner_id: 9919
         repo_id: 259445878
-    'github/codeql-action@9b3254085494b55a0f7c4c2b3d2d52cc712ce370':
-        ref: 'v4.39.1'
-        commit: 'sha1-9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
-        owner_id: 9919
-        repo_id: 259445878
     'ossf/scorecard-action@fa7117db83c52d787ae5a89f350999701505d78e':
         ref: 'v2.5.0'
         commit: 'sha1-fa7117db83c52d787ae5a89f350999701505d78e'
@@ -134,10 +129,10 @@ dependencies:
         commit: 'sha1-718ea10b132b3b2eba29c1007bb80653f286566b'
         owner_id: 2242
         repo_id: 204253808
-    'zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd':
-        ref: 'v0.8.1'
-        commit: 'sha1-45d7276c9ca790aabd705e31ca99c6185c3e76dd'
+    'zizmorcore/zizmor-action@1b4550e929643b8b26a62303c6bd64814271a4f1':
+        ref: 'v0.9.2'
+        commit: 'sha1-1b4550e929643b8b26a62303c6bd64814271a4f1'
         owner_id: 210636713
         repo_id: 985558803
         uses:
-            - 'github/codeql-action@9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
+            - 'github/codeql-action@33d7b85da1a04171e211befe2c739303b9a4c066'
