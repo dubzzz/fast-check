@@ -100,6 +100,21 @@ This codemod is changing all references to `property` into references to `asyncP
 
 </details>
 
+<details><summary><code>v5/runnerPlugins</code> (≥4.11.0) — Moves runner options and custom reporters into plugins</summary>
+
+**What is doing this codemod?**
+
+This codemod moves local runner options and custom reporters into plugins. For a one-time global setup, it installs the corresponding plugins globally.
+
+**Example of code change:**
+
+```diff
+-fc.assert(property, { timeout: 500 });
++fc.assert(property, { plugins: [fc.timeout(500)] });
+```
+
+</details>
+
 <details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Preserves RunDetails when migrating check to assert</summary>
 
 **What is doing this codemod?**
