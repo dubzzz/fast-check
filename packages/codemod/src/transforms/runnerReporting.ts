@@ -78,12 +78,12 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
   );
   if (runner === 'configureGlobal' && site.typescript) {
     // installGlobalPlugin accepts a union of factory types, so its hook needs a contextual type.
+    const plugin = j.identifier('PluginInstance');
+    const args = j.tsTypeParameterInstantiation([j.tsUnknownKeyword()]);
     factory.returnType = j.tsTypeAnnotation(
-      j.tsImportType(
-        j.stringLiteral('fast-check'),
-        j.identifier('PluginInstance'),
-        j.tsTypeParameterInstantiation([j.tsUnknownKeyword()]),
-      ),
+      site.typeNamespace
+        ? j.tsTypeReference(j.tsQualifiedName(j.identifier(site.typeNamespace), plugin), args)
+        : j.tsImportType(j.stringLiteral('fast-check'), plugin, args),
     );
   }
   return {
