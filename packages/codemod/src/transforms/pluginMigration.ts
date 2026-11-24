@@ -1,4 +1,13 @@
-import type { API, ASTPath, CallExpression, SpreadElement, FileInfo, JSCodeshift, ObjectExpression } from 'jscodeshift';
+import type {
+  API,
+  ASTPath,
+  ArrayExpression,
+  CallExpression,
+  SpreadElement,
+  FileInfo,
+  JSCodeshift,
+  ObjectExpression,
+} from 'jscodeshift';
 import { findBinding, importedName as fastCheckName, isFastCheckNamespace, isReference } from './fastCheck.js';
 import { reportUnsupported } from './reportUnsupported.js';
 
@@ -14,7 +23,8 @@ export interface PluginEdit {
   conflicts?: string[];
   parameters?: Record<string, Expression>;
   property?: Expression;
-  insertBefore?: (plugin: Expression) => boolean;
+  apply?: () => void;
+  insertBefore?: (plugin: NonNullable<ArrayExpression['elements'][number]>) => boolean;
 }
 
 export interface PluginCall {
@@ -285,6 +295,7 @@ export function migratePluginCalls(
       path.node.arguments[index] = object;
       constant.object.parent.parent.prune();
     }
+    edit.apply?.();
     object.properties = retained;
     if (global) {
       const statements = edit.plugins.map(({ value, when }) => {
@@ -308,7 +319,7 @@ export function migratePluginCalls(
             ? j.spreadElement(j.conditionalExpression(when, j.arrayExpression([value]), j.arrayExpression([])))
             : value,
         );
-        const before = array.elements.findIndex((item) => isExpression(j, item) && edit.insertBefore?.(item));
+        const before = array.elements.findIndex((item) => item !== null && edit.insertBefore?.(item));
         array.elements.splice(before === -1 ? array.elements.length : before, 0, ...elements);
         if (!existing) object.properties.push(j.objectProperty(j.identifier('plugins'), array));
         if (edit.parameters?.noDefaultPlugins && object.properties.length === 2 && !constant?.sharedUses) {

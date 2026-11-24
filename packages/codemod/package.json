@@ -8,6 +8,7 @@
     "./cli": "./lib/cli.js",
     "./transforms/v5/checkToAssert": "./lib/transforms/v5/checkToAssert.js",
     "./transforms/v5/defaultImport": "./lib/transforms/v5/defaultImport.js",
+    "./transforms/v5/lifecyclePlugins": "./lib/transforms/v5/lifecyclePlugins.js",
     "./transforms/v5/propertyToAsyncProperty": "./lib/transforms/v5/propertyToAsyncProperty.js",
     "./transforms/v5/randomMethods": "./lib/transforms/v5/randomMethods.js",
     "./transforms/v5/randomTypeFactory": "./lib/transforms/v5/randomTypeFactory.js",
