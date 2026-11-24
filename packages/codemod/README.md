@@ -88,7 +88,7 @@ This codemod updates how you customize the random generator used by fast-check, 
 
 This codemod moves local before and after hooks into runner plugins. It also migrates one-time global hook configuration.
 
-**Warning:** If another file installs a global before hook, review local hooks that call `previous()` last or omit it. A global plugin runs first even when the old local hook ran before it or skipped it entirely.
+**Warning:** If another file installs a global before hook, review local hooks that call `previous()` last or omit it. A global before plugin runs first. A global after plugin runs last, so review local after hooks that call `previous()` first or omit it.
 
 **Example of code change:**
 

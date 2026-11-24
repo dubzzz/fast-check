@@ -25,7 +25,7 @@ function callbackFor(site: PluginCall, expr: Expression): Callback | undefined {
   return undefined;
 }
 
-function hookPlugin(site: PluginCall, name: string, expr: Expression, asyncProperty: boolean): Expression | undefined {
+function hookCallback(site: PluginCall, expr: Expression, asyncProperty: boolean): Expression | undefined {
   const { j } = site;
   const callback = callbackFor(site, expr);
   const global = site.runner === 'configureGlobal';
@@ -44,7 +44,6 @@ function hookPlugin(site: PluginCall, name: string, expr: Expression, asyncPrope
     site.report('Review the hook that uses arguments, a receiver or a generator.');
     return undefined;
   }
-  const plugin = name.toLowerCase().includes('before') ? 'beforeEach' : 'afterEach';
   let adapted = expr;
   // v4 ignored returned values. A beforeEach plugin treats a returned function as a teardown.
   if (
@@ -67,7 +66,7 @@ function hookPlugin(site: PluginCall, name: string, expr: Expression, asyncPrope
     adapted = j.arrowFunctionExpression([], body);
     adapted.async = asynchronous;
   }
-  return j.callExpression(site.member(plugin), [adapted]);
+  return adapted;
 }
 
 function globalHooks(site: PluginCall): PluginEdit | undefined {
@@ -100,15 +99,16 @@ function globalHooks(site: PluginCall): PluginEdit | undefined {
   }
   const plugins: PluginEdit['plugins'] = [];
   for (const name of remove) {
-    const value = hookPlugin(site, name, site.options.get(name) as Expression, name.startsWith('async'));
-    if (!value) return undefined;
-    plugins.push({ value });
+    const callback = hookCallback(site, site.options.get(name) as Expression, name.startsWith('async'));
+    if (!callback) return undefined;
+    const plugin = name.toLowerCase().includes('before') ? 'beforeEach' : 'afterEach';
+    plugins.push({ value: site.j.callExpression(site.member(plugin), [callback]) });
   }
   return { remove, plugins };
 }
 
-// In v4 each beforeEach wraps the previous hook. Plugins instead run in list order.
-function beforeEachEdit(
+// In v4 each local hook wraps the previous hook of the same kind.
+function localHookEdit(
   site: PluginCall,
   callback: Expression,
   asyncProperty: boolean,
@@ -208,13 +208,12 @@ function localHooks(site: PluginCall): PluginEdit | undefined {
     const name = property.callee.property.name;
     const callback = property.arguments[0];
     if (
-      (name === 'afterEach' && hooks.some((hook) => hook.name === name)) ||
       property.arguments.length !== 1 ||
       !callback ||
       callback.type === 'SpreadElement' ||
       !j.CallExpression.check(property.callee.object)
     ) {
-      site.report('Review the repeated or indirect property hook.');
+      site.report('Review the indirect property hook.');
       return undefined;
     }
     hooks.push({ name, callback });
@@ -223,34 +222,55 @@ function localHooks(site: PluginCall): PluginEdit | undefined {
   if (!hooks.length || !j.CallExpression.check(property)) return undefined;
   const factory = site.importedName(property);
   if (factory !== 'property' && factory !== 'asyncProperty') return undefined;
-  const before: PluginEdit['plugins'] = [];
-  const after: PluginEdit['plugins'] = [];
+  const before: Expression[] = [];
+  const after: Expression[] = [];
   const conflicts: string[] = [];
+  const asyncProperty = factory === 'asyncProperty';
   for (const { name, callback } of hooks.reverse()) {
     conflicts.push(name, name === 'beforeEach' ? 'asyncBeforeEach' : 'asyncAfterEach');
-    if (name === 'afterEach') {
-      const value = hookPlugin(site, name, callback, factory === 'asyncProperty');
-      if (!value) return undefined;
-      after.push({ value });
-      continue;
-    }
-    const edit = beforeEachEdit(site, callback, factory === 'asyncProperty');
+    const edit = localHookEdit(site, callback, asyncProperty);
     if (!edit) {
-      site.report('Review how the beforeEach callback uses its previous hook.');
+      site.report(`Review how the ${name} callback uses its previous hook.`);
       return undefined;
     }
-    if (edit.previous === 'never') before.length = 0;
+    const chain = name === 'beforeEach' ? before : after;
+    if (edit.previous === 'never') chain.length = 0;
     if (edit.callback) {
-      const value = hookPlugin(site, name, edit.callback, factory === 'asyncProperty');
+      const value = hookCallback(site, edit.callback, asyncProperty);
       if (!value) return undefined;
-      if (edit.previous === 'last') before.unshift({ value });
-      else before.push({ value });
+      if (edit.previous === 'last') chain.unshift(value);
+      else chain.push(value);
     }
+  }
+
+  const plugins = before.map((fn) => ({ value: j.callExpression(site.member('beforeEach'), [fn]) }));
+  if (after.length) {
+    // Separate afterEach plugins continue after a failure. One callback preserves v4 short-circuiting.
+    let cleanup = after[0];
+    if (after.length > 1) {
+      const statements = after.flatMap((fn) => {
+        if (
+          !asyncProperty &&
+          j.ArrowFunctionExpression.check(fn) &&
+          !fn.async &&
+          j.BlockStatement.check(fn.body) &&
+          !fn.body.directives?.length &&
+          fn.body.body.every((s) => j.ExpressionStatement.check(s))
+        )
+          return fn.body.body;
+        const call = j.callExpression(fn, []);
+        return [j.expressionStatement(asyncProperty ? j.awaitExpression(call) : call)];
+      });
+      const combined = j.arrowFunctionExpression([], j.blockStatement(statements));
+      combined.async = asyncProperty;
+      cleanup = combined;
+    }
+    plugins.push({ value: j.callExpression(site.member('afterEach'), [cleanup]) });
   }
   const base = property;
   return {
     remove: [],
-    plugins: [...before, ...after],
+    plugins,
     conflicts,
     property: declarator ? undefined : base,
     apply: declarator
