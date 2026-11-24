@@ -14,6 +14,9 @@ export function inspectOptions(
 }
 
 export function setOptionsArgument(call: CallExpression, index: number, options: ObjectExpression): void {
-  if (options.properties.length) call.arguments[index] = options;
-  else call.arguments.splice(index, 1);
+  if (options.properties.length) {
+    call.arguments[index] = options;
+  } else {
+    call.arguments.splice(index, 1);
+  }
 }

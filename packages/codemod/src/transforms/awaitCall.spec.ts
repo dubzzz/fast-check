@@ -38,7 +38,10 @@ describe('planAwait', () => {
     const report = vi.fn();
     const message = 'Cannot await run().';
     expect(planAwait(j, call, filename, report, message) !== undefined).toBe(allowed);
-    if (allowed) expect(report).not.toHaveBeenCalled();
-    else expect(report.mock.calls).toEqual([[call.node, message]]);
+    if (allowed) {
+      expect(report).not.toHaveBeenCalled();
+    } else {
+      expect(report.mock.calls).toEqual([[call.node, message]]);
+    }
   });
 });

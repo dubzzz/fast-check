@@ -10,7 +10,9 @@ export default function transform(file: FileInfo, api: API): string {
     const node = path.node;
     const specifiers = node.specifiers ?? [];
     const defaultSpecifier = specifiers.find((specifier) => specifier.type === 'ImportDefaultSpecifier');
-    if (defaultSpecifier === undefined) return;
+    if (defaultSpecifier === undefined) {
+      return;
+    }
     if ('attributes' in node && Array.isArray(node.attributes) && node.attributes.length !== 0) {
       report(node, 'Cannot migrate a fast-check default import with attributes; migrate it manually.');
       return;

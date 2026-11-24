@@ -24,12 +24,18 @@ export function namedImports(
 }
 
 export function resolveImport(j: JSCodeshift, path: ASTPath, local: unknown): ImportBinding | undefined {
-  if (!j.Identifier.check(local)) return;
+  if (!j.Identifier.check(local)) {
+    return;
+  }
   const specifier = findBinding(j, path, local.name)?.parent;
   const declaration = specifier?.parent.node;
-  if (!j.ImportDeclaration.check(declaration) || typeof declaration.source.value !== 'string') return;
+  if (!j.ImportDeclaration.check(declaration) || typeof declaration.source.value !== 'string') {
+    return;
+  }
   const named = j.ImportSpecifier.check(specifier.node);
-  if (named && !j.Identifier.check(specifier.node.imported)) return;
+  if (named && !j.Identifier.check(specifier.node.imported)) {
+    return;
+  }
   return {
     source: declaration.source.value,
     namedExport: named ? specifier.node.imported.name : undefined,
@@ -47,8 +53,12 @@ export function visibleNamedImport(
 ): string | undefined {
   for (const path of namedImports(j, imports, source, imported).paths()) {
     const local = path.node.local;
-    if (!j.Identifier.check(local) || isTypeOnlyImport(path)) continue;
-    if (uses.every((use) => findBinding(j, use, local.name)?.parent.node === path.node)) return local.name;
+    if (!j.Identifier.check(local) || isTypeOnlyImport(path)) {
+      continue;
+    }
+    if (uses.every((use) => findBinding(j, use, local.name)?.parent.node === path.node)) {
+      return local.name;
+    }
   }
 }
 
@@ -59,6 +69,8 @@ export function renameImport(
   local: ImportSpecifier['local'],
 ): ImportSpecifier {
   const replacement = withComments(j.importSpecifier(j.identifier(imported), local), specifier);
-  if ('importKind' in specifier) Object.assign(replacement, { importKind: specifier.importKind });
+  if ('importKind' in specifier) {
+    Object.assign(replacement, { importKind: specifier.importKind });
+  }
   return replacement;
 }

@@ -5,14 +5,20 @@ import type { Expression, PluginCall, PluginEdit } from './pluginMigration.js';
 export function reporting(site: PluginCall): PluginEdit | undefined {
   const { j, options, runner, report } = site;
   const custom = ['reporter', 'asyncReporter'].filter((key) => options.has(key));
-  if (!custom.length) return { remove: [], plugins: [] };
+  if (!custom.length) {
+    return { remove: [], plugins: [] };
+  }
   const format = options.get('includeErrorInReport');
   // v4 bypasses the default reporter, but still evaluates the option expression.
   const remove = format && j.BooleanLiteral.check(format) ? [...custom, 'includeErrorInReport'] : custom;
   if (runner === 'check') {
-    if (custom.length > 1) return undefined;
+    if (custom.length > 1) {
+      return undefined;
+    }
     const callback = options.get(custom[0]);
-    if (!isFunctionExpression(j, callback)) return undefined;
+    if (!isFunctionExpression(j, callback)) {
+      return undefined;
+    }
     return { remove, plugins: [] };
   }
   if (custom.length > 1 || options.has('noDefaultPlugins') || (runner === 'configureGlobal' && site.hasCheck)) {
@@ -45,9 +51,13 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
   let handler = callback;
   const mark = options.get('markInterruptAsFailure');
   if (mark && !(j.BooleanLiteral.check(mark) && !mark.value)) {
-    if (!j.BooleanLiteral.check(mark) || !isFunctionExpression(j, callback)) return undefined;
+    if (!j.BooleanLiteral.check(mark) || !isFunctionExpression(j, callback)) {
+      return undefined;
+    }
     const [details] = callback.params;
-    if (!j.Identifier.check(details) || callback.params.length !== 1) return undefined;
+    if (!j.Identifier.check(details) || callback.params.length !== 1) {
+      return undefined;
+    }
     const id = j.identifier(details.name);
     const field = (name: string) => j.memberExpression(id, j.identifier(name));
     const body = j.BlockStatement.check(callback.body) ? callback.body.body : [j.returnStatement(callback.body)];

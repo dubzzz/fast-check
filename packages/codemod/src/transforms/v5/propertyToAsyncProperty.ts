@@ -26,10 +26,11 @@ export default function transform(file: FileInfo, api: API): string {
       report(use.node, 'Cannot migrate a property that is exported or passed to an unknown consumer.');
       return undefined;
     }
-    if (name === 'sample' || name === 'statistics' || j.AwaitExpression.check(path.parent.node))
+    if (name === 'sample' || name === 'statistics' || j.AwaitExpression.check(path.parent.node)) {
       return () => {
         // The sample and statistics codemods handle their own awaits. An awaited assertion is already covered.
       };
+    }
     const awaitCall = planAwait(
       j,
       path,
@@ -37,15 +38,18 @@ export default function transform(file: FileInfo, api: API): string {
       report,
       `Cannot make ${name}() asynchronous in this context; migrate its caller manually.`,
     );
-    if (!awaitCall) return undefined;
+    if (!awaitCall) {
+      return undefined;
+    }
     const parent = path.parent.node;
     if (
       (j.ReturnStatement.check(parent) && parent.argument === call) ||
       (j.ArrowFunctionExpression.check(parent) && parent.body === call)
-    )
+    ) {
       return () => {
         // The async function or test runner already observes a directly returned promise.
       };
+    }
     return () => {
       path.replace(awaitCall());
     };
@@ -66,16 +70,21 @@ export default function transform(file: FileInfo, api: API): string {
     }
     // Do not edit any consumers until all uses of this property have been accepted.
     const actions = uses.map(planConsumer);
-    if (actions.every((action) => action !== undefined)) migrations.push({ property, applyConsumers: actions });
+    if (actions.every((action) => action !== undefined)) {
+      migrations.push({ property, applyConsumers: actions });
+    }
   }
 
   // Report assertions whose property cannot be traced, but leave existing async properties alone.
   for (const call of calls) {
     const name = importedName(j, call, call.node.callee);
-    if (name !== 'assert' && name !== 'check') continue;
+    if (name !== 'assert' && name !== 'check') {
+      continue;
+    }
     const origin = inputFactoryName(j, call.get('arguments', 0), 'any');
-    if (!isPropertyFactory(origin))
+    if (!isPropertyFactory(origin)) {
       report(call.node, 'Cannot determine whether this assertion uses a synchronous fast-check property.');
+    }
   }
 
   const named = Map.groupBy(migrations, ({ property }) => {
@@ -87,7 +96,9 @@ export default function transform(file: FileInfo, api: API): string {
   const importEdits: (() => void)[] = [];
   const reserved = identifierNames(j, root);
   for (const [binding, group] of named) {
-    if (!binding || !j.ImportSpecifier.check(binding.parent.node)) continue;
+    if (!binding || !j.ImportSpecifier.check(binding.parent.node)) {
+      continue;
+    }
     const specifier = binding.parent;
     const calls = group.map(({ property }) => property);
     const refs = referencesOf(j, binding);
@@ -96,7 +107,9 @@ export default function transform(file: FileInfo, api: API): string {
     let local: string;
     if (existing !== undefined) {
       local = existing;
-      if (allMigrated) importEdits.push(() => specifier.prune());
+      if (allMigrated) {
+        importEdits.push(() => specifier.prune());
+      }
     } else if (allMigrated) {
       local = binding.node.name === 'property' && !reserved.has('asyncProperty') ? 'asyncProperty' : binding.node.name;
       const replacement = renameImport(j, specifier.node, 'asyncProperty', j.identifier(local));
@@ -114,21 +127,30 @@ export default function transform(file: FileInfo, api: API): string {
 
   // References to the factory itself also escape analysis (for example, passing fc.property as a callback).
   function reportDetachedFactory(path: ASTPath): void {
-    if (j.CallExpression.check(path.parent.node) && path.parent.node.callee === path.node) return;
+    if (j.CallExpression.check(path.parent.node) && path.parent.node.callee === path.node) {
+      return;
+    }
     report(path.node, 'Cannot migrate a property factory passed around without a direct call.');
   }
   root.find(j.MemberExpression).forEach((path) => {
-    if (isFastCheckMember(j, path, path.node, 'property')) reportDetachedFactory(path);
+    if (isFastCheckMember(j, path, path.node, 'property')) {
+      reportDetachedFactory(path);
+    }
   });
   namedImports(j, imports, 'fast-check', 'property').forEach((path) => {
-    if (importedName(j, path, path.node.local) === 'property')
+    if (importedName(j, path, path.node.local) === 'property') {
       referencesOf(j, path.get('local')).forEach(reportDetachedFactory);
+    }
   });
 
-  if (!migrations.length) return file.source;
+  if (!migrations.length) {
+    return file.source;
+  }
   for (const edit of importEdits) edit();
   for (const { property, applyConsumers } of migrations) {
-    if (j.MemberExpression.check(property.node.callee)) property.node.callee.property = j.identifier('asyncProperty');
+    if (j.MemberExpression.check(property.node.callee)) {
+      property.node.callee.property = j.identifier('asyncProperty');
+    }
     for (const apply of applyConsumers) apply();
   }
   return print();

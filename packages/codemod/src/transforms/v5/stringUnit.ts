@@ -10,11 +10,15 @@ export default function transform(file: FileInfo, api: API): string {
 
   root.find(j.CallExpression).forEach((path) => {
     const args = path.node.arguments;
-    if (args.length !== 1 || !j.ObjectExpression.check(args[0])) return;
+    if (args.length !== 1 || !j.ObjectExpression.check(args[0])) {
+      return;
+    }
 
     const name = importedName(j, path, path.node.callee);
     const isJson = name === 'json' || name === 'jsonValue';
-    if (!isJson && name !== 'object' && name !== 'anything') return;
+    if (!isJson && name !== 'object' && name !== 'anything') {
+      return;
+    }
     const flag = isJson ? 'noUnicodeString' : 'withUnicodeString';
     const { named, hasUnsupportedProperties } = inspectOptions(j, args[0]);
     const [property, duplicate] = named.get(flag) ?? [];
@@ -22,7 +26,9 @@ export default function transform(file: FileInfo, api: API): string {
       report(duplicate, `Cannot migrate duplicate ${flag} flags; resolve the options manually.`);
       return;
     }
-    if (!property) return;
+    if (!property) {
+      return;
+    }
     if (hasUnsupportedProperties) {
       report(property, `Cannot migrate ${flag} in an options object containing spreads or unsupported property keys.`);
       return;

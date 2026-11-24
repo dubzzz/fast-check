@@ -22,9 +22,13 @@ export function isFastCheckMember(
 }
 
 export function importedName(j: JSCodeshift, path: ASTPath, node: unknown): string | undefined {
-  if (isFastCheckMember(j, path, node)) return node.property.name;
+  if (isFastCheckMember(j, path, node)) {
+    return node.property.name;
+  }
   const binding = resolveImport(j, path, node);
-  if (binding?.source === 'fast-check' && !binding.typeOnly) return binding.namedExport;
+  if (binding?.source === 'fast-check' && !binding.typeOnly) {
+    return binding.namedExport;
+  }
 }
 
 export function isPropertyFactory(name: string | undefined): boolean {
@@ -37,5 +41,7 @@ export function inputFactoryName(j: JSCodeshift, input: ASTPath, declarations: '
     isConstDeclarator(j, declaration) || (declarations === 'any' && j.VariableDeclarator.check(declaration?.node))
       ? declaration.get('init')
       : input;
-  if (j.CallExpression.check(definition.node)) return importedName(j, definition, definition.node.callee);
+  if (j.CallExpression.check(definition.node)) {
+    return importedName(j, definition, definition.node.callee);
+  }
 }

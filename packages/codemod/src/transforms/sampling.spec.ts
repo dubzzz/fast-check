@@ -27,8 +27,11 @@ describe('sampling options', () => {
     const options = samplingOptions(j, call.arguments[index]);
     applySamplingOptions(j, call, index, options!.object, property);
     expect(call.arguments.slice(0, index)).toEqual(inputs);
-    if (expected) expect(call.arguments[index]).toMatchObject({ type: 'ObjectExpression', properties: expected });
-    else expect(call.arguments).toHaveLength(index);
+    if (expected) {
+      expect(call.arguments[index]).toMatchObject({ type: 'ObjectExpression', properties: expected });
+    } else {
+      expect(call.arguments).toHaveLength(index);
+    }
   });
 });
 

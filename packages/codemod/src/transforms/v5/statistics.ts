@@ -32,29 +32,42 @@ export default function transform(file: FileInfo, api: API): string {
       (!log ||
         isFunctionExpression(j, log) ||
         (j.Identifier.check(log) && (j.FunctionDeclaration.check(binding?.node) || isConstDeclarator(j, binding))))
-    )
+    ) {
       return { ...options, log };
+    }
 
     report(path.node, 'Review statistics options and pass the result and original logger to logStatistics.');
-    if (property) report(path.node, 'Set noPredicateExecution to true in the statistics options.');
+    if (property) {
+      report(path.node, 'Set noPredicateExecution to true in the statistics options.');
+    }
   }
 
   for (const path of callsInsideOut(j, root)) {
     const { callee, arguments: args } = path.node;
-    if (!isFastCheckMember(j, path, callee, 'statistics')) continue;
+    if (!isFastCheckMember(j, path, callee, 'statistics')) {
+      continue;
+    }
     // An already consumed statistics result can be a v5 call.
-    if (!j.ExpressionStatement.check(path.parent.node) || args.length < 2 || args.length > 3) continue;
+    if (!j.ExpressionStatement.check(path.parent.node) || args.length < 2 || args.length > 3) {
+      continue;
+    }
     const sampling = prepareSamplingCall(j, path, file.path, 'statistics', report);
-    if (!sampling) continue;
+    if (!sampling) {
+      continue;
+    }
     const { result, property } = sampling;
-    if (property) migrateClassifier(j, path.node, report);
+    if (property) {
+      migrateClassifier(j, path.node, report);
+    }
     const options = readStatisticsOptions(path, property);
     if (!options) {
       path.replace(result);
       continue;
     }
     const { object, logger, log } = options;
-    if (logger) object.properties.splice(object.properties.indexOf(logger), 1);
+    if (logger) {
+      object.properties.splice(object.properties.indexOf(logger), 1);
+    }
     applySamplingOptions(j, path.node, 2, object, property);
     path.replace(
       j.callExpression(

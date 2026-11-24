@@ -23,23 +23,34 @@ export default function transform(file: FileInfo, api: API): string {
 
   root.find(j.CallExpression).forEach((path) => {
     const { callee } = path.node;
-    if (!isFastCheckMember(j, path, callee)) return;
+    if (!isFastCheckMember(j, path, callee)) {
+      return;
+    }
     const index = optionsIndex.get(callee.property.name);
-    if (index === undefined) return;
+    if (index === undefined) {
+      return;
+    }
     const options = path.node.arguments[index];
-    if (!j.ObjectExpression.check(options)) return;
+    if (!j.ObjectExpression.check(options)) {
+      return;
+    }
     for (const prop of options.properties) {
-      if (!isNamedProperty(j, prop) || prop.key.name !== 'randomType') continue;
+      if (!isNamedProperty(j, prop) || prop.key.name !== 'randomType') {
+        continue;
+      }
       if (!j.StringLiteral.check(prop.value)) {
-        if (isFunctionExpression(j, prop.value)) continue;
+        if (isFunctionExpression(j, prop.value)) {
+          continue;
+        }
         const binding = resolveImport(j, path, prop.value);
         if (
           binding?.namedExport &&
           !binding.typeOnly &&
           factories.includes(binding.namedExport) &&
           binding.source === generatorSource(binding.namedExport)
-        )
+        ) {
           continue;
+        }
         report(prop, 'Cannot migrate dynamic randomType; ensure its value is a generator factory.');
         continue;
       }

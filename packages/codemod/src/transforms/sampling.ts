@@ -21,13 +21,18 @@ export function prepareSamplingCall(
   const result = j.AwaitExpression.check(path.parent.node)
     ? path.parent.node
     : planAwait(j, path, filename, report, `Cannot await ${method}() in this synchronous context.`)?.();
-  if (!result) return;
+  if (!result) {
+    return;
+  }
 
   const input = path.get('arguments', 0);
   const factory = inputFactoryName(j, input, 'const');
-  if (factory !== undefined) return { result, property: isPropertyFactory(factory) };
-  if (j.Identifier.check(input.node) && /^arb|arb$/i.test(input.node.name) && !/prop/i.test(input.node.name))
+  if (factory !== undefined) {
+    return { result, property: isPropertyFactory(factory) };
+  }
+  if (j.Identifier.check(input.node) && /^arb|arb$/i.test(input.node.name) && !/prop/i.test(input.node.name)) {
     return { result, property: false };
+  }
 
   report(
     path.node,
@@ -42,7 +47,9 @@ export function samplingOptions(
   j: JSCodeshift,
   params: CallExpression['arguments'][number] | undefined,
 ): { object: ObjectExpression; logger?: ObjectProperty } | undefined {
-  if (params && !j.NumericLiteral.check(params) && !j.ObjectExpression.check(params)) return;
+  if (params && !j.NumericLiteral.check(params) && !j.ObjectExpression.check(params)) {
+    return;
+  }
   const object = j.ObjectExpression.check(params)
     ? params
     : j.objectExpression(params ? [j.objectProperty(j.identifier('numRuns'), params)] : []);
@@ -51,8 +58,9 @@ export function samplingOptions(
     hasUnsupportedProperties ||
     named.has('noPredicateExecution') ||
     [...named.values()].some((entries) => entries.length > 1)
-  )
+  ) {
     return;
+  }
   return { object, logger: named.get('logger')?.[0] };
 }
 
@@ -63,6 +71,8 @@ export function applySamplingOptions(
   options: ObjectExpression,
   property: boolean | undefined,
 ): void {
-  if (property) options.properties.push(j.objectProperty(j.identifier('noPredicateExecution'), j.booleanLiteral(true)));
+  if (property) {
+    options.properties.push(j.objectProperty(j.identifier('noPredicateExecution'), j.booleanLiteral(true)));
+  }
   setOptionsArgument(call, index, options);
 }

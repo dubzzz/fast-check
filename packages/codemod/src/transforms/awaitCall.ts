@@ -4,9 +4,13 @@ import { resolveImport } from './imports.js';
 import type { Report } from './transformFile.js';
 
 function isTestApi(j: JSCodeshift, path: ASTPath, node: unknown, names: string[]): boolean {
-  if (!j.Identifier.check(node)) return false;
+  if (!j.Identifier.check(node)) {
+    return false;
+  }
   const scope = path.scope.lookup(node.name);
-  if (!scope) return names.includes(node.name);
+  if (!scope) {
+    return names.includes(node.name);
+  }
   const binding = resolveImport(j, path, node);
   return (
     binding?.namedExport !== undefined &&
@@ -17,8 +21,12 @@ function isTestApi(j: JSCodeshift, path: ASTPath, node: unknown, names: string[]
 }
 
 function testCallee(j: JSCodeshift, path: ASTPath, node: unknown): { parameterized: boolean } | undefined {
-  if (isTestApi(j, path, node, ['it', 'test'])) return { parameterized: false };
-  if (j.MemberExpression.check(node) && !node.computed) return testCallee(j, path, node.object);
+  if (isTestApi(j, path, node, ['it', 'test'])) {
+    return { parameterized: false };
+  }
+  if (j.MemberExpression.check(node) && !node.computed) {
+    return testCallee(j, path, node.object);
+  }
   const callee = j.CallExpression.check(node)
     ? node.callee
     : j.TaggedTemplateExpression.check(node)
@@ -26,7 +34,9 @@ function testCallee(j: JSCodeshift, path: ASTPath, node: unknown): { parameteriz
       : undefined;
   if (isNamedMember(j, callee) && ['each', 'skipIf', 'runIf'].includes(callee.property.name)) {
     const test = testCallee(j, path, callee.object);
-    if (test) return { parameterized: test.parameterized || callee.property.name === 'each' };
+    if (test) {
+      return { parameterized: test.parameterized || callee.property.name === 'each' };
+    }
   }
 }
 
@@ -45,8 +55,12 @@ export function planAwait(
   for (let parent = path.parent; parent; child = parent, parent = parent.parent) {
     const node = parent.node;
     if (j.Function.check(node)) {
-      if (child.node !== node.body) break;
-      if (node.async) return awaited;
+      if (child.node !== node.body) {
+        break;
+      }
+      if (node.async) {
+        return awaited;
+      }
       const test = parent.parent.node;
       const callee = j.CallExpression.check(test) ? testCallee(j, parent, test.callee) : undefined;
       if (
@@ -57,15 +71,20 @@ export function planAwait(
         node.generator ||
         !j.CallExpression.check(test) ||
         test.arguments[1] !== node
-      )
+      ) {
         break;
+      }
       return () => {
         node.async = true;
         return awaited();
       };
     }
-    if (j.ClassBody.check(node) || j.TSModuleBlock.check(node)) break;
-    if (j.Program.check(node) && !/\.c[jt]s$/i.test(filename)) return awaited;
+    if (j.ClassBody.check(node) || j.TSModuleBlock.check(node)) {
+      break;
+    }
+    if (j.Program.check(node) && !/\.c[jt]s$/i.test(filename)) {
+      return awaited;
+    }
   }
   report(call, unsupportedMessage);
 }

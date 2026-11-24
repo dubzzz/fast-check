@@ -24,10 +24,15 @@ export default function transform(file: FileInfo, api: API): string {
       const references = referencesOf(j, path.get('local'));
       references.forEach((path) => {
         const parent = path.parent.node;
-        if ((j.Property.check(parent) || j.ObjectProperty.check(parent)) && parent.shorthand) parent.shorthand = false;
+        if ((j.Property.check(parent) || j.ObjectProperty.check(parent)) && parent.shorthand) {
+          parent.shorthand = false;
+        }
         const renamed = withComments(j.identifier('property'), path.node);
-        if (j.ExportSpecifier.check(parent)) path.parent.replace(j.exportSpecifier.from({ ...parent, local: renamed }));
-        else path.replace(renamed);
+        if (j.ExportSpecifier.check(parent)) {
+          path.parent.replace(j.exportSpecifier.from({ ...parent, local: renamed }));
+        } else {
+          path.replace(renamed);
+        }
       });
       local = j.identifier('property');
     }

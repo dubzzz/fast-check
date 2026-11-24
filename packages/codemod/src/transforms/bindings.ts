@@ -6,27 +6,41 @@ export function isVariable(j: JSCodeshift, path: ASTPath<Identifier>): boolean {
     j.ImportSpecifier.check(parent) ||
     j.ImportDefaultSpecifier.check(parent) ||
     j.ImportNamespaceSpecifier.check(parent)
-  )
+  ) {
     return path.name === 'local';
-  if (j.ExportSpecifier.check(parent)) return path.name === 'local' && !path.parent.parent.node.source;
-  if ((path.name === 'key' || path.name === 'property') && !parent.computed) return false;
-  if (j.TSQualifiedName.check(parent) && path.name === 'right') return false;
-  if (path.name === 'label') return false;
+  }
+  if (j.ExportSpecifier.check(parent)) {
+    return path.name === 'local' && !path.parent.parent.node.source;
+  }
+  if ((path.name === 'key' || path.name === 'property') && !parent.computed) {
+    return false;
+  }
+  if (j.TSQualifiedName.check(parent) && path.name === 'right') {
+    return false;
+  }
+  if (path.name === 'label') {
+    return false;
+  }
   return true;
 }
 
 // ast-types groups block and loop declarations into the surrounding function or program.
 function bindingRegion(j: JSCodeshift, binding: ASTPath, scope: ASTPath): ASTPath {
   for (let p = binding.parent; p && p !== scope; p = p.parent) {
-    if (j.VariableDeclaration.check(p.node) && p.node.kind === 'var') return scope;
+    if (j.VariableDeclaration.check(p.node) && p.node.kind === 'var') {
+      return scope;
+    }
     if (
       j.BlockStatement.check(p.node) ||
       j.ForStatement.check(p.node) ||
       j.ForInStatement.check(p.node) ||
       j.ForOfStatement.check(p.node)
-    )
+    ) {
       return p;
-    if (j.SwitchCase.check(p.node)) return p.parentPath; // all cases share one lexical scope
+    }
+    if (j.SwitchCase.check(p.node)) {
+      return p.parentPath; // all cases share one lexical scope
+    }
   }
   return scope;
 }
@@ -40,7 +54,9 @@ export function findBinding(j: JSCodeshift, path: ASTPath, name: string): ASTPat
     // Inner lexical declarations shadow outer ones even when ast-types groups them into one scope.
     for (const region of enclosing) {
       const visible = regions.get(region);
-      if (visible) return visible.length === 1 ? visible[0] : undefined;
+      if (visible) {
+        return visible.length === 1 ? visible[0] : undefined;
+      }
     }
   }
 }
@@ -70,8 +86,9 @@ export function localConstBinding(j: JSCodeshift, initializer: ASTPath): ASTPath
     declaration.node.init === initializer.node &&
     j.Identifier.check(declaration.node.id) &&
     !j.ExportNamedDeclaration.check(declaration.parent.parent.node)
-  )
+  ) {
     return declaration.get('id');
+  }
 }
 
 export function identifierNames(j: JSCodeshift, root: Collection): Set<string> {

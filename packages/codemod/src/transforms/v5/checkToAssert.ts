@@ -6,7 +6,9 @@ import { parseFile } from '../transformFile.js';
 
 function isPromiseConsumer(j: JSCodeshift, path: ASTPath): boolean {
   const parent = path.parent.node;
-  if (j.AwaitExpression.check(parent)) return true;
+  if (j.AwaitExpression.check(parent)) {
+    return true;
+  }
   const call = path.parent.parent.node;
   return (
     isNamedMember(j, parent) &&
@@ -23,11 +25,15 @@ export default function transform(file: FileInfo, api: API): string {
   let namespace: string | undefined;
 
   function hasPromiseConsumer(path: ASTPath): boolean {
-    if (isPromiseConsumer(j, path)) return true;
+    if (isPromiseConsumer(j, path)) {
+      return true;
+    }
     const binding = localConstBinding(j, path);
     if (binding) {
       const uses = referencesOf(j, binding);
-      if (uses.length > 0 && uses.every((ref) => isPromiseConsumer(j, ref))) return true;
+      if (uses.length > 0 && uses.every((ref) => isPromiseConsumer(j, ref))) {
+        return true;
+      }
     }
     report(
       path.node,
@@ -38,7 +44,9 @@ export default function transform(file: FileInfo, api: API): string {
 
   root.find(j.CallExpression).forEach((path) => {
     const { callee } = path.node;
-    if (!isFastCheckMember(j, path, callee, 'check') || !hasPromiseConsumer(path)) return;
+    if (!isFastCheckMember(j, path, callee, 'check') || !hasPromiseConsumer(path)) {
+      return;
+    }
     const discarded = isResultDiscarded(j, path);
     const [property, params] = path.node.arguments;
     if (!j.Expression.check(property) || path.node.arguments.length > 2 || j.SpreadElement.check(params)) {

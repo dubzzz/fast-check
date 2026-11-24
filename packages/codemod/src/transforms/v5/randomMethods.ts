@@ -9,14 +9,22 @@ export default function transform(file: FileInfo, api: API): string {
   const expression = j.template.expression;
   function isFastCheckRandom(path: ASTPath<CallExpression>, name: string): boolean {
     const binding = findBinding(j, path, name);
-    if (!binding) return false;
+    if (!binding) {
+      return false;
+    }
     const annotation = binding.node.typeAnnotation;
-    if (!j.TSTypeAnnotation.check(annotation) || !j.TSTypeReference.check(annotation.typeAnnotation)) return false;
+    if (!j.TSTypeAnnotation.check(annotation) || !j.TSTypeReference.check(annotation.typeAnnotation)) {
+      return false;
+    }
     const type = annotation.typeAnnotation.typeName;
     const qualified = j.TSQualifiedName.check(type);
-    if (qualified && (!j.Identifier.check(type.right) || type.right.name !== 'Random')) return false;
+    if (qualified && (!j.Identifier.check(type.right) || type.right.name !== 'Random')) {
+      return false;
+    }
     const imported = qualified ? type.left : type;
-    if (!j.Identifier.check(imported) || binding.scope.lookupType(imported.name)) return false;
+    if (!j.Identifier.check(imported) || binding.scope.lookupType(imported.name)) {
+      return false;
+    }
     const origin = resolveImport(j, binding, imported);
     return origin?.source === 'fast-check' && origin.namedExport === (qualified ? undefined : 'Random');
   }
@@ -25,14 +33,22 @@ export default function transform(file: FileInfo, api: API): string {
 
   callsInsideOut(j, root).forEach((path) => {
     const { callee, arguments: args } = path.node;
-    if (!isNamedMember(j, callee)) return;
+    if (!isNamedMember(j, callee)) {
+      return;
+    }
     const rng = callee.object;
-    if (!j.Identifier.check(rng) || !isFastCheckRandom(path, rng.name)) return;
+    if (!j.Identifier.check(rng) || !isFastCheckRandom(path, rng.name)) {
+      return;
+    }
 
     const method = callee.property.name;
-    if (!['nextBoolean', 'nextInt', 'next', 'nextDouble'].includes(method)) return;
+    if (!['nextBoolean', 'nextInt', 'next', 'nextDouble'].includes(method)) {
+      return;
+    }
     // Bounded nextInt calls remain supported, including optional calls.
-    if (method === 'nextInt' && args.length === 2 && args.every((arg) => j.Expression.check(arg))) return;
+    if (method === 'nextInt' && args.length === 2 && args.every((arg) => j.Expression.check(arg))) {
+      return;
+    }
     if (path.node.type !== 'CallExpression' || callee.type !== 'MemberExpression') {
       report(path.node, `Cannot migrate optional Random.${method}() calls; preserve short-circuiting manually.`);
       return;

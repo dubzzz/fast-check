@@ -6,7 +6,9 @@ import { reporting } from '../runnerReporting.js';
 function runnerPlugins(site: PluginCall): PluginEdit | undefined {
   const { j, member, options, report, runner, call } = site;
   const reportingEdit = reporting(site);
-  if (!reportingEdit) return undefined;
+  if (!reportingEdit) {
+    return undefined;
+  }
   // v4 wraps the property in this order, regardless of the order of keys in Parameters.
   const names = ['ignoreEqualValues', 'skipEqualValues', 'interruptAfterTimeLimit', 'unbiased', 'timeout'];
   const remove = names.filter((name) => options.has(name));
@@ -25,7 +27,9 @@ function runnerPlugins(site: PluginCall): PluginEdit | undefined {
     call.arguments.length === 2 &&
     options.size === 0 &&
     !call.arguments[1].comments?.length;
-  if (!remove.length && !reportingEdit.remove.length && !emptyLocalOptions) return undefined;
+  if (!remove.length && !reportingEdit.remove.length && !emptyLocalOptions) {
+    return undefined;
+  }
 
   const plugins: PluginEdit['plugins'] = [];
   for (const name of remove) {
@@ -64,8 +68,9 @@ function runnerPlugins(site: PluginCall): PluginEdit | undefined {
       ignoresCheckResult ||
       (runner === 'configureGlobal' && customReporter) ||
       (j.BooleanLiteral.check(markFailure) && !markFailure.value))
-  )
+  ) {
     remove.push('markInterruptAsFailure');
+  }
   return {
     remove: [...remove, ...reportingEdit.remove],
     plugins: [...plugins, ...reportingEdit.plugins],
