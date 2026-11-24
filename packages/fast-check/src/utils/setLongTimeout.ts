@@ -3,9 +3,10 @@ const safeClearTimeout = clearTimeout;
 const safePerformanceNow = performance.now.bind(performance);
 const maxTimerDelay = 0x7fffffff;
 
-/** Schedule a callback and return a function that cancels the pending timer. */
 export function setLongTimeout(callback: () => void, delay: number): () => void {
-  if (delay === Infinity) return () => undefined;
+  if (delay === Infinity) {
+    return () => {};
+  }
 
   let timer: ReturnType<typeof setTimeout>;
   if (delay > maxTimerDelay) {
