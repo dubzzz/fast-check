@@ -35,4 +35,32 @@ describe('setLongTimeout', () => {
     expect(schedule.mock.calls.map(([, ms]) => ms)).toEqual(chunks);
     expect(vi.getTimerCount()).toBe(0);
   });
+
+  it.each([
+    { delay: 10, interruptTime: 0, chunks: [10] },
+    { delay: maxTimerDelay, interruptTime: maxTimerDelay - 1, chunks: [maxTimerDelay] },
+    { delay: 2 * maxTimerDelay + 17, interruptTime: maxTimerDelay - 1, chunks: [maxTimerDelay] },
+    { delay: 2 * maxTimerDelay + 17, interruptTime: maxTimerDelay, chunks: [maxTimerDelay, maxTimerDelay] },
+    {
+      delay: 2 * maxTimerDelay + 17,
+      interruptTime: 2 * maxTimerDelay + 16,
+      chunks: [maxTimerDelay, maxTimerDelay, 17],
+    },
+    { delay: Infinity, interruptTime: maxTimerDelay, chunks: [] },
+  ])('should cancel a $delay ms timeout at $interruptTime ms', async ({ delay, interruptTime, chunks }) => {
+    // Arrange
+    const schedule = vi.spyOn(globalThis, 'setTimeout');
+    const { setLongTimeout } = await import('./setLongTimeout.js');
+    const callback = vi.fn();
+
+    // Act
+    const clear = setLongTimeout(callback, delay);
+    vi.advanceTimersByTime(interruptTime);
+    clear();
+
+    // Assert
+    expect(vi.getTimerCount()).toBe(0);
+    expect(callback).not.toHaveBeenCalled();
+    expect(schedule.mock.calls.map(([, ms]) => ms)).toEqual(chunks);
+  });
 });
