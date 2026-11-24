@@ -6,7 +6,6 @@ declare const enabled: boolean;
 await fc.assert(property, {
   plugins: [
     ...(enabled === true ? [fc.skipEqualValues()] : []),
-    ...(limit !== void 0 ? [fc.timeout(limit > 2147483647 ? 2147483647 : limit)] : [])
+    ...(limit !== void 0 ? [fc.timeout(limit)] : [])
   ]
 });
-await fc.check(property, { plugins: [fc.timeout(2147483647)] });

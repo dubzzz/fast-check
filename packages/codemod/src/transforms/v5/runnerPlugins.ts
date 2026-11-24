@@ -30,23 +30,14 @@ function runnerPlugins(site: PluginCall): PluginEdit | undefined {
   for (const name of remove) {
     const value = options.get(name) as Expression;
     if (name === 'timeout' || name === 'interruptAfterTimeLimit') {
-      const maximum = 0x7fffffff;
-      let delay = value;
       let when: Expression | undefined;
-      if (j.NumericLiteral.check(value)) {
-        if (value.value > maximum) delay = j.numericLiteral(maximum);
-      } else if (j.Identifier.check(value)) {
+      if (j.Identifier.check(value)) {
         when = j.binaryExpression('!==', value, j.unaryExpression('void', j.numericLiteral(0)));
-        delay = j.conditionalExpression(
-          j.binaryExpression('>', value, j.numericLiteral(maximum)),
-          j.numericLiteral(maximum),
-          value,
-        );
-      } else {
+      } else if (!j.NumericLiteral.check(value)) {
         report('Review the time limit expression before moving it into a plugin.');
         return undefined;
       }
-      const args = [delay];
+      const args: Expression[] = [value];
       if (
         name === 'interruptAfterTimeLimit' &&
         runner === 'assert' &&
