@@ -29,7 +29,7 @@ function testCallee(j: JSCodeshift, path: ASTPath, node: unknown): { parameteriz
   }
 }
 
-// Plan first so a caller can validate every use of a shared property before changing callbacks.
+// Applying the plan builds the await expression and makes the enclosing test callback async if needed.
 export function planAwait(
   j: JSCodeshift,
   path: ASTPath<CallExpression>,

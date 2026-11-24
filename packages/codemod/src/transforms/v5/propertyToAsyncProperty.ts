@@ -28,7 +28,7 @@ export default function transform(file: FileInfo, api: API): string {
     }
     if (name === 'sample' || name === 'statistics' || j.AwaitExpression.check(path.parent.node))
       return () => {
-        // Sampling stays synchronous, and an existing await already observes the assertion.
+        // The sample and statistics codemods handle their own awaits. An awaited assertion is already covered.
       };
     const awaitCall = planAwait(j, path, file.path);
     if (!awaitCall) {
@@ -80,7 +80,7 @@ export default function transform(file: FileInfo, api: API): string {
     return j.Identifier.check(callee) ? findBinding(j, property, callee.name) : undefined;
   });
 
-  // Keep imports needed by unsupported uses; choose aliases that cannot capture shadowed bindings.
+  // Unsupported uses still need the old import. A replacement alias must be visible at every migrated call.
   const importEdits: (() => void)[] = [];
   const reserved = identifierNames(j, root);
   for (const [binding, group] of named) {
