@@ -1,6 +1,6 @@
 import jscodeshift from 'jscodeshift';
 import { describe, expect, it } from 'vitest';
-import { planAwait } from '../src/transforms/awaitCall.js';
+import { planAwait } from './awaitCall.js';
 
 const j = jscodeshift.withParser('ts');
 

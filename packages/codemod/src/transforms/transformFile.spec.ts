@@ -1,6 +1,6 @@
 import jscodeshift from 'jscodeshift';
 import { describe, expect, it, vi } from 'vitest';
-import { parseFile } from '../src/transforms/transformFile.js';
+import { parseFile } from './transformFile.js';
 
 describe('parseFile', () => {
   it.each([

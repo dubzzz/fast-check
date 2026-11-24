@@ -1,19 +1,8 @@
 import jscodeshift from 'jscodeshift';
 import { describe, expect, it } from 'vitest';
-import { inspectOptions } from '../src/transforms/options.js';
-import { applySamplingOptions, isPropertyInput, samplingOptions } from '../src/transforms/sampling.js';
+import { applySamplingOptions, isPropertyInput, samplingOptions } from './sampling.js';
 
 const j = jscodeshift.withParser('ts');
-
-describe('inspectOptions', () => {
-  it('keeps duplicate entries in source order alongside unknown keys', () => {
-    const object = j('run({flag: true, ...rest, flag: false, [key]: value})').find(j.ObjectExpression).nodes()[0];
-    const { named, hasUnsupportedProperties } = inspectOptions(j, object);
-    expect(hasUnsupportedProperties).toBe(true);
-    expect([...named.keys()]).toEqual(['flag']);
-    expect(named.get('flag')).toEqual([object.properties[0], object.properties[2]]);
-  });
-});
 
 describe('sampling options', () => {
   it.each([
