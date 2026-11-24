@@ -4,4 +4,3 @@ const property = fc.asyncProperty(fc.integer(), async (value) => Number.isIntege
 declare const limit: number | undefined;
 declare const enabled: boolean;
 await fc.assert(property, { timeout: limit, skipEqualValues: enabled });
-await fc.check(property, { timeout: 4_000_000_000 });

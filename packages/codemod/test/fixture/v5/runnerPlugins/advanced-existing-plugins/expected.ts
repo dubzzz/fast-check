@@ -7,6 +7,5 @@ await fc.assert(property, {
       console.log(details.failed);
     }
   })],
-
-  noDefaultPlugins: true
+  noDefaultPlugins: true,
 });

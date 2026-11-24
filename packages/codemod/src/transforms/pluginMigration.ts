@@ -8,7 +8,7 @@ import type {
   JSCodeshift,
   ObjectExpression,
 } from 'jscodeshift';
-import { findBinding, importedName as fastCheckName, isReference } from './fastCheck.js';
+import { findBinding, importedName as fastCheckName, isFastCheckNamespace, isReference } from './fastCheck.js';
 import { reportUnsupported } from './reportUnsupported.js';
 
 export type Expression = Exclude<CallExpression['arguments'][number], SpreadElement>;
@@ -32,6 +32,7 @@ export interface PluginCall {
   runner: Runner;
   hasCheck: boolean;
   typescript: boolean;
+  typeNamespace?: string;
   call: CallExpression;
   path: CallPath;
   options: ReadonlyMap<string, Expression>;
@@ -218,6 +219,11 @@ export function migratePluginCalls(
       call: path.node,
       hasCheck,
       typescript: /\.[cm]?tsx?$/.test(file.path),
+      typeNamespace: !receiver
+        ? namespace
+        : j.Identifier.check(receiver) && isFastCheckNamespace(j, path, receiver)
+          ? receiver.name
+          : undefined,
       path,
       options,
       member,
@@ -316,14 +322,22 @@ export function migratePluginCalls(
         const before = array.elements.findIndex((item) => item !== null && edit.insertBefore?.(item));
         array.elements.splice(before === -1 ? array.elements.length : before, 0, ...elements);
         if (!existing) object.properties.push(j.objectProperty(j.identifier('plugins'), array));
-        if (!existing && edit.parameters?.noDefaultPlugins && object.properties.length === 2 && !constant?.sharedUses) {
-          // Recast inserts a blank line before a multiline property unless the object supplies its layout.
-          const template = j.template.statement`const options = {
-  noDefaultPlugins: ${edit.parameters.noDefaultPlugins},
-  plugins: ${array},
+        if (edit.parameters?.noDefaultPlugins && object.properties.length === 2 && !constant?.sharedUses) {
+          // Give Recast adjacent property slots so it doesn't add blank lines around multiline values.
+          const [first, last] = object.properties;
+          if (
+            j.ObjectProperty.check(first) &&
+            j.ObjectProperty.check(last) &&
+            !first.comments?.length &&
+            !last.comments?.length
+          ) {
+            const template = j.template.statement`const options = {
+  ${first.key}: ${first.value},
+  ${last.key}: ${last.value},
 };`;
-          localOptions = j(template).find(j.ObjectExpression).nodes()[0];
-          localOptions.comments = object.comments;
+            localOptions = j(template).find(j.ObjectExpression).nodes()[0];
+            localOptions.comments = object.comments;
+          }
         }
       }
       if (constant?.sharedUses) {
