@@ -52,7 +52,7 @@ workflows:
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9'
         - 'github/codeql-action@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea'
-        - 'ossf/scorecard-action@fa7117db83c52d787ae5a89f350999701505d78e'
+        - 'ossf/scorecard-action@23f22cd43608bae7a1f1fa2603d7314dee9538a5'
     '.github/workflows/validate-pr-title.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3'
@@ -119,9 +119,9 @@ dependencies:
         commit: 'sha1-33d7b85da1a04171e211befe2c739303b9a4c066'
         owner_id: 9919
         repo_id: 259445878
-    'ossf/scorecard-action@fa7117db83c52d787ae5a89f350999701505d78e':
-        ref: 'v2.5.0'
-        commit: 'sha1-fa7117db83c52d787ae5a89f350999701505d78e'
+    'ossf/scorecard-action@23f22cd43608bae7a1f1fa2603d7314dee9538a5':
+        ref: 'v2.6.0'
+        commit: 'sha1-23f22cd43608bae7a1f1fa2603d7314dee9538a5'
         owner_id: 67707773
         repo_id: 421101922
     'pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115':
