@@ -1,5 +1,5 @@
 export { pre } from './check/precondition/Pre.js';
-export { property } from './check/property/Property.js';
+export { property, asyncProperty } from './check/property/Property.js';
 export type { PredicateExecutionContext } from './check/property/types/PredicateExecutionContext.js';
 export type { PropertyFailure } from './check/property/types/PropertyFailure.js';
 export type { Property } from './check/property/types/Property.js';
