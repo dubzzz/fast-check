@@ -1,4 +1,5 @@
 import type { API, FileInfo } from 'jscodeshift';
+import { isResultDiscarded } from '../ast.js';
 import { migratePluginCalls, type Expression, type PluginCall, type PluginEdit } from '../pluginMigration.js';
 import { reporting } from '../runnerReporting.js';
 
@@ -56,8 +57,7 @@ function runnerPlugins(site: PluginCall): PluginEdit | undefined {
     }
   }
   // When callers read check's result, v4 must mark the interruption without throwing from a hook.
-  const result = j.AwaitExpression.check(site.path.parent.node) ? site.path.parent : site.path;
-  const ignoresCheckResult = runner === 'check' && j.ExpressionStatement.check(result.parent.node);
+  const ignoresCheckResult = runner === 'check' && isResultDiscarded(j, site.path);
   if (
     markFailure &&
     (runner === 'assert' ||

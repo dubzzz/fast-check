@@ -1,16 +1,17 @@
-import type { ASTPath, Function, JSCodeshift } from 'jscodeshift';
-import { findBinding } from './fastCheck.js';
+import type { ASTPath, AwaitExpression, CallExpression, JSCodeshift } from 'jscodeshift';
+import { isFunctionExpression, isNamedMember } from './ast.js';
+import { resolveImport } from './imports.js';
 
 function isTestApi(j: JSCodeshift, path: ASTPath, node: unknown, names: string[]): boolean {
   if (!j.Identifier.check(node)) return false;
   const scope = path.scope.lookup(node.name);
   if (!scope) return names.includes(node.name);
-  const specifier = findBinding(j, path, node.name)?.parent;
+  const binding = resolveImport(j, path, node);
   return (
-    j.ImportSpecifier.check(specifier?.node) &&
-    j.Identifier.check(specifier.node.imported) &&
-    names.includes(specifier.node.imported.name) &&
-    ['vitest', '@jest/globals', 'node:test'].includes(specifier.parent.node.source.value)
+    binding?.namedExport !== undefined &&
+    !binding.typeOnly &&
+    names.includes(binding.namedExport) &&
+    ['vitest', '@jest/globals', 'node:test'].includes(binding.source)
   );
 }
 
@@ -22,33 +23,31 @@ function testCallee(j: JSCodeshift, path: ASTPath, node: unknown): { parameteriz
     : j.TaggedTemplateExpression.check(node)
       ? node.tag
       : undefined;
-  if (
-    j.MemberExpression.check(callee) &&
-    !callee.computed &&
-    j.Identifier.check(callee.property) &&
-    ['each', 'skipIf', 'runIf'].includes(callee.property.name)
-  ) {
+  if (isNamedMember(j, callee) && ['each', 'skipIf', 'runIf'].includes(callee.property.name)) {
     const test = testCallee(j, path, callee.object);
     if (test) return { parameterized: test.parameterized || callee.property.name === 'each' };
   }
 }
 
 // Plan first so a caller can validate every use of a shared property before changing callbacks.
-export function awaitContext(
+export function planAwait(
   j: JSCodeshift,
-  path: ASTPath,
+  path: ASTPath<CallExpression>,
   filename: string,
-): { functionToMakeAsync?: Function } | undefined {
-  let child = path;
+): (() => AwaitExpression) | undefined {
+  const call = path.node;
+  const awaited = () => j.awaitExpression(call);
+
+  let child: ASTPath = path;
   for (let parent = path.parent; parent; child = parent, parent = parent.parent) {
     const node = parent.node;
     if (j.Function.check(node)) {
       if (child.node !== node.body) return undefined;
-      if (node.async) return {};
+      if (node.async) return awaited;
       const test = parent.parent.node;
       const callee = j.CallExpression.check(test) ? testCallee(j, parent, test.callee) : undefined;
       if (
-        !(j.ArrowFunctionExpression.check(node) || j.FunctionExpression.check(node)) ||
+        !isFunctionExpression(j, node) ||
         !callee ||
         (!callee.parameterized && node.params.length) ||
         node.returnType ||
@@ -57,17 +56,12 @@ export function awaitContext(
         test.arguments[1] !== node
       )
         return undefined;
-      return { functionToMakeAsync: node };
+      return () => {
+        node.async = true;
+        return awaited();
+      };
     }
     if (j.ClassBody.check(node) || j.TSModuleBlock.check(node)) return undefined;
-    if (j.Program.check(node)) return /\.c[jt]s$/i.test(filename) ? undefined : {};
+    if (j.Program.check(node)) return /\.c[jt]s$/i.test(filename) ? undefined : awaited;
   }
-}
-
-// Make a test callback async only when the runner will observe its returned promise.
-export function allowAwait(j: JSCodeshift, path: ASTPath, filename: string): boolean {
-  const context = awaitContext(j, path, filename);
-  if (!context) return false;
-  if (context.functionToMakeAsync) context.functionToMakeAsync.async = true;
-  return true;
 }

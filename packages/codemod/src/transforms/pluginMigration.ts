@@ -1,6 +1,9 @@
 import type { API, ASTPath, CallExpression, SpreadElement, FileInfo, JSCodeshift, ObjectExpression } from 'jscodeshift';
-import { findBinding, importedName as fastCheckName, isFastCheckNamespace, isReference } from './fastCheck.js';
-import { reportUnsupported } from './reportUnsupported.js';
+import { isFunctionExpression, isNamedMember } from './ast.js';
+import { findBinding, freshName, identifierNames, isConstDeclarator, referencesOf } from './bindings.js';
+import { importedName as fastCheckName, isFastCheckNamespace } from './fastCheck.js';
+import { setOptionsArgument } from './options.js';
+import { parseFile } from './transformFile.js';
 
 export type Expression = Exclude<CallExpression['arguments'][number], SpreadElement>;
 
@@ -36,20 +39,9 @@ function runnerName(j: JSCodeshift, path: CallPath, call: CallExpression): strin
   if (name) return name;
   // Also recognize const fc = require('fast-check').
   const member = call.callee;
-  if (
-    !j.MemberExpression.check(member) ||
-    member.computed ||
-    !j.Identifier.check(member.property) ||
-    !j.Identifier.check(member.object)
-  )
-    return;
+  if (!isNamedMember(j, member) || !j.Identifier.check(member.object)) return;
   const declaration = findBinding(j, path, member.object.name)?.parent;
-  if (
-    !j.VariableDeclarator.check(declaration?.node) ||
-    declaration.parent.node.kind !== 'const' ||
-    !j.Identifier.check(declaration.node.id)
-  )
-    return;
+  if (!isConstDeclarator(j, declaration) || !j.Identifier.check(declaration.node.id)) return;
   const init = declaration.node.init;
   if (
     j.CallExpression.check(init) &&
@@ -96,8 +88,7 @@ function isSimple(j: JSCodeshift, value: Expression): boolean {
   return (
     j.Literal.check(value) ||
     j.Identifier.check(value) ||
-    j.FunctionExpression.check(value) ||
-    j.ArrowFunctionExpression.check(value) ||
+    isFunctionExpression(j, value) ||
     (j.ArrayExpression.check(value) && value.elements.every((item) => isExpression(j, item) && isSimple(j, item)))
   );
 }
@@ -110,9 +101,8 @@ function constantOptions(
 ): { object: ASTPath<ObjectExpression>; sharedUses?: CallExpression[] } | undefined {
   const declaration = findBinding(j, path, name)?.parent;
   if (
-    !declaration ||
-    !j.VariableDeclarator.check(declaration.node) ||
-    declaration.parent.node.kind !== 'const' ||
+    !isConstDeclarator(j, declaration) ||
+    !j.Identifier.check(declaration.node.id) ||
     declaration.parent.node.declarations.length !== 1 ||
     declaration.parent.node.comments?.length ||
     !['Program', 'BlockStatement'].includes(declaration.parent.parent.node.type)
@@ -127,22 +117,13 @@ function constantOptions(
   )
     return undefined;
   const object = declaration.get('init');
-  const binding = declaration.node.id;
-  const references = j(declaration.scope.path)
-    .find(j.Identifier, { name })
-    .paths()
-    .filter((ref) => ref.node !== binding && isReference(j, ref) && findBinding(j, ref, name)?.node === binding);
+  const references = referencesOf(j, declaration.get('id'));
   if (references.length === 1) return { object };
-  if (declaration.node.id.type !== 'Identifier' || declaration.node.id.typeAnnotation) return undefined;
+  if (declaration.node.id.typeAnnotation) return undefined;
   const sharedUses: CallExpression[] = [];
   for (const ref of references) {
     const use = ref.parent;
-    if (
-      !j.CallExpression.check(use.node) ||
-      use.node.arguments.length !== 2 ||
-      use.node.arguments[1] !== ref.node ||
-      findBinding(j, ref, name)?.parent?.node !== declaration.node
-    )
+    if (!j.CallExpression.check(use.node) || use.node.arguments.length !== 2 || use.node.arguments[1] !== ref.node)
       return undefined;
     const runner = runnerName(j, use, use.node);
     if (runner !== 'assert' && runner !== 'check') return undefined;
@@ -156,21 +137,21 @@ export function migratePluginCalls(
   api: API,
   migrate: (site: PluginCall) => PluginEdit | undefined,
 ): string {
-  const j = api.jscodeshift.withParser(/\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx');
-  const root = j(file.source);
-  const calls = root.find(j.CallExpression).paths();
-  const globalCalls = calls.filter((path) => runnerName(j, path, path.node) === 'configureGlobal');
-  const hasCheck = calls.some((path) => runnerName(j, path, path.node) === 'check');
-  const hasReset = calls.some((path) => runnerName(j, path, path.node) === 'resetConfigureGlobal');
+  const { j, root, report: reportAt, typescript, print } = parseFile(file, api);
+  const calls = root
+    .find(j.CallExpression)
+    .paths()
+    .map((path) => ({ path, runner: runnerName(j, path, path.node) }));
+  const globalCalls = calls.filter(({ runner }) => runner === 'configureGlobal');
+  const hasCheck = calls.some(({ runner }) => runner === 'check');
+  const hasReset = calls.some(({ runner }) => runner === 'resetConfigureGlobal');
   const sites = [];
   const globalKeys = new Set<string>();
   const localKeys = new Set<string>();
   let needsNamespace = false;
-  let namespace = 'fc';
-  for (let suffix = 2; root.find(j.Identifier, { name: namespace }).size() !== 0; ++suffix) namespace = 'fc' + suffix;
+  const namespace = freshName(identifierNames(j, root), 'fc');
 
-  for (const path of calls) {
-    const runner = runnerName(j, path, path.node);
+  for (const { path, runner } of calls) {
     if (runner !== 'configureGlobal' && runner !== 'check' && runner !== 'assert') continue;
     const index = runner === 'configureGlobal' ? 0 : 1;
     const args = path.node.arguments;
@@ -202,18 +183,14 @@ export function migratePluginCalls(
         continue;
     }
     const member = (name: string) => j.memberExpression(receiver ?? j.identifier(namespace), j.identifier(name));
-    const report = (message: string) => reportUnsupported(api, path.node, message);
+    const report = (message: string) => reportAt(path.node, message);
     const edit = migrate({
       j,
       runner,
       call: path.node,
       hasCheck,
-      typescript: /\.[cm]?tsx?$/.test(file.path),
-      typeNamespace: !receiver
-        ? namespace
-        : j.Identifier.check(receiver) && isFastCheckNamespace(j, path, receiver)
-          ? receiver.name
-          : undefined,
+      typescript,
+      typeNamespace: !receiver ? namespace : isFastCheckNamespace(j, path, receiver) ? receiver.name : undefined,
       path,
       options,
       member,
@@ -299,7 +276,7 @@ export function migratePluginCalls(
       if (statements.length) statement.replace(...statements);
       else if (keepsGlobal && !statement.node.comments?.length) statement.prune();
     } else {
-      let localOptions: Expression = object;
+      let localOptions = object;
       if (edit.property) path.node.arguments[0] = edit.property;
       if (edit.plugins.length) {
         const array = j.ArrayExpression.check(existing) ? existing : j.arrayExpression([]);
@@ -334,8 +311,7 @@ export function migratePluginCalls(
           for (const use of constant.sharedUses) use.arguments.splice(index, 1);
           constant.object.parent.parent.prune();
         }
-      } else if (object.properties.length) path.node.arguments[index] = localOptions;
-      else path.node.arguments.splice(index, 1);
+      } else setOptionsArgument(path.node, index, localOptions);
     }
     needsNamespace ||= !receiver && edit.plugins.length > 0;
     changed = true;
@@ -347,5 +323,5 @@ export function migratePluginCalls(
       j.importDeclaration([j.importNamespaceSpecifier(j.identifier(namespace))], j.stringLiteral('fast-check')),
     );
   }
-  return changed ? root.toSource({ quote: 'single' }) : file.source;
+  return print(changed);
 }
