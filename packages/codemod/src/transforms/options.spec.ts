@@ -5,7 +5,7 @@ import { inspectOptions } from './options.js';
 const j = jscodeshift.withParser('ts');
 
 describe('inspectOptions', () => {
-  it('keeps duplicate entries in source order alongside unknown keys', () => {
+  it('should keep duplicate entries in source order and flag unknown keys', () => {
     const object = j('run({flag: true, ...rest, flag: false, [key]: value})').find(j.ObjectExpression).nodes()[0];
     const { named, hasUnsupportedProperties } = inspectOptions(j, object);
     expect(hasUnsupportedProperties).toBe(true);

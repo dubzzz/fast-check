@@ -5,7 +5,7 @@ import { referencesOf } from './bindings.js';
 const j = jscodeshift.withParser('ts');
 
 describe('referencesOf', () => {
-  it('includes computed keys, shorthand values and local exports while respecting lexical shadows', () => {
+  it('should find references in computed keys, shorthand values and local exports while respecting shadowing', () => {
     const root = j(`import { property as prop } from 'fast-check';
       const object = { prop: 1, [prop]: 2, prop };
       object.prop;

@@ -5,7 +5,7 @@ import { visibleNamedImport } from './imports.js';
 const j = jscodeshift.withParser('ts');
 
 describe('visibleNamedImport', () => {
-  it('only reuses an alias that resolves to the same value import at every call', () => {
+  it('should reuse an alias only when it resolves to the same value import at every call', () => {
     const root = j(`import { property as other } from 'elsewhere';
       import type { property as typeOnly } from 'fast-check';
       import { type property as inlineType, property as first, property as second } from 'fast-check';

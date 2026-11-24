@@ -5,7 +5,7 @@ import { planAwait } from './awaitCall.js';
 const j = jscodeshift.withParser('ts');
 
 describe('planAwait', () => {
-  it('defers making the test callback async until the caller applies the edit', () => {
+  it('should make the test callback async only when the caller applies the edit', () => {
     const source = "import { test as spec } from 'vitest'; spec.each(cases)('name', (n) => run(n));";
     const root = j(source);
     const call = root.find(j.CallExpression, { callee: { name: 'run' } }).paths()[0];
@@ -31,7 +31,7 @@ describe('planAwait', () => {
     ['module.ts', 'namespace N { run(); }', false],
     ['module.ts', "test('done callback', (done) => run());", false],
     ['module.ts', "function f(test) { test('local test', () => run()); }", false],
-  ] as const)('handles %s containing %s', (filename, source, allowed) => {
+  ] as const)('should determine whether await is allowed in %s containing %s', (filename, source, allowed) => {
     const call = j(source)
       .find(j.CallExpression, { callee: { name: 'run' } })
       .paths()[0];

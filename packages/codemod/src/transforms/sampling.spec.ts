@@ -12,7 +12,7 @@ describe('sampling options', () => {
     '{get seed() {}}',
     '{seed: 1, seed: 2}',
     '{noPredicateExecution: false}',
-  ])('leaves %s for manual review', (source) => {
+  ])('should leave %s for manual review', (source) => {
     const call = j(`sample(input, ${source})`).find(j.CallExpression).nodes()[0];
     expect(samplingOptions(j, call.arguments[1])).toBeUndefined();
   });
@@ -21,7 +21,7 @@ describe('sampling options', () => {
     ['sample(input, 12)', 1, false, [{ key: { name: 'numRuns' }, value: { value: 12 } }]],
     ['statistics(input, classify, {})', 2, false, undefined],
     ['statistics(input, classify)', 2, true, [{ key: { name: 'noPredicateExecution' }, value: { value: true } }]],
-  ] as const)('writes the normalized options in %s', (source, index, property, expected) => {
+  ] as const)('should write the normalized options in %s', (source, index, property, expected) => {
     const call = j(source).find(j.CallExpression).nodes()[0];
     const inputs = call.arguments.slice(0, index);
     const options = samplingOptions(j, call.arguments[index]);
@@ -33,7 +33,7 @@ describe('sampling options', () => {
 });
 
 describe('prepareSamplingCall', () => {
-  it('follows constant factory aliases and leaves a mutable or shadowed input uncertain', () => {
+  it('should follow constant factory aliases and report inputs of unknown origin', () => {
     const root = j(`import { property as make, integer } from 'fast-check';
       const p = make(); let mutable = make();
       run(p); run(integer()); run(mutable);
@@ -50,7 +50,7 @@ describe('prepareSamplingCall', () => {
     ]);
   });
 
-  it('gives classifier guidance for an unknown statistics input', () => {
+  it('should give classifier guidance for an unknown statistics input', () => {
     const path = j('statistics(input, classify)').find(j.CallExpression).paths()[0];
     const report = vi.fn();
     const sampling = prepareSamplingCall(j, path, 'test.ts', 'statistics', report);
@@ -64,7 +64,7 @@ describe('prepareSamplingCall', () => {
     ]);
   });
 
-  it('reports only the await failure when the enclosing context is synchronous', () => {
+  it('should report only the await failure when the enclosing context is synchronous', () => {
     const path = j('function f() { sample(unknown); }').find(j.CallExpression).paths()[0];
     const report = vi.fn();
     expect(prepareSamplingCall(j, path, 'test.ts', 'sample', report)).toBeUndefined();
