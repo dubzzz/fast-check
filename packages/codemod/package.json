@@ -11,6 +11,7 @@
     "./transforms/v5/propertyToAsyncProperty": "./lib/transforms/v5/propertyToAsyncProperty.js",
     "./transforms/v5/randomMethods": "./lib/transforms/v5/randomMethods.js",
     "./transforms/v5/randomTypeFactory": "./lib/transforms/v5/randomTypeFactory.js",
+    "./transforms/v5/sample": "./lib/transforms/v5/sample.js",
     "./transforms/v5/statistics": "./lib/transforms/v5/statistics.js",
     "./transforms/v5/stringUnit": "./lib/transforms/v5/stringUnit.js",
     "./transforms/v6/asyncPropertyToProperty": "./lib/transforms/v6/asyncPropertyToProperty.js"
