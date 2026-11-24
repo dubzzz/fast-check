@@ -35,7 +35,63 @@ Version 5 of fast-check introduces significant changes as part of its major rele
 
 To ensure a smoother migration to version 5, we recommend first upgrading to the latest version of v4. In particular, version 4.10.0 introduced plugins and deprecation notices to help prepare for this migration. Then, review and address the following changes before upgrading to version 5.
 
+The [`@fast-check/codemod` documentation](https://github.com/dubzzz/fast-check/tree/main/packages/codemod#readme) lists transforms that automate parts of this migration and the minimum fast-check version required for each. In the commands below, replace `path/to/code` with the file or directory to migrate. Add `--dry --print` to preview changes, then review the diff and any warnings about patterns requiring manual migration.
+
+The available transforms cover the following steps. Minimum versions refer to fast-check, not to the codemod package:
+
+| Codemod                      | Minimum fast-check version | Migration                                                           |
+| ---------------------------- | -------------------------- | ------------------------------------------------------------------- |
+| `v5/defaultImport`           | 1.0.0                      | Default imports to namespace imports                                |
+| `v5/randomMethods`           | 1.0.0                      | Removed `Random` methods to bounded `nextInt` calls                 |
+| `v5/stringUnit`              | 3.23.0                     | Unicode string flags to `stringUnit`                                |
+| `v5/randomTypeFactory`       | 4.6.0                      | Random generator names to factory functions                         |
+| `v5/lifecyclePlugins`        | 4.10.0                     | Local property hooks and one-time global hooks to plugins           |
+| `v5/propertyToAsyncProperty` | 4.11.0                     | Synchronous properties and assertions to asynchronous ones          |
+| `v5/runnerPlugins`           | 4.11.0                     | Runner options and custom reporters to plugins                      |
+| `v5/checkToAssert`           | 5.0.0                      | Asynchronous `check` calls to `assert` while preserving run details |
+| `v5/sample`                  | 5.0.0                      | Await sampling and preserve generation without predicate execution  |
+| `v5/statistics`              | 5.0.0                      | Await statistics, adapt property classifiers, and log the result    |
+| `v6/asyncPropertyToProperty` | 5.0.0                      | Deprecated `asyncProperty` to `property`                            |
+
+For properties with chained hooks, apply `v5/lifecyclePlugins` before `v5/propertyToAsyncProperty`. Apply transforms requiring v5 only after the major-version upgrade.
+
+Renaming `asyncProperty` with `v6/asyncPropertyToProperty` is optional cleanup, described at the end of this guide. It is not required to use v5.
+
+The published `@fast-check/codemod@0.0.0` only includes `v5/defaultImport`; use a release containing the other transforms before applying them.
+
+### Prepare asynchronous assertions
+
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/propertyToAsyncProperty path/to/code
+```
+
+:::tip[Use ESLint during and after migration]
+
+For TypeScript projects, we recommend enabling the type-aware ESLint rules [`@typescript-eslint/no-floating-promises`](https://typescript-eslint.io/rules/no-floating-promises/) and [`@typescript-eslint/await-thenable`](https://typescript-eslint.io/rules/await-thenable/). They help catch assertions that are not awaited or returned, and `await` expressions applied to synchronous results. Keep them enabled after the upgrade to catch these mistakes in future tests too.
+
+:::
+
+In v4, `fc.assert(fc.property(...))` returns `void`. Adding `await` is valid JavaScript, but can trigger the ESLint rule [`@typescript-eslint/await-thenable`](https://typescript-eslint.io/rules/await-thenable/).
+
+To prepare without triggering this rule, first upgrade to v4.11.0, where `asyncProperty` accepts synchronous predicates too. Make the surrounding test asynchronous and switch to `asyncProperty`:
+
+```diff
+-it('checks the property', () => {
+-  fc.assert(fc.property(fc.integer(), predicate));
++it('checks the property', async () => {
++  await fc.assert(fc.asyncProperty(fc.integer(), predicate));
+ });
+```
+
+The assertion now returns a `Promise<void>`, even if `predicate` is synchronous. You can also return that promise to your test runner. The `v5/propertyToAsyncProperty` codemod automates this step for supported patterns. If you test assertion failures, update synchronous throw expectations to promise rejection expectations at this stage, as described in [Always await `assert`](#always-await-assert).
+
+After upgrading to v5, keep `await fc.assert(fc.asyncProperty(arb, predicate))` temporarily: `asyncProperty` remains available as a deprecated alias of `property`. Then, when ready, switch to `await fc.assert(fc.property(arb, predicate))`. This separates the migration to asynchronous assertions from the major-version upgrade.
+
 ### Replace default imports
+
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/defaultImport path/to/code
+```
 
 The default export has been removed in version 5. Replace default imports with namespace imports:
 
@@ -50,17 +106,21 @@ Related pull requests: [#7261](https://github.com/dubzzz/fast-check/pull/7261), 
 
 ### Replace property hooks with plugins
 
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/lifecyclePlugins path/to/code
+```
+
 The `.beforeEach` and `.afterEach` methods on properties have been removed. Since version 4.10.0, the corresponding plugins can be passed to the runner instead:
 
 ```diff
  await fc.assert(
--  fc.property(fc.integer(), predicate).beforeEach(setUp).afterEach(tearDown),
-+  fc.property(fc.integer(), predicate),
+-  fc.asyncProperty(fc.integer(), predicate).beforeEach(setUp).afterEach(tearDown),
++  fc.asyncProperty(fc.integer(), predicate),
 +  { plugins: [fc.beforeEach(setUp), fc.afterEach(tearDown)] },
  );
 ```
 
-Both plugins support synchronous and asynchronous callbacks. While still using v4, keep using `fc.asyncProperty` when your predicate or hooks are asynchronous. The change from `asyncProperty` to `property` is described in the next section.
+Both plugins support synchronous and asynchronous callbacks. While still using v4, keep using `fc.asyncProperty` when your predicate or hooks are asynchronous. The change from `asyncProperty` to `property` is described in [One `property` for synchronous and asynchronous predicates](#one-property-for-synchronous-and-asynchronous-predicates).
 
 Callbacks should return nothing or a promise resolving to nothing. A `beforeEach` callback can also return a teardown function, which runs after the predicate. Remove any other accidental return values from your existing hooks.
 
@@ -76,11 +136,19 @@ The global parameters `beforeEach`, `afterEach`, `asyncBeforeEach`, and `asyncAf
 
 The same plugins replace `asyncBeforeEach` and `asyncAfterEach`; pass your asynchronous callbacks to them. Keep other global settings, such as `numRuns`, in `fc.configureGlobal`.
 
-Related pull requests: [#7224](https://github.com/dubzzz/fast-check/pull/7224), [#7227](https://github.com/dubzzz/fast-check/pull/7227), [#7232](https://github.com/dubzzz/fast-check/pull/7232), [#7315](https://github.com/dubzzz/fast-check/pull/7315), [#7386](https://github.com/dubzzz/fast-check/pull/7386)
+The `v5/lifecyclePlugins` codemod handles supported local hooks and one-time global setup. Review its warnings and global hooks installed in other files: global before plugins run first, even when the old local hook called `previous()` last or skipped it. Global after plugins run last, so also review local after hooks that called `previous()` first or skipped it.
+
+Related pull requests: [#7224](https://github.com/dubzzz/fast-check/pull/7224), [#7227](https://github.com/dubzzz/fast-check/pull/7227), [#7232](https://github.com/dubzzz/fast-check/pull/7232), [#7315](https://github.com/dubzzz/fast-check/pull/7315), [#7386](https://github.com/dubzzz/fast-check/pull/7386), [#7620](https://github.com/dubzzz/fast-check/pull/7620)
 
 ### Replace runner parameters with plugins
 
-Several runner parameters have been removed in favor of plugins introduced in version 4.10.0:
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/runnerPlugins path/to/code
+```
+
+Several runner parameters have been removed in favor of plugins introduced in version 4.10.0.
+
+The `v5/runnerPlugins` codemod requires v4.11.0 and migrates supported runner options and custom reporters together, including one-time global setup. Review warnings about conflicting global and local settings.
 
 | Previous parameter                                              | Replacement plugin                                              |
 | --------------------------------------------------------------- | --------------------------------------------------------------- |
@@ -125,9 +193,13 @@ Install global plugins once during test setup. `fc.resetConfigureGlobal()` reset
 
 :::
 
-Related pull requests: [#7222](https://github.com/dubzzz/fast-check/pull/7222), [#7237](https://github.com/dubzzz/fast-check/pull/7237), [#7260](https://github.com/dubzzz/fast-check/pull/7260), [#7332](https://github.com/dubzzz/fast-check/pull/7332), [#7340](https://github.com/dubzzz/fast-check/pull/7340), [#7358](https://github.com/dubzzz/fast-check/pull/7358), [#7377](https://github.com/dubzzz/fast-check/pull/7377), [#7533](https://github.com/dubzzz/fast-check/pull/7533)
+Related pull requests: [#7222](https://github.com/dubzzz/fast-check/pull/7222), [#7237](https://github.com/dubzzz/fast-check/pull/7237), [#7260](https://github.com/dubzzz/fast-check/pull/7260), [#7332](https://github.com/dubzzz/fast-check/pull/7332), [#7340](https://github.com/dubzzz/fast-check/pull/7340), [#7358](https://github.com/dubzzz/fast-check/pull/7358), [#7377](https://github.com/dubzzz/fast-check/pull/7377), [#7533](https://github.com/dubzzz/fast-check/pull/7533), [#7617](https://github.com/dubzzz/fast-check/pull/7617)
 
 ### Changes on Unicode string options
+
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/stringUnit path/to/code
+```
 
 The deprecated `noUnicodeString` and `withUnicodeString` constraints have been removed. Replace them with `stringUnit`:
 
@@ -150,6 +222,10 @@ For the opposite boolean values, remove the deprecated option to keep the existi
 Related pull requests: [#7501](https://github.com/dubzzz/fast-check/pull/7501)
 
 ### Changes on `randomType`
+
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/randomTypeFactory path/to/code
+```
 
 The `randomType` parameter no longer accepts a string. If you explicitly selected the default generator, you can remove the option:
 
@@ -180,26 +256,13 @@ Related pull requests: [#7309](https://github.com/dubzzz/fast-check/pull/7309)
 
 After applying the recommendations for migrating to the latest v4.x, there are still a few changes to apply when upgrading to version 5. These changes simplify property execution and make plugins the common way to customize it.
 
-### One `property` for synchronous and asynchronous predicates
+### Review predicate arguments
 
-Version 5 unifies synchronous and asynchronous properties. The `asyncProperty` builder has been removed, and `property` now accepts either kind of predicate:
-
-```diff
- await fc.assert(
--  fc.asyncProperty(fc.string(), async (value) => {
-+  fc.property(fc.string(), async (value) => {
-     await checkValue(value);
-   }),
- );
-```
-
-Existing synchronous predicates can continue to use `fc.property`.
-
-The predicate now receives a `PredicateExecutionContext` after the generated values. Ordinary callbacks declaring only the generated arguments do not need to change. If your predicate forwards `arguments` or collects all arguments with a rest parameter, make sure it does not treat this final context as another generated value.
+In v5, predicates passed to either `property` or `asyncProperty` receive a `PredicateExecutionContext` after the generated values. Ordinary callbacks declaring only the generated arguments do not need to change. If your predicate forwards `arguments` or collects all arguments with a rest parameter, make sure it does not treat this final context as another generated value.
 
 The context can contain a `signal` supplied by plugins such as `timeout` and `interruptAfterTimeLimit`, allowing asynchronous work to cooperate with cancellation.
 
-Related pull requests: [#7303](https://github.com/dubzzz/fast-check/pull/7303), [#7412](https://github.com/dubzzz/fast-check/pull/7412), [#7422](https://github.com/dubzzz/fast-check/pull/7422), [#7426](https://github.com/dubzzz/fast-check/pull/7426), [#7427](https://github.com/dubzzz/fast-check/pull/7427)
+Related pull requests: [#7412](https://github.com/dubzzz/fast-check/pull/7412), [#7422](https://github.com/dubzzz/fast-check/pull/7422), [#7426](https://github.com/dubzzz/fast-check/pull/7426), [#7427](https://github.com/dubzzz/fast-check/pull/7427)
 
 ### Always await `assert`
 
@@ -213,7 +276,7 @@ The `assert` runner now returns a `Promise<void>` for all properties, including 
  });
 ```
 
-If you test failures of `assert` itself, update synchronous throw expectations to handle asynchronous failures:
+If you test failures of `assert` itself, update synchronous throw expectations to handle promise rejections. Apply this change when switching to `asyncProperty` in v4.11.0 or when upgrading to v5:
 
 ```diff
 -expect(() => fc.assert(property)).toThrow();
@@ -225,6 +288,10 @@ Awaiting the assertion is also required to wait for asynchronous reporting and c
 Related pull requests: [#7296](https://github.com/dubzzz/fast-check/pull/7296), [#7303](https://github.com/dubzzz/fast-check/pull/7303), [#7388](https://github.com/dubzzz/fast-check/pull/7388), [#7489](https://github.com/dubzzz/fast-check/pull/7489)
 
 ### Changes on `sample`
+
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/sample path/to/code
+```
 
 The `sample` runner now returns a promise, even when sampling an arbitrary. Await its result and replace the numeric shorthand for the number of runs with a parameters object:
 
@@ -248,9 +315,15 @@ This option skips the predicate, but plugins still apply. The result shape is un
 
 When replaying a shrink `path`, `numRuns` no longer limits the number of collected shrink candidates. Do not rely on it to cap the size of that result.
 
-Related pull requests: [#7580](https://github.com/dubzzz/fast-check/pull/7580), [#7588](https://github.com/dubzzz/fast-check/pull/7588)
+The `v5/sample` codemod awaits supported calls and adds `noPredicateExecution: true` for known property inputs. If it cannot identify the input, it reports the call for review; add this option manually when the input is a property whose predicate should not run.
+
+Related pull requests: [#7580](https://github.com/dubzzz/fast-check/pull/7580), [#7588](https://github.com/dubzzz/fast-check/pull/7588), [#7627](https://github.com/dubzzz/fast-check/pull/7627)
 
 ### Changes on `statistics`
+
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/statistics path/to/code
+```
 
 The `statistics` runner is also asynchronous. It returns a `StatisticsResult` instead of printing output. Await it, then use `fc.logStatistics` to keep the previous formatted output:
 
@@ -305,9 +378,15 @@ Parameters for `statistics` now describe a tuple of generated arguments, even wi
 
 For typed wrappers, use `SampleParameters<T, 'arbitrary'>` or `SampleParameters<Ts, 'property'>` for `sample`, and `StatisticsParameters<Ts, 'arbitrary'>` or `StatisticsParameters<Ts, 'property'>` for `statistics`. Here `Ts` is the tuple of generated arguments; for statistics on a single integer arbitrary, it is `[number]`. Only the property variants expose `noPredicateExecution`.
 
-Related pull requests: [#7587](https://github.com/dubzzz/fast-check/pull/7587), [#7588](https://github.com/dubzzz/fast-check/pull/7588), [#7592](https://github.com/dubzzz/fast-check/pull/7592), [#7594](https://github.com/dubzzz/fast-check/pull/7594)
+The `v5/statistics` codemod awaits supported calls and logs the result, preserving a supported custom logger. For known property inputs, it adds `noPredicateExecution: true` and adapts supported classifiers to receive separate arguments. Review warnings about unknown inputs, classifiers, or options; these cases need manual changes.
+
+Related pull requests: [#7587](https://github.com/dubzzz/fast-check/pull/7587), [#7588](https://github.com/dubzzz/fast-check/pull/7588), [#7592](https://github.com/dubzzz/fast-check/pull/7592), [#7594](https://github.com/dubzzz/fast-check/pull/7594), [#7638](https://github.com/dubzzz/fast-check/pull/7638)
 
 ### Replace `check` with `assert` and a plugin
+
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/checkToAssert path/to/code
+```
 
 The `check` runner has been removed. If you only used it to detect and throw on a failure, use `await fc.assert(property, parameters)` instead.
 
@@ -336,6 +415,10 @@ Related pull requests: [#7523](https://github.com/dubzzz/fast-check/pull/7523), 
 
 ### Replace `reporter` and `asyncReporter`
 
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/runnerPlugins path/to/code
+```
+
 The `reporter` and `asyncReporter` parameters have been removed. Both are replaced by a plugin's `onAllRunsComplete` callback, which can be synchronous or asynchronous:
 
 ```diff
@@ -348,7 +431,7 @@ The `reporter` and `asyncReporter` parameters have been removed. Both are replac
 
 The same replacement applies to `reporter`. Keep `noDefaultPlugins: true` when your reporter replaces the default reporting policy, including when it intentionally accepts certain failures. Without this option, the default reporter still runs, even if your reporter returns without throwing.
 
-The plugin hook is available starting in v4.10.0, so reporters that throw on failure can start using it before the upgrade. The `noDefaultPlugins` option is only available in v5.
+The plugin hook is available starting in v4.10.0, and `noDefaultPlugins` is available starting in v4.11.0. The `v5/runnerPlugins` codemod can therefore migrate supported reporters while still on v4.11.0, including reporters that accept failures.
 
 All completion callbacks run, even if one throws or rejects. If several callbacks fail, only the first error is reported. Use `afterAll` for cleanup that must run after reporting.
 
@@ -458,6 +541,10 @@ Related pull requests: [#7320](https://github.com/dubzzz/fast-check/pull/7320), 
 
 ### Fewer methods on `Random`
 
+```bash npm2yarn
+npx @fast-check/codemod@latest v5/randomMethods path/to/code
+```
+
 If you implement custom arbitraries, the `Random` instance passed to `generate` no longer exposes `next(bits)`, `nextBoolean()`, `nextDouble()`, or the no-argument overload of `nextInt()`.
 
 Use explicit integer bounds instead:
@@ -537,3 +624,28 @@ Generation and shrinking can change across a major release. In particular, array
 Do not rely on an old seed and counterexample path producing the same case after upgrading. Reproduce outstanding failures on the original version, and preserve useful counterexamples as explicit regression cases before migrating.
 
 Related pull requests: [#7184](https://github.com/dubzzz/fast-check/pull/7184), [#7397](https://github.com/dubzzz/fast-check/pull/7397), [#7398](https://github.com/dubzzz/fast-check/pull/7398), [#7431](https://github.com/dubzzz/fast-check/pull/7431)
+
+## Optional cleanup after upgrading to v5
+
+The following cleanup is not required to adopt v5. You can complete it later, independently of the major-version upgrade.
+
+### One `property` for synchronous and asynchronous predicates
+
+```bash npm2yarn
+npx @fast-check/codemod@latest v6/asyncPropertyToProperty path/to/code
+```
+
+Version 5 unifies synchronous and asynchronous properties. The `asyncProperty` builder remains available as a deprecated alias of `property`, which now accepts either kind of predicate. You can keep `asyncProperty` during the upgrade and rename it afterwards:
+
+```diff
+ await fc.assert(
+-  fc.asyncProperty(fc.string(), async (value) => {
++  fc.property(fc.string(), async (value) => {
+     await checkValue(value);
+   }),
+ );
+```
+
+Existing synchronous predicates can continue to use `fc.property`. The `v6/asyncPropertyToProperty` codemod performs this rename and can be applied as soon as you use v5, despite its `v6` prefix.
+
+Related pull requests: [#7303](https://github.com/dubzzz/fast-check/pull/7303), [#7643](https://github.com/dubzzz/fast-check/pull/7643)
