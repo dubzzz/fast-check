@@ -133,6 +133,21 @@ This codemod awaits sampling and sets `noPredicateExecution: true` for property 
 
 </details>
 
+<details><summary><code>v5/statistics</code> (≥5.0.0) — Awaits statistics and logs the result</summary>
+
+**What is doing this codemod?**
+
+This codemod awaits statistics and logs the result using the original logger when supplied. For property inputs it skips predicate execution and adapts the classifier to receive separate arguments. When the input is unclear, it still awaits and logs the result, preserves the classifier, and reports the call for review.
+
+**Example of code change:**
+
+```diff
+-fc.statistics(fc.integer(), String);
++fc.logStatistics(await fc.statistics(fc.integer(), String));
+```
+
+</details>
+
 ### Migrate to v6
 
 Version 6 is not yet planned, but some APIs have already been deprecated. Following codemods help you update your code to use their replacements.
