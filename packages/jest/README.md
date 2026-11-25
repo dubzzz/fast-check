@@ -48,7 +48,7 @@ The `it` and `test` functions returned by `@fast-check/jest` are just enriched v
 
 Please note that the properties accepted by `@fast-check/jest` as input can either be synchronous or asynchronous (even just `PromiseLike` instances). In other words, the predicate passed as the last argument can be asynchronous.
 
-**Remark:** `it` and `test` have been introduced in 1.4.0. You have to refer to [Deprecated API](#deprecated-api) if you are using a version of `@fast-check/jest` <1.4.0.
+**Remark:** `it` and `test` have been introduced in 1.4.0. Refer to the [1.x documentation](https://github.com/dubzzz/fast-check/blob/jest/v1.8.2/packages/jest/README.md#deprecated-api) if you are using a version of `@fast-check/jest` <1.4.0.
 
 ## Advanced
 
@@ -83,6 +83,8 @@ describe('with it', () => {
 
 **The following feature is experimental!** When used it makes runners able to kill long running synchonous code. Meaning that it will make fast-check able to kill infinite loops blocking the main thread. So far, the feature does not fully support transformations performed via transform steps defined with jest.
 
+For `@fast-check/jest` 3.x, install `@fast-check/worker` 0.7.x and `@jest/expect` matching your Jest version (Jest 28 or later). Both are optional peer dependencies required by this runner.
+
 The CommonJS approach would be:
 
 ```js
@@ -114,7 +116,7 @@ test.prop([fc.constant(null)])('should pass', (value) => {
 
 #### Extra setup for `@fast-check/worker` 0.6.0 and later
 
-Since `@fast-check/worker` is an ESM-only package, running it under Jest in CommonJS mode requires `babel-jest` to transpile it. Install the following dependencies:
+Since `@fast-check/worker` is an ESM-only package, Jest must be able to load ESM dependencies. Current Jest versions support `require(esm)` on Node ≥24.9.0, see [Jest's ESM documentation](https://jestjs.io/docs/ecmascript-modules#require-of-esm). For older combinations of Jest and Node running in CommonJS mode, you may need `babel-jest` to transpile it. Install the following dependencies for that setup:
 
 ```bash
 npm install --save-dev babel-jest @babel/core @babel/preset-env
@@ -139,7 +141,7 @@ module.exports = {
 };
 ```
 
-This ensures `@fast-check/worker` gets transpiled to CommonJS by Babel instead of being skipped. Without it, Jest will fail to load the ESM-only package.
+This ensures `@fast-check/worker` gets transpiled to CommonJS by Babel instead of being skipped. Other ESM-only dependencies, such as fast-check 5, may also need to be included in the transform configuration.
 
 For ES Modules mode, no extra setup is needed — just make sure to run Jest with `--experimental-vm-modules`:
 
@@ -149,12 +151,17 @@ node --experimental-vm-modules node_modules/jest/bin/jest.js
 
 ## Minimal requirements
 
-| @fast-check/jest | jest                                    | fast-check | node                                                                                  |
-| ---------------- | --------------------------------------- | ---------- | ------------------------------------------------------------------------------------- |
-| ^2.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20 |
-| ^1.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20 |
+| @fast-check/jest | jest                                    | fast-check                        | node                                                                                                |
+| ---------------- | --------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------- |
+| ^3.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^4.10.3 \|\| ^5.0.0<sup>(5)</sup> | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20<sup>(5)</sup> |
+| ^2.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(6)</sup>  | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20               |
+| ^1.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0                            | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20               |
+
+The Node version must also satisfy the requirements of the installed Jest release and, when used, [`@fast-check/worker`](../worker/README.md#minimal-requirements).
 
 - (1) any version of `jest` should be greater or equal than 26.5.0 if you are using `commonjs`
-- (2) in order to use `esm` build, you may need to enable experimental features of node, see [here](https://github.com/dubzzz/fast-check/blob/main/packages/test-jest-bundle-esm/package.json)
+- (2) in order to use the `esm` build, follow [Jest's ESM setup](https://jestjs.io/docs/ecmascript-modules).
 - (3) &gt;=14.15.0 is the minimal requirements for `jest`, &gt;=12.17.0 is the one for `@fast-check/jest`
 - (4) timeout defined on jest might not be properly applied to fast-check for node 18 (until 18.17.0) and node 19, see [#4004](https://github.com/dubzzz/fast-check/pull/4004)
+- (5) fast-check 5 requires Node ≥22.12.0. Prereleases matching `>=5.0.0-alpha <5.0.0` are also supported.
+- (6) Official support for fast-check 4 starts at `@fast-check/jest` 2.1.0.
