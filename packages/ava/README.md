@@ -110,13 +110,13 @@ testProp.after((t) => {
 `@fast-check/ava` mirror's AVA's procedure for customizing the test [execution context]:
 
 ```typescript
-import { fc, testProp as anyTestProp, PropertyTestInterface } from '@fast-check/ava';
+import { fc, testProp as anyTestProp, type PropertyTestFn } from '@fast-check/ava';
 
 type TestContext = {
   state: string;
 };
 
-const testProp = anyTestProp as PropertyTestInterface<TestContext>;
+const testProp = anyTestProp as PropertyTestFn<TestContext>;
 
 testProp('should reach terminal state', [fc.string()], (t, received) => {
   // here t is typed as ExecutionContext<TestContext>
@@ -129,16 +129,20 @@ testProp('should reach terminal state', [fc.string()], (t, received) => {
 
 ## Minimal requirements
 
-| @fast-check/ava | AVA                | fast-check | node                   |
-| --------------- | ------------------ | ---------- | ---------------------- |
-| **3.0**         | ^4 \|\| ^5 \|\| ^6 | ^3 \|\| ^4 | ≥20.19.0<sup>(1)</sup> |
-| **2.0**         | ^4 \|\| ^5 \|\| ^6 | ^3 \|\| ^4 | ≥12.22.0<sup>(2)</sup> |
-| **1.0**         | ^4 \|\| ^5 \|\| ^6 | ^3         | ≥12.22.0<sup>(2)</sup> |
+| @fast-check/ava | AVA                      | fast-check                       | node                                               |
+| --------------- | ------------------------ | -------------------------------- | -------------------------------------------------- |
+| **3.0**         | ^7 \|\| ^8<sup>(3)</sup> | ^3 \|\| ^4 \|\| ^5<sup>(4)</sup> | ≥20.19.0<sup>(1)</sup> (AVA 7)<br>≥22.20.0 (AVA 8) |
+| **2.0**         | ^4 \|\| ^5 \|\| ^6       | ^3 \|\| ^4                       | ≥12.22.0<sup>(2)</sup>                             |
+| **1.0**         | ^4 \|\| ^5 \|\| ^6       | ^3                               | ≥12.22.0<sup>(2)</sup>                             |
+
+The Node version must also satisfy the requirements of the installed AVA release. AVA 8.4.0, for example, requires `^22.20 || ^24.12 || >=26`. When using fast-check 5, Node ≥22.12.0 is required as well.
 
 <details>
 <summary>More details...</summary>
 
 1. Requires support for `require(esm)`.
 2. As for ava 4.
+3. Official support for AVA 8 starts at `@fast-check/ava` 3.0.1.
+4. Official support for fast-check 5 starts at `@fast-check/ava` 3.0.2, including prereleases matching `>=5.0.0-alpha <5.0.0`.
 
 </details>

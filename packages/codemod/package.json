@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/codemod",
   "description": "Codemods to help migrate fast-check projects",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",

@@ -1,5 +1,4 @@
 ---
-"@fast-check/ava": patch
 "fast-check": major
 ---
 
