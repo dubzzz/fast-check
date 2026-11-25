@@ -1,8 +1,5 @@
 ---
 "@fast-check/ava": patch
-"@fast-check/jest": patch
-"@fast-check/vitest": patch
-"@fast-check/worker": patch
 "fast-check": major
 ---
 

@@ -1,5 +1,4 @@
 ---
-"@fast-check/worker": minor
 "fast-check": major
 ---
 
