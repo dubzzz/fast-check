@@ -1,3 +1,19 @@
+# 0.6.0
+
+_Get ready for fast-check@5_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.5.0...vitest%2Fv0.5.0)]
+
+## Breaking changes
+
+- ([PR#7359](https://github.com/dubzzz/fast-check/pull/7359)) Move to plugins for time-limits
+- ([PR#7364](https://github.com/dubzzz/fast-check/pull/7364)) Switch to life-cycle plugins over methods
+
+## Fixes
+
+- ([PR#7618](https://github.com/dubzzz/fast-check/pull/7618)) Bug: Ensure compatibility with v4/5
+
+---
+
 # 0.5.0
 
 _Support for plugins and for Vitest v5_

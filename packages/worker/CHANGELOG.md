@@ -1,3 +1,24 @@
+# 0.7.0
+
+_Get ready for fast-check@5_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.6.0...worker%2Fv0.7.0)]
+
+## Breaking changes
+
+- ([PR#7383](https://github.com/dubzzz/fast-check/pull/7383)) Move to plugins for worker-spawn
+
+## Features
+
+- ([PR#7429](https://github.com/dubzzz/fast-check/pull/7429)) Support signals
+
+## Fixes
+
+- ([PR#7414](https://github.com/dubzzz/fast-check/pull/7414)) Bug: Restore fast-check v4 worker compatibility
+- ([PR#7616](https://github.com/dubzzz/fast-check/pull/7616)) Bug: Ensure compatibility with v4/5
+- ([PR#7289](https://github.com/dubzzz/fast-check/pull/7289)) Refactor: Make code ready for v5 of fast-check
+
+---
+
 # 0.6.0
 
 _Only publish ESM bundle_
