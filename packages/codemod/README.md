@@ -6,7 +6,7 @@ Codemods to help upgrade projects using `fast-check`.
 
 ## Getting Started
 
-Requires Node.js 20.19.0 or later. Run a transform on a file or directory:
+Requires Node.js 22.12.0 or later. Run a transform on a file or directory:
 
 ```sh
 npx @fast-check/codemod@latest <transform> <path>

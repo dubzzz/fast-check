@@ -1,3 +1,12 @@
+# 3.0.2
+
+_Extend official support range to fast-check 5_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv3.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv3.0.1...ava%2Fv3.0.2)]
+
+## Fixes
+
+- ([PR#7412](https://github.com/dubzzz/fast-check/pull/7412)) Bump: Rename asyncProperty into property
+
 # 3.0.1
 
 _Extend official support range to ava 8_
