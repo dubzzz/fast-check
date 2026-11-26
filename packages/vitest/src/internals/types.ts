@@ -1,20 +1,16 @@
 import type { TestAPI } from 'vitest';
 import type {
   Arbitrary,
-  property,
+  asyncProperty,
   assert,
   readConfigureGlobal,
   GeneratorValue,
   beforeEach,
   afterEach,
 } from 'fast-check';
-import type * as fc from 'fast-check';
-
-export type AsyncPropertyBuilder = typeof fc extends { asyncProperty: infer Builder } ? Builder : typeof property;
 
 export type FcExtra = {
-  asyncProperty?: AsyncPropertyBuilder;
-  property: typeof property;
+  asyncProperty: typeof asyncProperty;
   assert: typeof assert;
   readConfigureGlobal: typeof readConfigureGlobal;
   beforeEach: typeof beforeEach;
