@@ -50,7 +50,7 @@
     "@changesets/cli": "^3.0.3",
     "@fast-check/packaged": "workspace:*",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.6.7",
+    "@types/node": "^26.6.10",
     "@vitest/coverage-v8": "^5.1.1",
     "all-contributors-cli": "^7.0.3",
     "cross-env": "^10.1.0",
