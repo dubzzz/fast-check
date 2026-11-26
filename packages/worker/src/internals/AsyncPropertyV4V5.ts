@@ -8,6 +8,5 @@ type AsyncPropertyBuilder = <Ts extends [unknown, ...unknown[]]>(
   ]
 ) => LegacyPropertyWithHooks<Ts>;
 
-// v4 has a dedicated async factory, v5's property supports both kinds of predicates.
-export const asyncPropertyV4V5: AsyncPropertyBuilder = ((fc as { asyncProperty?: AsyncPropertyBuilder })
-  .asyncProperty ?? fc.property) as AsyncPropertyBuilder;
+// v4 does not support PredicateExecutionContext (type-wise only)
+export const asyncPropertyV4V5: AsyncPropertyBuilder = (fc as { asyncProperty: AsyncPropertyBuilder }).asyncProperty;
