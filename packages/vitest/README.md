@@ -7,7 +7,7 @@ Bring the power of property based testing framework `fast-check` into Vitest.
 
 <a href="https://npmx.dev/package/@fast-check/vitest"><img src="https://badge.fury.io/js/@fast-check%2Fvitest.svg" alt="npm version" /></a>
 <a href="https://npmx.dev/package/@fast-check/vitest"><img src="https://img.shields.io/npm/dm/@fast-check%2Fvitest" alt="monthly downloads" /></a>
-<a href="https://github.com/dubzzz/fast-check/blob/main/packages/jest/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fvitest.svg" alt="License" /></a>
+<a href="https://github.com/dubzzz/fast-check/blob/main/packages/vitest/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fvitest.svg" alt="License" /></a>
 
 ---
 
@@ -90,7 +90,7 @@ Vitest's `beforeEach` and `afterEach` hooks are natively integrated into predica
 
 ### Advanced
 
-If you want to forward custom parameters to fast-check, `test.prop` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
+If you want to forward custom parameters to fast-check, `test.prop` accepts an optional `fc.Parameters` ([more](https://fast-check.dev/docs/core-blocks/runners/#assert)).
 
 `@fast-check/vitest` also comes with `.only`, `.skip`, `.todo` and `.concurrent` from vitest. It also accepts more complex ones such as `.concurrent.skip`.
 
@@ -114,22 +114,25 @@ describe('with it', () => {
 
 ## Minimal requirements
 
-| @fast-check/vitest | vitest                                                              | fast-check                       | Node                                                                   |
-| ------------------ | ------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------- |
-| **0.4**            | ^4.1.0 \|\| ^5.0.0                                                  | ^3.0.0 \|\| ^4.0.0               | ≥20.19.0<sup>(2)</sup> (Vitest 4)<br>≥22.12.0<sup>(2)</sup> (Vitest 5) |
-| **0.3**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4                                          | ^3.0.0 \|\| ^4.0.0               | ≥20.19.0<sup>(2)</sup>                                                 |
-| **0.2**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4<sup>(1)</sup>                            | ^3.0.0 \|\| ^4.0.0               | ≥18<sup>(3)</sup>                                                      |
-| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(4)</sup> \|\| ^3<sup>(5)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(6)</sup> | ≥14.16.0<sup>(3)</sup>                                                 |
-| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                             | ^3.0.0                           | ≥14.16.0<sup>(3)</sup>                                                 |
+| @fast-check/vitest | vitest                                                              | fast-check                        | Node                                                                                       |
+| ------------------ | ------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------ |
+| **0.6**            | ^4.1.0 \|\| ^5.0.0                                                  | ^4.10.3 \|\| ^5.0.0<sup>(1)</sup> | ≥20.19.0<sup>(2)</sup> (Vitest 4 with fast-check 4)<br>≥22.12.0 (Vitest 5 or fast-check 5) |
+| **0.5**            | ^4.1.0 \|\| ^5.0.0                                                  | ^3.0.0 \|\| ^4.0.0                | ≥20.19.0<sup>(2)</sup> (Vitest 4)<br>≥22.12.0 (Vitest 5)                                   |
+| **0.4**            | ^4.1.0                                                              | ^3.0.0 \|\| ^4.0.0                | ≥20.19.0<sup>(2)</sup>                                                                     |
+| **0.3**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4                                          | ^3.0.0 \|\| ^4.0.0                | ≥20.19.0<sup>(2)</sup>                                                                     |
+| **0.2**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4<sup>(3)</sup>                            | ^3.0.0 \|\| ^4.0.0                | ≥18<sup>(4)</sup>                                                                          |
+| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(5)</sup> \|\| ^3<sup>(6)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(7)</sup>  | ≥14.16.0<sup>(4)</sup>                                                                     |
+| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                             | ^3.0.0                            | ≥14.16.0<sup>(4)</sup>                                                                     |
 
 <details>
 <summary>More details...</summary>
 
-1. Official support for version 4.x of vitest starts at 0.2.3.
+1. Prereleases of fast-check matching `>=5.0.0-alpha <5.0.0` are also supported.
 2. Requires support for `require(esm)`.
-3. Same support as vitest.
-4. Official support for version 2.x of vitest starts at 0.1.2.
-5. Official support for version 3.x of vitest starts at 0.1.5.
-6. Official support for version 4.x of fast-check starts at 0.1.6.
+3. Official support for version 4.x of vitest starts at 0.2.3.
+4. Same support as vitest.
+5. Official support for version 2.x of vitest starts at 0.1.2.
+6. Official support for version 3.x of vitest starts at 0.1.5.
+7. Official support for version 4.x of fast-check starts at 0.1.6.
 
 </details>
