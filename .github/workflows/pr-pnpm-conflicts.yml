@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       ref_value:
-        description: 'PR number'
+        description: 'PR number (branch must be in this repository)'
         required: true
         type: string
 
@@ -23,28 +23,42 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
-          REPO: ${{ github.repository }}
+          REPOSITORY_ID: ${{ github.repository_id }}
         run: |
-          PR_INFO=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,baseRefName)
-          HEAD_BRANCH=$(echo "$PR_INFO" | jq -r '.headRefName')
-          BASE_BRANCH=$(echo "$PR_INFO" | jq -r '.baseRefName')
-          echo "ref=$HEAD_BRANCH" >> $GITHUB_OUTPUT
-          echo "base=$BASE_BRANCH" >> $GITHUB_OUTPUT
+          if [[ ! "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]; then
+            echo "::error::Expected a pull request number."
+            exit 1
+          fi
+
+          PR_INFO=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER")
+          if ! jq -e --arg id "$REPOSITORY_ID" '.head.repo.id == ($id | tonumber)' <<< "$PR_INFO" > /dev/null; then
+            echo "::error::Maintenance requires a pull request branch in this repository."
+            exit 1
+          fi
+
+          HEAD_SHA=$(jq -er '.head.sha | select(test("\\A[0-9a-f]{40}\\z"))' <<< "$PR_INFO")
+          HEAD_REF="refs/heads/$(jq -er '.head.ref | strings | select(length > 0)' <<< "$PR_INFO")"
+          git check-ref-format "$HEAD_REF"
+          BASE_SHA=$(jq -er '.base.sha | select(test("\\A[0-9a-f]{40}\\z"))' <<< "$PR_INFO")
+          echo "sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "branch=$HEAD_REF" >> "$GITHUB_OUTPUT"
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ steps.ref.outputs.ref }}
+          ref: ${{ steps.ref.outputs.sha }}
           fetch-depth: 0
           persist-credentials: true
       - name: Configure git
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-      - name: Merge target branch into PR branch
+      - name: Merge target commit into PR head
         env:
-          BASE_BRANCH: ${{ steps.ref.outputs.base }}
+          BASE_SHA: ${{ steps.ref.outputs.base_sha }}
         run: |
-          echo "Merging $BASE_BRANCH into current branch..."
-          git merge "origin/$BASE_BRANCH" --no-edit || true
+          echo "Merging target commit $BASE_SHA into the PR head..."
+          git cat-file -e "$BASE_SHA^{commit}"
+          git merge --no-edit "$BASE_SHA" || true
           echo "Merge completed (conflicts expected and will be resolved by pnpm)"
       - name: Install pnpm
         uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
@@ -55,19 +69,22 @@ jobs:
           cache: 'pnpm'
       - name: Check current branch info
         env:
+          HEAD_REF: ${{ steps.ref.outputs.branch }}
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
-          BASE_BRANCH: ${{ steps.ref.outputs.base }}
+          BASE_SHA: ${{ steps.ref.outputs.base_sha }}
         run: |
           echo "Requested PR: $PR_NUMBER"
-          echo "Current branch: $(git branch --show-current)"
+          echo "Target branch: $HEAD_REF"
           echo "Current commit: $(git rev-parse HEAD)"
-          echo "Base branch: $BASE_BRANCH"
+          echo "Base commit: $BASE_SHA"
       - name: Regenerate pnpm-lock.yaml
         run: |
           echo "Regenerating pnpm-lock.yaml..."
           pnpm install --lockfile-only --ignore-scripts
       - name: Commit lock file changes
         env:
+          HEAD_REF: ${{ steps.ref.outputs.branch }}
+          HEAD_SHA: ${{ steps.ref.outputs.sha }}
           WORKFLOW_NAME: ${{ github.workflow }}
           RUN_ID: ${{ github.run_id }}
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
@@ -82,7 +99,9 @@ jobs:
             Target PR: $PR_NUMBER"
             
             echo "Pushing changes..."
-            git push
+            # Publish only a descendant of the checked-out commit, and only if the branch is unchanged.
+            git merge-base --is-ancestor "$HEAD_SHA" HEAD
+            git push --force-with-lease="$HEAD_REF:$HEAD_SHA" origin "HEAD:$HEAD_REF"
           else
             echo "No changes to commit after regenerating lock file"
           fi
