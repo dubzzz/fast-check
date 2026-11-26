@@ -211,8 +211,8 @@ importers:
         specifier: ^5.1.2
         version: 5.1.2(vitest@5.1.2)
       all-contributors-cli:
-        specifier: ^7.0.3
-        version: 7.0.3(@types/node@26.6.10)
+        specifier: ^7.0.4
+        version: 7.0.4(@types/node@26.6.10)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -5024,8 +5024,8 @@ packages:
     resolution: {integrity: sha512-CFtHkGANnIAG6TY5g9s/h+yxZ0SN2/ICMjMY1EWj9gKGiS4LSGFrmMmTA/xxyxOH8AEazFD3YSfRZMh5vIEh2w==}
     engines: {node: '>= 14.0.0'}
 
-  all-contributors-cli@7.0.3:
-    resolution: {integrity: sha512-zsKuzp+F5JUjy9IThlwYyQJuwFiReo0RRIlGVU7mdZfU/ZwsQHuov8PZGFOFfenitA7+qWoItARKp4CUu5NnVw==}
+  all-contributors-cli@7.0.4:
+    resolution: {integrity: sha512-60tShb2IOQK6fRxvqTqZt1v6QfZ2FTegZR7r7EmnI/jTuBHU2ZoATwMu31MkM1jgsB8XcmcPczhAewrZkMom4A==}
     engines: {node: '>=22.22.0'}
     deprecated: This package has been renamed to @all-contributors/cli. Please replace your current usage with the new package to continue receiving updates.
     hasBin: true
@@ -16402,7 +16402,7 @@ snapshots:
       '@algolia/requester-fetch': 5.61.0
       '@algolia/requester-node-http': 5.61.0
 
-  all-contributors-cli@7.0.3(@types/node@26.6.10):
+  all-contributors-cli@7.0.4(@types/node@26.6.10):
     dependencies:
       eta: 4.6.0
       inquirer: 14.2.5(@types/node@26.6.10)
