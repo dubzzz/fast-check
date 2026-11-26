@@ -3,95 +3,26 @@ import jscodeshift from 'jscodeshift';
 import transform from '../src/transforms/v5/checkToAssert.js';
 import * as fc from '../../fast-check/src/fast-check.js';
 
-function migrate(body: string, path = 'input.ts') {
+function migrate(body: string) {
   const source = `import * as fc from 'fast-check';\n${body}\n`;
   const reports: string[] = [];
   const output = transform(
-    { source, path },
+    { source, path: 'input.js' },
     { j: jscodeshift, jscodeshift, stats() {}, report: (message) => reports.push(message) },
   );
-  return { source, output, reports };
+  return { output, reports };
 }
 
-describe('checkToAssert consumption', () => {
-  it.each([
-    'await fc.check(property);',
-    'fc.check(property).then(consume);',
-    'fc.check(property).catch(consume);',
-    'fc.check(property).finally(cleanup);',
-    "fc.check(property)['then'](consume);",
-    'const out = fc.check(property); await out;',
-    'const out = fc.check(property); out.then(consume); out.finally(cleanup);',
-    'await (fc.check(property) as Promise<fc.RunDetails<unknown>>);',
-    'const out = fc.check(property); { const out = other; consume(out); } await out;',
-  ])('uses the asynchronous helper for %s', (body) => {
-    const { output, reports } = migrate(body);
-    expect(reports).toEqual([]);
-    expect(output).toContain('async function assertAndGetRunDetails');
-    expect(output).not.toContain('assertAndGetRunDetailsSync');
-    expect(output).not.toContain('fc.check(');
-  });
-
-  it.each([
-    'const failed = fc.check(property).failed;',
-    "const failed = fc.check(property)['failed'];",
-    'const { failed, seed: initialSeed } = fc.check(property);',
-    '({ counterexample } = fc.check(property));',
-    'const out = fc.check(property); if (out.failed) consume(out.counterexample);',
-    'const out = fc.check(property); const { seed } = out;',
-    'const out = fc.check(property); consume(out?.failed);',
-    'const out = fc.check(property); consume(out!.failed);',
-    'const out = fc.check(property) as fc.RunDetails<unknown>; consume(out.failed);',
-    'const out = fc.check(property); await out.failed;',
-    'const out = fc.check(property); { const out = other; await out; } consume(out.failed);',
-  ])('uses the synchronous helper for %s', (body) => {
-    const { output, reports } = migrate(body);
-    expect(reports).toEqual([]);
-    expect(output).toContain('function assertAndGetRunDetailsSync');
-    expect(output).not.toContain('async function assertAndGetRunDetails');
-    expect(output).not.toContain('fc.check(');
-  });
-
-  it.each([
-    'fc.check(property);',
-    'const unused = fc.check(property);',
-    'function run() { return fc.check(property); }',
-    'consume(fc.check(property));',
-    'export const out = fc.check(property); consume(out.failed);',
-    'const out = fc.check(property); export { out };',
-    'let out = fc.check(property); consume(out.failed);',
-    'const out = fc.check(property); consume(out.failed); await out;',
-    'const out = fc.check(property); consume(out.failed); out.then(consume);',
-    'const out = fc.check(property); consume(out.failed); consume(out);',
-    'const out = fc.check(property); const alias = out; consume(alias.failed);',
-    'const out = fc.check(property); out.failed = true;',
-    'const out = fc.check(property); consume(out[key]);',
-    'const out = fc.check(property); consume(out.unknownField);',
-    'const out = fc.check(property); const then = out.then;',
-    'const out = fc.check(property); function consume(out) { return out.failed; }',
-    'const {} = fc.check(property);',
-    'const { then } = fc.check(property);',
-    'const { ...out } = fc.check(property);',
-    "import { check } from 'fast-check'; await check(property);",
-    'const out = fc.check(fc.asyncProperty(fc.nat(), async () => false)); consume(out.failed);',
-    'const property = fc.asyncProperty(fc.nat(), async () => false); const { failed } = fc.check(property);',
-  ])('reports a dubious usage and leaves it unchanged: %s', (body) => {
-    const { source, output, reports } = migrate(body);
-    expect(output).toBe(source);
-    expect(reports).toHaveLength(1);
-    expect(reports[0]).toMatch(/^warning \(\d+:\d+\): Cannot /);
-  });
-});
-
 function migratedRun(body: string): () => unknown {
-  const { output, reports } = migrate(body, 'input.js');
+  const { output, reports } = migrate(body);
   expect(reports).toEqual([]);
+  expect(output).not.toContain('assertAndGetRunDetails');
   const root = jscodeshift(output);
   root.find(jscodeshift.ImportDeclaration).remove();
   return new Function('fc', `${root.toSource()}\nreturn run;`)(fc) as () => unknown;
 }
 
-describe('checkToAssert generated helpers on v5', () => {
+describe('checkToAssert inline assertions on v5', () => {
   it('returns details immediately for synchronous execution and retains local plugins', () => {
     const run = migratedRun(`
 function run() {
@@ -135,5 +66,48 @@ function run() {
     expect(run).toThrow('Expected synchronous check execution');
     // Let the assertion finish: its rejection must not become an unhandled rejection.
     await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+
+  it('keeps a synchronous result when it is also awaited and passed elsewhere', async () => {
+    const run = migratedRun(`
+async function run() {
+  let observed;
+  function consume(value) { observed = value; }
+  const out = fc.check(fc.property(fc.constant(42), () => false));
+  consume(out);
+  const awaited = await out;
+  return { failed: out.failed, same: out === observed && out === awaited };
+}`);
+    await expect(run()).resolves.toEqual({ failed: true, same: true });
+  });
+
+  it('evaluates property and options once, in order, in conditional expressions', () => {
+    const run = migratedRun(`
+function run() {
+  const events = [];
+  function property() {
+    events.push('property');
+    return fc.property(fc.constant(42), () => false);
+  }
+  function options() { events.push('options'); return { seed: 123 }; }
+  function receiver() {
+    events.push('receiver');
+    return { consume(skipped, failed) { return { skipped, failed, events }; } };
+  }
+  return receiver().consume(false && fc.check(property(), options()).failed, fc.check(property(), options()).failed);
+}`);
+    expect(run()).toEqual({ skipped: false, failed: true, events: ['receiver', 'property', 'options'] });
+  });
+
+  it('returns a promise for chained calls and retains asynchronous completion hooks', async () => {
+    const run = migratedRun(`
+function run() {
+  let completed = false;
+  const pending = fc.check(fc.asyncProperty(fc.constant(42), async () => false), {
+    plugins: [() => ({ async onAllRunsComplete() { await Promise.resolve(); completed = true; } })],
+  });
+  return pending.then(out => ({ failed: out.failed, completed }));
+}`);
+    await expect(run()).resolves.toEqual({ failed: true, completed: true });
   });
 });

@@ -1,17 +1,15 @@
 import * as fc from 'fast-check';
 
-const details = assertAndGetRunDetailsSync(fc.property(fc.nat(), () => false));
-console.log(details.failed);
-function assertAndGetRunDetailsSync<Ts>(property: Parameters<typeof fc.assert<Ts>>[0], params?: fc.Parameters<Ts>) {
-  let details: fc.RunDetails<Ts> | undefined;
-  const execution = fc.assert(property, {
-    ...params,
-    noDefaultPlugins: true,
-    plugins: [...(params?.plugins ?? []), () => ({ onAllRunsComplete(result) { details = result; } })],
-  });
-  if (details === undefined) {
-    if (execution !== undefined) void execution.catch(() => {});
-    throw new Error('Expected synchronous check execution; use an asynchronous helper and await its result.');
-  }
-  return details;
+const checkProperty = fc.property(fc.nat(), () => false);
+let checkDetails: fc.RunDetails<ReturnType<typeof checkProperty.generate>['value']> | undefined;
+const checkExecution = fc.assert(checkProperty, {
+  noDefaultPlugins: true,
+  plugins: [() => ({ onAllRunsComplete(result) { checkDetails = result; } })],
+});
+if (checkDetails === undefined) {
+  void Promise.resolve(checkExecution).catch(() => {});
+  throw new Error('Expected synchronous check execution; await the assertion to consume asynchronous results.');
 }
+
+const details = checkDetails;
+console.log(details.failed);
