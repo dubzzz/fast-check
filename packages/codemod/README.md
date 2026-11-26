@@ -136,9 +136,11 @@ This codemod moves local runner options and custom reporters into plugins. For a
 
 **What is doing this codemod?**
 
-This codemod replaces `check` calls with `assert` calls using `noDefaultPlugins: true`. It preserves access to `RunDetails` by adding a helper that captures them through a plugin’s `onAllRunsComplete` hook.
+This codemod replaces `check` calls with helpers that call `assert` using `noDefaultPlugins: true` and capture `RunDetails` through a plugin’s `onAllRunsComplete` hook. It works independently on fast-check 4.11.0 and later.
 
-Compatible with fast-check 4.11.0 and later. Run `v5/propertyToAsyncProperty` first when migrating synchronous properties. The codemod handles `check` results consumed with `await` or promise handlers. Synchronous or uncertain usages are left unchanged with a warning.
+Results consumed with `await`, `.then()`, `.catch()` or `.finally()` use `assertAndGetRunDetails`. Direct reads or destructuring of `RunDetails` fields, such as `out.failed`, use `assertAndGetRunDetailsSync`. For local `const` bindings, all uses must agree. Mixed, escaping or uncertain usages are left unchanged with a warning.
+
+The synchronous helper requires synchronous execution and throws if run details are not available immediately. Review plugins that can run asynchronously or reject: their completion cannot be awaited by a synchronous caller.
 
 **Example of code change:**
 
@@ -146,6 +148,10 @@ Compatible with fast-check 4.11.0 and later. Run `v5/propertyToAsyncProperty` fi
 -const details = await fc.check(property);
 +const details = await assertAndGetRunDetails(property);
  if (details.failed) console.log(details.counterexample);
+
+-const out = fc.check(property);
++const out = assertAndGetRunDetailsSync(property);
+ if (out.failed) console.log(out.counterexample);
 ```
 
 </details>
