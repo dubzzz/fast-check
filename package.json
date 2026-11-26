@@ -52,7 +52,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^26.6.10",
     "@vitest/coverage-v8": "^5.1.2",
-    "all-contributors-cli": "^7.0.3",
+    "all-contributors-cli": "^7.0.4",
     "cross-env": "^10.1.0",
     "oxfmt": "^0.80.0",
     "oxlint": "^1.95.0",
