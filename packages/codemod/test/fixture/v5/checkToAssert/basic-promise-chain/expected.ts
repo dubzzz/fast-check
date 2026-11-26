@@ -6,7 +6,7 @@ const pending = assertAndGetRunDetails(property);
 pending.then(console.log);
 
 assertAndGetRunDetails(property).then(console.log);
-async function assertAndGetRunDetails<Ts>(property: fc.Property<Ts>, params?: fc.Parameters<Ts>) {
+async function assertAndGetRunDetails<Ts>(property: Parameters<typeof fc.assert<Ts>>[0], params?: fc.Parameters<Ts>) {
   let details!: fc.RunDetails<Ts>;
   await fc.assert(property, {
     ...params,

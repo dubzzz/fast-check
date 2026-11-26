@@ -132,13 +132,13 @@ This codemod moves local runner options and custom reporters into plugins. For a
 
 </details>
 
-<details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Preserves RunDetails when migrating check to assert</summary>
+<details><summary><code>v5/checkToAssert</code> (≥4.11.0) — Preserves RunDetails when migrating check to assert</summary>
 
 **What is doing this codemod?**
 
 This codemod replaces `check` calls with `assert` calls using `noDefaultPlugins: true`. It preserves access to `RunDetails` by adding a helper that captures them through a plugin’s `onAllRunsComplete` hook.
 
-Assumes fast-check v5 after `v5/propertyToAsyncProperty`, where `check` always returns a promise. Synchronous or uncertain usages are left unchanged with a warning.
+Compatible with fast-check 4.11.0 and later. Run `v5/propertyToAsyncProperty` first when migrating synchronous properties. The codemod handles `check` results consumed with `await` or promise handlers. Synchronous or uncertain usages are left unchanged with a warning.
 
 **Example of code change:**
 

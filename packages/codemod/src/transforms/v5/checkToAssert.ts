@@ -88,7 +88,7 @@ export default function transform(file: FileInfo, api: API): string {
   if (namespace) {
     const type = (annotation: string) => (typed ? annotation : '');
     const definition = `
-async function ${helper}${type('<Ts>')}(property${type(': ' + namespace + '.Property<Ts>')}, params${type('?: ' + namespace + '.Parameters<Ts>')}${typed ? '' : ' = {}'}) {
+async function ${helper}${type('<Ts>')}(property${type(': Parameters<typeof ' + namespace + '.assert<Ts>>[0]')}, params${type('?: ' + namespace + '.Parameters<Ts>')}${typed ? '' : ' = {}'}) {
   let details${type('!: ' + namespace + '.RunDetails<Ts>')};
   await ${namespace}.assert(property, {
     ...params,
