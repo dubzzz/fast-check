@@ -14,14 +14,15 @@ export type LegacyPropertyHookFunction =
   | ((previousHookFunction: LegacyGlobalPropertyHookFunction) => Promise<unknown>)
   | ((previousHookFunction: LegacyGlobalPropertyHookFunction) => void);
 
-export interface LegacyPropertyWithHooks<Ts> extends Property<Ts> {
+// Preserve required hooks from v4's Property while allowing their absence in v5.
+export type LegacyPropertyWithHooks<Ts> = Property<Ts> & {
   // On Property in v4.x
   runBeforeEach?: () => Promise<void> | void;
   runAfterEach?: () => Promise<void> | void;
   // On PropertyWithHooks in v4.x
   beforeEach?(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts>;
   afterEach?(hookFunction: LegacyPropertyHookFunction): LegacyPropertyWithHooks<Ts>;
-}
+};
 
 export type PropertyArbitraries<Ts extends unknown[]> = {
   [K in keyof Ts]: Arbitrary<Ts[K]>;
