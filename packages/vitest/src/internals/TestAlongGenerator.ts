@@ -1,12 +1,9 @@
 import type { TestAPI, TestFunction, TestOptions } from 'vitest';
 import type { Arbitrary, GeneratorValue, Parameters } from 'fast-check';
-import type { AsyncPropertyBuilder, ExtraContext } from './types.js';
+import type { ExtraContext } from './types.js';
 
 import { TestRunner } from 'vitest';
 import * as fc from 'fast-check';
-
-const property = ((fc as { asyncProperty?: AsyncPropertyBuilder }).asyncProperty ??
-  fc.property) as AsyncPropertyBuilder;
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
@@ -43,7 +40,7 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
                 errorWithCause: true,
               };
               await fc.assert(
-                property(fc.gen(), (g) => {
+                fc.asyncProperty(fc.gen(), (g) => {
                   const refinedG: GeneratorValue = Object.assign(
                     <T, TArgs extends unknown[]>(arb: (...params: TArgs) => Arbitrary<T>, ...args: TArgs): T => {
                       calledOnce = true;
