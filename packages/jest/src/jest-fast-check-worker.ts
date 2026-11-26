@@ -54,7 +54,7 @@ type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; ex
 
 export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
   const fcExtra: FcExtra = {
-    property: propertyFor(url, options) as FcExtra['property'],
+    asyncProperty: propertyFor(url, options) as FcExtra['asyncProperty'],
     assert: assert as FcExtra['assert'],
     readConfigureGlobal: fc.readConfigureGlobal,
     interruptAfterTimeLimit: fc.interruptAfterTimeLimit,
