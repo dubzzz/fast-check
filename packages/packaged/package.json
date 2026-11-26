@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/packaged#readme",
   "engines": {
-    "node": ">=20.19.0"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
   "dependencies": {
     "@npmcli/arborist": "^10.0.0",

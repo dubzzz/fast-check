@@ -55,13 +55,15 @@ const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, ke
 
 ## Minimal requirements
 
-| @fast-check/packaged | node                   |
-| -------------------- | ---------------------- |
-| **0.6.x**            | ≥20.19.0<sup>(1)</sup> |
+| @fast-check/packaged | node                                                             |
+| -------------------- | ---------------------------------------------------------------- |
+| **0.7.x**            | ^22.22.2 \|\| ^24.15.0 \|\| >=26.0.0<sup>(1)</sup><sup>(2)</sup> |
+| **0.6.x**            | ≥20.19.0<sup>(1)</sup>                                           |
 
 <details>
 <summary>More details...</summary>
 
 1. Requires support for `require(esm)`.
+2. Our dependencies `@npmcli/arborist` ([see compatibilty on npmx.dev](https://npmx.dev/package/@npmcli/arborist/v/%5E10.0.0#compatibility)) and `npm-packlist` ([see compatibilty on npmx.dev](https://npmx.dev/package/npm-packlist/v/%5E10.0.0||%5E11.0.0)) require a newer Node release.
 
 </details>
