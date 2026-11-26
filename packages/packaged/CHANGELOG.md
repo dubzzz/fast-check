@@ -1,3 +1,18 @@
+# 0.8.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.7.1...packaged%2Fv0.8.0)]
+
+## Features
+
+
+
+## Fixes
+
+
+
+---
+
 # 0.7.1
 
 _Support `npm-packlist` 11_

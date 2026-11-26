@@ -1,3 +1,171 @@
+# 5.0.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v5.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.11.0...v5.0.0)]
+
+## Breaking changes
+
+- ([PR#7296](https://github.com/dubzzz/fast-check/pull/7296)) Allow async properties to behave sync
+- ([PR#7303](https://github.com/dubzzz/fast-check/pull/7303)) Drop `property`, replace it by `asyncProperty`
+- ([PR#7305](https://github.com/dubzzz/fast-check/pull/7305)) Drop methods from `Random`
+- ([PR#7308](https://github.com/dubzzz/fast-check/pull/7308)) Drop global capture of functions
+- ([PR#7307](https://github.com/dubzzz/fast-check/pull/7307)) Drop ability to default import from fast-check
+- ([PR#7309](https://github.com/dubzzz/fast-check/pull/7309)) Drop string-based PRNG in runner parameters
+- ([PR#7310](https://github.com/dubzzz/fast-check/pull/7310)) Drop `Random#nextDouble()`
+- ([PR#7312](https://github.com/dubzzz/fast-check/pull/7312)) Rename interfaces for properties
+- ([PR#7315](https://github.com/dubzzz/fast-check/pull/7315)) Make `async{Before,After}Each` the defaults
+- ([PR#7316](https://github.com/dubzzz/fast-check/pull/7316)) Drop global capture of methods [Batch 2]
+- ([PR#7319](https://github.com/dubzzz/fast-check/pull/7319)) Drop global capture of methods [Batch 1]
+- ([PR#7320](https://github.com/dubzzz/fast-check/pull/7320)) Return instances of `Iterator` from `shrink`
+- ([PR#7321](https://github.com/dubzzz/fast-check/pull/7321)) Drop support for TypeScript <5.7
+- ([PR#7318](https://github.com/dubzzz/fast-check/pull/7318)) Drop global capture of methods [Batch 3]
+- ([PR#7323](https://github.com/dubzzz/fast-check/pull/7323)) Rename `infiniteStream` into `iterator`
+- ([PR#7324](https://github.com/dubzzz/fast-check/pull/7324)) Drop support for `asyncReporter`
+- ([PR#7325](https://github.com/dubzzz/fast-check/pull/7325)) Drop CommonJS bundle
+- ([PR#7326](https://github.com/dubzzz/fast-check/pull/7326)) Support finite iterators on `iterator`
+- ([PR#7328](https://github.com/dubzzz/fast-check/pull/7328)) Merge `defaultReportMessage` and its async version
+- ([PR#7332](https://github.com/dubzzz/fast-check/pull/7332)) Drop `xxxEqualValues` parameters
+- ([PR#7340](https://github.com/dubzzz/fast-check/pull/7340)) Drop `unbiased` from `Parameters`
+- ([PR#7358](https://github.com/dubzzz/fast-check/pull/7358)) Drop `xxxAfterTimeLimit` from `Parameters`
+- ([PR#7377](https://github.com/dubzzz/fast-check/pull/7377)) Drop `timeout` from `Parameters`
+- ([PR#7386](https://github.com/dubzzz/fast-check/pull/7386)) Drop `beforeEach`/`afterEach` methods
+- ([PR#7412](https://github.com/dubzzz/fast-check/pull/7412)) Rename `asyncProperty` into `property`
+- ([PR#7430](https://github.com/dubzzz/fast-check/pull/7430)) Drop `reporter` from Parameters
+- ([PR#7519](https://github.com/dubzzz/fast-check/pull/7519)) Stop reporting interrupted as failed
+- ([PR#7524](https://github.com/dubzzz/fast-check/pull/7524)) Stop exposing the default error report
+- ([PR#7526](https://github.com/dubzzz/fast-check/pull/7526)) Remove the check runner
+- ([PR#7540](https://github.com/dubzzz/fast-check/pull/7540)) Keep includeErrorInReport only on defaultReporter
+- ([PR#7501](https://github.com/dubzzz/fast-check/pull/7501)) Remove deprecated Unicode string options
+- ([PR#7580](https://github.com/dubzzz/fast-check/pull/7580)) Make `sample` closer to `assert` and asynchronous
+- ([PR#7588](https://github.com/dubzzz/fast-check/pull/7588)) Run predicates when sampling properties
+- ([PR#7587](https://github.com/dubzzz/fast-check/pull/7587)) Make statistics asynchronous and return category counts
+- ([PR#7592](https://github.com/dubzzz/fast-check/pull/7592)) Spread property values in `statistics`
+
+## Features
+
+- ([PR#7288](https://github.com/dubzzz/fast-check/pull/7288)) Allow sync predicate on `asyncProperty`
+- ([PR#7422](https://github.com/dubzzz/fast-check/pull/7422)) Pass contextualized details to predicates
+- ([PR#7426](https://github.com/dubzzz/fast-check/pull/7426)) Support signal in `timeout`
+- ([PR#7427](https://github.com/dubzzz/fast-check/pull/7427)) Support signal in `interruptAfterTimeLimit`
+- ([PR#7184](https://github.com/dubzzz/fast-check/pull/7184)) Support depth on `array` and derived arbitraries
+- ([PR#7523](https://github.com/dubzzz/fast-check/pull/7523)) Add `noDefaultPlugins` to `assert`
+- ([PR#7532](https://github.com/dubzzz/fast-check/pull/7532)) Expose defaultReporter as a public plugin
+- ([PR#7533](https://github.com/dubzzz/fast-check/pull/7533)) Add `noGlobalPlugins` to opt out of globally installed plugins
+- ([PR#7539](https://github.com/dubzzz/fast-check/pull/7539)) Add includeErrorInReport option to defaultReporter
+- ([PR#7538](https://github.com/dubzzz/fast-check/pull/7538)) Support post installation of global plugins
+- ([PR#7544](https://github.com/dubzzz/fast-check/pull/7544)) Add `beforeAll` hook on our plugin system
+- ([PR#7573](https://github.com/dubzzz/fast-check/pull/7573)) Mark long sync runs failed with `timeout`
+- ([PR#7594](https://github.com/dubzzz/fast-check/pull/7594)) Support multiple arbitraries in `statistics`
+- ([PR#7604](https://github.com/dubzzz/fast-check/pull/7604)) Accept readonly arrays in public inputs and constraints
+- ([PR#7606](https://github.com/dubzzz/fast-check/pull/7606)) Make built-in arbitrary constraint inputs readonly
+- ([PR#7643](https://github.com/dubzzz/fast-check/pull/7643)) Add back `asyncProperty`, but deprecated
+
+## Fixes
+
+- ([PR#7333](https://github.com/dubzzz/fast-check/pull/7333)) Bug: Plugin `interruptAfterTimeLimit` crashes
+- ([PR#7376](https://github.com/dubzzz/fast-check/pull/7376)) Bug: Better type definition on built-in plugins
+- ([PR#7421](https://github.com/dubzzz/fast-check/pull/7421)) Bug: Fix swallowed errors at plugin completion
+- ([PR#7397](https://github.com/dubzzz/fast-check/pull/7397)) Bug: Preserve NUL code points in regex character ranges
+- ([PR#7399](https://github.com/dubzzz/fast-check/pull/7399)) Bug: Parse NUL escapes as characters instead of backreferences
+- ([PR#7404](https://github.com/dubzzz/fast-check/pull/7404)) Bug: Support full Unicode code-point escapes in regexes
+- ([PR#7405](https://github.com/dubzzz/fast-check/pull/7405)) Bug: Handle escaped surrogate pairs in Unicode regexes
+- ([PR#7406](https://github.com/dubzzz/fast-check/pull/7406)) Bug: Support non-Unicode x and u identity escapes
+- ([PR#7398](https://github.com/dubzzz/fast-check/pull/7398)) Bug: Shrink Unicode regex ranges using full code points
+- ([PR#7431](https://github.com/dubzzz/fast-check/pull/7431)) Bug: Make clones of a scheduler run tasks in the same order
+- ([PR#7477](https://github.com/dubzzz/fast-check/pull/7477)) Bug: Fix equal-values caching for lazy and asynchronous values
+- ([PR#7283](https://github.com/dubzzz/fast-check/pull/7283)) CI: Run independent CI steps concurrently
+- ([PR#7295](https://github.com/dubzzz/fast-check/pull/7295)) CI: Run cache restores in the background too
+- ([PR#7337](https://github.com/dubzzz/fast-check/pull/7337)) CI: Increase #shards for Linux
+- ([PR#7347](https://github.com/dubzzz/fast-check/pull/7347)) CI: Group sanity checks in one job
+- ([PR#7348](https://github.com/dubzzz/fast-check/pull/7348)) CI: Separate windows/macos flows
+- ([PR#7349](https://github.com/dubzzz/fast-check/pull/7349)) CI: Run type checks cross-tsc within one job
+- ([PR#7354](https://github.com/dubzzz/fast-check/pull/7354)) CI: Typecheck against sources
+- ([PR#7366](https://github.com/dubzzz/fast-check/pull/7366)) CI: Stricter Renovate config for the 24H rule
+- ([PR#7365](https://github.com/dubzzz/fast-check/pull/7365)) CI: Make `changeset` ignore private packages
+- ([PR#7371](https://github.com/dubzzz/fast-check/pull/7371)) CI: Faster CI installs with `--trust-lockfile`
+- ([PR#7378](https://github.com/dubzzz/fast-check/pull/7378)) CI: Change default VSCode plugins (oxc)
+- ([PR#7379](https://github.com/dubzzz/fast-check/pull/7379)) CI: Setup default formatter in VSCode
+- ([PR#7384](https://github.com/dubzzz/fast-check/pull/7384)) CI: Drop intermediary check job
+- ([PR#7387](https://github.com/dubzzz/fast-check/pull/7387)) CI: Drop unneeded pnpm overrides
+- ([PR#7455](https://github.com/dubzzz/fast-check/pull/7455)) CI: Stop labels from triggering CI
+- ([PR#7496](https://github.com/dubzzz/fast-check/pull/7496)) CI: Lock GitHub Actions dependencies
+- ([PR#7500](https://github.com/dubzzz/fast-check/pull/7500)) CI: Repair stale Node type peers breaking main
+- ([PR#7503](https://github.com/dubzzz/fast-check/pull/7503)) CI: Drop useless workspace locations from `package.json`
+- ([PR#7504](https://github.com/dubzzz/fast-check/pull/7504)) CI: Explicit node version for dev in `package.json`
+- ([PR#7507](https://github.com/dubzzz/fast-check/pull/7507)) CI: Disable Renovate bumps for Node devEngines
+- ([PR#7509](https://github.com/dubzzz/fast-check/pull/7509)) CI: Typecheck the Bluesky release script in CI
+- ([PR#7510](https://github.com/dubzzz/fast-check/pull/7510)) CI: Automerge routine development dependency and lockfile updates
+- ([PR#7514](https://github.com/dubzzz/fast-check/pull/7514)) CI: Preserve setup-node runtime in tests and benchmarks
+- ([PR#7515](https://github.com/dubzzz/fast-check/pull/7515)) CI: Refresh Codespaces setup and VS Code presets
+- ([PR#7652](https://github.com/dubzzz/fast-check/pull/7652)) CI: Drop MacOS and Windows from the required CI jobs
+- ([PR#7343](https://github.com/dubzzz/fast-check/pull/7343)) Clean: Drop useless fallback to `Date` in interrupt plugin
+- ([PR#7351](https://github.com/dubzzz/fast-check/pull/7351)) Clean: Drop useless `@internal` comments
+- ([PR#7391](https://github.com/dubzzz/fast-check/pull/7391)) Clean: Remove legacy symbol description fallback
+- ([PR#7402](https://github.com/dubzzz/fast-check/pull/7402)) Clean: Remove the legacy Error.cause fallback
+- ([PR#7499](https://github.com/dubzzz/fast-check/pull/7499)) Clean: Remove legacy TSLint suppression comments
+- ([PR#7338](https://github.com/dubzzz/fast-check/pull/7338)) Doc: Updade and fix changelog
+- ([PR#7362](https://github.com/dubzzz/fast-check/pull/7362)) Doc: Create `AI_POLICY.md`
+- ([PR#7394](https://github.com/dubzzz/fast-check/pull/7394)) Doc: Explain the detached buffer casts for shared buffers
+- ([PR#7393](https://github.com/dubzzz/fast-check/pull/7393)) Doc: Correct the supported regex flags in stringMatching
+- ([PR#7396](https://github.com/dubzzz/fast-check/pull/7396)) Doc: Explain undefined upper bounds in regex quantifiers
+- ([PR#7411](https://github.com/dubzzz/fast-check/pull/7411)) Doc: Correct API versions
+- ([PR#7395](https://github.com/dubzzz/fast-check/pull/7395)) Doc: Complete the RFC reference for digit-leading hostnames
+- ([PR#7413](https://github.com/dubzzz/fast-check/pull/7413)) Doc: Document property setup and teardown with plugins
+- ([PR#7418](https://github.com/dubzzz/fast-check/pull/7418)) Doc: Fix jsdoc of plugins
+- ([PR#7465](https://github.com/dubzzz/fast-check/pull/7465)) Doc: Add zek as code contributor
+- ([PR#7469](https://github.com/dubzzz/fast-check/pull/7469)) Doc: Add zek as test contributor
+- ([PR#7534](https://github.com/dubzzz/fast-check/pull/7534)) Doc: Add a StackBlitz playground at fast-check.dev/new
+- ([PR#7598](https://github.com/dubzzz/fast-check/pull/7598)) Doc: Add JacobLey as code,test contributor
+- ([PR#7615](https://github.com/dubzzz/fast-check/pull/7615)) Doc: Add changelog for 4.10.3
+- ([PR#7635](https://github.com/dubzzz/fast-check/pull/7635)) Doc: Changelog for 4.11.0
+- ([PR#7636](https://github.com/dubzzz/fast-check/pull/7636)) Doc: Mark backported options as available since 4.11.0
+- ([PR#7647](https://github.com/dubzzz/fast-check/pull/7647)) Doc: Add a v5 preview banner and resume docs publishing
+- ([PR#7329](https://github.com/dubzzz/fast-check/pull/7329)) Move: Restructure tests
+- ([PR#7284](https://github.com/dubzzz/fast-check/pull/7284)) Performance: Drop defensive checks from `tuple`
+- ([PR#7285](https://github.com/dubzzz/fast-check/pull/7285)) Performance: Drop defensive checks from `oneof`
+- ([PR#7287](https://github.com/dubzzz/fast-check/pull/7287)) Performance: Drop legacy `num_runs` fallback from parameters
+- ([PR#7290](https://github.com/dubzzz/fast-check/pull/7290)) Performance: Drop defensive clamping of `verbose`
+- ([PR#7291](https://github.com/dubzzz/fast-check/pull/7291)) Performance: Drop defensive checks from `uuid`
+- ([PR#7299](https://github.com/dubzzz/fast-check/pull/7299)) Performance: Avoid async when doable in `asyncProperty`
+- ([PR#7300](https://github.com/dubzzz/fast-check/pull/7300)) Performance: Avoid async code path when doable in runner
+- ([PR#7306](https://github.com/dubzzz/fast-check/pull/7306)) Performance: Drop defensive checks from `FrequencyArbitrary`
+- ([PR#7313](https://github.com/dubzzz/fast-check/pull/7313)) Performance: Drop defensive checks from `check`
+- ([PR#7317](https://github.com/dubzzz/fast-check/pull/7317)) Performance: Drop defensive checks from `asyncProperty`
+- ([PR#7322](https://github.com/dubzzz/fast-check/pull/7322)) Performance: Faster `stringify` on deep instances
+- ([PR#7327](https://github.com/dubzzz/fast-check/pull/7327)) Performance: Faster `stringify` when async toString is provided
+- ([PR#7330](https://github.com/dubzzz/fast-check/pull/7330)) Performance: Faster and memory-optim of `asyncStringify`
+- ([PR#7388](https://github.com/dubzzz/fast-check/pull/7388)) Performance: Faster execution of synchronous predicates without intermediary `await`s
+- ([PR#7400](https://github.com/dubzzz/fast-check/pull/7400)) Performance: Avoid repeated string tokenization states
+- ([PR#7389](https://github.com/dubzzz/fast-check/pull/7389)) Performance: Drop unwanted micro-tasks linked to clean-up plugins' hooks
+- ([PR#7417](https://github.com/dubzzz/fast-check/pull/7417)) Performance: Reduce allocations in plugin integration
+- ([PR#7489](https://github.com/dubzzz/fast-check/pull/7489)) Performance: Reduce microtask overhead in the property runner
+- ([PR#7528](https://github.com/dubzzz/fast-check/pull/7528)) Performance: Reduce ticks when running asynchronous completion callbacks
+- ([PR#7566](https://github.com/dubzzz/fast-check/pull/7566)) Performance: Improve initialization/memory performance of binary string
+- ([PR#7286](https://github.com/dubzzz/fast-check/pull/7286)) Refactor: Simplify `requiredKeys` handling in `record`
+- ([PR#7314](https://github.com/dubzzz/fast-check/pull/7314)) Refactor: Prefer `0n` notation over `BigInt(0)`
+- ([PR#7392](https://github.com/dubzzz/fast-check/pull/7392)) Refactor: Remove the Node 10 negative-zero workaround
+- ([PR#7390](https://github.com/dubzzz/fast-check/pull/7390)) Refactor: Use nullish coalescing in lifecycle failure fallbacks
+- ([PR#7401](https://github.com/dubzzz/fast-check/pull/7401)) Refactor: Make scheduler sequence status read-only
+- ([PR#7416](https://github.com/dubzzz/fast-check/pull/7416)) Refactor: Extracting code outside of `Runner.ts`
+- ([PR#7428](https://github.com/dubzzz/fast-check/pull/7428)) Refactor: Refactor worker lifecycle management
+- ([PR#7498](https://github.com/dubzzz/fast-check/pull/7498)) Refactor: Refactor error message formatting
+- ([PR#7521](https://github.com/dubzzz/fast-check/pull/7521)) Refactor: Rework skipped runs handling
+- ([PR#7525](https://github.com/dubzzz/fast-check/pull/7525)) Refactor: Convert default error reporting into a plugin
+- ([PR#7571](https://github.com/dubzzz/fast-check/pull/7571)) Refactor: Rely on modern plugins' APIs for `interruptAfterTimeLimit`
+- ([PR#7331](https://github.com/dubzzz/fast-check/pull/7331)) Script: Drop `:all` suffix from scripts
+- ([PR#7339](https://github.com/dubzzz/fast-check/pull/7339)) Script: Switch to `oxfmt`
+- ([PR#7352](https://github.com/dubzzz/fast-check/pull/7352)) Script: Bundle comparison script
+- ([PR#7353](https://github.com/dubzzz/fast-check/pull/7353)) Script: One `tsconfig.json` for all
+- ([PR#7304](https://github.com/dubzzz/fast-check/pull/7304)) Test: Fix mock blowup in FrequencyArbitrary specs
+- ([PR#7311](https://github.com/dubzzz/fast-check/pull/7311)) Test: Merge back `frequency` specs in one file
+- ([PR#7461](https://github.com/dubzzz/fast-check/pull/7461)) Test: Categorize regexes for tests of `stringMatching`
+- ([PR#7462](https://github.com/dubzzz/fast-check/pull/7462)) Test: Add a few extra regex test-cases
+- ([PR#7474](https://github.com/dubzzz/fast-check/pull/7474)) Test: Refine scheduler cloning and replay regression tests
+- ([PR#7488](https://github.com/dubzzz/fast-check/pull/7488)) Test: Assess microtask overhead of usual flows
+- ([PR#7537](https://github.com/dubzzz/fast-check/pull/7537)) Test: Use noGlobalPlugins in tick-count tests
+
+---
+
 # 4.11.0
 
 _Plugin controls and flexible `asyncProperty` to ease v5 migration_

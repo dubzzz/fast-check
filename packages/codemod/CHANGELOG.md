@@ -1,3 +1,18 @@
+# 0.1.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/codemod%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/codemod%2Fv0.0.1...codemod%2Fv0.1.0)]
+
+## Features
+
+
+
+## Fixes
+
+
+
+---
+
 # 0.0.1
 
 _First (real) release of `@fast-check/codemod`_
