@@ -179,6 +179,12 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
   if (block[0] === '\\') {
     const next = block[1];
     switch (next) {
+      case 'c': {
+        if (block.length === 3) {
+          return metaEscapedChar(block, String.fromCharCode(block.charCodeAt(2) % 32));
+        }
+        return simpleChar('c', true);
+      }
       case 'x': {
         if (block === '\\x') {
           return simpleChar('x', true);
