@@ -1,12 +1,11 @@
 import { PreconditionFailure } from 'fast-check';
+import { setLongTimeout } from '../../utils/setLongTimeout.js';
 import type { PredicateExecutionContext } from '../property/types/PredicateExecutionContext.js';
 import type { Property } from '../property/types/Property.js';
 import type { PropertyFailure } from '../property/types/PropertyFailure.js';
 import type { UniversalPlugin } from './Plugin.js';
 import { mergeSignals, signalAsPromise } from './utils/Signals.js';
 
-const safeSetTimeout = setTimeout;
-const safeClearTimeout = clearTimeout;
 const safePerformanceNow = performance.now.bind(performance);
 
 function buildErrorMessage(timeMs: number) {
@@ -14,11 +13,11 @@ function buildErrorMessage(timeMs: number) {
 }
 
 function timeoutAfter(timeMs: number) {
-  let timeoutHandle: ReturnType<typeof setTimeout> | undefined = undefined;
+  let cancelTimeout: () => void;
   const abortController = new AbortController();
   const startTimeProbe = safePerformanceNow();
   const promise = new Promise<PropertyFailure>((resolve) => {
-    timeoutHandle = safeSetTimeout(() => {
+    cancelTimeout = setLongTimeout(() => {
       const error = new Error(buildErrorMessage(timeMs));
       resolve({ error });
       abortController.abort(error);
@@ -26,7 +25,7 @@ function timeoutAfter(timeMs: number) {
   });
   return {
     clear: () => {
-      safeClearTimeout(timeoutHandle);
+      cancelTimeout();
       if (safePerformanceNow() - startTimeProbe >= timeMs) {
         return { error: new Error(buildErrorMessage(timeMs)) };
       }
@@ -92,7 +91,7 @@ function timeoutRunner(
  * )
  * ```
  *
- * @param timeMs - Maximal number of milliseconds granted to an execution of the predicate
+ * @param timeMs - Maximal number of milliseconds granted to an execution of the predicate. Use `Infinity` for no timeout.
  *
  * @remarks Since 4.10.0
  * @public
