@@ -213,7 +213,7 @@ describe('IteratorArbitrary', () => {
             Number.POSITIVE_INFINITY,
           );
           const iterator = arb.generate(mrng, biasFactor).value;
-          const values = [...iterator.take(expectedValues.length)];
+          const values = expectedValues.map(() => iterator.next().value);
 
           // Assert
           expect(values).toEqual(expectedValues);
@@ -430,13 +430,40 @@ describe('IteratorArbitrary', () => {
         expectedPrint: 'Iterator.from([])',
       },
       {
+        description: 'with history, empty finite iterator not consumed at all',
+        history: true,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 0,
+        numToPull: 0,
+        expectedPulledValues: [],
+        expectedPrint: 'Iterator.from([/*…*/])',
+      },
+      {
+        description: 'with history, finite iterator with its last value pulled but no completion observed',
+        history: true,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 2,
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
+      },
+      {
+        description: 'with history, finite iterator with one value remaining',
+        history: true,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 3,
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
+      },
+      {
         description: 'with history, finite iterator partially consumed',
         history: true,
         constructorArgs: [0, 10, 10],
         drawnTargetLength: 5,
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from([0,1,/*3 others…*/])',
+        expectedPrint: 'Iterator.from([0,1,/*…*/])',
       },
       {
         description: 'with history, finite iterator not consumed at all',
@@ -445,7 +472,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 5,
         numToPull: 0,
         expectedPulledValues: [],
-        expectedPrint: 'Iterator.from([/*5 others…*/])',
+        expectedPrint: 'Iterator.from([/*…*/])',
       },
       {
         description: 'with history, never-ending iterator (minLength is +infinity)',
@@ -474,7 +501,7 @@ describe('IteratorArbitrary', () => {
         expectedPulledValues: [],
         expectedPrint: 'Iterator.from([/*…*/])',
       },
-      // Without history: we only print counters
+      // Without history: we print the number of values already emitted and whether completion is known
       {
         description: 'without history, finite iterator fully consumed',
         history: false,
@@ -482,7 +509,34 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 2,
         numToPull: undefined, // fully drained
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from(/*2 emitted over 2*/)',
+        expectedPrint: 'Iterator.from(/*2 emitted*/)',
+      },
+      {
+        description: 'without history, empty finite iterator fully consumed',
+        history: false,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 0,
+        numToPull: undefined,
+        expectedPulledValues: [],
+        expectedPrint: 'Iterator.from(/*0 emitted*/)',
+      },
+      {
+        description: 'without history, empty finite iterator not consumed at all',
+        history: false,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 0,
+        numToPull: 0,
+        expectedPulledValues: [],
+        expectedPrint: 'Iterator.from(/*0 emitted…*/)',
+      },
+      {
+        description: 'without history, finite iterator with its last value pulled but no completion observed',
+        history: false,
+        constructorArgs: [0, 10, 10],
+        drawnTargetLength: 2,
+        numToPull: 2,
+        expectedPulledValues: [0, 1],
+        expectedPrint: 'Iterator.from(/*2 emitted…*/)',
       },
       {
         description: 'without history, finite iterator partially consumed',
@@ -491,7 +545,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 5,
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from(/*2 emitted over 5*/)',
+        expectedPrint: 'Iterator.from(/*2 emitted…*/)',
       },
       {
         description: 'without history, finite iterator not consumed at all',
@@ -500,7 +554,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: 5,
         numToPull: 0,
         expectedPulledValues: [],
-        expectedPrint: 'Iterator.from(/*0 emitted over 5*/)',
+        expectedPrint: 'Iterator.from(/*0 emitted…*/)',
       },
       {
         description: 'without history, never-ending iterator (minLength is +infinity)',
@@ -509,7 +563,7 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: undefined, // never-ending iterator
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from(/*2 emitted*/)',
+        expectedPrint: 'Iterator.from(/*2 emitted…*/)',
       },
       {
         description: 'without history, never-ending iterator (drawn on the extra slot)',
@@ -518,11 +572,20 @@ describe('IteratorArbitrary', () => {
         drawnTargetLength: -1, // minLength - 1, aka never-ending
         numToPull: 2,
         expectedPulledValues: [0, 1],
-        expectedPrint: 'Iterator.from(/*2 emitted*/)',
+        expectedPrint: 'Iterator.from(/*2 emitted…*/)',
+      },
+      {
+        description: 'without history, never-ending iterator not consumed at all',
+        history: false,
+        constructorArgs: [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        drawnTargetLength: undefined,
+        numToPull: 0,
+        expectedPulledValues: [],
+        expectedPrint: 'Iterator.from(/*0 emitted…*/)',
       },
     ])(
       'should print $description',
-      ({ history, constructorArgs, drawnTargetLength, numToPull, expectedPulledValues, expectedPrint }) => {
+      async ({ history, constructorArgs, drawnTargetLength, numToPull, expectedPulledValues, expectedPrint }) => {
         // Arrange
         const biasFactor = 48;
         let index = 0;
@@ -535,18 +598,131 @@ describe('IteratorArbitrary', () => {
         }
         const { instance: mrngCloned } = fakeRandom();
         clone.mockReturnValueOnce(mrngCloned);
-        const fakeStringify = (v: unknown) => String(v);
-        const stringify = vi.spyOn(StringifyMock, 'stringify');
-        stringify.mockImplementation(fakeStringify);
 
         // Act
         const arb = new IteratorArbitrary(sourceArb, history, ...constructorArgs);
         const iterator = arb.generate(mrng, biasFactor).value;
-        const values = numToPull !== undefined ? [...iterator.take(numToPull)] : [...iterator];
+        const values =
+          numToPull !== undefined ? Array.from({ length: numToPull }, () => iterator.next().value) : [...iterator];
 
         // Assert
         expect(values).toEqual(expectedPulledValues);
         expect(String(iterator)).toEqual(expectedPrint);
+        expect(StringifyMock.stringify(iterator)).toEqual(expectedPrint);
+        expect(await StringifyMock.asyncStringify(iterator)).toEqual(expectedPrint);
+        expect(generate).toHaveBeenCalledTimes(expectedPulledValues.length);
+      },
+    );
+
+    it.each([
+      [true, 0],
+      [true, 1],
+      [false, 0],
+      [false, 1],
+    ] as const)(
+      'should omit the remaining-values marker after closing with history %s and %i values pulled',
+      async (history, numToPull) => {
+        for (const close of ['return', 'throw', 'take'] as const) {
+          // Arrange
+          const { instance: sourceArb, generate } = fakeArbitrary<number>();
+          generate.mockReturnValue(new Value(42, undefined));
+          const { instance: mrng, nextInt } = fakeRandom();
+          nextInt.mockReturnValue(5);
+          const arb = new IteratorArbitrary(sourceArb, history, 0, 10, 10);
+          const iterator = arb.generate(mrng, undefined).value;
+          for (let i = 0; i !== numToPull; ++i) {
+            iterator.next();
+          }
+
+          // Act
+          if (close === 'return') {
+            expect(iterator.return!(undefined).done).toBe(true);
+          } else if (close === 'throw') {
+            const error = new Error('Stop iterating');
+            expect(() => iterator.throw!(error)).toThrow(error);
+          } else {
+            expect([...iterator.take(0)]).toEqual([]);
+          }
+
+          // Assert
+          const expectedPrint = history
+            ? numToPull === 0
+              ? 'Iterator.from([])'
+              : 'Iterator.from([42])'
+            : `Iterator.from(/*${numToPull} emitted*/)`;
+          expect(String(iterator)).toEqual(expectedPrint);
+          expect(StringifyMock.stringify(iterator)).toEqual(expectedPrint);
+          expect(await StringifyMock.asyncStringify(iterator)).toEqual(expectedPrint);
+          expect(iterator.next().done).toBe(true);
+        }
+      },
+    );
+
+    it.each([true, false])(
+      'should omit the remaining-values marker after value generation throws (history: %s)',
+      (history) => {
+        // Arrange
+        const { instance: sourceArb, generate } = fakeArbitrary<number>();
+        const error = new Error('Cannot generate');
+        generate.mockImplementation(() => {
+          throw error;
+        });
+        const { instance: mrng, nextInt } = fakeRandom();
+        nextInt.mockReturnValue(5);
+        const arb = new IteratorArbitrary(sourceArb, history, 0, 10, 10);
+        const iterator = arb.generate(mrng, undefined).value;
+
+        // Act
+        expect(() => iterator.next()).toThrow(error);
+
+        // Assert
+        expect(String(iterator)).toEqual(history ? 'Iterator.from([])' : 'Iterator.from(/*0 emitted*/)');
+        expect(iterator.next().done).toBe(true);
+      },
+    );
+
+    it.each([true, false])('should track exhaustion independently for cloned iterators (history: %s)', (history) => {
+      // Arrange
+      const { instance: sourceArb, generate } = fakeArbitrary<number>();
+      generate.mockReturnValue(new Value(42, undefined));
+      const { instance: mrng, nextInt } = fakeRandom();
+      nextInt.mockReturnValue(1);
+      const arb = new IteratorArbitrary(sourceArb, history, 0, 10, 10);
+      const iterator = arb.generate(mrng, undefined).value;
+      expect([...iterator]).toEqual([42]);
+
+      // Act
+      const cloned = cloneIfNeeded(iterator);
+
+      // Assert
+      expect(String(iterator)).toEqual(history ? 'Iterator.from([42])' : 'Iterator.from(/*1 emitted*/)');
+      expect(String(cloned)).toEqual(history ? 'Iterator.from([/*…*/])' : 'Iterator.from(/*0 emitted…*/)');
+      expect(cloned.next()).toEqual({ done: false, value: 42 });
+      expect(String(cloned)).toEqual(history ? 'Iterator.from([42,/*…*/])' : 'Iterator.from(/*1 emitted…*/)');
+      expect(cloned.next().done).toBe(true);
+      expect(String(cloned)).toEqual(history ? 'Iterator.from([42])' : 'Iterator.from(/*1 emitted*/)');
+    });
+
+    it.each([true, false])(
+      'should keep the remaining-values marker when a reentrant throw fails to close the iterator (history: %s)',
+      (history) => {
+        // Arrange
+        const { instance: sourceArb, generate } = fakeArbitrary<number>();
+        const { instance: mrng, nextInt } = fakeRandom();
+        nextInt.mockReturnValue(5);
+        const arb = new IteratorArbitrary(sourceArb, history, 0, 10, 10);
+        const iterator = arb.generate(mrng, undefined).value;
+        generate.mockImplementation(() => {
+          expect(() => iterator.throw!(new Error('Stop iterating'))).toThrow(TypeError);
+          return new Value(42, undefined);
+        });
+
+        // Act
+        expect(iterator.next()).toEqual({ done: false, value: 42 });
+
+        // Assert
+        expect(String(iterator)).toEqual(history ? 'Iterator.from([42,/*…*/])' : 'Iterator.from(/*1 emitted…*/)');
+        expect(iterator.next()).toEqual({ done: false, value: 42 });
       },
     );
   });

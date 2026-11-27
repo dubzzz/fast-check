@@ -31,30 +31,30 @@ fc.iterator(fc.nat(9));
 // Note: From time to time, generated iterators are never-ending ones
 // Examples of generated values:
 // • Iterator.from([9])
-// • Iterator.from([4,7,8,/*3 others…*/])
-// • Iterator.from([4,6,9,/*7 others…*/])
-// • Iterator.from([7,6,9,/*1 other…*/])
-// • Iterator.from([3,0,1,/*2 others…*/])
+// • Iterator.from([4,7,8,/*…*/])
+// • Iterator.from([4,6,9,/*…*/])
+// • Iterator.from([7,6,9,/*…*/])
+// • Iterator.from([3,0,1,/*…*/])
 // • …
 
 fc.iterator(fc.nat(9), { minLength: 2, maxLength: 7 });
 // Note: Only finite iterators yielding between 2 and 7 items
 // Examples of generated values:
-// • Iterator.from([4,2,2,/*1 other…*/])
-// • Iterator.from([7,1,8])
+// • Iterator.from([4,2,2,/*…*/])
+// • Iterator.from([7,1,8,/*…*/])
 // • Iterator.from([7,4])
 // • Iterator.from([4,4])
-// • Iterator.from([7,2,2,/*4 others…*/])
+// • Iterator.from([7,2,2,/*…*/])
 // • …
 
 fc.iterator(fc.nat(9), { noDefaultInfinity: true });
 // Note: Only finite iterators
 // Examples of generated values:
 // • Iterator.from([5,4])
-// • Iterator.from([8,8,7])
-// • Iterator.from([9,9,3,/*3 others…*/])
-// • Iterator.from([3,4,7,/*7 others…*/])
-// • Iterator.from([3,6,1,/*4 others…*/])
+// • Iterator.from([8,8,7,/*…*/])
+// • Iterator.from([9,9,3,/*…*/])
+// • Iterator.from([3,4,7,/*…*/])
+// • Iterator.from([3,6,1,/*…*/])
 // • …
 
 fc.iterator(fc.nat(9), { minLength: Number.POSITIVE_INFINITY });
@@ -69,13 +69,7 @@ fc.iterator(fc.nat(9), { minLength: Number.POSITIVE_INFINITY });
 
 fc.iterator(fc.nat(9), { noHistory: true });
 // Note: By default, Iterators keep a history of generated values. Setting `noHistory` to `true` drops history to save memory. As such reported errors won't show any generated value
-// Examples of generated values:
-// • Iterator.from(/*1 emitted over 1*/)
-// • Iterator.from(/*3 emitted over 10*/)
-// • Iterator.from(/*3 emitted over 4*/)
-// • Iterator.from(/*2 emitted over 2*/)
-// • Iterator.from(/*3 emitted*/)
-// • …
+// Examples of generated values: Iterator.from(/*1 emitted*/), Iterator.from(/*3 emitted…*/), Iterator.from(/*2 emitted*/)…
 ```
 
 Resources: [API reference](/docs/api/functions/iterator).  
