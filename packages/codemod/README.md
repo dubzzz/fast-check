@@ -132,19 +132,29 @@ This codemod moves local runner options and custom reporters into plugins. For a
 
 </details>
 
-<details><summary><code>v5/checkToAssert</code> (≥5.0.0) — Preserves RunDetails when migrating check to assert</summary>
+<details><summary><code>v5/checkToAssert</code> (≥4.11.0) — Preserves RunDetails when migrating check to assert</summary>
 
 **What is doing this codemod?**
 
-This codemod replaces `check` calls with `assert` calls using `noDefaultPlugins: true`. It preserves access to `RunDetails` by adding a helper that captures them through a plugin’s `onAllRunsComplete` hook.
+This codemod replaces `check` calls with inline `assert` calls using `noDefaultPlugins: true` and captures `RunDetails` through a plugin’s `onAllRunsComplete` hook. It works independently on fast-check 4.11.0 and later, without adding named helper functions.
 
-Assumes fast-check v5 after `v5/propertyToAsyncProperty`, where `check` always returns a promise. Synchronous or uncertain usages are left unchanged with a warning.
+Direct reads or destructuring of `RunDetails` fields, such as `out.failed`, select synchronous execution. A local `const` result can also be awaited or passed elsewhere: those uses do not contradict synchronous field access. Without synchronous field access, results consumed with `await`, `.then()`, `.catch()` or `.finally()` select asynchronous execution. Conflicting field reads and promise methods, mutable bindings, and results whose usage remains uncertain are left unchanged with a warning. The choice depends on result usage, not on whether the input uses `property` or `asyncProperty`.
+
+Straightforward variable declarations and awaited statements receive inline statements. Calls nested in expressions or consumed as promises use an immediately invoked inline function to preserve evaluation order and promise behavior. Property and options expressions are evaluated once, and TypeScript output retains the property’s inferred value types.
+
+Synchronous execution throws if run details are not available immediately. Review plugins that can run asynchronously or reject: their completion cannot be awaited by a synchronous caller.
 
 **Example of code change:**
 
 ```diff
 -const details = await fc.check(property);
-+const details = await assertAndGetRunDetails(property);
++const checkProperty = property;
++let checkDetails!: fc.RunDetails<ReturnType<typeof checkProperty.generate>['value']>;
++await fc.assert(checkProperty, {
++  noDefaultPlugins: true,
++  plugins: [() => ({ onAllRunsComplete(result) { checkDetails = result; } })],
++});
++const details = checkDetails;
  if (details.failed) console.log(details.counterexample);
 ```
 
