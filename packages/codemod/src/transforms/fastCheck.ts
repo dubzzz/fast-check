@@ -1,94 +1,47 @@
-import type { ASTPath, Identifier, JSCodeshift } from 'jscodeshift';
+import type { ASTPath, Identifier, JSCodeshift, MemberExpression } from 'jscodeshift';
+import { isNamedMember } from './ast.js';
+import { findBinding, isConstDeclarator } from './bindings.js';
+import { resolveImport } from './imports.js';
 
-// Ignore syntactic names such as obj.property and the key in { property: value }.
-export function isReference(j: JSCodeshift, path: ASTPath<Identifier>): boolean {
-  const parent = path.parent.node;
-  if (
-    j.ImportSpecifier.check(parent) ||
-    j.ImportNamespaceSpecifier.check(parent) ||
-    j.ImportDefaultSpecifier.check(parent)
-  )
-    return false;
-  if (j.ExportSpecifier.check(parent) && path.name === 'exported') return false;
-  if (j.MemberExpression.check(parent) && path.name === 'property' && !parent.computed) return false;
-  if (
-    (j.Property.check(parent) || j.ObjectProperty.check(parent) || j.ObjectMethod.check(parent)) &&
-    path.name === 'key' &&
-    !parent.computed
-  )
-    return false;
-  return true;
+export function isFastCheckNamespace(j: JSCodeshift, path: ASTPath, node: unknown): node is Identifier {
+  const binding = resolveImport(j, path, node);
+  return binding?.source === 'fast-check' && !binding.typeOnly && binding.namedExport === undefined;
 }
 
-// ast-types groups block and loop declarations into the surrounding function or program.
-function bindingRegion(j: JSCodeshift, binding: ASTPath, scope: ASTPath): ASTPath {
-  for (let p = binding.parent; p && p !== scope; p = p.parent) {
-    if (j.VariableDeclaration.check(p.node) && p.node.kind === 'var') return scope;
-    if (
-      j.BlockStatement.check(p.node) ||
-      j.ForStatement.check(p.node) ||
-      j.ForInStatement.check(p.node) ||
-      j.ForOfStatement.check(p.node)
-    )
-      return p;
-    if (j.SwitchCase.check(p.node)) return p.parentPath; // all cases share one lexical scope
-  }
-  return scope;
-}
-
-export function findBinding(j: JSCodeshift, path: ASTPath, name: string): ASTPath<Identifier> | undefined {
-  const enclosing = new Set<ASTPath>();
-  for (let p = path; p; p = p.parentPath) enclosing.add(p);
-  for (let scope = path.scope.lookup(name); scope; scope = scope.parent?.lookup(name)) {
-    const bindings: ASTPath<Identifier>[] = scope.getBindings()[name];
-    const regions = new Map<ASTPath, ASTPath<Identifier>[]>();
-    for (const binding of bindings) {
-      const region = bindingRegion(j, binding, scope.path);
-      const group = regions.get(region) ?? [];
-      group.push(binding);
-      regions.set(region, group);
-    }
-    // Inner lexical declarations shadow outer ones even when ast-types groups them into one scope.
-    for (const region of enclosing) {
-      const visible = regions.get(region);
-      if (visible) return visible.length === 1 ? visible[0] : undefined;
-    }
-  }
-}
-
-export function isFastCheckNamespace(j: JSCodeshift, path: ASTPath, node: unknown): boolean {
-  if (!j.Identifier.check(node)) return false;
-  const specifier = findBinding(j, path, node.name)?.parent;
-  const declaration = specifier?.parent.node;
+export function isFastCheckMember(
+  j: JSCodeshift,
+  path: ASTPath,
+  node: unknown,
+  name?: string,
+): node is MemberExpression & { object: Identifier; property: Identifier } {
   return (
-    (j.ImportNamespaceSpecifier.check(specifier?.node) || j.ImportDefaultSpecifier.check(specifier?.node)) &&
-    j.ImportDeclaration.check(declaration) &&
-    declaration.source.value === 'fast-check' &&
-    declaration.importKind !== 'type'
+    isNamedMember(j, node) &&
+    (name === undefined || node.property.name === name) &&
+    isFastCheckNamespace(j, path, node.object)
   );
 }
 
-export function memberName(j: JSCodeshift, path: ASTPath, member: unknown): string | undefined {
-  if (
-    j.MemberExpression.check(member) &&
-    !member.computed &&
-    j.Identifier.check(member.property) &&
-    isFastCheckNamespace(j, path, member.object)
-  )
-    return member.property.name;
+export function importedName(j: JSCodeshift, path: ASTPath, node: unknown): string | undefined {
+  if (isFastCheckMember(j, path, node)) {
+    return node.property.name;
+  }
+  const binding = resolveImport(j, path, node);
+  if (binding?.source === 'fast-check' && !binding.typeOnly) {
+    return binding.namedExport;
+  }
 }
 
-export function importedName(j: JSCodeshift, path: ASTPath, node: unknown): string | undefined {
-  if (!j.Identifier.check(node)) return memberName(j, path, node);
-  const specifier = findBinding(j, path, node.name)?.parent;
-  const declaration = specifier?.parent.node;
-  if (
-    j.ImportSpecifier.check(specifier?.node) &&
-    j.Identifier.check(specifier.node.imported) &&
-    specifier.node.importKind !== 'type' &&
-    j.ImportDeclaration.check(declaration) &&
-    declaration.source.value === 'fast-check' &&
-    declaration.importKind !== 'type'
-  )
-    return specifier.node.imported.name;
+export function isPropertyFactory(name: string | undefined): boolean {
+  return name === 'property' || name === 'asyncProperty';
+}
+
+export function inputFactoryName(j: JSCodeshift, input: ASTPath, declarations: 'const' | 'any'): string | undefined {
+  const declaration = j.Identifier.check(input.node) ? findBinding(j, input, input.node.name)?.parent : undefined;
+  const definition =
+    isConstDeclarator(j, declaration) || (declarations === 'any' && j.VariableDeclarator.check(declaration?.node))
+      ? declaration.get('init')
+      : input;
+  if (j.CallExpression.check(definition.node)) {
+    return importedName(j, definition, definition.node.callee);
+  }
 }

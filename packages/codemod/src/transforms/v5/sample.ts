@@ -1,34 +1,32 @@
 import type { API, FileInfo } from 'jscodeshift';
-import { allowAwait } from '../allowAwait.js';
-import { reportUnsupported } from '../reportUnsupported.js';
+import { callsInsideOut } from '../ast.js';
 import { importedName } from '../fastCheck.js';
-import { isPropertyInput, samplingOptions } from '../sampling.js';
+import { applySamplingOptions, prepareSamplingCall, samplingOptions } from '../sampling.js';
+import { parseFile } from '../transformFile.js';
 
 export default function transform(file: FileInfo, api: API): string {
-  const j = api.jscodeshift.withParser(/\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx');
-  const root = j(file.source);
-  for (const path of root.find(j.CallExpression).paths().reverse()) {
-    const { callee, arguments: args } = path.node;
-    if (importedName(j, path, callee) !== 'sample') continue;
-    const awaited = j.AwaitExpression.check(path.parent.node);
-    if (!awaited && !allowAwait(j, path, file.path)) {
-      reportUnsupported(api, path.node, 'Cannot await sample() in this synchronous context.');
+  const { j, root, report, print } = parseFile(file, api);
+  for (const path of callsInsideOut(j, root)) {
+    const call = path.node;
+    const { callee, arguments: args } = call;
+    if (importedName(j, path, callee) !== 'sample') {
       continue;
     }
-    const property = isPropertyInput(j, path);
-    const params = args[1];
-    if (property === undefined) {
-      reportUnsupported(api, path.node, 'If the sample input is a property, set noPredicateExecution to true.');
+    const sampling = prepareSamplingCall(j, path, file.path, 'sample', report);
+    if (!sampling) {
+      continue;
     }
-    if (!awaited) path.replace(j.awaitExpression(path.node));
-    if (args.length > 2) continue;
-    const options = samplingOptions(j, params);
-    if (!options) continue;
-    const { opts, keys } = options;
-    if (keys.includes('logger')) continue;
-    if (property) opts.properties.push(j.objectProperty(j.identifier('noPredicateExecution'), j.booleanLiteral(true)));
-    if (opts.properties.length) args[1] = opts;
-    else if (params) args.splice(1, 1);
+    const { result, property } = sampling;
+    if (result !== path.parent.node) {
+      path.replace(result);
+    }
+    if (args.length > 2) {
+      continue;
+    }
+    const options = samplingOptions(j, args[1]);
+    if (options && !options.logger) {
+      applySamplingOptions(j, call, 1, options.object, property);
+    }
   }
-  return root.toSource({ quote: 'single' });
+  return print();
 }

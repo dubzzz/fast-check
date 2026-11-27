@@ -1,16 +1,18 @@
 import type { API, ASTPath, FileInfo, JSCodeshift } from 'jscodeshift';
-import { findBinding, isReference, memberName } from '../fastCheck.js';
-import { reportUnsupported } from '../reportUnsupported.js';
+import { isNamedMember, isResultDiscarded } from '../ast.js';
+import { freshName, identifierNames, localConstBinding, referencesOf } from '../bindings.js';
+import { isFastCheckMember } from '../fastCheck.js';
+import { parseFile } from '../transformFile.js';
 
 function isPromiseConsumer(j: JSCodeshift, path: ASTPath): boolean {
   const parent = path.parent.node;
-  if (j.AwaitExpression.check(parent)) return true;
+  if (j.AwaitExpression.check(parent)) {
+    return true;
+  }
   const call = path.parent.parent.node;
   return (
-    j.MemberExpression.check(parent) &&
+    isNamedMember(j, parent) &&
     parent.object === path.node &&
-    !parent.computed &&
-    j.Identifier.check(parent.property) &&
     ['then', 'catch', 'finally'].includes(parent.property.name) &&
     j.CallExpression.check(call) &&
     call.callee === parent
@@ -18,59 +20,41 @@ function isPromiseConsumer(j: JSCodeshift, path: ASTPath): boolean {
 }
 
 export default function transform(file: FileInfo, api: API): string {
-  const typed = /\.[cm]?tsx?$/.test(file.path);
-  const j = api.jscodeshift.withParser(/\.[cm]?ts$/.test(file.path) ? 'ts' : 'tsx');
-  const root = j(file.source);
-  let helper = 'assertAndGetRunDetails';
-  while (root.find(j.Identifier, { name: helper }).size()) helper += 'ForCheck';
+  const { j, root, report, typescript: typed, print } = parseFile(file, api);
+  const helper = freshName(identifierNames(j, root), 'assertAndGetRunDetails', 'ForCheck');
   let namespace: string | undefined;
 
-  function isPromiseBinding(path: ASTPath): boolean {
-    const declarator = path.parent.node;
-    const declaration = path.parent.parent;
-    if (
-      !j.VariableDeclarator.check(declarator) ||
-      declarator.init !== path.node ||
-      !j.Identifier.check(declarator.id) ||
-      !j.VariableDeclaration.check(declaration.node) ||
-      declaration.node.kind !== 'const' ||
-      j.ExportNamedDeclaration.check(declaration.parent.node)
-    )
-      return false;
-    const binding = declarator.id;
-    const uses = root
-      .find(j.Identifier, { name: binding.name })
-      .filter(
-        (ref) => ref.node !== binding && isReference(j, ref) && findBinding(j, ref, binding.name)?.node === binding,
-      )
-      .paths();
-    return uses.length > 0 && uses.every((ref) => isPromiseConsumer(j, ref));
+  function hasPromiseConsumer(path: ASTPath): boolean {
+    if (isPromiseConsumer(j, path)) {
+      return true;
+    }
+    const binding = localConstBinding(j, path);
+    if (binding) {
+      const uses = referencesOf(j, binding);
+      if (uses.length > 0 && uses.every((ref) => isPromiseConsumer(j, ref))) {
+        return true;
+      }
+    }
+    report(
+      path.node,
+      'Cannot determine that check() is consumed as a promise; synchronous or uncertain usages require manual migration.',
+    );
+    return false;
   }
 
   root.find(j.CallExpression).forEach((path) => {
     const { callee } = path.node;
-    if (
-      memberName(j, path, callee) !== 'check' ||
-      !j.MemberExpression.check(callee) ||
-      !j.Identifier.check(callee.object)
-    )
-      return;
-    if (!isPromiseConsumer(j, path) && !isPromiseBinding(path)) {
-      reportUnsupported(
-        api,
-        path.node,
-        'Cannot determine that check() is consumed as a promise; synchronous or uncertain usages require manual migration.',
-      );
+    if (!isFastCheckMember(j, path, callee, 'check') || !hasPromiseConsumer(path)) {
       return;
     }
-    const discarded = j.AwaitExpression.check(path.parent.node) && j.ExpressionStatement.check(path.parent.parent.node);
+    const discarded = isResultDiscarded(j, path);
     const [property, params] = path.node.arguments;
     if (!j.Expression.check(property) || path.node.arguments.length > 2 || j.SpreadElement.check(params)) {
-      reportUnsupported(api, path.node, 'Cannot migrate check() with these arguments; migrate the call manually.');
+      report(path.node, 'Cannot migrate check() with these arguments; migrate the call manually.');
       return;
     }
     if (!discarded && namespace && namespace !== callee.object.name) {
-      reportUnsupported(api, path.node, 'Cannot migrate check() using multiple fast-check namespaces in one file.');
+      report(path.node, 'Cannot migrate check() using multiple fast-check namespaces in one file.');
       return;
     }
     if (discarded) {
@@ -99,5 +83,5 @@ async function ${helper}${type('<Ts>')}(property${type(': ' + namespace + '.Prop
 }`;
     root.find(j.Program).get().node.body.push(j(definition).find(j.FunctionDeclaration).get().node);
   }
-  return root.toSource({ quote: 'single' });
+  return print();
 }

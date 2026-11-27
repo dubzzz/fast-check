@@ -1,0 +1,47 @@
+import jscodeshift from 'jscodeshift';
+import { describe, expect, it, vi } from 'vitest';
+import { planAwait } from './awaitCall.js';
+
+const j = jscodeshift.withParser('ts');
+
+describe('planAwait', () => {
+  it('should make the test callback async only when the caller applies the edit', () => {
+    const source = "import { test as spec } from 'vitest'; spec.each(cases)('name', (n) => run(n));";
+    const root = j(source);
+    const call = root.find(j.CallExpression, { callee: { name: 'run' } }).paths()[0];
+    const report = vi.fn();
+    const apply = planAwait(j, call, 'test.ts', report, 'Cannot await run().');
+
+    const callback = root.find(j.ArrowFunctionExpression).nodes()[0];
+    expect(callback.async).toBe(false);
+    expect(callback.body).toBe(call.node);
+    const awaited = apply!();
+    expect(callback.async).toBe(true);
+    expect(awaited.type).toBe('AwaitExpression');
+    expect(awaited.argument).toBe(call.node);
+    expect(report).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['module.mts', 'run();', true],
+    ['module.cts', 'run();', false],
+    ['module.cjs', 'async function f() { run(); }', true],
+    ['module.ts', 'async function f(arg = run()) {}', false],
+    ['module.ts', 'class C { value = run(); }', false],
+    ['module.ts', 'namespace N { run(); }', false],
+    ['module.ts', "test('done callback', (done) => run());", false],
+    ['module.ts', "function f(test) { test('local test', () => run()); }", false],
+  ] as const)('should determine whether await is allowed in %s containing %s', (filename, source, allowed) => {
+    const call = j(source)
+      .find(j.CallExpression, { callee: { name: 'run' } })
+      .paths()[0];
+    const report = vi.fn();
+    const message = 'Cannot await run().';
+    expect(planAwait(j, call, filename, report, message) !== undefined).toBe(allowed);
+    if (allowed) {
+      expect(report).not.toHaveBeenCalled();
+    } else {
+      expect(report.mock.calls).toEqual([[call.node, message]]);
+    }
+  });
+});

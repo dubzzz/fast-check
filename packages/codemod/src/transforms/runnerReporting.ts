@@ -1,18 +1,24 @@
-import { findBinding } from './fastCheck.js';
+import { isFunctionExpression } from './ast.js';
+import { callbackStatements, resolveCallback, usesReceiver } from './callbacks.js';
 import type { Expression, PluginCall, PluginEdit } from './pluginMigration.js';
 
 export function reporting(site: PluginCall): PluginEdit | undefined {
   const { j, options, runner, report } = site;
   const custom = ['reporter', 'asyncReporter'].filter((key) => options.has(key));
-  if (!custom.length) return { remove: [], plugins: [] };
+  if (!custom.length) {
+    return { remove: [], plugins: [] };
+  }
   const format = options.get('includeErrorInReport');
   // v4 bypasses the default reporter, but still evaluates the option expression.
   const remove = format && j.BooleanLiteral.check(format) ? [...custom, 'includeErrorInReport'] : custom;
   if (runner === 'check') {
-    if (custom.length > 1) return undefined;
-    const callback = options.get(custom[0]);
-    if (custom.length && !j.ArrowFunctionExpression.check(callback) && !j.FunctionExpression.check(callback))
+    if (custom.length > 1) {
       return undefined;
+    }
+    const callback = options.get(custom[0]);
+    if (!isFunctionExpression(j, callback)) {
+      return undefined;
+    }
     return { remove, plugins: [] };
   }
   if (custom.length > 1 || options.has('noDefaultPlugins') || (runner === 'configureGlobal' && site.hasCheck)) {
@@ -20,27 +26,16 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
     return undefined;
   }
   const callback = options.get(custom[0]) as Expression;
-  if (
-    !j.Identifier.check(callback) &&
-    !j.ArrowFunctionExpression.check(callback) &&
-    !j.FunctionExpression.check(callback)
-  ) {
+  if (!j.Identifier.check(callback) && !isFunctionExpression(j, callback)) {
     report('Review the expression that supplies the custom reporter.');
     return undefined;
   }
-  const declaration = j.Identifier.check(callback) ? findBinding(j, site.path, callback.name)?.parent : undefined;
-  const init = j.VariableDeclarator.check(declaration?.node) ? declaration.node.init : undefined;
-  const known = j.FunctionDeclaration.check(declaration?.node)
-    ? declaration.node
-    : declaration?.parent.node.kind === 'const' &&
-        (j.FunctionExpression.check(init) || j.ArrowFunctionExpression.check(init))
-      ? init
-      : callback;
-  if (j.Identifier.check(known)) {
+  const known = resolveCallback(j, site.path, callback);
+  if (!known) {
     report('Review the reporter reference: it may change or resolve to undefined.');
     return undefined;
   }
-  if (j(known).find(j.ThisExpression).size() || j(known).find(j.Super).size()) {
+  if (usesReceiver(j, known)) {
     report('Review the custom reporter: v5 changes its receiver.');
     return undefined;
   }
@@ -50,16 +45,16 @@ export function reporting(site: PluginCall): PluginEdit | undefined {
   let handler = callback;
   const mark = options.get('markInterruptAsFailure');
   if (mark && !(j.BooleanLiteral.check(mark) && !mark.value)) {
-    if (
-      !j.BooleanLiteral.check(mark) ||
-      (!j.FunctionExpression.check(callback) && !j.ArrowFunctionExpression.check(callback))
-    )
+    if (!j.BooleanLiteral.check(mark) || !isFunctionExpression(j, callback)) {
       return undefined;
+    }
     const [details] = callback.params;
-    if (!j.Identifier.check(details) || callback.params.length !== 1) return undefined;
+    if (!j.Identifier.check(details) || callback.params.length !== 1) {
+      return undefined;
+    }
     const id = j.identifier(details.name);
     const field = (name: string) => j.memberExpression(id, j.identifier(name));
-    const body = j.BlockStatement.check(callback.body) ? callback.body.body : [j.returnStatement(callback.body)];
+    const body = callbackStatements(j, callback.body);
     const asFailure = j.objectExpression([
       j.spreadElement(id),
       j.objectProperty(j.identifier('failed'), j.booleanLiteral(true)),

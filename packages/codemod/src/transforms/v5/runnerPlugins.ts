@@ -1,14 +1,21 @@
 import type { API, FileInfo } from 'jscodeshift';
-import { migratePluginCalls, type Expression, type PluginCall, type PluginEdit } from '../pluginMigration.js';
+import { isResultDiscarded } from '../ast.js';
+import {
+  migratePluginCalls,
+  runnerPluginNames,
+  type Expression,
+  type PluginCall,
+  type PluginEdit,
+} from '../pluginMigration.js';
 import { reporting } from '../runnerReporting.js';
 
 function runnerPlugins(site: PluginCall): PluginEdit | undefined {
   const { j, member, options, report, runner, call } = site;
   const reportingEdit = reporting(site);
-  if (!reportingEdit) return undefined;
-  // v4 wraps the property in this order, regardless of the order of keys in Parameters.
-  const names = ['ignoreEqualValues', 'skipEqualValues', 'interruptAfterTimeLimit', 'unbiased', 'timeout'];
-  const remove = names.filter((name) => options.has(name));
+  if (!reportingEdit) {
+    return undefined;
+  }
+  const remove = runnerPluginNames.filter((name) => options.has(name));
   if (options.has('skipAllAfterTimeLimit')) {
     report('skipAllAfterTimeLimit has no equivalent skipping plugin.');
     return undefined;
@@ -24,7 +31,9 @@ function runnerPlugins(site: PluginCall): PluginEdit | undefined {
     call.arguments.length === 2 &&
     options.size === 0 &&
     !call.arguments[1].comments?.length;
-  if (!remove.length && !reportingEdit.remove.length && !emptyLocalOptions) return undefined;
+  if (!remove.length && !reportingEdit.remove.length && !emptyLocalOptions) {
+    return undefined;
+  }
 
   const plugins: PluginEdit['plugins'] = [];
   for (const name of remove) {
@@ -56,16 +65,16 @@ function runnerPlugins(site: PluginCall): PluginEdit | undefined {
     }
   }
   // When callers read check's result, v4 must mark the interruption without throwing from a hook.
-  const result = j.AwaitExpression.check(site.path.parent.node) ? site.path.parent : site.path;
-  const ignoresCheckResult = runner === 'check' && j.ExpressionStatement.check(result.parent.node);
+  const ignoresCheckResult = runner === 'check' && isResultDiscarded(j, site.path);
   if (
     markFailure &&
     (runner === 'assert' ||
       ignoresCheckResult ||
       (runner === 'configureGlobal' && customReporter) ||
       (j.BooleanLiteral.check(markFailure) && !markFailure.value))
-  )
+  ) {
     remove.push('markInterruptAsFailure');
+  }
   return {
     remove: [...remove, ...reportingEdit.remove],
     plugins: [...plugins, ...reportingEdit.plugins],
