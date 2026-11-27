@@ -93,6 +93,32 @@ The plugin setup above makes use of two instances of the `timeout` plugin. The f
 
 This short example clearly highlights why the declaration order of plugins is crucial. Two different orders may result in totally different expectations. Correctly ordering them will make you capable of finely configuring your flows to fit your needs.
 
+## Reading the current run path
+
+The function returned by `decorateRun` receives the current replay path in `executionContext.path`:
+
+```ts
+const logRunPath: fc.UniversalPlugin = () => ({
+  decorateRun: (nestedRun) => (value, executionContext) => {
+    console.log('Running at path', executionContext.path);
+    return nestedRun(value, executionContext);
+  },
+});
+
+await fc.assert(
+  fc.property(fc.integer(), (value) => value < 42),
+  {
+    plugins: [logRunPath],
+  },
+);
+```
+
+The path uses the same colon-separated format as the `path` runner parameter. It identifies the current generated value or shrink candidate, including skipped executions, and incorporates any starting `path` supplied to `fc.assert`. For a failing execution, it matches the `counterexamplePath` that would be reported if shrinking stopped there.
+
+To replay that value, use the recorded path with the same seed, arbitraries, examples and generation plugins. Plugins that retry the same value keep the same path when they forward the execution context. Copy the context when adding fields so downstream plugins and the predicate retain the path.
+
+`fc.assert` supplies the path before every execution. The field is optional because a direct call to `property.run(value, {})` has no runner position.
+
 ## The plugins
 
 We come up with a set of plugins to extend the library using built-in plugins. The following pages provide extended details and deep dive into each of them.
