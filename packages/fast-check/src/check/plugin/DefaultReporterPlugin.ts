@@ -90,7 +90,18 @@ function reportRunDetails<Ts>(out: RunDetails<Ts>, options: DefaultReporterOptio
     out,
   );
   const throwError = (message: string): never => {
-    throw new Error(message, includeErrorInReport ? undefined : { cause: out.errorInstance });
+    const error = new Error(message, includeErrorInReport ? undefined : { cause: out.errorInstance });
+    const originalError = out.errorInstance;
+    if (
+      options.includeActualAndExpected &&
+      originalError !== null &&
+      (typeof originalError === 'object' || typeof originalError === 'function') &&
+      'actual' in originalError &&
+      'expected' in originalError
+    ) {
+      Object.assign(error, { actual: originalError.actual, expected: originalError.expected });
+    }
+    throw error;
   };
   return typeof errorMessage === 'string' ? throwError(errorMessage) : errorMessage.then(throwError);
 }
@@ -110,6 +121,19 @@ export type DefaultReporterOptions = {
    * @remarks Since 5.0.0
    */
   includeErrorInReport?: boolean;
+  /**
+   * Copy the original error's `actual` and `expected` properties onto the reported error.
+   * Both properties must be present, even if their values are `undefined`.
+   * The original error and its properties are left unchanged.
+   *
+   * Useful for test runners that only display assertion diffs for the top-level error.
+   * Can be combined with {@link DefaultReporterOptions.includeErrorInReport}.
+   *
+   * @defaultValue `false`
+   *
+   * @remarks Since 5.0.0
+   */
+  includeActualAndExpected?: boolean;
 };
 
 /**
