@@ -10,6 +10,12 @@ import {
 } from '../__test-helpers__/ArbitraryAssertions.js';
 import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
+import { Random } from '../../random/generator/Random.js';
+import { array } from '../array.js';
+import { integer } from '../integer.js';
+import { iterator } from '../iterator.js';
+import { asyncStringify } from '../../utils/stringify.js';
 
 import * as StringifyMock from '../../utils/stringify.js';
 import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
@@ -606,32 +612,201 @@ describe('IteratorArbitrary', () => {
   });
 
   describe('shrink', () => {
-    it('should always shrink to nil', async () =>
-      await fc.assert(
-        fc.property(fc.boolean(), (history) => {
-          // Arrange
-          const { instance: sourceArb, generate, shrink } = fakeArbitrary<number>();
-          generate.mockReturnValue(new Value(0, undefined));
-          const { instance: mrng } = fakeRandom();
+    function generateAtLength<T>(arb: IteratorArbitrary<T>, targetLength = 100) {
+      const { instance: mrng, nextInt, clone } = fakeRandom();
+      nextInt.mockReturnValue(targetLength === Number.POSITIVE_INFINITY ? arb.minLength - 1 : targetLength);
+      clone.mockImplementation(() => new Random(xorshift128plus(42)));
+      return arb.generate(mrng, undefined);
+    }
 
-          // Act
-          const arb = new IteratorArbitrary(
-            sourceArb,
-            history,
-            Number.POSITIVE_INFINITY,
-            Number.POSITIVE_INFINITY,
-            Number.POSITIVE_INFINITY,
-          );
-          const { value, context } = arb.generate(mrng, undefined);
-          const pullValues = [...value.take(50)];
-          const shrinks = [...arb.shrink(value, context)];
+    it('should not shrink without history', () => {
+      const { instance: sourceArb, generate, shrink } = fakeArbitrary<number>();
+      generate.mockReturnValue(new Value(0, undefined));
+      const arb = new IteratorArbitrary(sourceArb, false, 0, 100, 100);
+      const generated = generateAtLength(arb);
+      expect([...generated.value.take(50)]).toHaveLength(50);
 
-          // Assert
-          expect(pullValues).toBeDefined();
-          expect(shrinks).toHaveLength(0);
-          expect(shrink).not.toHaveBeenCalled();
-        }),
-      ));
+      expect([...arb.shrink(generated.value_, generated.context)]).toEqual([]);
+      expect(shrink).not.toHaveBeenCalled();
+      expect(generated.context).toBeUndefined();
+    });
+
+    it('should not consume an iterator when shrinking without context', () => {
+      const { instance: sourceArb, generate, shrink } = fakeArbitrary<number>();
+      const arb = new IteratorArbitrary(sourceArb, true, 0, 100, 100);
+      const generated = generateAtLength(arb);
+
+      expect([...arb.shrink(generated.value_)]).toEqual([]);
+      expect(generate).not.toHaveBeenCalled();
+      expect(shrink).not.toHaveBeenCalled();
+    });
+
+    it('should not shrink or consume an unread iterator', () => {
+      const { instance: sourceArb, generate, shrink } = fakeArbitrary<number>();
+      const arb = new IteratorArbitrary(sourceArb, true, 0, 100, 100);
+      const generated = generateAtLength(arb);
+
+      expect([...arb.shrink(generated.value_, generated.context)]).toEqual([]);
+      expect(generate).not.toHaveBeenCalled();
+      expect(shrink).not.toHaveBeenCalled();
+    });
+
+    it.each([10, 56])('should shrink exactly like an array of %i consumed values', (numConsumed) => {
+      for (const targetLength of [100, Number.POSITIVE_INFINITY]) {
+        const sourceArb = integer({ min: 0, max: 100 });
+        const generate = vi.spyOn(sourceArb, 'generate');
+        const arb = new IteratorArbitrary(sourceArb, true, 0, 100, Number.POSITIVE_INFINITY);
+        const generated = generateAtLength(arb, targetLength);
+        const consumed = [...generated.value.take(numConsumed)];
+
+        const actual = [...arb.shrink(generated.value_, generated.context)].map((v) => [...v.value]);
+        const expected = [...array(sourceArb).shrink(consumed, undefined)].map((v) => v.value);
+
+        expect(actual).toEqual(expected);
+        expect(actual[0]).toEqual([]);
+        expect(generate).toHaveBeenCalledTimes(numConsumed);
+      }
+    });
+
+    it('should pass the context of each consumed item to its shrinker', () => {
+      const { instance: sourceArb, generate, shrink, canShrinkWithoutContext } = fakeArbitrary<number>();
+      let nextValue = 1;
+      generate.mockImplementation(() => new Value(nextValue, { original: nextValue++ }));
+      shrink.mockImplementation((value, context) => {
+        expect(context).toEqual({ original: value });
+        return Iterator.from([new Value(0, { original: 0 })]);
+      });
+      const arb = new IteratorArbitrary(sourceArb, true, 0, 100, 100);
+      const generated = generateAtLength(arb);
+      const consumed = [...generated.value.take(3)];
+
+      const shrinks = [...arb.shrink(generated.value_, generated.context)].map((v) => [...v.value]);
+
+      expect(consumed).toEqual([1, 2, 3]);
+      expect(shrinks).toContainEqual([0, 2, 3]);
+      expect(shrinks).toContainEqual([1, 0, 3]);
+      expect(shrinks).toContainEqual([1, 2, 0]);
+      expect(canShrinkWithoutContext).not.toHaveBeenCalled();
+      expect(generate).toHaveBeenCalledTimes(3);
+    });
+
+    it('should preserve array shrinking contexts across successive shrinks', () => {
+      const sourceArb = new FakeIntegerArbitrary();
+      const arb = new IteratorArbitrary(sourceArb, true, 0, 100, 100);
+      const generated = generateAtLength(arb);
+      const consumed = [...generated.value.take(10)];
+      const arrayArb = array(sourceArb);
+      const expected = [...arrayArb.shrink(consumed, undefined)];
+      const actual = [...arb.shrink(generated.value_, generated.context)];
+
+      expect(actual).toHaveLength(expected.length);
+      for (let index = 0; index !== actual.length; ++index) {
+        expect([...actual[index].value]).toEqual(expected[index].value);
+        expect([...arb.shrink(actual[index].value_, actual[index].context)].map((v) => [...v.value])).toEqual(
+          [...arrayArb.shrink(expected[index].value_, expected[index].context)].map((v) => v.value),
+        );
+      }
+    });
+
+    it('should use only the prefix consumed from a shrunk iterator', () => {
+      const sourceArb = integer({ min: 0, max: 100 });
+      const arb = new IteratorArbitrary(sourceArb, true, 0, 100, 100);
+      const generated = generateAtLength(arb);
+      expect([...generated.value.take(10)]).toHaveLength(10);
+      const shrunk = arb.shrink(generated.value_, generated.context).drop(1).next().value!;
+      const consumed = [...shrunk.value.take(2)];
+
+      expect([...arb.shrink(shrunk.value_, shrunk.context)].map((v) => [...v.value])).toEqual(
+        [...array(sourceArb).shrink(consumed, undefined)].map((v) => v.value),
+      );
+    });
+
+    it('should track the consumption of each clone independently', () => {
+      const sourceArb = integer({ min: 0, max: 100 });
+      const arb = new IteratorArbitrary(sourceArb, true, 0, 100, 100);
+      const generated = generateAtLength(arb);
+      const first = generated.value;
+      const second = generated.value;
+      const firstValues = [...first.take(10)];
+      const secondValues = [...second.take(56)];
+
+      for (const [value, consumed] of [
+        [first, firstValues],
+        [second, secondValues],
+      ] as const) {
+        expect([...arb.shrink(value, generated.context)].map((v) => [...v.value])).toEqual(
+          [...array(sourceArb).shrink(consumed, undefined)].map((v) => v.value),
+        );
+      }
+    });
+
+    it('should clone stateful items when replaying a shrunk iterator', () => {
+      const arb = new IteratorArbitrary(fc.context(), true, 0, 100, 100);
+      const generated = generateAtLength(arb);
+      for (const ctx of generated.value.take(10)) ctx.log('original run');
+      const shrunk = arb.shrink(generated.value_, generated.context).drop(1).next().value!;
+      const first = shrunk.value;
+      const second = shrunk.value;
+      const firstValues = [...first];
+      for (const ctx of firstValues) ctx.log('first clone');
+      const secondValues = [...second];
+
+      expect(firstValues.length).toBeGreaterThan(0);
+      expect(firstValues.every((ctx) => ctx.size() === 1)).toBe(true);
+      expect(secondValues).toHaveLength(firstValues.length);
+      expect(secondValues.every((ctx) => ctx.size() === 0)).toBe(true);
+      expect([...arb.shrink(second, shrunk.context)]).not.toHaveLength(0);
+    });
+
+    it('should preserve minLength when shrinking a fully consumed prefix', () => {
+      const sourceArb = integer({ min: 0, max: 100 });
+      const arb = new IteratorArbitrary(sourceArb, true, 3, 100, 100);
+      const generated = generateAtLength(arb);
+      const consumed = [...generated.value.take(10)];
+
+      expect([...arb.shrink(generated.value_, generated.context)].map((v) => [...v.value])).toEqual(
+        [...array(sourceArb, { minLength: 3 }).shrink(consumed, undefined)].map((v) => v.value),
+      );
+    });
+
+    it.each([20, Number.POSITIVE_INFINITY])(
+      'should retain a lazy suffix when minLength is %s and only three values were consumed',
+      (minLength) => {
+        const sourceArb = integer({ min: 1, max: 100 });
+        const generate = vi.spyOn(sourceArb, 'generate');
+        const arb = new IteratorArbitrary(sourceArb, true, minLength, minLength, minLength);
+        const generated = generateAtLength(arb, minLength);
+        const consumed = [...generated.value.take(3)];
+        const expectedSuffix = [...cloneIfNeeded(generated.value_).drop(3).take(17)];
+        generate.mockClear();
+
+        const shrinks = [...arb.shrink(generated.value_, generated.context)];
+        const expectedPrefixes = [...array(sourceArb, { minLength: 3 }).shrink(consumed, undefined)];
+        expect(shrinks).toHaveLength(expectedPrefixes.length);
+        expect(generate).not.toHaveBeenCalled();
+        for (let index = 0; index !== shrinks.length; ++index) {
+          const value = shrinks[index].value;
+          expect([value.next().value, value.next().value, value.next().value]).toEqual(expectedPrefixes[index].value);
+          expect([...value.take(17)]).toEqual(expectedSuffix);
+          // Use a fresh clone: take() closes its source iterator.
+          const full = cloneIfNeeded(shrinks[index].value_);
+          for (let n = 0; n !== 20; ++n) expect(full.next().done).toBe(false);
+          expect(full.next().done).toBe(minLength !== Number.POSITIVE_INFINITY);
+        }
+      },
+    );
+
+    it('should print the values consumed from shrunk iterators', async () => {
+      const arb = new IteratorArbitrary(integer({ min: 0, max: 100 }), true, 0, 100, 100);
+      const generated = generateAtLength(arb);
+      expect([...generated.value.take(10)]).toHaveLength(10);
+      const shrunk = arb.shrink(generated.value_, generated.context).drop(1).next().value!;
+      const value = shrunk.value;
+      const consumed = [...value];
+
+      expect(String(value)).toBe(`Iterator.from(${JSON.stringify(consumed)})`);
+      expect(await asyncStringify(value)).toBe(String(value));
+    });
   });
 });
 
@@ -655,6 +830,74 @@ describe('IteratorArbitrary (integration)', () => {
       Number.POSITIVE_INFINITY,
       Number.POSITIVE_INFINITY,
     );
+
+  it.each([10, 56])('should minimize a failure after consuming up to %i values', async (numConsumed) => {
+    const property = fc.property(iterator(integer({ min: 0, max: 100 }), { maxLength: 100, size: 'max' }), (value) =>
+      [...value.take(numConsumed)].every((v) => v < 10),
+    );
+    const result = await fc.check(property, { seed: 42 });
+
+    expect(result.failed).toBe(true);
+    expect(result.numShrinks).toBeGreaterThan(0);
+    expect([...cloneIfNeeded(result.counterexample![0])]).toEqual([10]);
+  });
+
+  it('should shrink values consumed after another property argument has shrunk', async () => {
+    const result = await fc.check(
+      fc.property(
+        integer({ min: 1, max: 56 }),
+        iterator(integer({ min: 0, max: 100 }), { maxLength: 100, size: 'max' }),
+        (numConsumed, value) => [...value.take(numConsumed)].every((v) => v < 10),
+      ),
+      { seed: 42 },
+    );
+
+    expect(result.failed).toBe(true);
+    expect(result.counterexample![0]).toBe(1);
+    expect([...cloneIfNeeded(result.counterexample![1])]).toEqual([10]);
+  });
+
+  it('should shrink the items of forced never-ending iterators', async () => {
+    const result = await fc.check(
+      fc.property(iterator(integer({ min: 0, max: 100 }), { minLength: Number.POSITIVE_INFINITY }), (value) =>
+        [...value.take(3)].every((v) => v < 10),
+      ),
+      { seed: 42 },
+    );
+
+    expect(result.failed).toBe(true);
+    expect([...cloneIfNeeded(result.counterexample![0]).take(3)].sort((a, b) => a - b)).toEqual([0, 0, 10]);
+    expect([...cloneIfNeeded(result.counterexample![0]).take(100)]).toHaveLength(100);
+  });
+
+  it('should reproduce dynamic consumption and asynchronous predicates from the original seed', async () => {
+    await fc.assert(
+      fc.property(fc.integer(), fc.constantFrom(0, 3, Number.POSITIVE_INFINITY), async (seed, minLength) => {
+        const buildProperty = () =>
+          fc.property(
+            integer({ min: 1, max: 20 }),
+            iterator(integer({ min: 0, max: 100 }), { minLength, maxLength: Number.POSITIVE_INFINITY }),
+            integer({ min: 1, max: 20 }),
+            async (before, value, after) => {
+              await Promise.resolve();
+              return [...value.take(before + after)].every((v) => v < 10);
+            },
+          );
+        const result = await fc.check(buildProperty(), { seed });
+        expect(result.failed).toBe(true);
+        const replay = await fc.check(buildProperty(), { seed });
+
+        expect(replay.failed).toBe(true);
+        expect(replay.counterexamplePath).toBe(result.counterexamplePath);
+        expect(replay.counterexample![0]).toBe(result.counterexample![0]);
+        expect(replay.counterexample![2]).toBe(result.counterexample![2]);
+        expect([...cloneIfNeeded(replay.counterexample![1]).take(20)]).toEqual([
+          ...cloneIfNeeded(result.counterexample![1]).take(20),
+        ]);
+      }),
+      { numRuns: 30 },
+    );
+  });
 
   it('should produce the same values given the same seed', async () => {
     await assertProduceSameValueGivenSameSeed(iteratorBuilder, { isEqual });
