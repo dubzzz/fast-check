@@ -2,6 +2,7 @@ export const RegexesOfInterest: {
   regex: RegExp; // if declared with /u flag, they won't be run on non-unicode tests
   invalidInUnicodeMode?: boolean; // invalid with the /u flag
   unmatchable?: boolean; // no string can match
+  skipAstComparison?: boolean; // AST differs from regexp-tree or cannot be parsed by it
   unsupportedByStringMatching?: boolean; // unsupported by `fc.stringMatching`
 }[] = [
   // Characters
@@ -66,15 +67,43 @@ export const RegexesOfInterest: {
 
   // Octal
   // @ts-expect-error Referencing non-existing group in Regex
-  { regex: /\125/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // matches 'U'
+  { regex: /\125/, invalidInUnicodeMode: true, skipAstComparison: true }, // matches 'U'
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
   { regex: /\1/, invalidInUnicodeMode: true },
   // @ts-expect-error Referencing non-existing group in Regex
-  { regex: /\1000/, invalidInUnicodeMode: true, unsupportedByStringMatching: true }, // in non-unicode: \100 then 0 ; matches '@0'
+  { regex: /\1000/, invalidInUnicodeMode: true, skipAstComparison: true }, // in non-unicode: \100 then 0 ; matches '@0'
   // @ts-expect-error Referencing non-existing group in Regex
   // oxlint-disable-next-line no-control-regex
   { regex: /(a)\2/, invalidInUnicodeMode: true }, // in non-unicode: \2 is considered as an octal
+
+  // Legacy numeric escapes: regexp-tree also misreads octal/identity escapes as decimal
+  ...[
+    '\\101',
+    '\\12',
+    '\\8',
+    '\\9',
+    '\\08',
+    '\\018',
+    '\\377',
+    '\\400',
+    '\\777',
+    '\\1234',
+    '\\89',
+    '(a)\\18',
+    '(a)\\01',
+    '[\\101-\\132]+',
+    '[\\012]+',
+    '[\\400]+',
+    '[\\8\\9]+',
+    '\\128+',
+    '\\400+',
+    '(a)[\\1]',
+    '\\1\\(a\\)',
+    '\\1[(]',
+    '\\1(?:a)',
+    '\\1[\\](]',
+  ].map((source) => ({ regex: new RegExp(`^${source}$`), invalidInUnicodeMode: true, skipAstComparison: true })),
 
   // Classes
   { regex: /\w/ },

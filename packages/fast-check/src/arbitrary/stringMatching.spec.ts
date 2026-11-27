@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from './stringMatching.js';
 
@@ -9,6 +9,14 @@ import {
 import { RegexesOfInterest } from './_internals/helpers/__test-helpers__/RegexesOfInterest.js';
 
 describe('stringMatching (integration)', () => {
+  // RegexesOfInterest skips unsupported constructs; explicitly ensure numeric backreferences stay rejected.
+  it.each(['(a)\\1', '\\1(a)', '\\2(a)(b)', '(?<a>a)\\1', '\\2(?=(a))(b)', '\\12' + '(a)'.repeat(12)])(
+    'should reject unsupported backreferences in %s',
+    (source) => {
+      expect(() => stringMatching(new RegExp(source))).toThrow('Backreference nodes not implemented yet');
+    },
+  );
+
   const extraParameters: fc.Arbitrary<Extra> = fc.oneof(hardcodedRegex(), regexBasedOnChunks());
 
   const stringMatchingBuilder = (extra: Extra) => stringMatching(extra.regex);
