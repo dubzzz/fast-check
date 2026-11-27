@@ -249,12 +249,13 @@ const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
 [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) can be given an `act` function that will be called in order to wrap all the scheduled tasks. A code like the following one:
 
 ```js
-fc.assert(
-  fc.property(fc.scheduler({ act }), async s => () {
+await fc.assert(
+  fc.property(fc.scheduler({ act }), async (s) => {
     // Pushing tasks into the scheduler ...
     // ....................................
     await s.waitIdle();
-  }))
+  }),
+);
 ```
 
 This pattern can be helpful whenever you need to make sure that continuations attached to your tasks get called in proper contexts. For instance, when testing React applications, one cannot perform updates of states outside of `act`.

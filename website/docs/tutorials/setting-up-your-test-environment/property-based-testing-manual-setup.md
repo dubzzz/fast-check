@@ -61,7 +61,6 @@ Now that we've covered synchronous predicates, let's explore how to write an asy
 ```js title="queue.spec.js"
 // test/expect come from your test runner — adjust the import to match it
 const fc = require('fast-check');
-const { queue } = require('./queue.js');
 
 test('should resolve in call order', async () => {
   await fc.assert(
@@ -106,7 +105,7 @@ Property-based tests often benefit from shared configuration: aligning time limi
 ```js
 const fc = require('fast-check');
 
-fc.configureGlobal({ interruptAfterTimeLimit: 5_000 });
+fc.installGlobalPlugin(fc.interruptAfterTimeLimit(5_000));
 fc.installGlobalPlugin(
   fc.beforeEach(() => {
     console.log('run before');
@@ -114,7 +113,7 @@ fc.installGlobalPlugin(
 );
 ```
 
-With this setup, fast-check will interrupt any property-based test that exceeds the configured time limit — a useful knob to make sure property-based tests fit within your runner's default timeout.
+With this setup, fast-check will interrupt any property-based test that exceeds the configured time limit. By default, an interruption after at least one successful execution does not fail the test. Pass `{ failOnInterrupt: true }` as the plugin's second argument if an incomplete run should be reported as an error.
 
 How you hook this configuration call so it runs before your tests depends on your runner. The [Global settings documentation](/docs/configuration/global-settings/#integration-with-test-frameworks) covers the most common cases (Jest, Mocha, Vitest). Most other runners offer an equivalent mechanism (for example a `--require`/`--import` flag, or a preload option).
 
