@@ -133,6 +133,31 @@ Here are the minimal requirements to use fast-check properly without any polyfil
 
 </details>
 
+### fast-check 5.x
+
+The minimum versions above stay fixed throughout fast-check 5.x. We routinely test the latest patches of maintained Node.js LTS lines, as well as package compatibility on Node.js 22.12.0. Use a current patch of a maintained LTS line; support for end-of-life Node.js lines is best effort.
+
+fast-check is published as an ES module. Node.js 22.12.0 or later can load it using either `import` or `require` without an experimental flag. TypeScript consumers using CommonJS should use TypeScript 5.8 or later with `module: "NodeNext"` and `moduleResolution: "NodeNext"`.
+
+The ECMAScript requirement describes runtime APIs, particularly the native `Iterator` constructor, `Iterator.from`, and iterator helpers such as `map`, `filter`, and `take`. Lowering a compiler's JavaScript target does not polyfill these APIs. The host must also provide timers (`setTimeout` and `clearTimeout`), `performance.now`, `AbortController`, and `AbortSignal`, including `AbortSignal.any` and abort reasons. Node.js 22.12.0 provides these APIs; other runtimes must provide them too.
+
+The runtime requirement does not require consumers to set their TypeScript `target` to `ES2025`. TypeScript 5.8 and 5.9 do not recognize the `ES2025` name: include `ESNext.Iterator` in `lib` to type the iterator helpers exposed by fast-check. For example, a Node.js consumer with a compatible `@types/node` installed can use:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2023", "ESNext.Iterator"],
+    "types": ["node"]
+  }
+}
+```
+
+For browser projects, include `DOM` in `lib` for host APIs and use the module settings appropriate for your bundler. TypeScript 6.0 and later also support `lib: ["ES2025"]`, plus the host types. These settings describe the APIs available at runtime; they do not install polyfills. The compiler used to build fast-check itself may be newer than the minimum supported consumer compiler.
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
